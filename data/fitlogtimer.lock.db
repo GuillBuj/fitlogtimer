@@ -1,0 +1,6 @@
+#FileLock
+#Thu Jan 30 16:04:03 CET 2025
+hostName=T4-03.greta.local
+id=194b7bd8df3b892e162609a8240fcfbe4f3626592ec
+method=file
+server=192.168.223.94\:60787

@@ -17,6 +17,10 @@ public class SessionService {
     @Autowired
     private SessionRepository sessionRepository;
 
+    public Session saveSession(Session session) {
+        return sessionRepository.save(session);
+    }
+
     public Session createSessionIfNotExists(Session session) {
 
         Optional<Session> existingSession = sessionRepository.findById(session.getId());

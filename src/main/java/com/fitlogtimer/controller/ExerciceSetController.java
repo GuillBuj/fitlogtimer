@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fitlogtimer.dto.ExerciseSetDTO;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.service.ExerciseSetService;
 
@@ -13,10 +14,10 @@ import com.fitlogtimer.service.ExerciseSetService;
 @RequestMapping("/api/exerciseSet")
 public class ExerciceSetController {
     @Autowired
-    private ExerciseSetService exerciceSetService;
+    private ExerciseSetService exerciseSetService;
 
     @PostMapping
-    public ExerciseSet createExerciseSet(@RequestBody ExerciseSet exerciseSet) {
-        return exerciceSetService.saveExerciseSet(exerciseSet);
+    public ExerciseSet createExerciseSet(@RequestBody ExerciseSetDTO exerciseSetDTO) {
+        return exerciseSetService.saveExerciseSet(exerciseSetDTO);
     }
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fitlogtimer.dto.ExerciseSetDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Session;
@@ -30,21 +31,27 @@ public class ExerciseSetService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public ExerciseSet saveExerciseSet(ExerciseSet exerciseSet) {
-        Optional<Session> sessionOpt = sessionRepository.findById(exerciseSet.getSession().getId());
+    @Transactional
+    public ExerciseSet saveExerciseSet(ExerciseSetDTO exerciseSetDTO) {
+        // Extract Exercise ID
+        Long exerciseId = exerciseSetDTO.exercise_id();
+        Exercise exercise = exerciseRepository.findById(exerciseId)
+                .orElseThrow(() -> new IllegalArgumentException("Exercise with ID " + exerciseId + " does not exist"));
+        Long sessionId = exerciseSetDTO.session_id();
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("Session with ID " + sessionId + " does not exist"));
 
-        if (!sessionOpt.isPresent()) {
-            // If no session is found, create a new session and let Hibernate handle the id
-            // and version
-            Session newSession = exerciseSet.getSession(); // Don't manually set the id or version
-            sessionRepository.save(newSession); // Hibernate will manage the id and version
-            exerciseSet.setSession(newSession); // Link the new session to the exercise set
-        } else {
-            // If session exists, just link it without altering its state
-            exerciseSet.setSession(sessionOpt.get());
-        }
+        // Map DTO to Entity
+        ExerciseSet exerciseSet = new ExerciseSet();
+        exerciseSet.setWeight(exerciseSetDTO.weight());
+        exerciseSet.setRepNumber(exerciseSetDTO.repNumber());
+        exerciseSet.setMax(exerciseSetDTO.isMax());
+        exerciseSet.setComment(exerciseSetDTO.comment());
+        exerciseSet.setExercise(exercise);
+        exerciseSet.setSession(session);
 
-        return exerciseSetRepository.save(exerciseSet); // Save the exercise set with the session
+        // Save the ExerciseSet
+        return exerciseSetRepository.save(exerciseSet);
     }
 
     @Transactional

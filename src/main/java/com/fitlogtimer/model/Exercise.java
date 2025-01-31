@@ -1,6 +1,11 @@
 package com.fitlogtimer.model;
 
+import com.fitlogtimer.enums.Family;
+import com.fitlogtimer.enums.Muscle;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -10,13 +15,18 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Exercise {
-    
+
     @Id
     @GeneratedValue
     private Long id;
-    
+
     private String name;
-    private String type;
-    private String muscle;
+
+    @Enumerated(EnumType.STRING)
+    private Muscle muscle;
+
+    @Enumerated(EnumType.STRING)
+    private Family family;
+
     private String imageUrl;
 }

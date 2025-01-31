@@ -1,222 +1,492 @@
-2025-01-30 16:01:05.682738+01:00 jdbc[13]: exception
+2025-01-31 18:35:02.338296+01:00 jdbc[14]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
 Table "HTE_EXERCISE" already exists; SQL statement:
-create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), muscle varchar(255), name varchar(255), type varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
-2025-01-30 16:01:05.687725+01:00 jdbc[13]: exception
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:35:02.344295+01:00 jdbc[14]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
 Table "HTE_EXERCISE_SET" already exists; SQL statement:
-create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
-2025-01-30 16:01:05.690718+01:00 jdbc[13]: exception
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:35:02.398302+01:00 jdbc[14]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
 Table "HTE_SESSION" already exists; SQL statement:
 create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
-2025-01-30 16:02:33.016910+01:00 jdbc[23]: exception
+2025-01-31 18:35:38.290036+01:00 jdbc[24]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
 Table "HTE_EXERCISE" already exists; SQL statement:
-create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), muscle varchar(255), name varchar(255), type varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
-2025-01-30 16:02:33.019901+01:00 jdbc[23]: exception
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:35:38.292036+01:00 jdbc[24]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
 Table "HTE_EXERCISE_SET" already exists; SQL statement:
-create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
-2025-01-30 16:02:33.021896+01:00 jdbc[23]: exception
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:35:38.293036+01:00 jdbc[24]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
 Table "HTE_SESSION" already exists; SQL statement:
 create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
-2025-01-30 16:10:25.429448+01:00 jdbc[15]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Colonne "IMAGEURL" non trouvée
-Column "IMAGEURL" not found; SQL statement:
-INSERT INTO EXERCISE (name, type, muscle, imageUrl)
-VALUES 
-('Squat', 'Strength', 'Legs', 'http://example.com/squat.jpg'),
-('Deadlift', 'Strength', 'Back', 'http://example.com/deadlift.jpg'),
-('Pull-Up', 'Bodyweight', 'Back', 'http://example.com/pullup.jpg') [42122-232]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.table.Table.getColumn(Table.java:786)
-	at org.h2.command.Parser.parseColumn(Parser.java:1171)
-	at org.h2.command.Parser.parseColumnList(Parser.java:1156)
-	at org.h2.command.Parser.parseInsert(Parser.java:1530)
-	at org.h2.command.Parser.parsePrepared(Parser.java:698)
-	at org.h2.command.Parser.parse(Parser.java:581)
-	at org.h2.command.Parser.parse(Parser.java:556)
-	at org.h2.command.Parser.prepareCommand(Parser.java:484)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
-	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:245)
-	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:231)
-	at org.h2.server.web.WebApp.getResult(WebApp.java:1344)
-	at org.h2.server.web.WebApp.query(WebApp.java:1142)
-	at org.h2.server.web.WebApp.query(WebApp.java:1118)
-	at org.h2.server.web.WebApp.process(WebApp.java:244)
-	at org.h2.server.web.WebApp.processRequest(WebApp.java:176)
-	at org.h2.server.web.JakartaWebServlet.doGet(JakartaWebServlet.java:129)
-	at org.h2.server.web.JakartaWebServlet.doPost(JakartaWebServlet.java:166)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-2025-01-30 16:11:35.552740+01:00 jdbc[15]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Colonne "IMAGEURL" non trouvée
-Column "IMAGEURL" not found; SQL statement:
-INSERT INTO EXERCISE (id, name, type, muscle, imageUrl) 
-VALUES 
-(1, 'Squat', 'Strength', 'Legs', 'http://example.com/squat.jpg'),
-(2, 'Deadlift', 'Strength', 'Back', 'http://example.com/deadlift.jpg'),
-(3, 'Pull-Up', 'Bodyweight', 'Back', 'http://example.com/pullup.jpg') [42122-232]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.table.Table.getColumn(Table.java:786)
-	at org.h2.command.Parser.parseColumn(Parser.java:1171)
-	at org.h2.command.Parser.parseColumnList(Parser.java:1156)
-	at org.h2.command.Parser.parseInsert(Parser.java:1530)
-	at org.h2.command.Parser.parsePrepared(Parser.java:698)
-	at org.h2.command.Parser.parse(Parser.java:581)
-	at org.h2.command.Parser.parse(Parser.java:556)
-	at org.h2.command.Parser.prepareCommand(Parser.java:484)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
-	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:245)
-	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:231)
-	at org.h2.server.web.WebApp.getResult(WebApp.java:1344)
-	at org.h2.server.web.WebApp.query(WebApp.java:1142)
-	at org.h2.server.web.WebApp.query(WebApp.java:1118)
-	at org.h2.server.web.WebApp.process(WebApp.java:244)
-	at org.h2.server.web.WebApp.processRequest(WebApp.java:176)
-	at org.h2.server.web.JakartaWebServlet.doGet(JakartaWebServlet.java:129)
-	at org.h2.server.web.JakartaWebServlet.doPost(JakartaWebServlet.java:166)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-2025-01-30 16:12:46.552356+01:00 jdbc[15]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Le nombre de colonnes ne correspond pas
-Column count does not match; SQL statement:
-INSERT INTO EXERCISE (id, name, type, muscle, image_url)
-VALUES 
-VALUES 
-(1, 'Squat', 'Strength', 'Legs', 'http://example.com/squat.jpg'),
-(2, 'Deadlift', 'Strength', 'Back', 'http://example.com/deadlift.jpg'),
-(3, 'Pull-Up', 'Bodyweight', 'Back', 'http://example.com/pullup.jpg') [21002-232]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.message.DbException.get(DbException.java:188)
-	at org.h2.command.dml.Insert.doPrepare(Insert.java:294)
-	at org.h2.command.dml.DataChangeStatement.prepare(DataChangeStatement.java:37)
-	at org.h2.command.Parser.prepareCommand(Parser.java:489)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
-	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:245)
-	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:231)
-	at org.h2.server.web.WebApp.getResult(WebApp.java:1344)
-	at org.h2.server.web.WebApp.query(WebApp.java:1142)
-	at org.h2.server.web.WebApp.query(WebApp.java:1118)
-	at org.h2.server.web.WebApp.process(WebApp.java:244)
-	at org.h2.server.web.WebApp.processRequest(WebApp.java:176)
-	at org.h2.server.web.JakartaWebServlet.doGet(JakartaWebServlet.java:129)
-	at org.h2.server.web.JakartaWebServlet.doPost(JakartaWebServlet.java:166)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590)
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-01-31 18:35:46.122395+01:00 jdbc[34]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:35:46.126396+01:00 jdbc[34]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:35:46.128396+01:00 jdbc[34]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:36:28.913252+01:00 jdbc[44]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:36:28.916253+01:00 jdbc[44]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:36:28.917251+01:00 jdbc[44]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:37:00.641363+01:00 jdbc[54]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:37:00.642363+01:00 jdbc[54]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:37:00.643363+01:00 jdbc[54]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:41:27.907338+01:00 jdbc[64]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:41:27.909339+01:00 jdbc[64]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:41:27.910338+01:00 jdbc[64]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:42:11.604034+01:00 jdbc[74]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:42:11.605035+01:00 jdbc[74]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:42:11.606034+01:00 jdbc[74]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:42:32.012385+01:00 jdbc[84]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:42:32.013385+01:00 jdbc[84]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:42:32.014389+01:00 jdbc[84]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:42:59.480174+01:00 jdbc[86]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:42:59.482176+01:00 jdbc[86]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:42:59.483175+01:00 jdbc[86]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:44:46.930670+01:00 jdbc[96]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:44:46.932669+01:00 jdbc[96]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:44:46.934670+01:00 jdbc[96]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:44:52.316545+01:00 jdbc[106]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:44:52.317545+01:00 jdbc[106]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:44:52.319551+01:00 jdbc[106]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:45:03.510464+01:00 jdbc[108]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:45:03.512465+01:00 jdbc[108]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:45:03.514465+01:00 jdbc[108]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:45:11.582283+01:00 jdbc[110]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:45:11.584284+01:00 jdbc[110]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:45:11.585295+01:00 jdbc[110]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:49:12.692788+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:49:12.698789+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:49:12.700788+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:49:33.576759+01:00 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:49:33.577758+01:00 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:49:33.579761+01:00 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:50:17.555363+01:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:50:17.557363+01:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:50:17.558365+01:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:51:29.627888+01:00 jdbc[43]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:51:29.629889+01:00 jdbc[43]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 18:51:29.630890+01:00 jdbc[43]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:03:54.792224+01:00 jdbc[53]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:03:54.794225+01:00 jdbc[53]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:03:54.795225+01:00 jdbc[53]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:06:29.796617+01:00 jdbc[63]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:06:29.797615+01:00 jdbc[63]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:06:29.798618+01:00 jdbc[63]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:06:38.121044+01:00 jdbc[73]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:06:38.123045+01:00 jdbc[73]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:06:38.124044+01:00 jdbc[73]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:07:12.733711+01:00 jdbc[76]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:07:12.734709+01:00 jdbc[76]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:07:12.735709+01:00 jdbc[76]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:07:34.094193+01:00 jdbc[79]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:07:34.095193+01:00 jdbc[79]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:07:34.097195+01:00 jdbc[79]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:10:50.367165+01:00 jdbc[82]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:10:50.368167+01:00 jdbc[82]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:10:50.369167+01:00 jdbc[82]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:13:12.425536+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:13:12.431536+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:13:12.433536+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:17:03.601929+01:00 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:17:03.602929+01:00 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:17:03.604926+01:00 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:20:26.458722+01:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:20:26.460723+01:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:20:26.461722+01:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:23:18.862320+01:00 jdbc[43]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:23:18.863320+01:00 jdbc[43]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:23:18.864320+01:00 jdbc[43]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:25:47.921642+01:00 jdbc[53]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:25:47.923642+01:00 jdbc[53]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:25:47.924642+01:00 jdbc[53]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:29:07.614211+01:00 jdbc[63]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:29:07.616211+01:00 jdbc[63]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:29:07.617211+01:00 jdbc[63]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:35:05.133703+01:00 jdbc[73]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:35:05.134702+01:00 jdbc[73]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:35:05.135702+01:00 jdbc[73]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:35:12.532341+01:00 jdbc[83]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:35:12.533341+01:00 jdbc[83]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:35:12.534341+01:00 jdbc[83]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:42:12.380584+01:00 jdbc[94]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:42:12.382585+01:00 jdbc[94]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:42:12.383585+01:00 jdbc[94]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:43:55.004509+01:00 jdbc[104]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:43:55.006508+01:00 jdbc[104]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:43:55.007508+01:00 jdbc[104]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, version integer, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:46:47.088687+01:00 jdbc[114]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:46:47.090684+01:00 jdbc[114]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:46:47.091688+01:00 jdbc[114]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, version integer, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:47:28.041519+01:00 jdbc[124]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:47:28.042520+01:00 jdbc[124]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 19:47:28.043518+01:00 jdbc[124]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, version integer, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:00:38.947572+01:00 jdbc[134]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:00:38.948574+01:00 jdbc[134]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:00:38.950573+01:00 jdbc[134]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, version integer, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:01:43.860741+01:00 jdbc[144]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:01:43.861740+01:00 jdbc[144]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:01:43.862741+01:00 jdbc[144]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:03:41.451753+01:00 jdbc[154]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:03:41.453752+01:00 jdbc[154]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:03:41.454753+01:00 jdbc[154]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, version integer, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:07:43.418125+01:00 jdbc[164]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:07:43.420117+01:00 jdbc[164]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:07:43.421117+01:00 jdbc[164]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, version integer, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:09:56.218713+01:00 jdbc[174]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:09:56.220714+01:00 jdbc[174]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:09:56.221714+01:00 jdbc[174]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, version integer, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:18:34.855611+01:00 jdbc[184]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE" existe déjà
+Table "HTE_EXERCISE" already exists; SQL statement:
+create global temporary table HTE_exercise(rn_ integer not null, id bigint, image_url varchar(255), name varchar(255), family enum ('CURL','ELASTIC_PULL','ELEVATION','PLANK','PRESS'), muscle enum ('ABDOS','BAS','BICEPS','DELTOS','DOS','FESSIERS','GLOBAL','HAUT','ISCHIOS','MOLLETS','PECS','QUADS','TRAPEZES','TRICEPS'), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:18:34.856611+01:00 jdbc[184]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_EXERCISE_SET" existe déjà
+Table "HTE_EXERCISE_SET" already exists; SQL statement:
+create global temporary table HTE_exercise_set(is_max boolean, rep_number integer, rn_ integer not null, exercise_id bigint, id bigint, session_id bigint, weight float(53), comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]
+2025-01-31 20:18:34.857611+01:00 jdbc[184]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_SESSION" existe déjà
+Table "HTE_SESSION" already exists; SQL statement:
+create global temporary table HTE_session(body_weight integer, date date, rn_ integer not null, version integer, id bigint, comment varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]

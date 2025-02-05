@@ -1,9 +1,22 @@
 package com.fitlogtimer.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import com.fitlogtimer.model.Session;
 
-public interface SessionRepository extends JpaRepository<Session, Long> {
+import jakarta.transaction.Transactional;
 
+public interface SessionRepository extends JpaRepository<Session, Long> {
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Session")
+    void deleteAllSessions();
+
+    @Modifying
+    @Transactional
+    //@Query(value = "ALTER TABLE session AUTO_INCREMENT = 1", nativeQuery = true)  PASSAGE SUR MYSQL
+    @Query(value = "ALTER TABLE session ALTER COLUMN id RESTART WITH 1", nativeQuery = true)
+    void resetSessionId();
 }

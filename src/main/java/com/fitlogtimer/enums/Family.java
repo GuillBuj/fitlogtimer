@@ -4,6 +4,6 @@ public enum Family {
     PRESS,
     CURL,
     ELEVATION,
-    ELASTIC_PULL,
-    PLANK
+    TIRAGE_ELASTIQUE,
+    PLANCHE
 }

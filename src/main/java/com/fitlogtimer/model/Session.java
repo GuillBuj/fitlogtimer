@@ -9,10 +9,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Version;
 import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,15 +26,15 @@ import lombok.NoArgsConstructor;
 public class Session {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Date date;
-    private int bodyWeight;
+    private double bodyWeight;
     private String comment;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "session_id") // Clé étrangère dans ExerciseSet
+    @JoinColumn(name = "session_id")
     private List<ExerciseSet> setRecords;
 
 }

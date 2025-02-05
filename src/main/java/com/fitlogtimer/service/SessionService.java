@@ -1,5 +1,6 @@
 package com.fitlogtimer.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -55,5 +56,27 @@ public class SessionService {
                 .collect(Collectors.toList());
         
         return new SessionDetailsDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
+    }
+
+    public List<List<ExerciseSetInSessionDTO>> groupConsecutiveSetsByExercise(List<ExerciseSetInSessionDTO> exerciseSets){
+        List<List<ExerciseSetInSessionDTO>> groupedSets = new ArrayList<>();
+        List<ExerciseSetInSessionDTO> currentGroup = new ArrayList<>();
+
+        for(int i=0; i < exerciseSets.size(); i++){
+            ExerciseSetInSessionDTO currentSet = exerciseSets.get(i);
+            if (i==0 || currentSet.exercise_id() == exerciseSets.get(i-1).exercise_id()) {
+                currentGroup.add(currentSet);
+            } else {
+                groupedSets.add(new ArrayList<>(currentGroup));
+                currentGroup.clear();
+                currentGroup.add(currentSet);
+            }
+        }
+
+        if(!currentGroup.isEmpty()){
+            groupedSets.add(currentGroup);
+        }
+
+        return groupedSets;
     }
 }

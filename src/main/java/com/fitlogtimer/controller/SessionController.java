@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fitlogtimer.dto.SessionDetailsDTO;
+import com.fitlogtimer.dto.SessionDetailsGroupedDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
 import com.fitlogtimer.model.Session;
 import com.fitlogtimer.service.SessionService;
@@ -26,8 +27,12 @@ public class SessionController {
     }
 
     @GetMapping
-    public SessionDetailsDTO getSessionDetailsDTO(@RequestParam long id){
-        return sessionService.getSessionDetails(id);
+    public Object getSessionDetailsDTO(@RequestParam long id, @RequestParam(defaultValue = "true") boolean grouped) {
+        if (grouped) {
+            return sessionService.getSessionDetailsGrouped(id);
+        } else {
+            return sessionService.getSessionDetails(id);
+        }
     }
 
 }

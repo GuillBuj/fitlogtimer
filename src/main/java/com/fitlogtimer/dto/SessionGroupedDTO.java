@@ -4,12 +4,12 @@ import java.sql.Date;
 import java.util.List;
 
 
-public record SessionDetailsGroupedDTO(
+public record SessionGroupedDTO(
     Long id,
     Date date,
     double bodyWeight,
     String comment,
-    List<SetGroupedDTO> exerciseSets
+    List<SetsGroupedWithNameDTO> exerciseSets
 ) {
     
 }

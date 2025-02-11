@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.fitlogtimer.model.Exercise;
 
+import lombok.NoArgsConstructor;
+
 @Repository
-public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
+public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
 
 }

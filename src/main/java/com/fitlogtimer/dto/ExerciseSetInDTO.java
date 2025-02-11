@@ -1,7 +1,7 @@
 package com.fitlogtimer.dto;
 
 public record ExerciseSetInDTO(
-        Long exercise_id,
+        int exercise_id,
         double weight,
         int repNumber,
         boolean isMax,

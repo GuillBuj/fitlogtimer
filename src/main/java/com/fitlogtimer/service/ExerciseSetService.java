@@ -33,7 +33,7 @@ public class ExerciseSetService {
 
     @Transactional
     public ExerciseSetOutDTO saveExerciseSet(ExerciseSetInDTO exerciseSetDTO) {
-        Long exerciseId = exerciseSetDTO.exercise_id();
+        int exerciseId = exerciseSetDTO.exercise_id();
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Exercise with ID " + exerciseId + " does not exist"));
         Long sessionId = exerciseSetDTO.session_id();

@@ -2,22 +2,24 @@ package com.fitlogtimer.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.ExerciseSetInDTO;
-import com.fitlogtimer.dto.ExerciseSetInSessionDTO;
-import com.fitlogtimer.dto.SessionDetailsDTO;
-import com.fitlogtimer.dto.SessionDetailsGroupedDTO;
-import com.fitlogtimer.dto.SessionOutDTO;
+import com.fitlogtimer.dto.SetInSessionDTO;
 import com.fitlogtimer.dto.SetInSetsGrouped;
 import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
+import com.fitlogtimer.dto.SetGroupedDTO;
+import com.fitlogtimer.dto.SessionDetailsDTO;
+import com.fitlogtimer.dto.SessionDetailsGroupedDTO;
+import com.fitlogtimer.dto.SessionGroupedDTO;
+import com.fitlogtimer.dto.SessionOutDTO;
 import com.fitlogtimer.exception.NotFoundException;
+import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.Session;
+import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.SessionRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,9 @@ public class SessionService {
 
     @Autowired
     private SessionRepository sessionRepository;
+
+    @Autowired
+    private ExerciseRepository exerciseRepository;
 
     public SessionOutDTO saveSession(Session session) {
         Session savedSession = sessionRepository.save(session);
@@ -48,7 +53,7 @@ public class SessionService {
         Session session = sessionRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Session not found: " + id));
 
-        List<ExerciseSetInSessionDTO> setsDTO = getSetsDTO(session);
+        List<SetInSessionDTO> setsDTO = getSetsDTO(session);
         
         return new SessionDetailsDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
     }
@@ -57,68 +62,63 @@ public class SessionService {
         Session session = sessionRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Session not found: " + id));
 
-        List<List<ExerciseSetInSessionDTO>> groupedSetsDTO = groupConsecutiveSetsByExercise(getSetsDTO(session));
+        List<SetGroupedDTO> groupedSetsDTO = groupConsecutiveSetsByExercise(getSetsDTO(session));
         
         return new SessionDetailsGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), groupedSetsDTO);
     }
+
+    public SessionGroupedDTO getSessionGrouped(long id){
+        Session session = sessionRepository.findById(id)
+            .orElseThrow(()->new NotFoundException("Session not found: " + id));
+
+        List<SetGroupedDTO> groupedSets = groupConsecutiveSetsByExercise(getSetsDTO(session));
+
+        List<SetsGroupedWithNameDTO> groupedSetsWithName = groupedSets.stream()
+                .map(this::groupedSetToGroupedSetWithName)
+                .toList();
+        
+        return new SessionGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), groupedSetsWithName);
+    }
+
     
-    public List<List<ExerciseSetInSessionDTO>> groupConsecutiveSetsByExercise(List<ExerciseSetInSessionDTO> exerciseSets){
-        List<List<ExerciseSetInSessionDTO>> groupedSets = new ArrayList<>();
-        List<ExerciseSetInSessionDTO> currentGroup = new ArrayList<>();
+    public List<SetGroupedDTO> groupConsecutiveSetsByExercise(List<SetInSessionDTO> exerciseSets){
+        List<SetGroupedDTO> groupedSets = new ArrayList<>();
+        List<SetInSessionDTO> currentGroup = new ArrayList<>();
 
         for(int i=0; i < exerciseSets.size(); i++){
-            ExerciseSetInSessionDTO currentSet = exerciseSets.get(i);
+            SetInSessionDTO currentSet = exerciseSets.get(i);
             if (i==0 || currentSet.exercise_id() == exerciseSets.get(i-1).exercise_id()) {
                 currentGroup.add(currentSet);
             } else {
-                groupedSets.add(new ArrayList<>(currentGroup));
+                groupedSets.add(new SetGroupedDTO(currentGroup));
                 currentGroup.clear();
                 currentGroup.add(currentSet);
             }
         }
 
         if(!currentGroup.isEmpty()){
-            groupedSets.add(currentGroup);
+            groupedSets.add(new SetGroupedDTO(currentGroup));
         }
 
         return groupedSets;
     }
 
-    // public List<SetsGroupedWithNameDTO> groupSetsWithExerciseName(List<ExerciseSetInSessionDTO> exerciseSets, Map<Long, String> exerciseNames) {
-    // List<SetsGroupedWithNameDTO> groupedSetsWithName = new ArrayList<>();
-    // List<SetInSetsGrouped> currentGroup = new ArrayList<>();
-    // Long currentExerciseId = null;
+    public SetsGroupedWithNameDTO groupedSetToGroupedSetWithName(SetGroupedDTO entrySet){
+        int exerciseId = entrySet.setGroup().get(0).exercise_id();
+        String shortName = exerciseRepository.findById(exerciseId)
+                        .map(Exercise::getShortName)
+                        .orElseThrow(()->new NoSuchElementException("Exercise not found with id: " + exerciseId));
 
-    // // Parcours de la liste des sets
-    // for (ExerciseSetInSessionDTO currentSet : exerciseSets) {
-    //     // Si c'est le premier set ou si l'exercice a changé
-    //     if (currentExerciseId == null || !currentExerciseId.equals(currentSet.exercise_id())) {
-    //         // Si un groupe existe déjà, on l'ajoute à la liste
-    //         if (!currentGroup.isEmpty()) {
-    //             groupedSetsWithName.add(new SetsGroupedWithNameDTO(currentExerciseId.intValue(), new ArrayList<>(currentGroup)));
-    //         }
-    //         // Démarrer un nouveau groupe avec le nouvel exercice
-    //         currentExerciseId = currentSet.exercise_id();
-    //         currentGroup.clear();
-    //     }
+        List<SetInSetsGrouped> sets = entrySet.setGroup().stream()
+            .map(set -> new SetInSetsGrouped(set.weight(), set.repNumber(), set.isMax()))
+            .toList();
 
-    //     // Ajouter le set au groupe actuel
-    //     currentGroup.add(new SetInSetsGrouped(currentSet.getId(), currentSet.getWeight(), 
-    //             currentSet.getRepNumber(), currentSet.isMax(), currentSet.getComment()));
-    // }
+        return new SetsGroupedWithNameDTO(shortName, sets);        
+    }
 
-    // // Ajouter le dernier groupe s'il y en a un
-    // if (!currentGroup.isEmpty()) {
-    //     groupedSetsWithName.add(new SetsGroupedWithNameDTO(currentExerciseId.intValue(), new ArrayList<>(currentGroup)));
-    // }
-
-    // return groupedSetsWithName;
-//}
-
-
-    public List<ExerciseSetInSessionDTO> getSetsDTO(Session session){
+    public List<SetInSessionDTO> getSetsDTO(Session session){
         return session.getSetRecords().stream()
-                .map(exerciseSet -> new ExerciseSetInSessionDTO(
+                .map(exerciseSet -> new SetInSessionDTO(
                     exerciseSet.getId(),
                     exerciseSet.getExercise().getId(),
                     exerciseSet.getWeight(),

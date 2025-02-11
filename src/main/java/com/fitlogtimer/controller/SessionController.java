@@ -29,7 +29,7 @@ public class SessionController {
     @GetMapping
     public Object getSessionDetailsDTO(@RequestParam long id, @RequestParam(defaultValue = "true") boolean grouped) {
         if (grouped) {
-            return sessionService.getSessionDetailsGrouped(id);
+            return sessionService.getSessionGrouped(id);
         } else {
             return sessionService.getSessionDetails(id);
         }

@@ -9,7 +9,7 @@ public record SessionDetailsDTO(
     Date date,
     double bodyWeight,
     String comment,
-    List<ExerciseSetInSessionDTO> exerciseSets
+    List<SetInSessionDTO> exerciseSets
 ) {
     
 }

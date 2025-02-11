@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.repository.ExerciseRepository;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@Data
 public class ExerciseService {
 
     @Autowired

@@ -76,46 +76,111 @@ public class SessionService {
 
         List<SetGroupedDTO> groupedSets = groupConsecutiveSetsByExercise(getSetsDTO(session));
 
-        System.out.println("groupedSets: " + groupedSets);
-
         List<SetsGroupedWithNameDTO> groupedSetsWithName = groupedSets.stream()
                 .map(this::groupedSetToGroupedSetWithName)
                 .toList();
 
-        System.out.println("groupedSetsWithName: " + groupedSetsWithName);
-        
         List<SetsGroupedFinalDTO> finalGroupedSets = groupedSetsWithName.stream()
                 .map(this::cleanSetsGroup)
                 .toList();
         
-        return new SessionGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), finalGroupedSets);
+        SessionGroupedDTO sessionGroupedDTO = new SessionGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), finalGroupedSets);
+        System.out.println(sessionGroupedDTO);
+        return sessionGroupedDTO;
     }
 
     
-    public List<SetGroupedDTO> groupConsecutiveSetsByExercise(List<SetInSessionDTO> exerciseSets){
+    // public List<SetGroupedDTO> groupConsecutiveSetsByExercise(List<SetInSessionDTO> exerciseSets){
+    //     List<SetGroupedDTO> groupedSets = new ArrayList<>();
+    //     List<SetInSessionDTO> currentGroup = new ArrayList<>();
+
+    //     for(int i=0; i < exerciseSets.size(); i++){
+    //         SetInSessionDTO currentSet = exerciseSets.get(i);
+
+    //         if (i==0 || currentSet.exercise_id() == exerciseSets.get(i-1).exercise_id()) {
+    //             currentGroup.add(currentSet);
+    //         } else {
+    //             groupedSets.add(new SetGroupedDTO(currentGroup));
+    //             currentGroup.clear();
+    //             currentGroup.add(currentSet);
+    //         }
+    //         System.out.println(i + " after: groupedSets: " + groupedSets);
+    //         System.out.println(i + " after: currentGroup: " + currentGroup);
+
+    //     }
+
+    //     if(!currentGroup.isEmpty()){
+    //         groupedSets.add(new SetGroupedDTO(currentGroup));
+    //     }
+
+    //     return groupedSets;
+    // }
+
+    public List<SetGroupedDTO> groupConsecutiveSetsByExercise(List<SetInSessionDTO> exerciseSets) {
         List<SetGroupedDTO> groupedSets = new ArrayList<>();
         List<SetInSessionDTO> currentGroup = new ArrayList<>();
-
-        for(int i=0; i < exerciseSets.size(); i++){
-            System.out.println(i + " after : " + groupedSets);
+    
+        for (int i = 0; i < exerciseSets.size(); i++) {
             SetInSessionDTO currentSet = exerciseSets.get(i);
-            if (i==0 || currentSet.exercise_id() == exerciseSets.get(i-1).exercise_id()) {
-                currentGroup.add(currentSet);
+    
+            // Si c'est le premier set ou le même exercice que le précédent
+            if (i == 0 || currentSet.exercise_id() == exerciseSets.get(i - 1).exercise_id()) {
+                currentGroup.add(currentSet); // On continue d'ajouter au groupe
             } else {
-                groupedSets.add(new SetGroupedDTO(currentGroup));
-                currentGroup.clear();
-                currentGroup.add(currentSet);
+                // Si l'exercice a changé, on ajoute le groupe courant
+                groupedSets.add(new SetGroupedDTO(new ArrayList<>(currentGroup)));
+                currentGroup.clear(); // On vide le groupe pour en créer un nouveau
+                currentGroup.add(currentSet); // On commence un nouveau groupe avec le set actuel
             }
-            System.out.println(i + " after groupedSets: " + groupedSets);
-            System.out.println(i + " after currentGroup: " + currentGroup);
+    
+            // Debug
+            System.out.println(i + " after: groupedSets: " + groupedSets);
+            System.out.println(i + " after: currentGroup: " + currentGroup);
         }
-
-        if(!currentGroup.isEmpty()){
+    
+        // Ajouter le dernier groupe s'il n'est pas vide
+        if (!currentGroup.isEmpty()) {
             groupedSets.add(new SetGroupedDTO(currentGroup));
         }
-
+    
         return groupedSets;
     }
+
+
+    // public List<SetGroupedDTO> groupConsecutiveSetsByExercise(List<SetInSessionDTO> exerciseSets) {
+    //     List<SetGroupedDTO> groupedSets = new ArrayList<>();
+    //     List<SetInSessionDTO> currentGroup = new ArrayList<>();
+        
+    //     // Vérifie s'il y a des sets à traiter
+    //     if (exerciseSets == null || exerciseSets.isEmpty()) {
+    //         return groupedSets;
+    //     }
+    
+    //     SetInSessionDTO previousSet = null; // Utilise une variable pour garder l'exercice précédent
+    
+    //     for (SetInSessionDTO currentSet : exerciseSets) {
+    //         // Si on est sur le premier set ou si l'exercice est le même que le précédent
+    //         if (previousSet == null || currentSet.exercise_id() == previousSet.exercise_id()) {
+    //             currentGroup.add(currentSet); // On ajoute le set dans le groupe en cours
+    //         } else {
+    //             groupedSets.add(new SetGroupedDTO(currentGroup)); // On ajoute le groupe précédent
+    //             currentGroup.clear(); // On vide le groupe courant
+    //             currentGroup.add(currentSet); // On commence un nouveau groupe
+    //         }
+            
+    //         // Mise à jour de previousSet pour la prochaine itération
+    //         previousSet = currentSet;
+    //     }
+    
+        // Ajouter le dernier groupe s'il existe
+    //     if (!currentGroup.isEmpty()) {
+    //         groupedSets.add(new SetGroupedDTO(currentGroup));
+    //     }
+    
+    //     return groupedSets;
+    // }
+    
+
 
     public SetsGroupedWithNameDTO groupedSetToGroupedSetWithName(SetGroupedDTO entrySet){
         int exerciseId = entrySet.setGroup().get(0).exercise_id();

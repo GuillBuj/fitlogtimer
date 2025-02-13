@@ -5,5 +5,8 @@ public record SetsSameWeightAndRepsDTO(
     int repNumber,
     double weight
 ) {
-
+    @Override
+    public final String toString() {
+        return (setsNumber + " * " + repNumber + " @ " + weight + "kg");
+    }
 }

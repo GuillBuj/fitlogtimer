@@ -5,7 +5,7 @@ import java.util.List;
 
 
 public record SessionDetailsDTO(
-    Long id,
+    int id,
     Date date,
     double bodyWeight,
     String comment,

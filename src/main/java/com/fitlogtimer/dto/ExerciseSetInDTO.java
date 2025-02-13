@@ -6,5 +6,5 @@ public record ExerciseSetInDTO(
         int repNumber,
         boolean isMax,
         String comment,
-        Long session_id) {
+        int session_id) {
 }

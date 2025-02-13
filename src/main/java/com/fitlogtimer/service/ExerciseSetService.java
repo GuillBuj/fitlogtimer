@@ -36,7 +36,7 @@ public class ExerciseSetService {
         int exerciseId = exerciseSetDTO.exercise_id();
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Exercise with ID " + exerciseId + " does not exist"));
-        Long sessionId = exerciseSetDTO.session_id();
+        int sessionId = exerciseSetDTO.session_id();
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("Session with ID " + sessionId + " does not exist"));
 

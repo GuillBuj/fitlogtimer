@@ -5,11 +5,11 @@ import java.util.List;
 
 
 public record SessionGroupedDTO(
-    Long id,
+    int id,
     Date date,
     double bodyWeight,
     String comment,
-    List<SetsGroupedWithNameDTO> exerciseSets
+    List<SetsGroupedFinalDTO> exerciseSets
 ) {
     
 }

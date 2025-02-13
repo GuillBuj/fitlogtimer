@@ -25,7 +25,7 @@ public class ExerciseSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "exercise_id")
@@ -38,10 +38,5 @@ public class ExerciseSet {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "session_id")
-
     private Session session;
-
-    public String toString(){
-        return("");
-    }
 }

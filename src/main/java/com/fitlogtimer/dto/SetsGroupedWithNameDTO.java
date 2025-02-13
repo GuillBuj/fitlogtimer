@@ -5,7 +5,7 @@ import java.util.List;
 
 public record SetsGroupedWithNameDTO(
     String exerciseNameShort,
-    List<SetInSetsGrouped> sets
+    List<SetInSetsGroupedDTO> sets
 ) {
     
 }

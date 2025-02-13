@@ -27,7 +27,7 @@ public class SessionController {
     }
 
     @GetMapping
-    public Object getSessionDetailsDTO(@RequestParam long id, @RequestParam(defaultValue = "true") boolean grouped) {
+    public Object getSessionDetailsDTO(@RequestParam int id, @RequestParam(defaultValue = "true") boolean grouped) {
         if (grouped) {
             return sessionService.getSessionGrouped(id);
         } else {

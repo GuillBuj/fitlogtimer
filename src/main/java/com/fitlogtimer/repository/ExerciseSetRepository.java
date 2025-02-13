@@ -8,7 +8,7 @@ import com.fitlogtimer.model.ExerciseSet;
 
 import jakarta.transaction.Transactional;
 
-public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Long> {
+public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Integer> {
     @Modifying
     @Transactional
     @Query("DELETE FROM ExerciseSet")

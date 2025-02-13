@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.SetInSessionDTO;
-import com.fitlogtimer.dto.SetInSetsGrouped;
+import com.fitlogtimer.dto.SetInSetsGroupedDTO;
+import com.fitlogtimer.dto.SetsGroupedFinalDTO;
 import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
+import com.fitlogtimer.dto.SetsSameWeightAndRepsDTO;
 import com.fitlogtimer.dto.SetGroupedDTO;
 import com.fitlogtimer.dto.SessionDetailsDTO;
 import com.fitlogtimer.dto.SessionDetailsGroupedDTO;
@@ -49,7 +51,7 @@ public class SessionService {
     //     }
     // }
 
-    public SessionDetailsDTO getSessionDetails(Long id){
+    public SessionDetailsDTO getSessionDetails(int id){
         Session session = sessionRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Session not found: " + id));
 
@@ -58,26 +60,35 @@ public class SessionService {
         return new SessionDetailsDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
     }
 
-    public SessionDetailsGroupedDTO getSessionDetailsGrouped(Long id){
+    public SessionDetailsGroupedDTO getSessionDetailsGrouped(int id){
         Session session = sessionRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Session not found: " + id));
-
-        List<SetGroupedDTO> groupedSetsDTO = groupConsecutiveSetsByExercise(getSetsDTO(session));
         
+        System.out.println("Sets before: " + getSetsDTO(session));
+        List<SetGroupedDTO> groupedSetsDTO = groupConsecutiveSetsByExercise(getSetsDTO(session));
+        System.out.println("Sets after group: " + getSetsDTO(session));
         return new SessionDetailsGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), groupedSetsDTO);
     }
 
-    public SessionGroupedDTO getSessionGrouped(long id){
+    public SessionGroupedDTO getSessionGrouped(int id){
         Session session = sessionRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Session not found: " + id));
 
         List<SetGroupedDTO> groupedSets = groupConsecutiveSetsByExercise(getSetsDTO(session));
 
+        System.out.println("groupedSets: " + groupedSets);
+
         List<SetsGroupedWithNameDTO> groupedSetsWithName = groupedSets.stream()
                 .map(this::groupedSetToGroupedSetWithName)
                 .toList();
+
+        System.out.println("groupedSetsWithName: " + groupedSetsWithName);
         
-        return new SessionGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), groupedSetsWithName);
+        List<SetsGroupedFinalDTO> finalGroupedSets = groupedSetsWithName.stream()
+                .map(this::cleanSetsGroup)
+                .toList();
+        
+        return new SessionGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), finalGroupedSets);
     }
 
     
@@ -86,6 +97,7 @@ public class SessionService {
         List<SetInSessionDTO> currentGroup = new ArrayList<>();
 
         for(int i=0; i < exerciseSets.size(); i++){
+            System.out.println(i + " after : " + groupedSets);
             SetInSessionDTO currentSet = exerciseSets.get(i);
             if (i==0 || currentSet.exercise_id() == exerciseSets.get(i-1).exercise_id()) {
                 currentGroup.add(currentSet);
@@ -94,6 +106,8 @@ public class SessionService {
                 currentGroup.clear();
                 currentGroup.add(currentSet);
             }
+            System.out.println(i + " after groupedSets: " + groupedSets);
+            System.out.println(i + " after currentGroup: " + currentGroup);
         }
 
         if(!currentGroup.isEmpty()){
@@ -109,8 +123,8 @@ public class SessionService {
                         .map(Exercise::getShortName)
                         .orElseThrow(()->new NoSuchElementException("Exercise not found with id: " + exerciseId));
 
-        List<SetInSetsGrouped> sets = entrySet.setGroup().stream()
-            .map(set -> new SetInSetsGrouped(set.weight(), set.repNumber(), set.isMax()))
+        List<SetInSetsGroupedDTO> sets = entrySet.setGroup().stream()
+            .map(set -> new SetInSetsGroupedDTO(set.weight(), set.repNumber(), set.isMax()))
             .toList();
 
         return new SetsGroupedWithNameDTO(shortName, sets);        
@@ -126,5 +140,69 @@ public class SessionService {
                     exerciseSet.isMax(),
                     exerciseSet.getComment()))
                 .collect(Collectors.toList());
+    }
+
+    public SetsGroupedFinalDTO cleanSetsGroup(SetsGroupedWithNameDTO sets){
+        if(hasSameWeight(sets)){
+            if(hasSameReps(sets)){
+                return new SetsGroupedFinalDTO(
+                    sets.exerciseNameShort(),
+                    new SetsSameWeightAndRepsDTO(
+                        sets.sets().size(),
+                        sets.sets().get(0).repNumber(),
+                        sets.sets().get(0).weight()));
+            }
+        }
+        return new SetsGroupedFinalDTO(sets.exerciseNameShort(), sets.sets());
+    }
+    
+    // public SetsGroupedFinalDTO cleanSetsGroup(SetsGroupedWithNameDTO sets) {
+    //     if (sets.sets().isEmpty()) {
+    //         return new SetsGroupedFinalDTO(sets.exerciseNameShort(), new ArrayList<>()); // Évite un null
+    //     }
+    
+    //     boolean sameWeight = hasSameWeight(sets);
+    //     boolean sameReps = hasSameReps(sets);
+    
+    //     System.out.println("Processing " + sets.exerciseNameShort());
+    //     System.out.println("Same Weight: " + sameWeight);
+    //     System.out.println("Same Reps: " + sameReps);
+    
+    //     if (sameWeight && sameReps) {
+    //         // Fusionner en un seul set
+    //         return new SetsGroupedFinalDTO(
+    //                 sets.exerciseNameShort(),
+    //                 new SetsSameWeightAndRepsDTO(
+    //                         sets.sets().size(),
+    //                         sets.sets().get(0).repNumber(),
+    //                         sets.sets().get(0).weight()));
+    //     }
+    
+    //     // 🔥 Corrige le retour des sets non fusionnés en utilisant une liste correcte
+    //     List<SetInSetsGroupedDTO> nonMergedSets = new ArrayList<>(sets.sets());
+    //     return new SetsGroupedFinalDTO(sets.exerciseNameShort(), nonMergedSets);
+    // }
+    
+
+    public boolean hasSameWeight(SetsGroupedWithNameDTO sets){
+        double firstWeight = sets.sets().get(0).weight();
+
+        for(SetInSetsGroupedDTO set : sets.sets()){
+            if(set.weight() != firstWeight){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean hasSameReps(SetsGroupedWithNameDTO sets){
+        int firstNb = sets.sets().get(0).repNumber();
+
+        for(SetInSetsGroupedDTO set : sets.sets()){
+            if(set.repNumber() != firstNb){
+                return false;
+            }
+        }
+        return true;
     }
 }

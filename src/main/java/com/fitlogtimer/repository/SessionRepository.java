@@ -8,7 +8,7 @@ import com.fitlogtimer.model.Session;
 
 import jakarta.transaction.Transactional;
 
-public interface SessionRepository extends JpaRepository<Session, Long> {
+public interface SessionRepository extends JpaRepository<Session, Integer> {
     @Modifying
     @Transactional
     @Query("DELETE FROM Session")
@@ -16,7 +16,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
     @Modifying
     @Transactional
-    //@Query(value = "ALTER TABLE session AUTO_INCREMENT = 1", nativeQuery = true)  PASSAGE SUR MYSQL
     @Query(value = "ALTER TABLE session ALTER COLUMN id RESTART WITH 1", nativeQuery = true)
     void resetSessionId();
 }

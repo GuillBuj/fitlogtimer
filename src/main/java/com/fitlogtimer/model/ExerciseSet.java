@@ -39,4 +39,14 @@ public class ExerciseSet {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "session_id")
     private Session session;
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("id: " + String.valueOf(id) + ", ");
+        sb.append("ex: " + exercise.getShortName());
+        sb.append("reps: " + String.valueOf(repNumber) + ", ");
+        sb.append("poids: " + String.valueOf(weight) + ", ");
+        return sb.toString();
+    }
 }

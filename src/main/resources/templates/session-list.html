@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Liste des sessions</title>
+</head>
+<body>
+    <h1>Liste des sessions</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Poids du corps (kg)</th>
+                <th>Commentaire</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="session : ${sessions}">
+                <!-- <td th:text="${session.id}"></td>
+                <td th:text="${session.date}"></td>
+                <td th:text="${session.bodyWeight}"></td>
+                <td th:text="${session.comment}"></td>
+                <td>
+                    <a th:href="@{/sessions/{id}(id=${session.id})}">Détails</a>
+                </td> -->
+            </tr>
+        </tbody>
+    </table>
+    <a href="/sessions/create">Créer une nouvelle session</a>
+</body>
+</html>

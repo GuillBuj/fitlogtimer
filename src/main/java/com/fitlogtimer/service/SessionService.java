@@ -41,6 +41,11 @@ public class SessionService {
     @Autowired
     private ExerciseRepository exerciseRepository;
 
+    public List<Session> getAllSessions() {
+        return sessionRepository.findAll();
+    }
+    
+    
     public SessionOutDTO saveSession(Session session) {
         Session savedSession = sessionRepository.save(session);
         return new SessionOutDTO(savedSession.getId(), savedSession.getDate(), savedSession.getBodyWeight(), savedSession.getComment());

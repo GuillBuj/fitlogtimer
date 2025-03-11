@@ -37,4 +37,14 @@ public class Session {
     @JoinColumn(name = "session_id")
     private List<ExerciseSet> setRecords;
 
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("id: " + String.valueOf(id) + ", ");
+        sb.append("date: " + String.valueOf(date) + ", ");
+        sb.append("poids: " + String.valueOf(bodyWeight) + ", ");
+        sb.append("commentaire: " + comment);
+        return sb.toString();
+    }
+
 }

@@ -14,6 +14,11 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
     @Query("DELETE FROM Session")
     void deleteAllSessions();
 
+    void deleteById(int id);
+
+    boolean existsById(int id);
+
+
     @Modifying
     @Transactional
     @Query(value = "ALTER TABLE session ALTER COLUMN id RESTART WITH 1", nativeQuery = true)

@@ -20,3 +20,93 @@ td.align-right {
 td:first-child {
     font-weight: bold;
 }
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.btnValid {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btnValid:hover {
+    background-color: #0056b3;
+}
+
+.btnValid:active {
+    background-color: #004080;
+}
+
+.alert {
+    text-align: center;
+    border-radius: 0.25rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.alert-success {
+    background-color: #e2f8d7;
+    color: #1c7223;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.deleteForm {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.btnDelete {
+    padding: 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btnDelete:hover {
+    background-color: #cc0000;
+}
+
+.btnDelete:active {
+    background-color: #990000;
+}

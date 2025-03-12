@@ -51,6 +51,14 @@ public class SessionService {
         return new SessionOutDTO(savedSession.getId(), savedSession.getDate(), savedSession.getBodyWeight(), savedSession.getComment());
     }
 
+    public boolean deleteSession(int sessionId) {
+        if (sessionRepository.existsById(sessionId)) {
+            sessionRepository.deleteById(sessionId);
+            return true;
+        }
+        return false;
+    }
+
     // public Session createSessionIfNotExists(Session session) {
 
     //     Optional<Session> existingSession = sessionRepository.findById(session.getId());

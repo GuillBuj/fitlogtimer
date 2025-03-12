@@ -2,10 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/styles.css}">
-    <title>Liste des sessions</title>
+    <title>Liste des séances</title>
 </head>
 <body>
-    <h1>Liste des sessions</h1>
+    <div th:if="${successMessage}" class="alert alert-success">
+        <p th:text="${successMessage}"></p>
+    </div>
+    <h1>Liste des séances</h1>
     <table>
         <thead>
             <tr>
@@ -28,6 +31,6 @@
             </tr>
         </tbody>
     </table>
-    <a href="/sessions/new">Créer une nouvelle session</a>
+    <a href="/sessions/create">Créer une nouvelle séance</a>
 </body>
 </html>

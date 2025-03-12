@@ -6,10 +6,9 @@
 </head>
 <body>
     <h1>Séance du <span th:text="${sessionData.date}"></span></h1>
-
-    <p>ID : <span th:text="${sessionData.id}"></span></p>
     <p>Poids : <span th:text="${sessionData.bodyWeight}"></span> kg</p>
     <p>Commentaires : <span th:text="${sessionData.comment}"></span></p>
+    
 
     <h2>Exercices</h2>
     <table th:if="${sessionData.exerciseSets}">
@@ -20,7 +19,12 @@
     </table>
     <p th:unless="${sessionData.exerciseSets}">Aucun exercice enregistré pour cette session.</p>
 
-    <a href="/sessions/new">Créer une nouvelle session</a>
+    <form th:action="@{/sessions/{id}(id=${sessionData.id})}" class="deleteForm"  method="post">
+        <input type="hidden" name="_method" value="delete" />
+        <button type="submit" class="btnDelete">Supprimer</button>
+    </form>
+    <br>
+    <a href="/sessions/create">Créer une nouvelle session</a>
     <a href="/sessions/">Retour à la liste des sessions</a>
 </body>
 </html>

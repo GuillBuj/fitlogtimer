@@ -3,8 +3,10 @@ package com.fitlogtimer.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,10 +54,21 @@ public class SessionController {
     @GetMapping("/{id}")
     public String getSessionDetails(@PathVariable int id, Model model) {
         SessionGroupedDTO sessionData = sessionService.getSessionGrouped(id);
-        log.info("*/**/*/*/*/*/*/* Session: {}", sessionData);
-        model.addAttribute("sessionData", sessionData); // Passer les données de la session à la vue
-        log.info("Session ajoutée au modèle : {}", model.getAttribute("session"));
-        return "session-details"; // Nom de la vue HTML (session-details.html)
+        log.info("*/**/*/*/*/*/*/* Séance: {}", sessionData);
+        model.addAttribute("sessionData", sessionData);
+        log.info("Séance ajoutée au modèle : {}", model.getAttribute("session"));
+        return "session-details";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteSession(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        boolean isDeleted = sessionService.deleteSession(id);
+        if (isDeleted) {
+            redirectAttributes.addFlashAttribute("successMessage", "Séance supprimée avec succès !");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Séance non supprimée");
+        }
+        return "redirect:/sessions/";
     }
 
     @GetMapping("/")
@@ -71,7 +84,7 @@ public class SessionController {
         return "session-list";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/create")
     public String showSessionForm(Model model) {
         model.addAttribute("session", new SessionInDTO(null, 0.0, ""));
         return "session-form";
@@ -87,7 +100,7 @@ public class SessionController {
         sessionService.saveSession(session);
 
         redirectAttributes.addFlashAttribute("successMessage", "Session créée avec succès !");
-        return "redirect:/sessions";
+        return "redirect:/sessions/";
     }
 
 }

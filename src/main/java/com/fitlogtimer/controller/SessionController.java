@@ -1,9 +1,9 @@
 package com.fitlogtimer.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,12 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fitlogtimer.dto.SessionDetailsDTO;
-import com.fitlogtimer.dto.SessionDetailsGroupedDTO;
 import com.fitlogtimer.dto.SessionGroupedDTO;
 import com.fitlogtimer.dto.SessionInDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
@@ -86,12 +82,15 @@ public class SessionController {
 
     @GetMapping("/create")
     public String showSessionForm(Model model) {
-        model.addAttribute("session", new SessionInDTO(null, 0.0, ""));
+        LocalDate today = LocalDate.now();
+        model.addAttribute("sessionData", new SessionInDTO(today, 0.0, ""));
+        model.addAttribute("today", today);
         return "session-form";
     }
 
     @PostMapping("/create")
-    public String createSession(@ModelAttribute("session") SessionInDTO sessionInDTO, RedirectAttributes redirectAttributes) {
+    public String createSession(@ModelAttribute("sessionData") SessionInDTO sessionInDTO, RedirectAttributes redirectAttributes) {
+        log.info("POST sessions/create: {}", sessionInDTO);
         Session session = new Session();
         session.setDate(sessionInDTO.date());
         session.setBodyWeight(sessionInDTO.bodyWeight());

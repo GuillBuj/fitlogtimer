@@ -1,10 +1,10 @@
 package com.fitlogtimer.dto;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public record SessionOutDTO(
     int id,
-    Date date,
+    LocalDate date,
     double bodyWeight,
     String comment){ 
 }

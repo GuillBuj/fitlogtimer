@@ -1,9 +1,9 @@
 package com.fitlogtimer.dto;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public record SessionInDTO(
-    Date date,
+    LocalDate date,
     double bodyWeight,
     String comment){ 
 }

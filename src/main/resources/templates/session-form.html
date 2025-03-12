@@ -8,10 +8,10 @@
 <body>
     <h1>Créer une nouvelle séance</h1>
 
-    <form th:action="@{/sessions/create}" th:object="${session}" method="post">
+    <form th:action="@{/sessions/create}" th:object="${sessionData}" method="post">
         <div>
             <label for="date">Date :</label>
-            <input type="date" id="date" th:field="*{date}" th:value="${session.date}" required>
+            <input type="date" id="date" th:field="*{date}" th:value="${sessionData.date}" required>
         </div>
         <div>
             <label for="bodyWeight">Poids du corps (kg) :</label>

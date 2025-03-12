@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.SessionGroupedDTO;
 import com.fitlogtimer.dto.SessionInDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
+import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.Session;
+import com.fitlogtimer.service.ExerciseService;
 import com.fitlogtimer.service.SessionService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,9 @@ public class SessionController {
 
     @Autowired
     private SessionService sessionService;
+
+    @Autowired
+    private ExerciseService exerciseService;
 
     @PostMapping
     public SessionOutDTO createSession(@RequestBody Session session) {
@@ -49,10 +55,14 @@ public class SessionController {
 
     @GetMapping("/{id}")
     public String getSessionDetails(@PathVariable int id, Model model) {
+        
         SessionGroupedDTO sessionData = sessionService.getSessionGrouped(id);
-        log.info("*/**/*/*/*/*/*/* Séance: {}", sessionData);
+        ExerciseSetInDTO exerciseSet = new ExerciseSetInDTO(1,0.0,0,false,"",id);
+        List<Exercise> exercises=exerciseService.getAllExercises();
         model.addAttribute("sessionData", sessionData);
-        log.info("Séance ajoutée au modèle : {}", model.getAttribute("session"));
+        model.addAttribute("exercises", exercises);
+        model.addAttribute("exerciseSetDTO", exerciseSet);
+        
         return "session-details";
     }
 

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/styles.css}">
     <title>Liste des sessions</title>
 </head>
 <body>
@@ -10,23 +11,23 @@
             <tr>
                 <th>ID</th>
                 <th>Date</th>
-                <th>Poids du corps (kg)</th>
+                <th>Poids</th>
                 <th>Commentaire</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="session : ${sessions}">
-                <!-- <td th:text="${session.id}"></td>
-                <td th:text="${session.date}"></td>
-                <td th:text="${session.bodyWeight}"></td>
-                <td th:text="${session.comment}"></td>
+            <tr th:each="sessionData : ${sessionsList}">
+                <td th:text="${sessionData.id}"></td>
+                <td th:text="${sessionData.date}"></td>
+                <td th:text="${#numbers.formatDecimal(sessionData.bodyWeight, 1, 1)} + ' kg'"></td>
+                <td th:text="${sessionData.comment}"></td>
                 <td>
-                    <a th:href="@{/sessions/{id}(id=${session.id})}">Détails</a>
-                </td> -->
+                    <a th:href="@{/sessions/{id}(id=${sessionData.id})}">Détails</a>
+                </td>
             </tr>
         </tbody>
     </table>
-    <a href="/sessions/create">Créer une nouvelle session</a>
+    <a href="/sessions/new">Créer une nouvelle session</a>
 </body>
 </html>

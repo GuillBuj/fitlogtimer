@@ -1,28 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/styles.css}">
     <title>Détails de la séance</title>
 </head>
 <body>
-    <h1>Détails de la séance</h1>
+    <h1>Séance du <span th:text="${sessionData.date}"></span></h1>
 
     <p>ID : <span th:text="${sessionData.id}"></span></p>
-    <p>Date : <span th:text="${sessionData.date}"></span></p>
     <p>Poids : <span th:text="${sessionData.bodyWeight}"></span> kg</p>
-    <p>Commentaire : <span th:text="${sessionData.comment}"></span></p>
+    <p>Commentaires : <span th:text="${sessionData.comment}"></span></p>
 
     <h2>Exercices</h2>
-    <ul th:if="${sessionData.exerciseSets}">
-        <li th:each="set : ${sessionData.exerciseSets}">
-            <span th:text="${set}"></span>
-            <!-- <span th:text="${set.exerciseName}"></span> :
-            <span th:text="${set.reps}"></span> répétitions,
-            <span th:text="${set.weight}"></span> kg -->
-        </li>
-    </ul>
+    <table th:if="${sessionData.exerciseSets}">
+        <tr th:each="set : ${sessionData.exerciseSets}">
+            <td th:text="${set.exerciseNameShort}"></td>
+            <td th:text="${set.sets}"></td>
+        </tr>
+    </table>
     <p th:unless="${sessionData.exerciseSets}">Aucun exercice enregistré pour cette session.</p>
 
-    <a href="/sessions/create">Créer une nouvelle session</a>
-    <a href="/sessions">Retour à la liste des sessions</a>
+    <a href="/sessions/new">Créer une nouvelle session</a>
+    <a href="/sessions/">Retour à la liste des sessions</a>
 </body>
 </html>

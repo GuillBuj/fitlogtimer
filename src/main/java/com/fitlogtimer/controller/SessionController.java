@@ -87,7 +87,7 @@ public class SessionController {
     public String deleteSession(@PathVariable int id, RedirectAttributes redirectAttributes) {
         boolean isDeleted = sessionService.deleteSession(id);
         if (isDeleted) {
-            redirectAttributes.addFlashAttribute("successMessage", "Séance supprimée avec succès !");
+            redirectAttributes.addFlashAttribute("successRedMessage", "Séance supprimée avec succès !");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Séance non supprimée");
         }
@@ -126,7 +126,7 @@ public class SessionController {
 
         sessionService.saveSession(session);
 
-        redirectAttributes.addFlashAttribute("successMessage", "Session créée avec succès !");
+        redirectAttributes.addFlashAttribute("successMessage", "Séance créée avec succès");
         return "redirect:/sessions/";
     }
 

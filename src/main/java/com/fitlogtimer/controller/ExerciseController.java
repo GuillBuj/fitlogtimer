@@ -10,7 +10,7 @@ import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.service.ExerciseService;
 
 @RestController
-@RequestMapping("/api/exercise")
+@RequestMapping("/exercises")
 public class ExerciseController {
 
     @Autowired
@@ -20,4 +20,6 @@ public class ExerciseController {
     public Exercise createExercise(@RequestBody Exercise exercise) {
         return exerciseService.saveExercise(exercise);
     }
+
+    
 }

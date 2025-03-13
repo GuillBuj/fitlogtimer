@@ -5,9 +5,9 @@
     <title>Liste des séances</title>
 </head>
 <body>
-    <div th:if="${successMessage}" class="alert alert-success">
-        <p th:text="${successMessage}"></p>
-    </div>
+    <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+    <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+
     <h1>Liste des séances</h1>
     <table>
         <thead>
@@ -15,7 +15,7 @@
                 <th>ID</th>
                 <th>Date</th>
                 <th>Poids</th>
-                <th>Commentaire</th>
+                <th>Commentaires</th>
                 <th>Actions</th>
             </tr>
         </thead>

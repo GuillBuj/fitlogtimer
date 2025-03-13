@@ -1,8 +1,12 @@
 package com.fitlogtimer.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
+import com.fitlogtimer.dto.SessionGroupedDTO;
+import com.fitlogtimer.model.Exercise;
+import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.service.ExerciseSetService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/exerciseSets")
+@Slf4j
 public class ExerciceSetController {
     @Autowired
     private ExerciseSetService exerciseSetService;
@@ -25,7 +35,7 @@ public class ExerciceSetController {
     public String addExerciseSet(@ModelAttribute ExerciseSetInDTO exerciseSetDTO, RedirectAttributes redirectAttributes) {
         try {
             exerciseSetService.saveExerciseSet(exerciseSetDTO);
-            redirectAttributes.addFlashAttribute("successMessage", "Exercice ajouté avec succès !");
+            redirectAttributes.addFlashAttribute("successMessage", "Série ajoutée avec succès");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Erreur lors de l'ajout");
         }
@@ -36,11 +46,21 @@ public class ExerciceSetController {
     public String deleteExerciseSet(@PathVariable int id, @RequestParam int idSession, RedirectAttributes redirectAttributes){
         boolean isDeleted = exerciseSetService.deleteExerciseSet(id);
         if (isDeleted) {
-            redirectAttributes.addFlashAttribute("successMessage", "Série supprimée avec succès");
+            redirectAttributes.addFlashAttribute("successRedMessage", "Série supprimée avec succès");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Série non supprimée");
         }
         return "redirect:/sessions/" + idSession + "/plus";
+    }
+
+    @GetMapping("/byExercise/{exerciseId}")
+    public String showSetsByExercise(@PathVariable int exerciseId, Model model){
+       
+        List<ExerciseSet> sets = exerciseSetService.getSetsByExerciseId(exerciseId);
+        model.addAttribute("sets", sets);
+
+        log.info(model.toString());
+        return "sets-by-exercise";
     }
 
 

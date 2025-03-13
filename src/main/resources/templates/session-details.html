@@ -6,6 +6,7 @@
 </head>
 <body>
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+    <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
     <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
     <h1>Séance du <span th:text="${sessionData.date}"></span></h1>
     <a th:href="@{/sessions/{id}/plus(id=${sessionData.id})}"  class="btn-link">Set par set</a>
@@ -13,7 +14,7 @@
     <p>Commentaires : <span th:text="${sessionData.comment}"></span></p>
     
 
-    <h2>Exercices</h2>
+    <h2>Séries</h2>
     <table th:if="${sessionData.exerciseSets}">
         <tr th:each="set : ${sessionData.exerciseSets}">
             <td th:text="${set.exerciseNameShort}"></td>

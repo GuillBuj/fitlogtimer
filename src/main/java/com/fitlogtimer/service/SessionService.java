@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.SetInSessionDTO;
+import com.fitlogtimer.dto.SetInSessionOutDTO;
 import com.fitlogtimer.dto.SetInSetsGroupedDTO;
+import com.fitlogtimer.dto.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.SetsGroupedFinalDTO;
 import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
 import com.fitlogtimer.dto.SetsSameRepsDTO;
@@ -18,8 +20,10 @@ import com.fitlogtimer.dto.SetsSameWeightDTO;
 import com.fitlogtimer.dto.SetGroupedDTO;
 import com.fitlogtimer.dto.SessionDetailsDTO;
 import com.fitlogtimer.dto.SessionDetailsGroupedDTO;
+import com.fitlogtimer.dto.SessionDetailsOutDTO;
 import com.fitlogtimer.dto.SessionGroupedDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
+import com.fitlogtimer.dto.SetBasicDTO;
 import com.fitlogtimer.exception.NotFoundException;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.Session;
@@ -56,16 +60,15 @@ public class SessionService {
         return false;
     }
 
-    // public Session createSessionIfNotExists(Session session) {
+    public SessionDetailsOutDTO getSessionDetailsBrut(int id){
+        Session session = sessionRepository.findById(id)
+            .orElseThrow(()->new NotFoundException("Session not found: " + id));
 
-    //     Optional<Session> existingSession = sessionRepository.findById(session.getId());
-    //     if (existingSession.isPresent()) {
-    //         return existingSession.get();
-    //     } else {
-    //         return sessionRepository.save(session);
-    //     }
-    // }
-
+        List<SetInSessionOutDTO> setsDTO = getSetsOutDTO(session);
+        
+        return new SessionDetailsOutDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
+    }
+    
     public SessionDetailsDTO getSessionDetails(int id){
         Session session = sessionRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Session not found: " + id));
@@ -155,6 +158,18 @@ public class SessionService {
                 .collect(Collectors.toList());
     }
 
+    public List<SetInSessionOutDTO> getSetsOutDTO(Session session){
+        return session.getSetRecords().stream()
+                .map(exerciseSet -> new SetInSessionOutDTO(
+                    exerciseSet.getId(),
+                    exerciseSet.getExercise().getShortName(),
+                    exerciseSet.getWeight(),
+                    exerciseSet.getRepNumber(),
+                    exerciseSet.isMax(),
+                    exerciseSet.getComment()))
+                .collect(Collectors.toList());
+    }
+
     public SetsGroupedFinalDTO cleanSetsGroup(SetsGroupedWithNameDTO sets){
         if(hasSameWeight(sets)){
             if(hasSameReps(sets)){
@@ -186,8 +201,12 @@ public class SessionService {
                     sets.sets().get(0).repNumber(),
                     weights
                 ));
+        } else {
+            List<SetBasicDTO> setBasicDTOs = sets.sets().stream()
+                .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
+                .collect(Collectors.toList());
+                return new SetsGroupedFinalDTO(sets.exerciseNameShort(), new SetsAllDifferentDTO(setBasicDTOs));
         }
-        return new SetsGroupedFinalDTO(sets.exerciseNameShort(), sets.sets());
     }
     
     public boolean hasSameWeight(SetsGroupedWithNameDTO sets){

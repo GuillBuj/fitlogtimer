@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
+import com.fitlogtimer.dto.SessionDetailsDTO;
+import com.fitlogtimer.dto.SessionDetailsOutDTO;
 import com.fitlogtimer.dto.SessionGroupedDTO;
 import com.fitlogtimer.dto.SessionInDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
@@ -62,8 +64,23 @@ public class SessionController {
         model.addAttribute("sessionData", sessionData);
         model.addAttribute("exercises", exercises);
         model.addAttribute("exerciseSetDTO", exerciseSet);
-        
+
+        log.info(model.toString());
         return "session-details";
+    }
+
+    @GetMapping("/{id}/plus")
+    public String getSessionDetailsPlus(@PathVariable int id, Model model) {
+        
+        SessionDetailsOutDTO sessionData = sessionService.getSessionDetailsBrut(id);
+        ExerciseSetInDTO exerciseSet = new ExerciseSetInDTO(1,0.0,0,false,"",id);
+        List<Exercise> exercises=exerciseService.getAllExercises();
+        model.addAttribute("sessionData", sessionData);
+        model.addAttribute("exercises", exercises);
+        model.addAttribute("exerciseSetDTO", exerciseSet);
+           
+        log.info(model.toString());
+        return "session-details-plus";
     }
 
     @DeleteMapping("/{id}")
@@ -89,6 +106,7 @@ public class SessionController {
         model.addAttribute("sessionsList", sessionsList);
         return "session-list";
     }
+    
 
     @GetMapping("/create")
     public String showSessionForm(Model model) {

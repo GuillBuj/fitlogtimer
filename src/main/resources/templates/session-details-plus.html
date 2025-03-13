@@ -7,17 +7,37 @@
 <body>
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
     <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
+
     <h1>Séance du <span th:text="${sessionData.date}"></span></h1>
-    <a th:href="@{/sessions/{id}/plus(id=${sessionData.id})}"  class="btn-link">Set par set</a>
+    <a th:href="@{/sessions/{id}(id=${sessionData.id})}" class="btn-link">Groupé</a>
     <p>Poids : <span th:text="${sessionData.bodyWeight}"></span> kg</p>
     <p>Commentaires : <span th:text="${sessionData.comment}"></span></p>
     
 
     <h2>Exercices</h2>
     <table th:if="${sessionData.exerciseSets}">
+        <thead>
+            <tr>
+                <th>Ex</th>
+                <th>Reps</th>
+                <th>Poids</th>
+                <th>Max?</th>
+                <th>Commentaires</th>
+                <th>Action</th>
+            </tr>
+        </thead>
         <tr th:each="set : ${sessionData.exerciseSets}">
             <td th:text="${set.exerciseNameShort}"></td>
-            <td th:text="${set.sets}"></td>
+            <td th:text="${set.repNumber}"></td>
+            <td th:text="${set.weight}"></td>
+            <td th:text="${set.isMax}"></td>
+            <td th:text="${set.comment}"></td>
+            <td>
+                <form th:action="@{/exerciseSets/{id}(id=${set.id}, idSession=${sessionData.id})}" class="deleteForm"  method="post">
+                <input type="hidden" name="_method" value="delete" />
+                <button type="submit" class="btnDelete">Supprimer</button>
+            </form>
+            </td>
         </tr>
     </table>
     <p th:unless="${sessionData.exerciseSets}">Aucun exercice enregistré pour cette session.</p>
@@ -61,9 +81,9 @@
 
     <form th:action="@{/sessions/{id}(id=${sessionData.id})}" class="deleteForm"  method="post">
         <input type="hidden" name="_method" value="delete" />
-        <button type="submit" class="btnDelete"  onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">Supprimer</button>
+        <button type="submit" class="btnDelete">Supprimer</button>
     </form>
     <br>
-    <a href="/sessions/" class="btn-link">Retour à la liste</a>
+    <a href="/sessions/">Retour à la liste des séances</a>
 </body>
 </html>

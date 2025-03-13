@@ -60,31 +60,14 @@ public class ExerciseSetService {
         );
     }
 
-    // @Transactional
-    // public ExerciseSet createExerciseSet(ExerciseSet exerciseSet) {
-    //     Session session = exerciseSet.getSession();
-
-    //     if (session == null) {
-    //         session = new Session();
-    //         session = sessionRepository.save(session); // Crée une nouvelle session si elle n'existe pas
-    //     } else {
-    //         Optional<Session> existingSession = sessionRepository.findById(session.getId());
-    //         if (existingSession.isPresent()) {
-    //             session = existingSession.get(); // Si la session existe déjà, on l'utilise
-    //         } else {
-    //             session = sessionRepository.save(session); // Si elle n'existe pas, on la sauvegarde
-    //         }
-    //     }
-
-    //     // Vérifie si l'ExerciseSet contient un Exercise détaché, et l'attache à la
-    //     // session si nécessaire
-    //     Exercise exercise = exerciseSet.getExercise();
-    //     if (exercise != null && !entityManager.contains(exercise)) {
-    //         exercise = entityManager.merge(exercise); // Attache l'exercice à la session Hibernate
-    //     }
-
-    //     exerciseSet.setSession(session);
-    //     return exerciseSetRepository.save(exerciseSet); // Sauvegarde l'ExerciseSet avec l'Exercise attaché à la session
-    // }
+    @Transactional
+    public boolean deleteExerciseSet(int id){
+        
+        if (exerciseSetRepository.existsById(id)) {
+            exerciseSetRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 
 }

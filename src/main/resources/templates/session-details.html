@@ -23,33 +23,42 @@
     <p th:unless="${sessionData.exerciseSets}">Aucun exercice enregistré pour cette session.</p>
 
     <h2>Ajouter un exercice à cette séance</h2>
-    <form th:action="@{/exerciseSets/add}" method="post" th:object="${exerciseSetDTO}">
+    <form th:action="@{/exerciseSets/add}" method="post" th:object="${exerciseSetDTO}" class="single-line-form">
         <input type="hidden" th:field="*{session_id}" th:value="${sessionData.id}" />
+    
+        <div class="form-group">
+            <label for="exercise">Exercice :</label>
+            <select id="exercise" th:field="*{exercise_id}" required>
+                <option th:each="exercise : ${exercises}" th:value="${exercise.id}" th:text="${exercise.name}"></option>
+            </select>
+        </div>
+    
+        <div class="form-group">
+            <label for="weight">Poids(kg) :</label>
+            <input type="number" class="weightInput" id="weight" th:field="*{weight}" step="0.1" required />
+        </div>
+    
+        <div class="form-group">
+            <label for="repNumber">Nombre de répétitions :</label>
+            <input type="number" class="repsInput" id="repNumber" th:field="*{repNumber}" required />
+        </div>
+    
+        <div class="form-group">
+            <button type="submit" class="btnValid">Ajouter</button>
+        </div>
 
-        <label for="exercise">Exercice :</label>
-        <select id="exercise" th:field="*{exercise_id}" required>
-            <option th:each="exercise : ${exercises}" th:value="${exercise.id}" th:text="${exercise.name}"></option>
-        </select>
-        <br>
-
-        <label for="weight">Poids (kg) :</label>
-        <input type="number" id="weight" th:field="*{weight}" step="0.1" required />
-        <br>
-
-        <label for="repNumber">Nombre de répétitions :</label>
-        <input type="number" id="repNumber" th:field="*{repNumber}" required />
-        <br>
-
-        <label for="isMax">Max :</label>
-        <input type="hidden" name="_isMax" value="false" />
-        <input type="checkbox" id="isMax" name="isMax" th:field="*{max}" value="true" />
-        <br>
-
-        <label for="comment">Commentaire :</label>
-        <input type="text" id="comment" th:field="*{comment}" />
-        <br>
-
-        <button type="submit" class="btnValid">Ajouter</button>
+        <div class="form-group">
+            <label for="isMax">Max :</label>
+            <input type="hidden" name="_isMax" value="false" />
+            <input type="checkbox" id="isMax" name="isMax" th:field="*{max}" value="true" />
+        </div>
+    
+        <div class="form-group">
+            <label for="comment">Commentaire :</label>
+            <input type="text" class="commentInput" id="comment" th:field="*{comment}" />
+        </div>
+    
+        
     </form>
 
     <form th:action="@{/sessions/{id}(id=${sessionData.id})}" class="deleteForm"  method="post">
@@ -57,7 +66,7 @@
         <button type="submit" class="btnDelete">Supprimer</button>
     </form>
     <br>
-    <a href="/sessions/create">Créer une nouvelle session</a>
-    <a href="/sessions/">Retour à la liste des sessions</a>
+    <a href="/sessions/create">Créer une nouvelle séance</a>
+    <a href="/sessions/">Retour à la liste des séances</a>
 </body>
 </html>

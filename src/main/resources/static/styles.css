@@ -22,26 +22,29 @@ td:first-child {
 }
 
 form {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #f9f9f9;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-form label {
+.vertical-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.vertical-form label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
     color: #333;
 }
 
-form input[type="text"],
-form input[type="email"],
-form input[type="password"],
-form textarea {
+.vertical-form input[type="text"],
+.vertical-form input[type="email"],
+.vertical-form input[type="password"],
+.vertical-form textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -54,7 +57,7 @@ form textarea {
 .btnValid {
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #2E8B57;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -63,11 +66,11 @@ form textarea {
 }
 
 .btnValid:hover {
-    background-color: #0056b3;
+    background-color: #26734A;
 }
 
 .btnValid:active {
-    background-color: #004080;
+    background-color: #1F5C3D;
 }
 
 .alert {
@@ -94,7 +97,7 @@ form textarea {
 
 .btnDelete {
     padding: 10px;
-    background-color: #ff4d4d;
+    background-color: #E74C3C;
     color: white;
     border: none;
     font-size: 16px;
@@ -104,9 +107,73 @@ form textarea {
 }
 
 .btnDelete:hover {
-    background-color: #cc0000;
+    background-color: #C0392B;
 }
 
 .btnDelete:active {
-    background-color: #990000;
+    background-color: #A93226;
+}
+
+
+/* Style général du formulaire en une seule ligne */
+.single-line-form {
+    display: flex; /* Affiche les éléments en ligne */
+    align-items: center; /* Alignement vertical des éléments */
+    gap: 16px; /* Espacement entre les groupes de champs */
+    flex-wrap: nowrap; /* Empêche le passage à la ligne */
+    max-width: none;
+    margin: 10px 0;
+    padding: 0 10px; /*Supprime les paddings par défaut */
+    justify-content: flex-start; /* Aligne les éléments à gauche */
+}
+
+/* Style pour chaque groupe de champs */
+.single-line-form .form-group {
+    display: flex;
+    align-items: center; /* Alignement vertical du label et du champ */
+    gap: 8px; /* Espacement entre le label et le champ */
+    white-space: nowrap; /* Empêche le texte de passer à la ligne */
+    /* flex: 1; Permet à chaque groupe de prendre une part égale de l'espace */
+}
+
+/* Style pour les labels */
+.single-line-form .form-group label {
+    font-weight: bold;
+    min-width: max-content; /* Largeur minimale basée sur le contenu */
+}
+
+/* Style pour les champs de saisie */
+.single-line-form .form-group input,
+.single-line-form .form-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Inclut le padding dans la largeur */
+}
+
+.single-line-form .form-group select {
+    width: 150px; /* Largeur fixe pour le menu déroulant */
+}
+
+.single-line-form .weightInput{
+    width: 9ch; /* 3 fois la largeur du caractère "0" */
+    padding: 8px; /* Ajoute un peu de padding pour améliorer l'apparence */
+    box-sizing: border-box; /* Inclut le padding dans la largeur totale */
+}
+
+.single-line-form .repsInput{
+    width: 7ch; /* 3 fois la largeur du caractère "0" */
+    padding: 8px; /* Ajoute un peu de padding pour améliorer l'apparence */
+    box-sizing: border-box; /* Inclut le padding dans la largeur totale */
+}
+
+.single-line-form .commentInput{
+    width: 500px;
+    padding: 8px; /* Ajoute un peu de padding pour améliorer l'apparence */
+    box-sizing: border-box; /* Inclut le padding dans la largeur totale */
+}
+
+.single-line-form .form-group .btnValid {
+    width: auto; /* Largeur automatique pour le bouton */
+    margin: 5px 0;
 }

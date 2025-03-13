@@ -8,7 +8,7 @@
 <body>
     <h1>Créer une nouvelle séance</h1>
 
-    <form th:action="@{/sessions/create}" th:object="${sessionData}" method="post">
+    <form th:action="@{/sessions/create}" class="vertical-form" th:object="${sessionData}" method="post">
         <div>
             <label for="date">Date :</label>
             <input type="date" id="date" th:field="*{date}" th:value="${sessionData.date}" required>

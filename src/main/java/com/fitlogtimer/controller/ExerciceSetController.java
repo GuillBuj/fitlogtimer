@@ -10,15 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
-import com.fitlogtimer.dto.SessionGroupedDTO;
-import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.service.ExerciseSetService;
 
@@ -55,6 +51,16 @@ public class ExerciceSetController {
 
     @GetMapping("/byExercise/{exerciseId}")
     public String showSetsByExercise(@PathVariable int exerciseId, Model model){
+       
+        List<ExerciseSet> sets = exerciseSetService.getSetsByExerciseId(exerciseId);
+        model.addAttribute("sets", sets);
+
+        log.info(model.toString());
+        return "sets-by-exercise";
+    }
+
+    @GetMapping("/byExercise/{exerciseId}/groupedByDate")
+    public String showSetsByExerciseGroupedByDate(@PathVariable int exerciseId, Model model){
        
         List<ExerciseSet> sets = exerciseSetService.getSetsByExerciseId(exerciseId);
         model.addAttribute("sets", sets);

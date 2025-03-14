@@ -1,6 +1,8 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.postGroup;
 
 import java.util.List;
+
+import com.fitlogtimer.dto.SetBasicDTO;
 
 public record SetsAllDifferentDTO(List<SetBasicDTO> sets) {
     

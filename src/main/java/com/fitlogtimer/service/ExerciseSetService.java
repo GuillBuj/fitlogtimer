@@ -76,4 +76,8 @@ public class ExerciseSetService {
         return exerciseSetRepository.findByExerciseId(id);
     }
 
+    // public getSetsByExerciseIdGroupedByDate(int id){
+        
+    // }
+
 }

@@ -16,16 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
-import com.fitlogtimer.dto.LastSetDTO;
-import com.fitlogtimer.dto.SessionDetailsDTO;
 import com.fitlogtimer.dto.SessionDetailsOutDTO;
 import com.fitlogtimer.dto.SessionGroupedDTO;
 import com.fitlogtimer.dto.SessionInDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
-import com.fitlogtimer.dto.SetInSessionDTO;
-import com.fitlogtimer.dto.SetInSessionOutDTO;
 import com.fitlogtimer.model.Exercise;
-import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Session;
 import com.fitlogtimer.service.ExerciseService;
 import com.fitlogtimer.service.SessionService;

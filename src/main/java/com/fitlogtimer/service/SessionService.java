@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 import com.fitlogtimer.dto.SetInSessionDTO;
 import com.fitlogtimer.dto.SetInSessionOutDTO;
 import com.fitlogtimer.dto.SetInSetsGroupedDTO;
-import com.fitlogtimer.dto.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.SetsGroupedFinalDTO;
 import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
-import com.fitlogtimer.dto.SetsSameRepsDTO;
-import com.fitlogtimer.dto.SetsSameWeightAndRepsDTO;
-import com.fitlogtimer.dto.SetsSameWeightDTO;
+import com.fitlogtimer.dto.postGroup.SetsAllDifferentDTO;
+import com.fitlogtimer.dto.postGroup.SetsSameRepsDTO;
+import com.fitlogtimer.dto.postGroup.SetsSameWeightAndRepsDTO;
+import com.fitlogtimer.dto.postGroup.SetsSameWeightDTO;
 import com.fitlogtimer.dto.SetGroupedDTO;
 import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.LastSetDTO;
@@ -53,7 +53,6 @@ public class SessionService {
         return sessionRepository.findAll();
     }
     
-    
     public SessionOutDTO saveSession(Session session) {
         Session savedSession = sessionRepository.save(session);
         return new SessionOutDTO(savedSession.getId(), savedSession.getDate(), savedSession.getBodyWeight(), savedSession.getComment());
@@ -76,23 +75,23 @@ public class SessionService {
         return new SessionDetailsOutDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
     }
     
-    public SessionDetailsDTO getSessionDetails(int id){
-        Session session = sessionRepository.findById(id)
-            .orElseThrow(()->new NotFoundException("Session not found: " + id));
+    // public SessionDetailsDTO getSessionDetails(int id){
+    //     Session session = sessionRepository.findById(id)
+    //         .orElseThrow(()->new NotFoundException("Session not found: " + id));
 
-        List<SetInSessionDTO> setsDTO = getSetsDTO(session);
+    //     List<SetInSessionDTO> setsDTO = getSetsDTO(session);
         
-        return new SessionDetailsDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
-    }
+    //     return new SessionDetailsDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
+    // }
 
-    public SessionDetailsGroupedDTO getSessionDetailsGrouped(int id){
-        Session session = sessionRepository.findById(id)
-            .orElseThrow(()->new NotFoundException("Session not found: " + id));
+    // public SessionDetailsGroupedDTO getSessionDetailsGrouped(int id){
+    //     Session session = sessionRepository.findById(id)
+    //         .orElseThrow(()->new NotFoundException("Session not found: " + id));
 
-        List<SetGroupedDTO> groupedSetsDTO = groupConsecutiveSetsByExercise(getSetsDTO(session));
+    //     List<SetGroupedDTO> groupedSetsDTO = groupConsecutiveSetsByExercise(getSetsDTO(session));
 
-        return new SessionDetailsGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), groupedSetsDTO);
-    }
+    //     return new SessionDetailsGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), groupedSetsDTO);
+    // }
 
     public SessionGroupedDTO getSessionGrouped(int id){
         Session session = sessionRepository.findById(id)
@@ -112,7 +111,6 @@ public class SessionService {
         System.out.println(sessionGroupedDTO);
         return sessionGroupedDTO;
     }
-
     
     public List<SetGroupedDTO> groupConsecutiveSetsByExercise(List<SetInSessionDTO> exerciseSets){
         List<SetGroupedDTO> groupedSets = new ArrayList<>();

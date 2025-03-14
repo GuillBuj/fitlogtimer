@@ -1,13 +1,9 @@
 package com.fitlogtimer.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.SetInSetsGroupedDTO;
-import com.fitlogtimer.dto.SetsGroupedFinalDTO;
+import com.fitlogtimer.dto.SetBasicDTO;
 import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
-import com.fitlogtimer.dto.postGroup.SetsSameWeightAndRepsDTO;
 
 @Service
 public class SetsGroupCleaner {
@@ -29,7 +25,7 @@ public class SetsGroupCleaner {
     public boolean hasSameWeight(SetsGroupedWithNameDTO sets){
         double firstWeight = sets.sets().get(0).weight();
 
-        for(SetInSetsGroupedDTO set : sets.sets()){
+        for(SetBasicDTO set : sets.sets()){
             if(set.weight() != firstWeight){
                 return false;
             }
@@ -40,7 +36,7 @@ public class SetsGroupCleaner {
     public boolean hasSameReps(SetsGroupedWithNameDTO sets){
         int firstNb = sets.sets().get(0).repNumber();
 
-        for(SetInSetsGroupedDTO set : sets.sets()){
+        for(SetBasicDTO set : sets.sets()){
             if(set.repNumber() != firstNb){
                 return false;
             }

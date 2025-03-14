@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <title>Liste des séries </title>
+</head>
+<body>
+    <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+    <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+        <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+        <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+        <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
+        
+        <!-- <h1>Séries de <span th:text="${sets[0].exercise.name}"></span></h1> -->
+        <table th:if="${sets}">
+            <tr>
+                <th>Date</td>
+                <th>Reps</td>
+                <th>Poids</th>
+                <th>Poids de corps</th>
+                <th>Ratio</th>
+            </tr>
+            <tr th:each="set : ${sets}">
+                <td th:text="${set.idSession}"></td>
+                <td th:text="${set.setGroup}"></td>
+                <!-- <td th:text="${set.weight}"></td>
+                <td th:text="${set.session.bodyWeight}"></td>
+                <td th:text="${set.weight}/${set.session.bodyWeight}"></td> -->
+            </tr>
+        </table>
+        <!-- <p th:unless="${sessionData.exerciseSets}">Aucun exercice enregistré pour cette session.</p> -->
+</body>
+</html>

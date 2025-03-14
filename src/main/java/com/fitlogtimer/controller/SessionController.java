@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
-import com.fitlogtimer.dto.SessionDetailsOutDTO;
-import com.fitlogtimer.dto.SessionGroupedDTO;
 import com.fitlogtimer.dto.SessionInDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
+import com.fitlogtimer.dto.sessionDisplay.SessionDetailsOutDTO;
+import com.fitlogtimer.dto.sessionDisplay.SessionGroupedDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.Session;
 import com.fitlogtimer.service.ExerciseService;
@@ -44,15 +44,6 @@ public class SessionController {
     public SessionOutDTO createSession(@RequestBody Session session) {
         return sessionService.saveSession(session);
     }
-
-    // @GetMapping("/id")
-    // public Object getSessionDetailsDTO(@RequestParam int id, @RequestParam(defaultValue = "true") boolean grouped) {
-    //     if (grouped) {
-    //         return sessionService.getSessionGrouped(id);
-    //     } else {
-    //         return sessionService.getSessionDetails(id);
-    //     }
-    // }
 
     @GetMapping("/{id}")
     public String getSessionDetails(@PathVariable int id, Model model) {

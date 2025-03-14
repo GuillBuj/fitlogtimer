@@ -11,7 +11,7 @@ public record SetsAllDifferentDTO(List<SetBasicDTO> sets) {
         StringBuilder sb = new StringBuilder();
         for (SetBasicDTO set : sets) {
             if (sb.length() > 0) { sb.append(" , ");}
-            sb.append(set.nbReps())
+            sb.append(set.repNumber())
                 .append(" @ ")
                 .append(set.weight())
                 .append(" kg");

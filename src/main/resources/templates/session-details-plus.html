@@ -57,12 +57,11 @@
     
         <div class="form-group">
             <label for="weight">Poids(kg) :</label>
-            <input type="number" class="weightInput" id="weight" th:field="*{weight}" step="0.1" required />
+            <input type="number" class="weightInput" id="weight" th:field="*{weight}" step="0.5" required />
         </div>
     
         <div class="form-group">
             <label for="repNumber">Nombre de répétitions :</label>
-            <!-- <input type="number" class="repsInput" id="repNumber" th:field="*{repNumber}" required /> -->
             <input type="number" class="repsInput" id="repNumber" th:field="*{repNumber}" 
             th:value="${lastSet != null ? lastSet.nbReps : ''}" required />
         </div>

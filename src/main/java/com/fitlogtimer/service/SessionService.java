@@ -10,20 +10,17 @@ import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.SetInSessionDTO;
 import com.fitlogtimer.dto.SetInSessionOutDTO;
-import com.fitlogtimer.dto.SetInSetsGroupedDTO;
 import com.fitlogtimer.dto.SetsGroupedFinalDTO;
 import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
 import com.fitlogtimer.dto.postGroup.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameRepsDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameWeightAndRepsDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameWeightDTO;
-import com.fitlogtimer.dto.SetGroupedDTO;
+import com.fitlogtimer.dto.sessionDisplay.SessionDetailsOutDTO;
+import com.fitlogtimer.dto.sessionDisplay.SessionGroupedDTO;
+import com.fitlogtimer.dto.SetsGroupedDTO;
 import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.LastSetDTO;
-import com.fitlogtimer.dto.SessionDetailsDTO;
-import com.fitlogtimer.dto.SessionDetailsGroupedDTO;
-import com.fitlogtimer.dto.SessionDetailsOutDTO;
-import com.fitlogtimer.dto.SessionGroupedDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
 import com.fitlogtimer.dto.SetBasicDTO;
 import com.fitlogtimer.exception.NotFoundException;
@@ -97,7 +94,7 @@ public class SessionService {
         Session session = sessionRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Session not found: " + id));
 
-        List<SetGroupedDTO> groupedSets = groupConsecutiveSetsByExercise(getSetsDTO(session));
+        List<SetsGroupedDTO> groupedSets = groupConsecutiveSetsByExercise(getSetsDTO(session));
 
         List<SetsGroupedWithNameDTO> groupedSetsWithName = groupedSets.stream()
                 .map(this::groupedSetToGroupedSetWithName)
@@ -112,8 +109,8 @@ public class SessionService {
         return sessionGroupedDTO;
     }
     
-    public List<SetGroupedDTO> groupConsecutiveSetsByExercise(List<SetInSessionDTO> exerciseSets){
-        List<SetGroupedDTO> groupedSets = new ArrayList<>();
+    public List<SetsGroupedDTO> groupConsecutiveSetsByExercise(List<SetInSessionDTO> exerciseSets){
+        List<SetsGroupedDTO> groupedSets = new ArrayList<>();
         List<SetInSessionDTO> currentGroup = new ArrayList<>();
 
         for(int i=0; i < exerciseSets.size(); i++){
@@ -122,7 +119,7 @@ public class SessionService {
             if (i==0 || currentSet.exercise_id() == exerciseSets.get(i-1).exercise_id()) {
                 currentGroup.add(currentSet);
             } else {
-                groupedSets.add(new SetGroupedDTO(new ArrayList<>(currentGroup)));
+                groupedSets.add(new SetsGroupedDTO(new ArrayList<>(currentGroup)));
                 currentGroup.clear();
                 currentGroup.add(currentSet);
             }
@@ -132,20 +129,20 @@ public class SessionService {
         }
 
         if(!currentGroup.isEmpty()){
-            groupedSets.add(new SetGroupedDTO(currentGroup));
+            groupedSets.add(new SetsGroupedDTO(currentGroup));
         }
 
         return groupedSets;
     }
 
-    public SetsGroupedWithNameDTO groupedSetToGroupedSetWithName(SetGroupedDTO entrySet){
+    public SetsGroupedWithNameDTO groupedSetToGroupedSetWithName(SetsGroupedDTO entrySet){
         int exerciseId = entrySet.setGroup().get(0).exercise_id();
         String shortName = exerciseRepository.findById(exerciseId)
                         .map(Exercise::getShortName)
                         .orElseThrow(()->new NoSuchElementException("Exercise not found with id: " + exerciseId));
 
-        List<SetInSetsGroupedDTO> sets = entrySet.setGroup().stream()
-            .map(set -> new SetInSetsGroupedDTO(set.weight(), set.repNumber(), set.isMax()))
+        List<SetBasicDTO> sets = entrySet.setGroup().stream()
+            .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
             .toList();
 
         return new SetsGroupedWithNameDTO(shortName, sets);        
@@ -217,7 +214,7 @@ public class SessionService {
     public boolean hasSameWeight(SetsGroupedWithNameDTO sets){
         double firstWeight = sets.sets().get(0).weight();
 
-        for(SetInSetsGroupedDTO set : sets.sets()){
+        for(SetBasicDTO set : sets.sets()){
             if(set.weight() != firstWeight){
                 return false;
             }
@@ -228,7 +225,7 @@ public class SessionService {
     public boolean hasSameReps(SetsGroupedWithNameDTO sets){
         int firstNb = sets.sets().get(0).repNumber();
 
-        for(SetInSetsGroupedDTO set : sets.sets()){
+        for(SetBasicDTO set : sets.sets()){
             if(set.repNumber() != firstNb){
                 return false;
             }

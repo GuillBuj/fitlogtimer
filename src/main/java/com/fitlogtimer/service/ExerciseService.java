@@ -1,6 +1,7 @@
 package com.fitlogtimer.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,4 +29,8 @@ public class ExerciseService {
     public List<Exercise> getAllExercises(){
         return exerciseRepository.findAll();
     };
+
+    public Optional<Exercise> getById(int id){
+        return exerciseRepository.findById(id);
+    }
 }

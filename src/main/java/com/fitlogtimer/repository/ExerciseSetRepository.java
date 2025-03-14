@@ -1,12 +1,15 @@
 package com.fitlogtimer.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.fitlogtimer.model.ExerciseSet;
+import com.fitlogtimer.model.Session;
 
 import jakarta.transaction.Transactional;
 
@@ -21,6 +24,8 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
 
     //@Query(value = "ALTER TABLE exerciseSet AUTO_INCREMENT = 1", nativeQuery = true)  PASSAGE SUR MYSQL
     
+    // @Query("SELECT e FROM ExerciseSet e WHERE e.sessionId = :sessionId ORDER BY e.id DESC")
+    // Optional<ExerciseSet> findTopBySessionIdOrderByIdDesc(@Param("sessionId") int sessionId);
     
     @Modifying
     @Transactional

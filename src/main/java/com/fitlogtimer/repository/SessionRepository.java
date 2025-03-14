@@ -1,5 +1,7 @@
 package com.fitlogtimer.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +19,6 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
     void deleteById(int id);
 
     boolean existsById(int id);
-
 
     @Modifying
     @Transactional

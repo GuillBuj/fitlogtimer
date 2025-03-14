@@ -18,6 +18,7 @@ import com.fitlogtimer.dto.SetsSameRepsDTO;
 import com.fitlogtimer.dto.SetsSameWeightAndRepsDTO;
 import com.fitlogtimer.dto.SetsSameWeightDTO;
 import com.fitlogtimer.dto.SetGroupedDTO;
+import com.fitlogtimer.dto.LastSetDTO;
 import com.fitlogtimer.dto.SessionDetailsDTO;
 import com.fitlogtimer.dto.SessionDetailsGroupedDTO;
 import com.fitlogtimer.dto.SessionDetailsOutDTO;
@@ -26,8 +27,10 @@ import com.fitlogtimer.dto.SessionOutDTO;
 import com.fitlogtimer.dto.SetBasicDTO;
 import com.fitlogtimer.exception.NotFoundException;
 import com.fitlogtimer.model.Exercise;
+import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Session;
 import com.fitlogtimer.repository.ExerciseRepository;
+import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.SessionRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +44,9 @@ public class SessionService {
 
     @Autowired
     private ExerciseRepository exerciseRepository;
+
+    @Autowired
+    private ExerciseSetRepository exerciseSetRepository;
 
     public List<Session> getAllSessions() {
         return sessionRepository.findAll();
@@ -230,4 +236,16 @@ public class SessionService {
         }
         return true;
     }
+
+    public LastSetDTO getLastSetDTO(int id){
+
+        Session session = sessionRepository.findById(id).get();
+
+        List<ExerciseSet> sets = session.getSetRecords();
+
+        ExerciseSet lastSet = sets.getLast();
+
+        return new LastSetDTO(lastSet.getExercise().getId(), lastSet.getExercise().getName(), lastSet.getRepNumber(), lastSet.getWeight());
+    }
+
 }

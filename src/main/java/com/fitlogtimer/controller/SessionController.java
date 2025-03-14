@@ -16,12 +16,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
+import com.fitlogtimer.dto.LastSetDTO;
 import com.fitlogtimer.dto.SessionDetailsDTO;
 import com.fitlogtimer.dto.SessionDetailsOutDTO;
 import com.fitlogtimer.dto.SessionGroupedDTO;
 import com.fitlogtimer.dto.SessionInDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
+import com.fitlogtimer.dto.SetInSessionDTO;
+import com.fitlogtimer.dto.SetInSessionOutDTO;
 import com.fitlogtimer.model.Exercise;
+import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Session;
 import com.fitlogtimer.service.ExerciseService;
 import com.fitlogtimer.service.SessionService;
@@ -59,8 +63,10 @@ public class SessionController {
     public String getSessionDetails(@PathVariable int id, Model model) {
         
         SessionGroupedDTO sessionData = sessionService.getSessionGrouped(id);
-        ExerciseSetInDTO exerciseSet = new ExerciseSetInDTO(1,0.0,0,false,"",id);
+        LastSetDTO lastSet = sessionService.getLastSetDTO(id);
+        ExerciseSetInDTO exerciseSet = new ExerciseSetInDTO(lastSet != null ? lastSet.exerciseId() : 1, lastSet != null ? lastSet.weight() : 0.0, lastSet != null ? lastSet.nbReps() : 0,false,"",id);
         List<Exercise> exercises=exerciseService.getAllExercises();
+
         model.addAttribute("sessionData", sessionData);
         model.addAttribute("exercises", exercises);
         model.addAttribute("exerciseSetDTO", exerciseSet);
@@ -73,12 +79,15 @@ public class SessionController {
     public String getSessionDetailsPlus(@PathVariable int id, Model model) {
         
         SessionDetailsOutDTO sessionData = sessionService.getSessionDetailsBrut(id);
-        ExerciseSetInDTO exerciseSet = new ExerciseSetInDTO(1,0.0,0,false,"",id);
+        LastSetDTO lastSet = sessionService.getLastSetDTO(id);
+        ExerciseSetInDTO exerciseSet = new ExerciseSetInDTO(lastSet != null ? lastSet.exerciseId() : 1, lastSet != null ? lastSet.weight() : 0.0, lastSet != null ? lastSet.nbReps() : 0,false,"",id);
         List<Exercise> exercises=exerciseService.getAllExercises();
+        
+        
         model.addAttribute("sessionData", sessionData);
         model.addAttribute("exercises", exercises);
         model.addAttribute("exerciseSetDTO", exerciseSet);
-           
+        
         log.info(model.toString());
         return "session-details-plus";
     }
@@ -106,6 +115,7 @@ public class SessionController {
         model.addAttribute("sessionsList", sessionsList);
         return "session-list";
     }
+    
     
 
     @GetMapping("/create")

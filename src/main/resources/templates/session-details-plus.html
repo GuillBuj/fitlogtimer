@@ -50,7 +50,8 @@
         <div class="form-group">
             <label for="exercise">Exercice :</label>
             <select id="exercise" th:field="*{exercise_id}" required>
-                <option th:each="exercise : ${exercises}" th:value="${exercise.id}" th:text="${exercise.name}"></option>
+                <option th:each="exercise : ${exercises}" th:value="${exercise.id}" th:text="${exercise.name}"
+                    th:selected="${lastSet != null && lastSet.exerciseId == exercise.id}"></option>
             </select>
         </div>
     
@@ -61,7 +62,9 @@
     
         <div class="form-group">
             <label for="repNumber">Nombre de répétitions :</label>
-            <input type="number" class="repsInput" id="repNumber" th:field="*{repNumber}" required />
+            <!-- <input type="number" class="repsInput" id="repNumber" th:field="*{repNumber}" required /> -->
+            <input type="number" class="repsInput" id="repNumber" th:field="*{repNumber}" 
+            th:value="${lastSet != null ? lastSet.nbReps : ''}" required />
         </div>
     
         <div class="form-group">

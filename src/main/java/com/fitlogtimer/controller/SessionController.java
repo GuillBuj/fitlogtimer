@@ -63,9 +63,8 @@ public class SessionController {
     public String getSessionDetails(@PathVariable int id, Model model) {
         
         SessionGroupedDTO sessionData = sessionService.getSessionGrouped(id);
-        LastSetDTO lastSet = sessionService.getLastSetDTO(id);
-        ExerciseSetInDTO exerciseSet = new ExerciseSetInDTO(lastSet != null ? lastSet.exerciseId() : 1, lastSet != null ? lastSet.weight() : 0.0, lastSet != null ? lastSet.nbReps() : 0,false,"",id);
-        List<Exercise> exercises=exerciseService.getAllExercises();
+        ExerciseSetInDTO exerciseSet = sessionService.setFormByLastSetDTO(id);
+        List<Exercise> exercises = exerciseService.getAllExercises();
 
         model.addAttribute("sessionData", sessionData);
         model.addAttribute("exercises", exercises);
@@ -79,10 +78,8 @@ public class SessionController {
     public String getSessionDetailsPlus(@PathVariable int id, Model model) {
         
         SessionDetailsOutDTO sessionData = sessionService.getSessionDetailsBrut(id);
-        LastSetDTO lastSet = sessionService.getLastSetDTO(id);
-        ExerciseSetInDTO exerciseSet = new ExerciseSetInDTO(lastSet != null ? lastSet.exerciseId() : 1, lastSet != null ? lastSet.weight() : 0.0, lastSet != null ? lastSet.nbReps() : 0,false,"",id);
+        ExerciseSetInDTO exerciseSet = sessionService.setFormByLastSetDTO(id);
         List<Exercise> exercises=exerciseService.getAllExercises();
-        
         
         model.addAttribute("sessionData", sessionData);
         model.addAttribute("exercises", exercises);

@@ -18,6 +18,7 @@ import com.fitlogtimer.dto.SetsSameRepsDTO;
 import com.fitlogtimer.dto.SetsSameWeightAndRepsDTO;
 import com.fitlogtimer.dto.SetsSameWeightDTO;
 import com.fitlogtimer.dto.SetGroupedDTO;
+import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.LastSetDTO;
 import com.fitlogtimer.dto.SessionDetailsDTO;
 import com.fitlogtimer.dto.SessionDetailsGroupedDTO;
@@ -246,6 +247,17 @@ public class SessionService {
         ExerciseSet lastSet = sets.getLast();
 
         return new LastSetDTO(lastSet.getExercise().getId(), lastSet.getExercise().getName(), lastSet.getRepNumber(), lastSet.getWeight());
+    }
+
+    public ExerciseSetInDTO setFormByLastSetDTO(int id){
+
+        Session session = sessionRepository.findById(id).get();
+
+        List<ExerciseSet> sets = session.getSetRecords();
+
+        ExerciseSet lastSet = sets.getLast();
+
+        return new ExerciseSetInDTO(lastSet.getExercise().getId(), lastSet.getWeight(), lastSet.getRepNumber(), false, "", id);
     }
 
 }

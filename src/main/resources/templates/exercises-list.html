@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <title>Liste des exercices</title>
+</head>
+<body>
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
+    <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+    <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+
+    <h1>Liste des exercices</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Short</th>
+                <th>Nom</th>
+                <th>Muscles</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="exercise : ${exercises}">
+                <td th:text="${exercise.id}"></td>
+                <td th:text="${exercise.shortName}"></td>
+                <td th:text="${exercise.name}"></td>
+                <td th:text="${exercise.muscle}"></td>
+                <td th:text="${exercise.family}"></td>
+                
+                <td>
+                    <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
+                    <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- <a href="/sessions/create" class="btn-new">Nouvelle séance</a> -->
+</body>
+</html>

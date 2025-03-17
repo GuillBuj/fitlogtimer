@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
     <h1>Créer une nouvelle séance</h1>
 
     <form th:action="@{/sessions/create}" class="vertical-form" th:object="${sessionData}" method="post">

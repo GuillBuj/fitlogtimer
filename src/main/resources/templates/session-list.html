@@ -5,6 +5,7 @@
     <title>Liste des séances</title>
 </head>
 <body>
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 

@@ -215,3 +215,40 @@ form {
 .btn-new:active {
     background-color: #1F5C3D; /* Gris encore plus foncé au clic */
 }
+
+/* Style de base pour la navbar */
+.navbar {
+    background-color: #333; /* Fond sombre */
+    padding: 10px 20px; /* Espacement interne */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Style du nom de l'application */
+.navbar-brand {
+    color: #fff; /* Texte blanc */
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Style des onglets */
+.navbar-tabs {
+    display: flex;
+    gap: 15px; /* Espace entre les onglets */
+}
+
+.navbar-tabs a {
+    color: #fff; /* Texte blanc */
+    text-decoration: none;
+    font-size: 1.1em;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+/* Effet au survol */
+.navbar-tabs a:hover {
+    background-color: #555; /* Fond plus clair au survol */
+}

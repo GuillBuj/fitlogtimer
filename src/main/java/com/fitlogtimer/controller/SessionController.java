@@ -86,7 +86,7 @@ public class SessionController {
         return "redirect:/sessions/";
     }
 
-    @GetMapping("/")
+    @GetMapping
     public String getSessionsList(Model model) {
         List<Session> sessionsList = sessionService.getAllSessions();
         if (sessionsList.size()>0){

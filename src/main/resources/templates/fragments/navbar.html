@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+    <nav th:fragment="navbar" class="navbar">
+        <a class="navbar-brand" href="/">FitLogTimer</a>
+
+        <div class="navbar-tabs">
+            <a href="/sessions">Séances</a>
+            <a href="/exercises">Ex</a>
+        </div>
+    </nav>
+
+</body>
+</html>

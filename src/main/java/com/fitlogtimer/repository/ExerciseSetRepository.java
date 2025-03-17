@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.fitlogtimer.model.ExerciseSet;
+import com.fitlogtimer.model.Session;
 
 import jakarta.transaction.Transactional;
 
@@ -30,5 +31,7 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     void resetExerciseSetId();
 
     List<ExerciseSet> findByExerciseId(int exerciseId);
+
+    List<ExerciseSet> findByExerciseIdOrderByIdDesc(int sessionId);
 
 }

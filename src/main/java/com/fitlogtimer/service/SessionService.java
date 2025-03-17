@@ -1,6 +1,7 @@
 package com.fitlogtimer.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.fitlogtimer.dto.SetInSessionDTO;
 import com.fitlogtimer.dto.SetInSessionOutDTO;
 import com.fitlogtimer.dto.SetsGroupedFinalDTO;
+import com.fitlogtimer.dto.SetsGroupedFinalForExDTO;
 import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
 import com.fitlogtimer.dto.postGroup.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameRepsDTO;
@@ -47,7 +49,7 @@ public class SessionService {
     private ExerciseSetRepository exerciseSetRepository;
 
     public List<Session> getAllSessions() {
-        return sessionRepository.findAll();
+        return sessionRepository.findAllByOrderByDateDesc();
     }
     
     public SessionOutDTO saveSession(Session session) {
@@ -72,24 +74,6 @@ public class SessionService {
         return new SessionDetailsOutDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
     }
     
-    // public SessionDetailsDTO getSessionDetails(int id){
-    //     Session session = sessionRepository.findById(id)
-    //         .orElseThrow(()->new NotFoundException("Session not found: " + id));
-
-    //     List<SetInSessionDTO> setsDTO = getSetsDTO(session);
-        
-    //     return new SessionDetailsDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
-    // }
-
-    // public SessionDetailsGroupedDTO getSessionDetailsGrouped(int id){
-    //     Session session = sessionRepository.findById(id)
-    //         .orElseThrow(()->new NotFoundException("Session not found: " + id));
-
-    //     List<SetGroupedDTO> groupedSetsDTO = groupConsecutiveSetsByExercise(getSetsDTO(session));
-
-    //     return new SessionDetailsGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), groupedSetsDTO);
-    // }
-
     public SessionGroupedDTO getSessionGrouped(int id){
         Session session = sessionRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Session not found: " + id));

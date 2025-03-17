@@ -1,8 +1,11 @@
 package com.fitlogtimer.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.fitlogtimer.model.Session;
 
@@ -18,6 +21,8 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
 
     boolean existsById(int id);
 
+    List<Session> findAllByOrderByDateDesc();
+    
     @Modifying
     @Transactional
     @Query(value = "ALTER TABLE session ALTER COLUMN id RESTART WITH 1", nativeQuery = true)

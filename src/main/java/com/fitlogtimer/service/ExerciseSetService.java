@@ -103,34 +103,27 @@ public class ExerciseSetService {
     }
 
     public SetsByExGroupedDTO getSetsGroupedCleanedBySession(int id) {
-        // Récupérer l'exercice par son ID
         Exercise exercise = exerciseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Exercise not found: " + id));
     
-        // Récupérer tous les sets pour cet exercice et les grouper par session
         List<SetsGroupedForExDTO> groupedSets = groupSetsBySession(getSetsByExerciseId(id));
     
-        // Transformer chaque SetsGroupedForExDTO en SetsGroupedFinalForExDTO
         List<SetsGroupedFinalForExDTO> finalGroupedSets = groupedSets.stream()
                 .map(group -> {
-                    // Récupérer la session par son ID
                     Session session = sessionRepository.findById(group.idSession())
                             .orElseThrow(() -> new NotFoundException("Session not found: " + group.idSession()));
-    
-                    // Appliquer la fonction clean à setGroup
+
                     Object cleanedSets = cleanSetsGroup(group.setGroup());
     
-                    // Créer un nouvel objet SetsGroupedFinalForExDTO
                     return new SetsGroupedFinalForExDTO(
-                            session.getDate(),       // Date de la session
-                            session.getBodyWeight(),      // Poids de la session
-                            session.getComment(),    // Commentaire de la session
-                            cleanedSets               // Sets nettoyés
+                            session.getDate(),
+                            session.getBodyWeight(),
+                            session.getComment(),
+                            cleanedSets
                     );
                 })
                 .collect(Collectors.toList());
     
-        // Retourner l'objet SetsGroupedBySessionDTO
         return new SetsByExGroupedDTO(id, exercise.getName(), finalGroupedSets);
     }
     

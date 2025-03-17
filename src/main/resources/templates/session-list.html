@@ -13,16 +13,14 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Date</th>
                 <th>Poids</th>
                 <th>Commentaires</th>
-                <th>Actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="sessionData : ${sessionsList}">
-                <td th:text="${sessionData.id}"></td>
                 <td th:text="${sessionData.date}"></td>
                 <td th:text="${#numbers.formatDecimal(sessionData.bodyWeight, 1, 1)} + ' kg'"></td>
                 <td th:text="${sessionData.comment}"></td>

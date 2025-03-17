@@ -40,11 +40,6 @@ public class SessionController {
     @Autowired
     private ExerciseService exerciseService;
 
-    @PostMapping
-    public SessionOutDTO createSession(@RequestBody Session session) {
-        return sessionService.saveSession(session);
-    }
-
     @GetMapping("/{id}")
     public String getSessionDetails(@PathVariable int id, Model model) {
         
@@ -120,7 +115,7 @@ public class SessionController {
         sessionService.saveSession(session);
 
         redirectAttributes.addFlashAttribute("successMessage", "Séance créée avec succès");
-        return "redirect:/sessions/";
+        return "redirect:/sessions";
     }
 
 }

@@ -1,0 +1,5 @@
+# Web server failed to start. Port 8080 was already in use.
+netstat -ano | findstr 8080
+  TCP    0.0.0.0:8080           0.0.0.0:0              LISTENING       *<pid>*
+  TCP    [::]:8080              [::]:0                 LISTENING       *<pid>*
+taskkill /F /PID *<pid>*

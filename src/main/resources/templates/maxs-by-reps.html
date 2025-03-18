@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <title>Poids max par nombre de réps</title>
+</head>
+<body>
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
+    <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+    <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+
+    <h1><span th:text="${maxsWithName.name}"></span> : maxs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nb reps</th>
+                <th>Poids</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="entry : ${maxsWithName.maxs.maxsByReps}">
+                <td th:text="${entry.key}">Reps</td>
+                <td th:text="${entry.value.maxWeight}">Max Weight</td>
+                <td th:text="${entry.value.date}">Date</td>
+        </tbody>
+    </table>
+    <a th:href="@{/exercises}" class="btn-link">Retour</a>
+</body>
+</html>

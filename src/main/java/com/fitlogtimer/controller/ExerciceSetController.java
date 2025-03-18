@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.SetsByExGroupedDTO;
 import com.fitlogtimer.dto.SetsGroupedForExDTO;
+import com.fitlogtimer.dto.stats.MaxsByRepsDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.service.ExerciseService;
@@ -87,5 +88,6 @@ public class ExerciceSetController {
         log.info(model.toString());
         return "sets-by-exercise-grouped-cleaned";
     }
+
 }
 

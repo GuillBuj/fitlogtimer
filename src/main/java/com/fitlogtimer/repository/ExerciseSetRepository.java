@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Session;
@@ -32,6 +33,10 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
 
     List<ExerciseSet> findByExerciseId(int exerciseId);
 
-    List<ExerciseSet> findByExerciseIdOrderByIdDesc(int sessionId);
+    @Query("SELECT exset FROM ExerciseSet exset " +
+           "JOIN exset.session s " +
+           "WHERE exset.exercise.id = :exerciseId " +
+           "ORDER BY s.date DESC, s.id DESC")
+    List<ExerciseSet> findByExerciseIdOrderBySessionDateAndIdDesc(@Param("exerciseId") int exerciseId);
 
 }

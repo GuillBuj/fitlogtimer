@@ -78,7 +78,7 @@ public class SessionController {
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Séance non supprimée");
         }
-        return "redirect:/sessions/";
+        return "redirect:/sessions";
     }
 
     @GetMapping

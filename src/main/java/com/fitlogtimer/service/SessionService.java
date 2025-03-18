@@ -1,9 +1,9 @@
 package com.fitlogtimer.service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.fitlogtimer.dto.SetInSessionDTO;
 import com.fitlogtimer.dto.SetInSessionOutDTO;
 import com.fitlogtimer.dto.SetsGroupedFinalDTO;
-import com.fitlogtimer.dto.SetsGroupedFinalForExDTO;
 import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
 import com.fitlogtimer.dto.postGroup.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameRepsDTO;
@@ -219,24 +218,60 @@ public class SessionService {
 
     public LastSetDTO getLastSetDTO(int id){
 
-        Session session = sessionRepository.findById(id).get();
-
+        Optional<Session> optionalSession = sessionRepository.findById(id);
+        if (optionalSession.isEmpty()) {return null;}
+    
+        Session session = optionalSession.get();
+    
         List<ExerciseSet> sets = session.getSetRecords();
-
-        ExerciseSet lastSet = sets.getLast();
-
-        return new LastSetDTO(lastSet.getExercise().getId(), lastSet.getExercise().getName(), lastSet.getRepNumber(), lastSet.getWeight());
+        if (sets == null || sets.isEmpty()) {return null;}
+    
+        ExerciseSet lastSet = sets.get(sets.size() - 1);
+    
+        if (lastSet == null || lastSet.getExercise() == null) {return null;}
+    
+        return new LastSetDTO(
+            lastSet.getExercise().getId(),
+            lastSet.getExercise().getName(),
+            lastSet.getRepNumber(),
+            lastSet.getWeight()
+        );
     }
 
-    public ExerciseSetInDTO setFormByLastSetDTO(int id){
+    public ExerciseSetInDTO setFormByLastSetDTO(int id) {
 
-        Session session = sessionRepository.findById(id).get();
-
+        int defaultExerciseId = 1;
+        double defaultWeight = 0.0;
+        int defaultRepNumber = 0;
+        boolean defaultBoolean = false;
+        String defaultComment = "";
+    
+        Optional<Session> optionalSession = sessionRepository.findById(id);
+        if (optionalSession.isEmpty()) {
+            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultComment, id);
+        }
+    
+        Session session = optionalSession.get();
+    
         List<ExerciseSet> sets = session.getSetRecords();
-
-        ExerciseSet lastSet = sets.getLast();
-
-        return new ExerciseSetInDTO(lastSet.getExercise().getId(), lastSet.getWeight(), lastSet.getRepNumber(), false, "", id);
+        if (sets == null || sets.isEmpty()) {
+            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultComment, id);
+        }
+    
+        ExerciseSet lastSet = sets.get(sets.size() - 1);
+    
+        if (lastSet == null || lastSet.getExercise() == null) {
+            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultComment, id);
+        }
+    
+        return new ExerciseSetInDTO(
+            lastSet.getExercise().getId(),
+            lastSet.getWeight(),
+            lastSet.getRepNumber(),
+            defaultBoolean,
+            defaultComment,
+            id
+        );
     }
 
 }

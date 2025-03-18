@@ -1,7 +1,6 @@
 package com.fitlogtimer.service;
 
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,14 +11,10 @@ import org.springframework.stereotype.Service;
 import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.ExerciseSetOutDTO;
 import com.fitlogtimer.dto.SetBasicDTO;
-import com.fitlogtimer.dto.SetInSessionDTO;
 import com.fitlogtimer.dto.SetsByExGroupedDTO;
 import com.fitlogtimer.dto.SetsGroupedBySessionDTO;
-import com.fitlogtimer.dto.SetsGroupedDTO;
-import com.fitlogtimer.dto.SetsGroupedFinalDTO;
 import com.fitlogtimer.dto.SetsGroupedFinalForExDTO;
 import com.fitlogtimer.dto.SetsGroupedForExDTO;
-import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
 import com.fitlogtimer.dto.postGroup.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameRepsDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameWeightAndRepsDTO;
@@ -90,7 +85,7 @@ public class ExerciseSetService {
     }
 
     public List<ExerciseSet> getSetsByExerciseId(int id){
-        return exerciseSetRepository.findByExerciseId(id);
+        return exerciseSetRepository.findByExerciseIdOrderBySessionDateAndIdDesc(id);
     }
 
     public SetsGroupedBySessionDTO getSetsGroupedBySession(int id){
@@ -98,8 +93,7 @@ public class ExerciseSetService {
 
         List<SetsGroupedForExDTO> groupedSets = groupSetsBySession(getSetsByExerciseId(id));
 
-        return new SetsGroupedBySessionDTO(id, exercise.getName(), groupedSets);
-     
+        return new SetsGroupedBySessionDTO(id, exercise.getName(), groupedSets); 
     }
 
     public SetsByExGroupedDTO getSetsGroupedCleanedBySession(int id) {
@@ -127,32 +121,6 @@ public class ExerciseSetService {
         return new SetsByExGroupedDTO(id, exercise.getName(), finalGroupedSets);
     }
     
-    // public List<SetsGroupedForExDTO> groupSetsBySession(List<ExerciseSet> exerciseSets){
-    //     List<SetsGroupedForExDTO> groupedSets = new ArrayList<>();
-    //     List<SetBasicDTO> currentGroup = new ArrayList<>();
-
-    //     for(int i=0; i < exerciseSets.size(); i++){
-    //         ExerciseSet currentSet = exerciseSets.get(i);
-
-    //         if (i==0 || currentSet.getSession() == exerciseSets.get(i-1).getSession()) {
-    //             currentGroup.add(new SetBasicDTO(currentSet.getRepNumber(), currentSet.getWeight()));
-    //         } else {
-    //             groupedSets.add(new SetsGroupedForExDTO(currentSet.getId(), new ArrayList<>(currentGroup)));
-    //             currentGroup.clear();
-    //             currentGroup.add(new SetBasicDTO(currentSet.getRepNumber(), currentSet.getWeight()));
-    //         }
-    //         System.out.println(i + " after: groupedSets: " + groupedSets);
-    //         System.out.println(i + " after: currentGroup: " + currentGroup);
-
-    //     }
-
-    //     if(!currentGroup.isEmpty()){
-    //         groupedSets.add(new SetsGroupedForExDTO(0, currentGroup));
-    //     }
-
-    //     return groupedSets;
-    // }
-
     public List<SetsGroupedForExDTO> groupSetsBySession(List<ExerciseSet> exerciseSets) {
         List<SetsGroupedForExDTO> groupedSets = new ArrayList<>();
         List<SetBasicDTO> currentGroup = new ArrayList<>();

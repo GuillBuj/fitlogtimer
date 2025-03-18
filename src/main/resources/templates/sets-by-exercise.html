@@ -29,6 +29,6 @@
                 <td th:text="${set.weight}/${set.session.bodyWeight}"></td>
             </tr>
         </table>
-        <!-- <p th:unless="${sessionData.exerciseSets}">Aucun exercice enregistré pour cette session.</p> -->
+        <a th:href="@{/exercises}" class="btn-link">Retour</a>
 </body>
 </html>

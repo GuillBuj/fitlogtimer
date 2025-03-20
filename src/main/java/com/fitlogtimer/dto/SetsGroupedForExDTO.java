@@ -4,6 +4,6 @@ import java.util.List;
 
 public record SetsGroupedForExDTO(
     int idSession,    
-    List<SetBasicDTO> setGroup) {
+    List<SetBasicWith1RMDTO> setGroup) {
 
 }

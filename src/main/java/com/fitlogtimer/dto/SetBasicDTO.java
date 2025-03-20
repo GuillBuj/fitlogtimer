@@ -4,6 +4,11 @@ public record SetBasicDTO(
     int repNumber, 
     double weight
 ) {
+    SetBasicDTO(SetBasicWith1RMDTO setBasicWith1RMDTO){
+        this(setBasicWith1RMDTO.repNumber(), 
+             setBasicWith1RMDTO.weight());
+    }
+    
     @Override
     public final String toString() {
         return (repNumber + " @ " + weight + "kg");

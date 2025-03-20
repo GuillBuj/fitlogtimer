@@ -45,7 +45,7 @@ public class StatsService {
     //=ARRONDI(SI(AL48<10;MOYENNE(AL47/(1,0278-0,0278*AL48);AL47*AL48^0,1);MOYENNE(AL47*(1+0,0333*AL48);AL47*AL48^0,1));1)
     //AL47: poids
     //AL48: reps
-    public double calculateOneRepMax(int repNumber, double weight){
+    public static double calculateOneRepMax(int repNumber, double weight){
         
         double oneRepMax1 = weight * Math.pow(repNumber, 0.1);
 

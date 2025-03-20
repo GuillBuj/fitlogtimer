@@ -29,7 +29,6 @@ import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Session;
 import com.fitlogtimer.repository.ExerciseRepository;
-import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.SessionRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,9 +42,6 @@ public class SessionService {
 
     @Autowired
     private ExerciseRepository exerciseRepository;
-
-    @Autowired
-    private ExerciseSetRepository exerciseSetRepository;
 
     public List<Session> getAllSessions() {
         return sessionRepository.findAllByOrderByDateDesc();

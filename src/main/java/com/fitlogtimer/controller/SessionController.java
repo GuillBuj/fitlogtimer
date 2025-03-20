@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.SessionInDTO;
-import com.fitlogtimer.dto.SessionOutDTO;
 import com.fitlogtimer.dto.sessionDisplay.SessionDetailsOutDTO;
 import com.fitlogtimer.dto.sessionDisplay.SessionGroupedDTO;
 import com.fitlogtimer.model.Exercise;
@@ -94,8 +92,6 @@ public class SessionController {
         return "session-list";
     }
     
-    
-
     @GetMapping("/create")
     public String showSessionForm(Model model) {
         LocalDate today = LocalDate.now();

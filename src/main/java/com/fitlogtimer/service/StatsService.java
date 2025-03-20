@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fitlogtimer.dto.stats.MaxWeightWith1RMAndDateDTO;
 import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
 import com.fitlogtimer.dto.stats.MaxsByRepsDTO;
 import com.fitlogtimer.model.ExerciseSet;
@@ -29,13 +30,33 @@ public class StatsService {
     }
 
     public MaxsByRepsDTO mapMaxWeightsByReps(int exerciseId, List<Integer> repNumbers) {
-        Map<Integer, MaxWeightWithDateDTO> result = new HashMap<>();
+        Map<Integer, MaxWeightWith1RMAndDateDTO> result = new HashMap<>();
 
         for (int nbReps : repNumbers) {
-            MaxWeightWithDateDTO maxWeight = maxByExAndReps(exerciseId, nbReps);
+            MaxWeightWithDateDTO maxWeightWithDateDTO = maxByExAndReps(exerciseId, nbReps);
+            double weight = maxWeightWithDateDTO.maxWeight();
+            MaxWeightWith1RMAndDateDTO maxWeight = new MaxWeightWith1RMAndDateDTO(weight, calculateOneRepMax(nbReps, weight),maxWeightWithDateDTO.date());
             result.put(nbReps, maxWeight);
         }
 
         return new MaxsByRepsDTO(result);
+    }
+
+    //=ARRONDI(SI(AL48<10;MOYENNE(AL47/(1,0278-0,0278*AL48);AL47*AL48^0,1);MOYENNE(AL47*(1+0,0333*AL48);AL47*AL48^0,1));1)
+    //AL47: poids
+    //AL48: reps
+    public double calculateOneRepMax(int repNumber, double weight){
+        
+        double oneRepMax1 = weight * Math.pow(repNumber, 0.1);
+
+        double oneRepMax;
+
+        if(repNumber<10){
+            oneRepMax = ((weight / (1.0278 - (0.0278 * repNumber))) + oneRepMax1) / 2;
+        } else {
+            oneRepMax = ((weight * (1 + (0.0333 * repNumber))) + oneRepMax1) / 2;
+        }
+
+        return Math.round(oneRepMax * 10) / 10.0;
     }
 }

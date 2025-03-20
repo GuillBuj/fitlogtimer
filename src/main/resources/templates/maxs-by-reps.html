@@ -15,6 +15,7 @@
             <tr>
                 <th>Nb reps</th>
                 <th>Poids</th>
+                <th>1RMest</th>
                 <th>Date</th>
             </tr>
         </thead>
@@ -22,6 +23,7 @@
             <tr th:each="entry : ${maxsWithName.maxs.maxsByReps}">
                 <td th:text="${entry.key}">Reps</td>
                 <td th:text="${entry.value.maxWeight}">Max Weight</td>
+                <td th:text="${entry.value.RMest}">Max Weight</td>
                 <td th:text="${entry.value.date}">Date</td>
         </tbody>
     </table>

@@ -17,10 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.SetsByExGroupedDTO;
 import com.fitlogtimer.dto.SetsGroupedForExDTO;
-import com.fitlogtimer.dto.stats.MaxsByRepsDTO;
-import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
-import com.fitlogtimer.service.ExerciseService;
 import com.fitlogtimer.service.ExerciseSetService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ExerciceSetController {
     @Autowired
     private ExerciseSetService exerciseSetService;
-
-    @Autowired
-    private ExerciseService exerciseService;
 
     @PostMapping("/add")
     public String addExerciseSet(@ModelAttribute ExerciseSetInDTO exerciseSetDTO, RedirectAttributes redirectAttributes) {

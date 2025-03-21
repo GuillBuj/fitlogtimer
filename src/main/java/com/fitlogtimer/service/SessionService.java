@@ -31,6 +31,7 @@ import com.fitlogtimer.model.Session;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.SessionRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -47,11 +48,13 @@ public class SessionService {
         return sessionRepository.findAllByOrderByDateDesc();
     }
     
+    @Transactional
     public SessionOutDTO saveSession(Session session) {
         Session savedSession = sessionRepository.save(session);
         return new SessionOutDTO(savedSession.getId(), savedSession.getDate(), savedSession.getBodyWeight(), savedSession.getComment());
     }
 
+    @Transactional
     public boolean deleteSession(int sessionId) {
         if (sessionRepository.existsById(sessionId)) {
             sessionRepository.deleteById(sessionId);

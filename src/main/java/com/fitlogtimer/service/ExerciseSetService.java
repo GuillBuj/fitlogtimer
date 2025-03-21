@@ -22,6 +22,7 @@ import com.fitlogtimer.dto.postGroup.SetsSameRepsDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameWeightAndRepsDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameWeightDTO;
 import com.fitlogtimer.exception.NotFoundException;
+import com.fitlogtimer.mapper.ExerciseSetMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Session;
@@ -44,6 +45,8 @@ public class ExerciseSetService {
     @Autowired
     private SessionRepository sessionRepository;
 
+    @Autowired
+    private ExerciseSetMapper exerciseSetMapper;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -66,15 +69,7 @@ public class ExerciseSetService {
         exerciseSet.setSession(session);
 
         ExerciseSet savedExercise = exerciseSetRepository.save(exerciseSet);
-        return new ExerciseSetOutDTO(
-            savedExercise.getId(),
-            savedExercise.getExercise().getId(),
-            savedExercise.getWeight(),
-            savedExercise.getRepNumber(),
-            savedExercise.isMax(),
-            savedExercise.getComment(),
-            savedExercise.getSession().getId()
-        );
+        return exerciseSetMapper.toExerciseSetOutDTO(savedExercise);
     }
 
     @Transactional
@@ -135,8 +130,8 @@ public class ExerciseSetService {
     //set max 1RMest dans une liste de sets groupés par séance
     public SetBasicWith1RMDTO getMaxByDateForEx(List<SetBasicWith1RMDTO> setsGroupedBySession) {
         return setsGroupedBySession.stream()
-                .max(Comparator.comparingDouble(SetBasicWith1RMDTO::oneRepMax)) // Trouver le set avec le 1RM max
-                .orElseThrow(() -> new IllegalArgumentException("No sets available")); // Lancer une exception si la liste est vide
+                .max(Comparator.comparingDouble(SetBasicWith1RMDTO::oneRepMax))
+                .orElseThrow(() -> new IllegalArgumentException("No sets available"));
     }
 
     //affichage propre
@@ -151,9 +146,7 @@ public class ExerciseSetService {
                     Session session = sessionRepository.findById(group.idSession())
                             .orElseThrow(() -> new NotFoundException("Session not found: " + group.idSession()));
 
-                            List<SetBasicDTO> basicSets = group.setGroup().stream()
-                            .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
-                            .collect(Collectors.toList());
+                    List<SetBasicDTO> basicSets = exerciseSetMapper.toListSetBasicDTO(group.setGroup());
     
                     Object cleanedSets = cleanSetsGroup(basicSets);
     
@@ -219,18 +212,6 @@ public class ExerciseSetService {
             }
         }
         return true;
-    }
-
-    public List<SetBasicWith1RMDTO> listSetBasicAdd1RM(List<SetBasicDTO> setBasicDTOs) {
-        return setBasicDTOs.stream()
-                .map(SetBasicWith1RMDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<SetBasicDTO> listSetBasicRemove1RM(List<SetBasicWith1RMDTO> setBasicWith1RMDtos) {
-        return setBasicWith1RMDtos.stream()
-                .map(SetBasicDTO::new)
-                .collect(Collectors.toList());
     }
 
 }

@@ -36,9 +36,9 @@
             <td th:text="${set.comment}"></td>
             <td>
                 <form th:action="@{/exerciseSets/{id}(id=${set.id}, idSession=${sessionData.id})}" class="deleteForm"  method="post">
-                <input type="hidden" name="_method" value="delete" />
-                <button type="submit" class="btnDelete">Supprimer</button>
-            </form>
+                    <input type="hidden" name="_method" value="delete" />
+                    <button type="submit" class="btnDelete">Supprimer</button>
+                </form>
             </td>
         </tr>
     </table>

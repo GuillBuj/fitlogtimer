@@ -97,7 +97,7 @@ public class SessionController {
         LocalDate today = LocalDate.now();
         model.addAttribute("sessionData", new SessionInDTO(today, 0.0, ""));
         model.addAttribute("today", today);
-        return "session-form";
+        return "session-create";
     }
 
     @PostMapping("/create")

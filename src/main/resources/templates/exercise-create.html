@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un nouvel exercice</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
+    <h1>Ajouter un nouvel exercice</h1>
+
+    <form th:action="@{/exercises/create}" class="vertical-form" th:object="${exercise}" method="post">
+        <div>
+            <label for="name">Nom :</label>
+            <input type="text" id="name" th:field="*{name}" required>
+        </div>
+        <div>
+            <label for="shortName">Short :</label>
+            <input type="text" id="shortName" th:field="*{shortName}" maxlength="5" oninput="this.value = this.value.toUpperCase()" required>
+        </div>
+        <div class="form-group">
+            <label for="muscle">Muscle :</label>
+            <select id="muscle" th:field="*{muscle}" required>
+                <option th:each="muscle : ${muscles}" 
+                        th:value="${muscle}" 
+                        th:text="${muscle}">Muscle</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="family">Family :</label>
+            <select id="family" th:field="*{family}" required>
+                <option th:each="family : ${families}" 
+                        th:value="${family}" 
+                        th:text="${family}">Family</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="btnValid">Ajouter l'exercice</button>
+        </div>
+    </form>
+
+    <a th:href="@{/exercises}">Retour à la liste des exercices</a>
+</body>
+</html>

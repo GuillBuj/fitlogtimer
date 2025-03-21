@@ -252,3 +252,7 @@ form {
 .navbar-tabs a:hover {
     background-color: #555; /* Fond plus clair au survol */
 }
+
+.shortInput{
+    width: 7ch;
+}

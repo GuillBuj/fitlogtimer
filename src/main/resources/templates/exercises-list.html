@@ -18,6 +18,8 @@
                 <th>Nom</th>
                 <th>Muscles</th>
                 <th>Type</th>
+                <th>+</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -27,15 +29,49 @@
                 <td th:text="${exercise.name}"></td>
                 <td th:text="${exercise.muscle}"></td>
                 <td th:text="${exercise.family}"></td>
-                
                 <td>
                     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
                     <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
                     <a th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">Maxs/rép</a>
                 </td>
+                <td>
+                    <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
+                        <input type="hidden" name="_method" value="delete" />
+                        <button type="submit" class="btnDelete">Supprimer</button>
+                    </form>
+                </td>
             </tr>
         </tbody>
     </table>
-    <!-- <a href="/sessions/create" class="btn-new">Nouvelle séance</a> -->
+    <h1>Ajouter un nouvel exercice</h1>
+
+    <form th:action="@{/exercises/create}" class="single-line-form" th:object="${exercise}" method="post">
+        <div>
+            <label for="name">Nom :</label>
+            <input type="text" id="name" th:field="*{name}" required>
+        </div>
+        <div>
+            <label for="shortName">Short :</label>
+            <input type="text" id="shortName" th:field="*{shortName}" maxlength="5" oninput="this.value = this.value.toUpperCase()" class="shortInput" required>
+        </div>
+        <div class="form-group">
+            <label for="muscle">Muscle :</label>
+            <select id="muscle" th:field="*{muscle}" required>
+                <option th:each="muscle : ${muscles}" 
+                        th:value="${muscle}" 
+                        th:text="${muscle}">Muscle</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="family">Family :</label>
+            <select id="family" th:field="*{family}" required>
+                <option th:each="family : ${families}" 
+                        th:value="${family}" 
+                        th:text="${family}">Family</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="btnValid">Ajouter l'exercice</button>
+        </div>
 </body>
 </html>

@@ -2,11 +2,14 @@ package com.fitlogtimer.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.ExerciseCreateDTO;
+import com.fitlogtimer.dto.ExerciseListItemDTO;
+import com.fitlogtimer.exception.NotFoundException;
 import com.fitlogtimer.mapper.ExerciseMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.repository.ExerciseRepository;
@@ -25,6 +28,9 @@ public class ExerciseService {
 
     @Autowired
     private ExerciseMapper exerciseMapper;
+
+    @Autowired
+    private StatsService statsService;
 
     @Transactional
     public Exercise createExercise(ExerciseCreateDTO exerciseCreateDTO) {
@@ -53,5 +59,20 @@ public class ExerciseService {
         return exerciseRepository.findById(id);
     }
 
+    public ExerciseListItemDTO getExerciseListItem(int id) {
+        Exercise exercise = exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
+        double personalBest = statsService.getPersonalBest(id);
+        
+        return exerciseMapper.toExerciseListItem(exercise, personalBest);
+    }
 
+    public List<ExerciseListItemDTO> getAllExerciseItems() {
+        List<Exercise> exercises = exerciseRepository.findAll();
+
+        return exercises.stream()
+                        .map(exercise -> {
+                            return getExerciseListItem(exercise.getId());
+                        })
+                        .collect(Collectors.toList());
+    }
 }

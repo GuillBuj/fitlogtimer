@@ -16,7 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.SetsByExGroupedDTO;
-import com.fitlogtimer.dto.SetsGroupedForExDTO;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.service.ExerciseSetService;
 
@@ -61,17 +60,17 @@ public class ExerciceSetController {
         return "sets-by-exercise";
     }
 
-    @GetMapping("/byExercise/{exerciseId}/groupedByDate")
-    public String showSetsByExerciseGroupedByDate(@PathVariable int exerciseId, Model model){
+    // @GetMapping("/byExercise/{exerciseId}/groupedByDate")
+    // public String showSetsByExerciseGroupedByDate(@PathVariable int exerciseId, Model model){
 
-        List<ExerciseSet> sets = exerciseSetService.getSetsByExerciseId(exerciseId);
+    //     List<ExerciseSet> sets = exerciseSetService.getSetsByExerciseId(exerciseId);
 
-        List<SetsGroupedForExDTO> groupedSets = exerciseSetService.groupSetsBySession(sets);
+    //     List<SetsGroupedForExDTO> groupedSets = exerciseSetService.groupSetsBySession(sets);
 
-        model.addAttribute("sets", groupedSets);
-        log.info(model.toString());
-        return "sets-by-exercise-grouped";
-    }
+    //     model.addAttribute("sets", groupedSets);
+    //     log.info(model.toString());
+    //     return "sets-by-exercise-grouped";
+    // }
 
     @GetMapping("/byExercise/{exerciseId}/groupedByDateClean")
     public String showSetsByExerciseGroupedCleanedByDate(@PathVariable int exerciseId, Model model){

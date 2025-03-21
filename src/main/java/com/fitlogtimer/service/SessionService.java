@@ -22,9 +22,11 @@ import com.fitlogtimer.dto.sessionDisplay.SessionGroupedDTO;
 import com.fitlogtimer.dto.SetsGroupedDTO;
 import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.LastSetDTO;
+import com.fitlogtimer.dto.SessionInDTO;
 import com.fitlogtimer.dto.SessionOutDTO;
 import com.fitlogtimer.dto.SetBasicDTO;
 import com.fitlogtimer.exception.NotFoundException;
+import com.fitlogtimer.mapper.SessionMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Session;
@@ -42,6 +44,9 @@ public class SessionService {
     private SessionRepository sessionRepository;
 
     @Autowired
+    private SessionMapper sessionMapper;
+
+    @Autowired
     private ExerciseRepository exerciseRepository;
 
     public List<Session> getAllSessions() {
@@ -49,8 +54,10 @@ public class SessionService {
     }
     
     @Transactional
-    public SessionOutDTO saveSession(Session session) {
-        Session savedSession = sessionRepository.save(session);
+    public SessionOutDTO createSession(SessionInDTO sessionInDTO) {
+        
+        Session savedSession = sessionRepository.save(sessionMapper.toSession(sessionInDTO));
+        
         return new SessionOutDTO(savedSession.getId(), savedSession.getDate(), savedSession.getBodyWeight(), savedSession.getComment());
     }
 

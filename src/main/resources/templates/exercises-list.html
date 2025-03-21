@@ -13,9 +13,9 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Short</th>
                 <th>Nom</th>
+                <th>PB</th>
                 <th>Muscles</th>
                 <th>Type</th>
                 <th>+</th>
@@ -24,9 +24,9 @@
         </thead>
         <tbody>
             <tr th:each="exercise : ${exercises}">
-                <td th:text="${exercise.id}"></td>
                 <td th:text="${exercise.shortName}"></td>
                 <td th:text="${exercise.name}"></td>
+                <td th:text="${exercise.personalBest}"></td>
                 <td th:text="${exercise.muscle}"></td>
                 <td th:text="${exercise.family}"></td>
                 <td>

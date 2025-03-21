@@ -28,10 +28,12 @@ public class ExerciseController {
 
     @GetMapping
     public String showExercisesList(Model model){
-        model.addAttribute("exercises", exerciseService.getAllExercises());
+        
+        model.addAttribute("exercises", exerciseService.getAllExerciseItems());
         model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL));
         model.addAttribute("muscles", Muscle.values());
         model.addAttribute("families", Family.values());
+        
         return "exercises-list";
     }
     
@@ -45,20 +47,24 @@ public class ExerciseController {
 
     @PostMapping("/create")
     public String createExercise(@ModelAttribute("exercise") ExerciseCreateDTO exerciseCreateDTO, RedirectAttributes redirectAttributes){
+        
         exerciseService.createExercise(exerciseCreateDTO);
         redirectAttributes.addFlashAttribute("successMessage", "Séance créée avec succès");
+        
         return "redirect:/exercises";
     }
 
     @DeleteMapping("/{id}")
     public String deleteExercise(@PathVariable int id, RedirectAttributes redirectAttributes){
-        log.info("DELETE {}", id);
+        log.info("DELETE /exercises/{}", id);
+        
         boolean isDeleted = exerciseService.deleteExerciseSet(id);
         if (isDeleted) {
             redirectAttributes.addFlashAttribute("successRedMessage", "Exercice supprimé avec succès");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Exercice non supprimé");
         }
+
         return "redirect:/exercises";
     }
  

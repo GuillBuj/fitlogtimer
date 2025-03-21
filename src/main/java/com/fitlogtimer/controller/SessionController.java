@@ -103,12 +103,8 @@ public class SessionController {
     @PostMapping("/create")
     public String createSession(@ModelAttribute("sessionData") SessionInDTO sessionInDTO, RedirectAttributes redirectAttributes) {
         log.info("POST sessions/create: {}", sessionInDTO);
-        Session session = new Session();
-        session.setDate(sessionInDTO.date());
-        session.setBodyWeight(sessionInDTO.bodyWeight());
-        session.setComment(sessionInDTO.comment());
-
-        sessionService.saveSession(session);
+        
+        sessionService.createSession(sessionInDTO);
 
         redirectAttributes.addFlashAttribute("successMessage", "Séance créée avec succès");
         return "redirect:/sessions";

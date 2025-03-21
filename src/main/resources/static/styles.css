@@ -21,6 +21,14 @@ td:first-child {
     font-weight: bold;
 }
 
+tbody tr:nth-child(odd) {
+    background-color: #f8f8f8; /* Couleur de fond pour les lignes impaires */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #ffffff; /* Couleur de fond pour les lignes paires */
+}
+
 form {
     border: 1px solid #ccc;
     border-radius: 8px;

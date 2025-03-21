@@ -42,6 +42,11 @@ public class StatsService {
         return new MaxsByRepsDTO(result);
     }
 
+    public double getPersonalBest(int exerciseId){
+        
+        return maxByExAndReps(exerciseId, 1).maxWeight();
+    }
+
     //1RMest d'après un mix de 3 formules trouvées sur le net
     public static double calculateOneRepMax(int repNumber, double weight){
         

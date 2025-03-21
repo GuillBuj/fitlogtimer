@@ -6,7 +6,8 @@ public record SetsGroupedFinalForExDTO(
     LocalDate date,
     double bodyWeight,
     String comment,
-    Object sets) {
+    Object sets,
+    double est1RM) {
     @Override
     public final String toString() {
         return (date + " : " + sets);

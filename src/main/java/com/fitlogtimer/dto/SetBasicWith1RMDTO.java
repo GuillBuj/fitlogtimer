@@ -7,7 +7,7 @@ public record SetBasicWith1RMDTO(
     double weight,
     double oneRepMax
 ) implements Comparable<SetBasicWith1RMDTO>{
-    SetBasicWith1RMDTO(SetBasicDTO setBasicDTO){
+    public SetBasicWith1RMDTO(SetBasicDTO setBasicDTO){
         this(setBasicDTO.repNumber(), 
              setBasicDTO.weight(), 
              StatsService.calculateOneRepMax(setBasicDTO.repNumber(), setBasicDTO.weight()));

@@ -13,7 +13,6 @@ import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.ExerciseSetOutDTO;
 import com.fitlogtimer.dto.SetBasicDTO;
 import com.fitlogtimer.dto.SetBasicWith1RMDTO;
-import com.fitlogtimer.dto.SetMaxByDateForExDTO;
 import com.fitlogtimer.dto.SetsByExGroupedDTO;
 import com.fitlogtimer.dto.SetsGroupedBySessionDTO;
 import com.fitlogtimer.dto.SetsGroupedFinalForExDTO;
@@ -100,43 +99,9 @@ public class ExerciseSetService {
         return new SetsGroupedBySessionDTO(id, exercise.getName(), groupedSets); 
     }
 
-    public SetBasicWith1RMDTO getMaxByDateForEx(List<SetsGroupedForExDTO> sets) {
-        return sets.stream()
-                .flatMap(group -> group.setGroup().stream())
-                .max(Comparator.comparingDouble(SetBasicWith1RMDTO::oneRepMax))
-                .orElseThrow(() -> new IllegalArgumentException("No sets available"));
-    }
-
-    public SetsByExGroupedDTO getSetsGroupedCleanedBySession(int id) {
-        Exercise exercise = exerciseRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Exercise not found: " + id));
-    
-        List<SetsGroupedForExDTO> groupedSets = groupSetsBySession(getSetsByExerciseId(id));
-    
-        List<SetsGroupedFinalForExDTO> finalGroupedSets = groupedSets.stream()
-                .map(group -> {
-                    Session session = sessionRepository.findById(group.idSession())
-                            .orElseThrow(() -> new NotFoundException("Session not found: " + group.idSession()));
-
-                    List<SetBasicDTO> basicSets = group.setGroup().stream()
-                            .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
-                            .collect(Collectors.toList());
-                    
-                    Object cleanedSets = cleanSetsGroup(basicSets);
-    
-                    return new SetsGroupedFinalForExDTO(
-                            session.getDate(),
-                            session.getBodyWeight(),
-                            session.getComment(),
-                            cleanedSets
-                    );
-                })
-                .collect(Collectors.toList());
-    
-        return new SetsByExGroupedDTO(id, exercise.getName(), finalGroupedSets);
-    }
-    
+    //groupe par séance à partir d'une liste d'exercices
     public List<SetsGroupedForExDTO> groupSetsBySession(List<ExerciseSet> exerciseSets) {
+        
         List<SetsGroupedForExDTO> groupedSets = new ArrayList<>();
         List<SetBasicWith1RMDTO> currentGroup = new ArrayList<>();
     
@@ -166,7 +131,48 @@ public class ExerciseSetService {
     
         return groupedSets;
     }
+    
+    //set max 1RMest dans une liste de sets groupés par séance
+    public SetBasicWith1RMDTO getMaxByDateForEx(List<SetBasicWith1RMDTO> setsGroupedBySession) {
+        return setsGroupedBySession.stream()
+                .max(Comparator.comparingDouble(SetBasicWith1RMDTO::oneRepMax)) // Trouver le set avec le 1RM max
+                .orElseThrow(() -> new IllegalArgumentException("No sets available")); // Lancer une exception si la liste est vide
+    }
 
+    //affichage propre
+    public SetsByExGroupedDTO getSetsGroupedCleanedBySession(int id) {
+        Exercise exercise = exerciseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Exercise not found: " + id));
+    
+        List<SetsGroupedForExDTO> groupedSets = groupSetsBySession(getSetsByExerciseId(id));
+    
+        List<SetsGroupedFinalForExDTO> finalGroupedSets = groupedSets.stream()
+                .map(group -> {
+                    Session session = sessionRepository.findById(group.idSession())
+                            .orElseThrow(() -> new NotFoundException("Session not found: " + group.idSession()));
+
+                            List<SetBasicDTO> basicSets = group.setGroup().stream()
+                            .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
+                            .collect(Collectors.toList());
+    
+                    Object cleanedSets = cleanSetsGroup(basicSets);
+    
+                    SetBasicWith1RMDTO maxSet = getMaxByDateForEx(group.setGroup());
+    
+                    return new SetsGroupedFinalForExDTO(
+                            session.getDate(),
+                            session.getBodyWeight(),
+                            session.getComment(),
+                            cleanedSets,
+                            maxSet.oneRepMax()
+                    );
+                })
+                .collect(Collectors.toList());
+    
+        return new SetsByExGroupedDTO(id, exercise.getName(), finalGroupedSets);
+    }
+    
+    //renvoie une version propre d'une liste de sets pour affichage
     public Object cleanSetsGroup(List<SetBasicDTO> sets){
         
         if(hasSameWeight(sets)){
@@ -213,6 +219,18 @@ public class ExerciseSetService {
             }
         }
         return true;
+    }
+
+    public List<SetBasicWith1RMDTO> listSetBasicAdd1RM(List<SetBasicDTO> setBasicDTOs) {
+        return setBasicDTOs.stream()
+                .map(SetBasicWith1RMDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<SetBasicDTO> listSetBasicRemove1RM(List<SetBasicWith1RMDTO> setBasicWith1RMDtos) {
+        return setBasicWith1RMDtos.stream()
+                .map(SetBasicDTO::new)
+                .collect(Collectors.toList());
     }
 
 }

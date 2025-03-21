@@ -17,14 +17,18 @@
             <tr>
                 <th>Date</td>
                 <th>Séries</td>
+                <th>1RMest max</td>
                 <th>Poids de corps</th>
-                <th>Commentaires séance</th>
                 <th>Ratio</th>
+                <th>Commentaires séance</th>
             </tr>
             <tr th:each="set : ${sets.exerciseSets}">
                 <td th:text="${set.date}"></td>
                 <td th:text="${set.sets}"></td>
+                <td th:text="${set.est1RM}"></td>
                 <td th:text="${set.bodyWeight}"></td>
+                <td th:text="${set.bodyWeight != 0 ? 
+                    #numbers.formatDecimal(set.est1RM / set.bodyWeight, 1, 2) : 'N/A'}"></td>
                 <td th:text="${set.comment}"></td>
                 <td></td>
             </tr>

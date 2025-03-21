@@ -4,7 +4,7 @@ public record SetBasicDTO(
     int repNumber, 
     double weight
 ) {
-    SetBasicDTO(SetBasicWith1RMDTO setBasicWith1RMDTO){
+    public SetBasicDTO(SetBasicWith1RMDTO setBasicWith1RMDTO){
         this(setBasicWith1RMDTO.repNumber(), 
              setBasicWith1RMDTO.weight());
     }

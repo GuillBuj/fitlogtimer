@@ -35,8 +35,8 @@ public class ExerciseSet {
     private String comment;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "session_id")
-    private Session session;
+    @JoinColumn(name = "workout_id")
+    private Workout workout;
 
     @Override
     public String toString(){

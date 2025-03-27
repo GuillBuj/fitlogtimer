@@ -36,18 +36,18 @@ public class ExerciceSetController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Erreur lors de l'ajout");
         }
-        return "redirect:/sessions/" + exerciseSetDTO.session_id();
+        return "redirect:/workouts/" + exerciseSetDTO.workout_id();
     }
 
     @DeleteMapping("/{id}")
-    public String deleteExerciseSet(@PathVariable int id, @RequestParam int idSession, RedirectAttributes redirectAttributes){
+    public String deleteExerciseSet(@PathVariable int id, @RequestParam int idWorkout, RedirectAttributes redirectAttributes){
         boolean isDeleted = exerciseSetService.deleteExerciseSet(id);
         if (isDeleted) {
             redirectAttributes.addFlashAttribute("successRedMessage", "Série supprimée avec succès");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Série non supprimée");
         }
-        return "redirect:/sessions/" + idSession + "/plus";
+        return "redirect:/workouts/" + idWorkout + "/plus";
     }
 
     @GetMapping("/byExercise/{exerciseId}")
@@ -65,7 +65,7 @@ public class ExerciceSetController {
 
     //     List<ExerciseSet> sets = exerciseSetService.getSetsByExerciseId(exerciseId);
 
-    //     List<SetsGroupedForExDTO> groupedSets = exerciseSetService.groupSetsBySession(sets);
+    //     List<SetsGroupedForExDTO> groupedSets = exerciseSetService.groupSetsByWorkout(sets);
 
     //     model.addAttribute("sets", groupedSets);
     //     log.info(model.toString());
@@ -75,7 +75,7 @@ public class ExerciceSetController {
     @GetMapping("/byExercise/{exerciseId}/groupedByDateClean")
     public String showSetsByExerciseGroupedCleanedByDate(@PathVariable int exerciseId, Model model){
 
-        SetsByExGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedBySession(exerciseId);
+        SetsByExGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedByWorkout(exerciseId);
 
         model.addAttribute("sets", groupedSets);
         log.info(model.toString());

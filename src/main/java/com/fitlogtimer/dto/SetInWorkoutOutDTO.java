@@ -1,6 +1,6 @@
 package com.fitlogtimer.dto;
 
-public record SetInSessionOutDTO(
+public record SetInWorkoutOutDTO(
         int id,
         String exerciseNameShort,
         double weight,

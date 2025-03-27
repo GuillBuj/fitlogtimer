@@ -1,4 +1,4 @@
-package com.fitlogtimer.dto.sessionDisplay;
+package com.fitlogtimer.dto.workoutDisplay;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import com.fitlogtimer.dto.SetsGroupedFinalDTO;
 
 
-public record SessionGroupedDTO(
+public record WorkoutGroupedDTO(
     int id,
     LocalDate date,
     double bodyWeight,

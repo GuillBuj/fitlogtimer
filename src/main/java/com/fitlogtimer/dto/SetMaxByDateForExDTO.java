@@ -2,7 +2,7 @@ package com.fitlogtimer.dto;
 
 
 public record SetMaxByDateForExDTO(
-    int idSession,    
+    int idWorkout,    
     SetBasicWith1RMDTO set) {
 
 }

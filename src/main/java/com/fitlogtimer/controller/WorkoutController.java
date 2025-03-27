@@ -15,99 +15,99 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
-import com.fitlogtimer.dto.SessionInDTO;
-import com.fitlogtimer.dto.sessionDisplay.SessionDetailsOutDTO;
-import com.fitlogtimer.dto.sessionDisplay.SessionGroupedDTO;
+import com.fitlogtimer.dto.WorkoutInDTO;
+import com.fitlogtimer.dto.workoutDisplay.WorkoutDetailsOutDTO;
+import com.fitlogtimer.dto.workoutDisplay.WorkoutGroupedDTO;
 import com.fitlogtimer.model.Exercise;
-import com.fitlogtimer.model.Session;
+import com.fitlogtimer.model.Workout;
 import com.fitlogtimer.service.ExerciseService;
-import com.fitlogtimer.service.SessionService;
+import com.fitlogtimer.service.WorkoutService;
 
 import lombok.extern.slf4j.Slf4j;
 
 
 
 @Controller
-@RequestMapping("/sessions")
+@RequestMapping("/workouts")
 @Slf4j
-public class SessionController {
+public class WorkoutController {
 
     @Autowired
-    private SessionService sessionService;
+    private WorkoutService workoutService;
 
     @Autowired
     private ExerciseService exerciseService;
 
     @GetMapping("/{id}")
-    public String getSessionDetails(@PathVariable int id, Model model) {
+    public String getWorkoutDetails(@PathVariable int id, Model model) {
         
-        SessionGroupedDTO sessionData = sessionService.getSessionGrouped(id);
-        ExerciseSetInDTO exerciseSet = sessionService.setFormByLastSetDTO(id);
+        WorkoutGroupedDTO workoutData = workoutService.getWorkoutGrouped(id);
+        ExerciseSetInDTO exerciseSet = workoutService.setFormByLastSetDTO(id);
         List<Exercise> exercises = exerciseService.getAllExercises();
 
-        model.addAttribute("sessionData", sessionData);
+        model.addAttribute("workoutData", workoutData);
         model.addAttribute("exercises", exercises);
         model.addAttribute("exerciseSetDTO", exerciseSet);
 
         log.info(model.toString());
-        return "session-details";
+        return "workout-details";
     }
 
     @GetMapping("/{id}/plus")
-    public String getSessionDetailsPlus(@PathVariable int id, Model model) {
+    public String getWorkoutDetailsPlus(@PathVariable int id, Model model) {
         
-        SessionDetailsOutDTO sessionData = sessionService.getSessionDetailsBrut(id);
-        ExerciseSetInDTO exerciseSet = sessionService.setFormByLastSetDTO(id);
+        WorkoutDetailsOutDTO workoutData = workoutService.getWorkoutDetailsBrut(id);
+        ExerciseSetInDTO exerciseSet = workoutService.setFormByLastSetDTO(id);
         List<Exercise> exercises=exerciseService.getAllExercises();
         
-        model.addAttribute("sessionData", sessionData);
+        model.addAttribute("workoutData", workoutData);
         model.addAttribute("exercises", exercises);
         model.addAttribute("exerciseSetDTO", exerciseSet);
         
         log.info(model.toString());
-        return "session-details-plus";
+        return "workout-details-plus";
     }
 
     @DeleteMapping("/{id}")
-    public String deleteSession(@PathVariable int id, RedirectAttributes redirectAttributes) {
-        boolean isDeleted = sessionService.deleteSession(id);
+    public String deleteWorkout(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        boolean isDeleted = workoutService.deleteWorkout(id);
         if (isDeleted) {
             redirectAttributes.addFlashAttribute("successRedMessage", "Séance supprimée avec succès !");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Séance non supprimée");
         }
-        return "redirect:/sessions";
+        return "redirect:/workouts";
     }
 
     @GetMapping
-    public String getSessionsList(Model model) {
-        List<Session> sessionsList = sessionService.getAllSessions();
-        if (sessionsList.size()>0){
-            log.info("-*-*-*-*-*-*-*-* Sessions: {}", sessionsList.toString());
+    public String getWorkoutsList(Model model) {
+        List<Workout> workoutsList = workoutService.getAllWorkouts();
+        if (workoutsList.size()>0){
+            log.info("-*-*-*-*-*-*-*-* Workouts: {}", workoutsList.toString());
         } else {
-            log.info("-*-*-*-*-*-*-*-* Sessions: VIDE");
+            log.info("-*-*-*-*-*-*-*-* Workouts: VIDE");
         }
         
-        model.addAttribute("sessionsList", sessionsList);
-        return "session-list";
+        model.addAttribute("workoutsList", workoutsList);
+        return "workout-list";
     }
     
     @GetMapping("/create")
-    public String showSessionForm(Model model) {
+    public String showWorkoutForm(Model model) {
         LocalDate today = LocalDate.now();
-        model.addAttribute("sessionData", new SessionInDTO(today, 0.0, ""));
+        model.addAttribute("workoutData", new WorkoutInDTO(today, 0.0, ""));
         model.addAttribute("today", today);
-        return "session-create";
+        return "workout-create";
     }
 
     @PostMapping("/create")
-    public String createSession(@ModelAttribute("sessionData") SessionInDTO sessionInDTO, RedirectAttributes redirectAttributes) {
-        log.info("POST sessions/create: {}", sessionInDTO);
+    public String createWorkout(@ModelAttribute("workoutData") WorkoutInDTO workoutInDTO, RedirectAttributes redirectAttributes) {
+        log.info("POST workouts/create: {}", workoutInDTO);
         
-        sessionService.createSession(sessionInDTO);
+        workoutService.createWorkout(workoutInDTO);
 
         redirectAttributes.addFlashAttribute("successMessage", "Séance créée avec succès");
-        return "redirect:/sessions";
+        return "redirect:/workouts";
     }
 
 }

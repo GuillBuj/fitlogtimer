@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.repository.ExerciseSetRepository;
-import com.fitlogtimer.repository.SessionRepository;
+import com.fitlogtimer.repository.WorkoutRepository;
 
 @Service
 public class DBService {
@@ -12,13 +12,13 @@ public class DBService {
     private ExerciseSetRepository exerciseSetRepository;
 
     @Autowired
-    private SessionRepository sessionRepository;
+    private WorkoutRepository workoutRepository;
 
-    public void clearExerciseSetAndSession(){
+    public void clearExerciseSetAndWorkout(){
         exerciseSetRepository.deleteAllExerciseSets();
-        sessionRepository.deleteAllSessions();        
+        workoutRepository.deleteAllWorkouts();        
         
-        sessionRepository.resetSessionId();
+        workoutRepository.resetWorkoutId();
         exerciseSetRepository.resetExerciseSetId();
     }    
 

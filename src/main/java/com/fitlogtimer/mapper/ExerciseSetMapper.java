@@ -36,7 +36,7 @@ public class ExerciseSetMapper {
             exercise.getRepNumber(),
             exercise.isMax(),
             exercise.getComment(),
-            exercise.getSession().getId()
+            exercise.getWorkout().getId()
         );
     }
     

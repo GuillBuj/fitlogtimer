@@ -4,12 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-public record SessionDetailsGroupedDTO(
+public record WorkoutDetailsDTO(
     int id,
     LocalDate date,
     double bodyWeight,
     String comment,
-    List<SetsGroupedDTO> exerciseSets
+    List<SetInWorkoutDTO> exerciseSets
 ) {
     
 }

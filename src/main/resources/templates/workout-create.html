@@ -9,10 +9,10 @@
     <div th:insert="~{fragments/navbar :: navbar}"></div>
     <h1>Créer une nouvelle séance</h1>
 
-    <form th:action="@{/sessions/create}" class="vertical-form" th:object="${sessionData}" method="post">
+    <form th:action="@{/workouts/create}" class="vertical-form" th:object="${workoutData}" method="post">
         <div>
             <label for="date">Date :</label>
-            <input type="date" id="date" th:field="*{date}" th:value="${sessionData.date}" required>
+            <input type="date" id="date" th:field="*{date}" th:value="${workoutData.date}" required>
         </div>
         <div>
             <label for="bodyWeight">Poids du corps (kg) :</label>
@@ -27,6 +27,6 @@
         </div>
     </form>
 
-    <a th:href="@{/sessions/}">Retour à la liste des séances</a>
+    <a th:href="@{/workouts/}">Retour à la liste des séances</a>
 </body>
 </html>

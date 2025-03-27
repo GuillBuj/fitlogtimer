@@ -7,5 +7,5 @@ public record ExerciseSetOutDTO(
         int repNumber,
         boolean isMax,
         String comment,
-        int session_id) {
+        int workout_id) {
 }

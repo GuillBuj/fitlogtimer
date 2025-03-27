@@ -22,8 +22,8 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
 
     //@Query(value = "ALTER TABLE exerciseSet AUTO_INCREMENT = 1", nativeQuery = true)  PASSAGE SUR MYSQL
     
-    // @Query("SELECT e FROM ExerciseSet e WHERE e.sessionId = :sessionId ORDER BY e.id DESC")
-    // Optional<ExerciseSet> findTopBySessionIdOrderByIdDesc(@Param("sessionId") int sessionId);
+    // @Query("SELECT e FROM ExerciseSet e WHERE e.workoutId = :workoutId ORDER BY e.id DESC")
+    // Optional<ExerciseSet> findTopByWorkoutIdOrderByIdDesc(@Param("workoutId") int workoutId);
     
     @Modifying
     @Transactional
@@ -33,9 +33,9 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     List<ExerciseSet> findByExerciseId(int exerciseId);
 
     @Query("SELECT exset FROM ExerciseSet exset " +
-           "JOIN exset.session s " +
+           "JOIN exset.workout s " +
            "WHERE exset.exercise.id = :exerciseId " +
            "ORDER BY s.date DESC, s.id DESC")
-    List<ExerciseSet> findByExerciseIdOrderBySessionDateAndIdDesc(@Param("exerciseId") int exerciseId);
+    List<ExerciseSet> findByExerciseIdOrderByWorkoutDateAndIdDesc(@Param("exerciseId") int exerciseId);
 
 }

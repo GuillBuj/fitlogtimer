@@ -9,81 +9,81 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.SetInSessionDTO;
-import com.fitlogtimer.dto.SetInSessionOutDTO;
+import com.fitlogtimer.dto.SetInWorkoutDTO;
+import com.fitlogtimer.dto.SetInWorkoutOutDTO;
 import com.fitlogtimer.dto.SetsGroupedFinalDTO;
 import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
 import com.fitlogtimer.dto.postGroup.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameRepsDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameWeightAndRepsDTO;
 import com.fitlogtimer.dto.postGroup.SetsSameWeightDTO;
-import com.fitlogtimer.dto.sessionDisplay.SessionDetailsOutDTO;
-import com.fitlogtimer.dto.sessionDisplay.SessionGroupedDTO;
+import com.fitlogtimer.dto.workoutDisplay.WorkoutDetailsOutDTO;
+import com.fitlogtimer.dto.workoutDisplay.WorkoutGroupedDTO;
 import com.fitlogtimer.dto.SetsGroupedDTO;
 import com.fitlogtimer.dto.ExerciseSetInDTO;
 import com.fitlogtimer.dto.LastSetDTO;
-import com.fitlogtimer.dto.SessionInDTO;
-import com.fitlogtimer.dto.SessionOutDTO;
+import com.fitlogtimer.dto.WorkoutInDTO;
+import com.fitlogtimer.dto.WorkoutOutDTO;
 import com.fitlogtimer.dto.SetBasicDTO;
 import com.fitlogtimer.exception.NotFoundException;
-import com.fitlogtimer.mapper.SessionMapper;
+import com.fitlogtimer.mapper.WorkoutMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
-import com.fitlogtimer.model.Session;
+import com.fitlogtimer.model.Workout;
 import com.fitlogtimer.repository.ExerciseRepository;
-import com.fitlogtimer.repository.SessionRepository;
+import com.fitlogtimer.repository.WorkoutRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class SessionService {
+public class WorkoutService {
 
     @Autowired
-    private SessionRepository sessionRepository;
+    private WorkoutRepository workoutRepository;
 
     @Autowired
-    private SessionMapper sessionMapper;
+    private WorkoutMapper workoutMapper;
 
     @Autowired
     private ExerciseRepository exerciseRepository;
 
-    public List<Session> getAllSessions() {
-        return sessionRepository.findAllByOrderByDateDesc();
+    public List<Workout> getAllWorkouts() {
+        return workoutRepository.findAllByOrderByDateDesc();
     }
     
     @Transactional
-    public SessionOutDTO createSession(SessionInDTO sessionInDTO) {
+    public WorkoutOutDTO createWorkout(WorkoutInDTO workoutInDTO) {
         
-        Session savedSession = sessionRepository.save(sessionMapper.toSession(sessionInDTO));
+        Workout savedWorkout = workoutRepository.save(workoutMapper.toWorkout(workoutInDTO));
         
-        return new SessionOutDTO(savedSession.getId(), savedSession.getDate(), savedSession.getBodyWeight(), savedSession.getComment());
+        return new WorkoutOutDTO(savedWorkout.getId(), savedWorkout.getDate(), savedWorkout.getBodyWeight(), savedWorkout.getComment());
     }
 
     @Transactional
-    public boolean deleteSession(int sessionId) {
-        if (sessionRepository.existsById(sessionId)) {
-            sessionRepository.deleteById(sessionId);
+    public boolean deleteWorkout(int workoutId) {
+        if (workoutRepository.existsById(workoutId)) {
+            workoutRepository.deleteById(workoutId);
             return true;
         }
         return false;
     }
 
-    public SessionDetailsOutDTO getSessionDetailsBrut(int id){
-        Session session = sessionRepository.findById(id)
-            .orElseThrow(()->new NotFoundException("Session not found: " + id));
+    public WorkoutDetailsOutDTO getWorkoutDetailsBrut(int id){
+        Workout workout = workoutRepository.findById(id)
+            .orElseThrow(()->new NotFoundException("Workout not found: " + id));
 
-        List<SetInSessionOutDTO> setsDTO = getSetsOutDTO(session);
+        List<SetInWorkoutOutDTO> setsDTO = getSetsOutDTO(workout);
         
-        return new SessionDetailsOutDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), setsDTO);
+        return new WorkoutDetailsOutDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), setsDTO);
     }
     
-    public SessionGroupedDTO getSessionGrouped(int id){
-        Session session = sessionRepository.findById(id)
-            .orElseThrow(()->new NotFoundException("Session not found: " + id));
+    public WorkoutGroupedDTO getWorkoutGrouped(int id){
+        Workout workout = workoutRepository.findById(id)
+            .orElseThrow(()->new NotFoundException("Workout not found: " + id));
 
-        List<SetsGroupedDTO> groupedSets = groupConsecutiveSetsByExercise(getSetsDTO(session));
+        List<SetsGroupedDTO> groupedSets = groupConsecutiveSetsByExercise(getSetsDTO(workout));
 
         List<SetsGroupedWithNameDTO> groupedSetsWithName = groupedSets.stream()
                 .map(this::groupedSetToGroupedSetWithName)
@@ -93,17 +93,17 @@ public class SessionService {
                 .map(this::cleanSetsGroup)
                 .toList();
         
-        SessionGroupedDTO sessionGroupedDTO = new SessionGroupedDTO(id, session.getDate(), session.getBodyWeight(), session.getComment(), finalGroupedSets);
-        System.out.println(sessionGroupedDTO);
-        return sessionGroupedDTO;
+        WorkoutGroupedDTO workoutGroupedDTO = new WorkoutGroupedDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), finalGroupedSets);
+        System.out.println(workoutGroupedDTO);
+        return workoutGroupedDTO;
     }
     
-    public List<SetsGroupedDTO> groupConsecutiveSetsByExercise(List<SetInSessionDTO> exerciseSets){
+    public List<SetsGroupedDTO> groupConsecutiveSetsByExercise(List<SetInWorkoutDTO> exerciseSets){
         List<SetsGroupedDTO> groupedSets = new ArrayList<>();
-        List<SetInSessionDTO> currentGroup = new ArrayList<>();
+        List<SetInWorkoutDTO> currentGroup = new ArrayList<>();
 
         for(int i=0; i < exerciseSets.size(); i++){
-            SetInSessionDTO currentSet = exerciseSets.get(i);
+            SetInWorkoutDTO currentSet = exerciseSets.get(i);
 
             if (i==0 || currentSet.exercise_id() == exerciseSets.get(i-1).exercise_id()) {
                 currentGroup.add(currentSet);
@@ -137,9 +137,9 @@ public class SessionService {
         return new SetsGroupedWithNameDTO(shortName, sets);        
     }
 
-    public List<SetInSessionDTO> getSetsDTO(Session session){
-        return session.getSetRecords().stream()
-                .map(exerciseSet -> new SetInSessionDTO(
+    public List<SetInWorkoutDTO> getSetsDTO(Workout workout){
+        return workout.getSetRecords().stream()
+                .map(exerciseSet -> new SetInWorkoutDTO(
                     exerciseSet.getId(),
                     exerciseSet.getExercise().getId(),
                     exerciseSet.getWeight(),
@@ -149,9 +149,9 @@ public class SessionService {
                 .collect(Collectors.toList());
     }
 
-    public List<SetInSessionOutDTO> getSetsOutDTO(Session session){
-        return session.getSetRecords().stream()
-                .map(exerciseSet -> new SetInSessionOutDTO(
+    public List<SetInWorkoutOutDTO> getSetsOutDTO(Workout workout){
+        return workout.getSetRecords().stream()
+                .map(exerciseSet -> new SetInWorkoutOutDTO(
                     exerciseSet.getId(),
                     exerciseSet.getExercise().getShortName(),
                     exerciseSet.getWeight(),
@@ -224,12 +224,12 @@ public class SessionService {
 
     public LastSetDTO getLastSetDTO(int id){
 
-        Optional<Session> optionalSession = sessionRepository.findById(id);
-        if (optionalSession.isEmpty()) {return null;}
+        Optional<Workout> optionalWorkout = workoutRepository.findById(id);
+        if (optionalWorkout.isEmpty()) {return null;}
     
-        Session session = optionalSession.get();
+        Workout workout = optionalWorkout.get();
     
-        List<ExerciseSet> sets = session.getSetRecords();
+        List<ExerciseSet> sets = workout.getSetRecords();
         if (sets == null || sets.isEmpty()) {return null;}
     
         ExerciseSet lastSet = sets.get(sets.size() - 1);
@@ -252,14 +252,14 @@ public class SessionService {
         boolean defaultBoolean = false;
         String defaultComment = "";
     
-        Optional<Session> optionalSession = sessionRepository.findById(id);
-        if (optionalSession.isEmpty()) {
+        Optional<Workout> optionalWorkout = workoutRepository.findById(id);
+        if (optionalWorkout.isEmpty()) {
             return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultComment, id);
         }
     
-        Session session = optionalSession.get();
+        Workout workout = optionalWorkout.get();
     
-        List<ExerciseSet> sets = session.getSetRecords();
+        List<ExerciseSet> sets = workout.getSetRecords();
         if (sets == null || sets.isEmpty()) {
             return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultComment, id);
         }

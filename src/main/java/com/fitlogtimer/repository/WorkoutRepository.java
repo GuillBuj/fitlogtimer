@@ -6,24 +6,24 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.fitlogtimer.model.Session;
+import com.fitlogtimer.model.Workout;
 
 import jakarta.transaction.Transactional;
 
-public interface SessionRepository extends JpaRepository<Session, Integer> {
+public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     @Modifying
     @Transactional
-    @Query("DELETE FROM Session")
-    void deleteAllSessions();
+    @Query("DELETE FROM Workout")
+    void deleteAllWorkouts();
 
     void deleteById(int id);
 
     boolean existsById(int id);
 
-    List<Session> findAllByOrderByDateDesc();
+    List<Workout> findAllByOrderByDateDesc();
     
     @Modifying
     @Transactional
-    @Query(value = "ALTER TABLE session ALTER COLUMN id RESTART WITH 1", nativeQuery = true)
-    void resetSessionId();
+    @Query(value = "ALTER TABLE workout ALTER COLUMN id RESTART WITH 1", nativeQuery = true)
+    void resetWorkoutId();
 }

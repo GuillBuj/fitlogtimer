@@ -14,7 +14,7 @@ public class DBController {
     private DBService dbService;
 
     @DeleteMapping
-    void clearExerciseSetAndSession(){
-        dbService.clearExerciseSetAndSession();
+    void clearExerciseSetAndWorkout(){
+        dbService.clearExerciseSetAndWorkout();
     }
 }

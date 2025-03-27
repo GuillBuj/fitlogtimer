@@ -22,11 +22,11 @@
                 <th>Ratio</th>
             </tr>
             <tr th:each="set : ${sets}">
-                <td th:text="${set.session.date}"></td>
+                <td th:text="${set.workout.date}"></td>
                 <td th:text="${set.repNumber}"></td>
                 <td th:text="${set.weight}"></td>
-                <td th:text="${set.session.bodyWeight}"></td>
-                <td th:text="${set.weight}/${set.session.bodyWeight}"></td>
+                <td th:text="${set.workout.bodyWeight}"></td>
+                <td th:text="${set.weight}/${set.workout.bodyWeight}"></td>
             </tr>
         </table>
         <a th:href="@{/exercises}" class="btn-link">Retour</a>

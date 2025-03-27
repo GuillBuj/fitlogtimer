@@ -14,7 +14,7 @@ import com.fitlogtimer.dto.ExerciseSetOutDTO;
 import com.fitlogtimer.dto.SetBasicDTO;
 import com.fitlogtimer.dto.SetBasicWith1RMDTO;
 import com.fitlogtimer.dto.SetsByExGroupedDTO;
-import com.fitlogtimer.dto.SetsGroupedBySessionDTO;
+import com.fitlogtimer.dto.SetsGroupedByWorkoutDTO;
 import com.fitlogtimer.dto.SetsGroupedFinalForExDTO;
 import com.fitlogtimer.dto.SetsGroupedForExDTO;
 import com.fitlogtimer.dto.postGroup.SetsAllDifferentDTO;
@@ -25,10 +25,10 @@ import com.fitlogtimer.exception.NotFoundException;
 import com.fitlogtimer.mapper.ExerciseSetMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
-import com.fitlogtimer.model.Session;
+import com.fitlogtimer.model.Workout;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.ExerciseSetRepository;
-import com.fitlogtimer.repository.SessionRepository;
+import com.fitlogtimer.repository.WorkoutRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -43,7 +43,7 @@ public class ExerciseSetService {
     private ExerciseRepository exerciseRepository;
 
     @Autowired
-    private SessionRepository sessionRepository;
+    private WorkoutRepository workoutRepository;
 
     @Autowired
     private ExerciseSetMapper exerciseSetMapper;
@@ -56,9 +56,9 @@ public class ExerciseSetService {
         int exerciseId = exerciseSetDTO.exercise_id();
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Exercise with ID " + exerciseId + " does not exist"));
-        int sessionId = exerciseSetDTO.session_id();
-        Session session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new IllegalArgumentException("Session with ID " + sessionId + " does not exist"));
+        int workoutId = exerciseSetDTO.workout_id();
+        Workout workout = workoutRepository.findById(workoutId)
+                .orElseThrow(() -> new IllegalArgumentException("Workout with ID " + workoutId + " does not exist"));
 
         ExerciseSet exerciseSet = new ExerciseSet();
         exerciseSet.setExercise(exercise);
@@ -66,7 +66,7 @@ public class ExerciseSetService {
         exerciseSet.setRepNumber(exerciseSetDTO.repNumber());
         exerciseSet.setMax(exerciseSetDTO.isMax());
         exerciseSet.setComment(exerciseSetDTO.comment());
-        exerciseSet.setSession(session);
+        exerciseSet.setWorkout(workout);
 
         ExerciseSet savedExercise = exerciseSetRepository.save(exerciseSet);
         return exerciseSetMapper.toExerciseSetOutDTO(savedExercise);
@@ -83,19 +83,19 @@ public class ExerciseSetService {
     }
 
     public List<ExerciseSet> getSetsByExerciseId(int id){
-        return exerciseSetRepository.findByExerciseIdOrderBySessionDateAndIdDesc(id);
+        return exerciseSetRepository.findByExerciseIdOrderByWorkoutDateAndIdDesc(id);
     }
 
-    public SetsGroupedBySessionDTO getSetsGroupedBySession(int id){
+    public SetsGroupedByWorkoutDTO getSetsGroupedByWorkout(int id){
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(()->new NotFoundException("Exercise not found: " + id));
 
-        List<SetsGroupedForExDTO> groupedSets = groupSetsBySession(getSetsByExerciseId(id));
+        List<SetsGroupedForExDTO> groupedSets = groupSetsByWorkout(getSetsByExerciseId(id));
 
-        return new SetsGroupedBySessionDTO(id, exercise.getName(), groupedSets); 
+        return new SetsGroupedByWorkoutDTO(id, exercise.getName(), groupedSets); 
     }
 
     //groupe par séance à partir d'une liste d'exercices
-    public List<SetsGroupedForExDTO> groupSetsBySession(List<ExerciseSet> exerciseSets) {
+    public List<SetsGroupedForExDTO> groupSetsByWorkout(List<ExerciseSet> exerciseSets) {
         
         List<SetsGroupedForExDTO> groupedSets = new ArrayList<>();
         List<SetBasicWith1RMDTO> currentGroup = new ArrayList<>();
@@ -104,15 +104,15 @@ public class ExerciseSetService {
             return groupedSets;
         }
     
-        int currentSessionId = exerciseSets.get(0).getSession().getId();
+        int currentWorkoutId = exerciseSets.get(0).getWorkout().getId();
     
         for (ExerciseSet currentSet : exerciseSets) {
-            int sessionId = currentSet.getSession().getId();
+            int workoutId = currentSet.getWorkout().getId();
     
-            if (sessionId != currentSessionId) {
-                groupedSets.add(new SetsGroupedForExDTO(currentSessionId, new ArrayList<>(currentGroup)));
+            if (workoutId != currentWorkoutId) {
+                groupedSets.add(new SetsGroupedForExDTO(currentWorkoutId, new ArrayList<>(currentGroup)));
                 currentGroup.clear();
-                currentSessionId = sessionId;
+                currentWorkoutId = workoutId;
             }
             int repNumber = currentSet.getRepNumber();
             double weight = currentSet.getWeight();
@@ -121,30 +121,30 @@ public class ExerciseSetService {
         }
     
         if (!currentGroup.isEmpty()) {
-            groupedSets.add(new SetsGroupedForExDTO(currentSessionId, currentGroup));
+            groupedSets.add(new SetsGroupedForExDTO(currentWorkoutId, currentGroup));
         }
     
         return groupedSets;
     }
     
     //set max 1RMest dans une liste de sets groupés par séance
-    public SetBasicWith1RMDTO getMaxByDateForEx(List<SetBasicWith1RMDTO> setsGroupedBySession) {
-        return setsGroupedBySession.stream()
+    public SetBasicWith1RMDTO getMaxByDateForEx(List<SetBasicWith1RMDTO> setsGroupedByWorkout) {
+        return setsGroupedByWorkout.stream()
                 .max(Comparator.comparingDouble(SetBasicWith1RMDTO::oneRepMax))
                 .orElseThrow(() -> new IllegalArgumentException("No sets available"));
     }
 
     //affichage propre
-    public SetsByExGroupedDTO getSetsGroupedCleanedBySession(int id) {
+    public SetsByExGroupedDTO getSetsGroupedCleanedByWorkout(int id) {
         Exercise exercise = exerciseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Exercise not found: " + id));
     
-        List<SetsGroupedForExDTO> groupedSets = groupSetsBySession(getSetsByExerciseId(id));
+        List<SetsGroupedForExDTO> groupedSets = groupSetsByWorkout(getSetsByExerciseId(id));
     
         List<SetsGroupedFinalForExDTO> finalGroupedSets = groupedSets.stream()
                 .map(group -> {
-                    Session session = sessionRepository.findById(group.idSession())
-                            .orElseThrow(() -> new NotFoundException("Session not found: " + group.idSession()));
+                    Workout workout = workoutRepository.findById(group.idWorkout())
+                            .orElseThrow(() -> new NotFoundException("Workout not found: " + group.idWorkout()));
 
                     List<SetBasicDTO> basicSets = exerciseSetMapper.toListSetBasicDTO(group.setGroup());
     
@@ -153,9 +153,9 @@ public class ExerciseSetService {
                     SetBasicWith1RMDTO maxSet = getMaxByDateForEx(group.setGroup());
     
                     return new SetsGroupedFinalForExDTO(
-                            session.getDate(),
-                            session.getBodyWeight(),
-                            session.getComment(),
+                            workout.getDate(),
+                            workout.getBodyWeight(),
+                            workout.getComment(),
                             cleanedSets,
                             maxSet.oneRepMax()
                     );

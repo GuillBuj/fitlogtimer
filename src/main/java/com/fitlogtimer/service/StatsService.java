@@ -25,7 +25,7 @@ public class StatsService {
         return exerciseSets.stream()
                 .filter(set -> set.getRepNumber() >= nbReps)
                 .max(Comparator.comparingDouble(ExerciseSet::getWeight))
-                .map(set -> new MaxWeightWithDateDTO(set.getWeight(), set.getSession().getDate()))
+                .map(set -> new MaxWeightWithDateDTO(set.getWeight(), set.getWorkout().getDate()))
                 .orElse(new MaxWeightWithDateDTO(0.0, null));
     }
 

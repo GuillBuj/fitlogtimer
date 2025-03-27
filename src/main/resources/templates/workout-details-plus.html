@@ -10,14 +10,14 @@
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
     <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
 
-    <h1>Séance du <span th:text="${sessionData.date}"></span></h1>
-    <a th:href="@{/sessions/{id}(id=${sessionData.id})}" class="btn-link">Groupé</a>
-    <p>Poids : <span th:text="${sessionData.bodyWeight}"></span> kg</p>
-    <p>Commentaires : <span th:text="${sessionData.comment}"></span></p>
+    <h1>Séance du <span th:text="${workoutData.date}"></span></h1>
+    <a th:href="@{/workouts/{id}(id=${workoutData.id})}" class="btn-link">Groupé</a>
+    <p>Poids : <span th:text="${workoutData.bodyWeight}"></span> kg</p>
+    <p>Commentaires : <span th:text="${workoutData.comment}"></span></p>
     
 
     <h2>Séries</h2>
-    <table th:if="${sessionData.exerciseSets}">
+    <table th:if="${workoutData.exerciseSets}">
         <thead>
             <tr>
                 <th>Ex</th>
@@ -28,25 +28,25 @@
                 <th>Action</th>
             </tr>
         </thead>
-        <tr th:each="set : ${sessionData.exerciseSets}">
+        <tr th:each="set : ${workoutData.exerciseSets}">
             <td th:text="${set.exerciseNameShort}"></td>
             <td th:text="${set.repNumber}"></td>
             <td th:text="${set.weight}"></td>
             <td th:text="${set.isMax}"></td>
             <td th:text="${set.comment}"></td>
             <td>
-                <form th:action="@{/exerciseSets/{id}(id=${set.id}, idSession=${sessionData.id})}" class="deleteForm"  method="post">
+                <form th:action="@{/exerciseSets/{id}(id=${set.id}, idWorkout=${workoutData.id})}" class="deleteForm"  method="post">
                     <input type="hidden" name="_method" value="delete" />
                     <button type="submit" class="btnDelete">Supprimer</button>
                 </form>
             </td>
         </tr>
     </table>
-    <p th:unless="${sessionData.exerciseSets}">Aucun exercice enregistré pour cette session.</p>
+    <p th:unless="${workoutData.exerciseSets}">Aucun exercice enregistré pour cette workout.</p>
 
     <h2>Ajouter un exercice à cette séance</h2>
     <form th:action="@{/exerciseSets/add}" method="post" th:object="${exerciseSetDTO}" class="single-line-form">
-        <input type="hidden" th:field="*{session_id}" th:value="${sessionData.id}" />
+        <input type="hidden" th:field="*{workout_id}" th:value="${workoutData.id}" />
     
         <div class="form-group">
             <label for="exercise">Exercice :</label>
@@ -83,11 +83,11 @@
         </div>
     </form>
 
-    <form th:action="@{/sessions/{id}(id=${sessionData.id})}" class="deleteForm"  method="post">
+    <form th:action="@{/workouts/{id}(id=${workoutData.id})}" class="deleteForm"  method="post">
         <input type="hidden" name="_method" value="delete" />
         <button type="submit" class="btnDelete">Supprimer</button>
     </form>
     <br>
-    <a href="/sessions" class="btn-link">Retour à la liste</a>
+    <a href="/workouts" class="btn-link">Retour à la liste</a>
 </body>
 </html>

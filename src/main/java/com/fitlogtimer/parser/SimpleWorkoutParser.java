@@ -1,58 +1,118 @@
-// package com.fitlogtimer.parser;
+package com.fitlogtimer.parser;
 
-// import org.odftoolkit.simple.SpreadsheetDocument;
-// import org.odftoolkit.simple.table.Table;
-// import org.odftoolkit.simple.table.Row;
 
-// import java.time.LocalDate;
-// import java.time.format.DateTimeFormatter;
-// import java.util.ArrayList;
-// import java.util.List;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-// import com.fitlogtimer.model.Exercise;
-// import com.fitlogtimer.model.ExerciseSet;
-// import com.fitlogtimer.model.Workout;
+import org.apache.poi.ss.usermodel.*;
+import org.springframework.stereotype.Component;
 
-// public class SimpleWorkoutParser {
-//     public List<Workout> parseSingleRepWorkouts(String filePath) throws Exception {
-//         SpreadsheetDocument doc = SpreadsheetDocument.loadDocument(filePath);
-//         Table sheet = doc.getTableByName("Feuille1"); // Nom réel de votre feuille
-//         List<Workout> workouts = new ArrayList()<>();
+import com.fitlogtimer.model.Exercise;
+import com.fitlogtimer.model.ExerciseSet;
+import com.fitlogtimer.model.Workout;
 
-//         // Ligne 1 : Dates (header)
-//         Row dateRow = sheet.getRowByIndex(0);
-//         // Ligne 2 : Poids 1RM (index 1 = ligne "1rep")
-//         Row weightRow = sheet.getRowByIndex(1);
-//         // Ligne 6 : Poids du corps (index 5 = ligne "Poids / Lvl")
-//         Row bodyWeightRow = sheet.getRowByIndex(5);
+import lombok.extern.slf4j.Slf4j;
 
-//         for (int col = 1; col < dateRow.getCellCount(); col++) {
-//             // 1. Création de la Workout
-//             Workout workout = new Workout();
-//             workout.setDate(LocalDate.parse(dateRow.getCellByIndex(col).getStringValue(), 
-//                           DateTimeFormatter.ofPattern("MM/dd/yy")));
-//             workout.setBodyWeight(Double.parseDouble(bodyWeightRow.getCellByIndex(col).getDisplayText()));
+@Component
+@Slf4j
+public class SimpleWorkoutParser {
 
-//             // 2. Création de l'ExerciseSet (1RM)
-//             ExerciseSet set = new ExerciseSet();
-//             set.setExercise(getOrCreateExercise("1RM")); // Méthode à implémenter
-//             set.setWeight(Double.parseDouble(weightRow.getCellByIndex(col).getDisplayText()));
-//             set.setRepNumber(1);
-//             set.setMax(true);
-//             set.setWorkout(workout);
+    public List<Workout> parseDeadliftWorkouts(String filePath) throws Exception {
+        List<Workout> workouts = new ArrayList<>();
+        final String FILE_NAME = "/docs/DCEvo.ods";
+        final String SHEET_NAME = "Max Deadlift"; // Nom de la feuille cible
 
-//             workout.setSetRecords(List.of(set));
-//             workouts.add(workout);
-//         }
+        try (InputStream is = Files.newInputStream(Paths.get(FILE_NAME));
+             Workbook workbook = WorkbookFactory.create(is)) {
+            
+            // Récupération de la feuille par nom
+            Sheet sheet = workbook.getSheet(SHEET_NAME);
+            if (sheet == null) {
+                throw new IllegalStateException("Feuille '" + SHEET_NAME + "' introuvable");
+            }
 
-//         doc.close();
-//         return workouts;
-//     }
+            DataFormatter dataFormatter = new DataFormatter();
 
-//     private Exercise getOrCreateExercise(String name) {
-//         Exercise exercise = new Exercise();
-//         exercise.setName(name);
-//         // Alternative: exerciseRepository.findByName(name) si en base
-//         return exercise;
-//     }
-// }
+            // Configuration des indexes de ligne selon votre structure
+            Row dateRow = sheet.getRow(0);       // Ligne des dates
+            Row weightRow = sheet.getRow(1);      // Ligne des poids
+            Row bodyWeightRow = sheet.getRow(5);   // Ligne du poids corporel
+
+            // Parcours des colonnes (colonne B à la fin)
+            for (int col = 1; col < dateRow.getLastCellNum(); col++) {
+                try {
+                    if (dateRow == null || weightRow == null || bodyWeightRow == null) {
+                        throw new IllegalStateException("Une des lignes de données est introuvable dans la feuille.");
+                    }
+                    Workout workout = createWorkoutFromCells(
+                        
+                        dateRow.getCell(col),
+                        bodyWeightRow.getCell(col),
+                        weightRow.getCell(col),
+                        dataFormatter
+                    );
+                    workouts.add(workout);
+                } catch (Exception e) {
+                    log.error("Erreur lors du traitement de la colonne {}: {}", col, e.getMessage(), e);
+                }
+            }
+        }
+        return workouts;
+    }
+
+    // Helper methods
+    private Workout createWorkoutFromCells(Cell dateCell, Cell bodyWeightCell, 
+                                         Cell weightCell, DataFormatter formatter) {
+        Workout workout = new Workout();
+        
+        // Traitement de la date
+        String dateStr = formatter.formatCellValue(dateCell);
+        workout.setDate(LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("MM/dd/yy")));
+
+        // Poids corporel
+        if (bodyWeightCell != null) {
+            workout.setBodyWeight(getCellNumericValue(bodyWeightCell, formatter));
+        }
+
+        // Création de l'ExerciseSet pour le deadlift
+        ExerciseSet set = new ExerciseSet();
+        set.setExercise(getOrCreateExercise("Deadlift"));
+        set.setWeight(getCellNumericValue(weightCell, formatter));
+        set.setRepNumber(1);
+        set.setMax(true);
+        set.setWorkout(workout);
+
+        workout.setSetRecords(List.of(set));
+        return workout;
+    }
+
+    private double getCellNumericValue(Cell cell, DataFormatter formatter) {
+        if (cell == null) return 0.0;
+        
+        switch (cell.getCellType()) {
+            case NUMERIC:
+                return cell.getNumericCellValue();
+            case STRING:
+                try {
+                    return Double.parseDouble(formatter.formatCellValue(cell));
+                } catch (NumberFormatException e) {
+                    return 0.0;
+                }
+            default:
+                return 0.0;
+        }
+    }
+
+    private Exercise getOrCreateExercise(String name) {
+        Exercise exercise = new Exercise();
+        exercise.setName(name);
+    
+        return exercise;
+    }
+}

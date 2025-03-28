@@ -1,7 +1,6 @@
 package com.fitlogtimer.parser;
 
 
-import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SimpleWorkoutParser {
 
-    public List<Workout> parseDeadliftWorkouts(String filePath) throws Exception {
+    public List<Workout> parseDeadliftWorkouts() throws Exception {
         List<Workout> workouts = new ArrayList<>();
         final String FILE_NAME = "/docs/DCEvo.ods";
         final String SHEET_NAME = "Max Deadlift"; // Nom de la feuille cible

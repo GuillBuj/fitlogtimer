@@ -30,6 +30,7 @@ public class Workout {
 
     private LocalDate date;
     private double bodyWeight;
+    private String type;
     private String comment;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

@@ -6,6 +6,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.*;
+
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.SetInWorkoutDTO;
@@ -20,6 +22,7 @@ import com.fitlogtimer.dto.workoutDisplay.WorkoutDetailsOutDTO;
 import com.fitlogtimer.dto.workoutDisplay.WorkoutGroupedDTO;
 import com.fitlogtimer.dto.SetsGroupedDTO;
 import com.fitlogtimer.dto.ExerciseSetInDTO;
+import com.fitlogtimer.dto.FromXlsxDCHeavyDTO;
 import com.fitlogtimer.dto.LastSetDTO;
 import com.fitlogtimer.dto.WorkoutInDTO;
 import com.fitlogtimer.dto.WorkoutOutDTO;
@@ -47,6 +50,8 @@ public class WorkoutService {
 
     private final ExerciseRepository exerciseRepository;
 
+    private final ExerciseSetService exerciseSetService;
+
     public List<Workout> getAllWorkouts() {
         return workoutRepository.findAllByOrderByDateDesc();
     }
@@ -54,7 +59,7 @@ public class WorkoutService {
     @Transactional
     public WorkoutOutDTO createWorkout(WorkoutInDTO workoutInDTO) {
         
-        Workout savedWorkout = workoutRepository.save(workoutMapper.toWorkout(workoutInDTO));
+        Workout savedWorkout = workoutRepository.save(workoutMapper.toEntity(workoutInDTO));
         
         return new WorkoutOutDTO(savedWorkout.getId(), savedWorkout.getDate(), savedWorkout.getBodyWeight(), savedWorkout.getComment());
     }
@@ -66,6 +71,51 @@ public class WorkoutService {
             return true;
         }
         return false;
+    }
+
+    @Transactional
+    public List<Workout> createWorkoutsFromXlsxDCHeavyDTOList(List<FromXlsxDCHeavyDTO> dtoList) {
+        return dtoList.stream()
+            .map(this::createWorkoutFromXlsxDCHeavyDTO)
+            .collect(Collectors.toList());
+    }
+    
+    @Transactional
+    public Workout createWorkoutFromXlsxDCHeavyDTO(FromXlsxDCHeavyDTO fromXlsxDCHeavyDTO){
+        Workout workout = workoutMapper.toEntity(fromXlsxDCHeavyDTO);
+        int idWorkout = workoutRepository.save(workout).getId();
+        fromXlsxDCHeavyDTO.sets().stream()
+            .map(basicSet -> {
+                    int position = fromXlsxDCHeavyDTO.sets().indexOf(basicSet) + 1; // 1-based index
+                    String type;
+                    
+                    if (position <= 3) {
+                        type = HEAVY;
+                    } else if (position == 5) {
+                        type = MEDIUM_55;
+                    } else if (position == 6) {
+                        type = LIGHT_50;
+                    } else if (position == 4) {
+                        type = basicSet.weight() > 56 ? HEAVY : MEDIUM_55;
+                    } else {
+                        type = "";
+                    }
+        
+                return new ExerciseSetInDTO(
+                    exerciseRepository.findByShortName("DC").getId(),
+                    basicSet.weight(),
+                    basicSet.repNumber(),
+                    false,
+                    type,
+                    "",
+                    idWorkout
+                );
+                })
+            .forEach(exerciseSetInDTO -> {
+                addExerciseSet(exerciseSetInDTO);
+            });
+
+        return workout;
     }
 
     public WorkoutDetailsOutDTO getWorkoutDetailsBrut(int id){
@@ -244,28 +294,29 @@ public class WorkoutService {
 
     public ExerciseSetInDTO setFormByLastSetDTO(int id) {
 
-        int defaultExerciseId = 1;
+        int defaultExerciseId = id;
         double defaultWeight = 0.0;
         int defaultRepNumber = 0;
         boolean defaultBoolean = false;
+        String defaultType = "";
         String defaultComment = "";
     
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
-            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultComment, id);
+            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultType,defaultComment, id);
         }
     
         Workout workout = optionalWorkout.get();
     
         List<ExerciseSet> sets = workout.getSetRecords();
         if (sets == null || sets.isEmpty()) {
-            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultComment, id);
+            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultType, defaultComment, id);
         }
     
         ExerciseSet lastSet = sets.get(sets.size() - 1);
     
         if (lastSet == null || lastSet.getExercise() == null) {
-            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultComment, id);
+            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultType, defaultComment, id);
         }
     
         return new ExerciseSetInDTO(
@@ -273,9 +324,20 @@ public class WorkoutService {
             lastSet.getWeight(),
             lastSet.getRepNumber(),
             defaultBoolean,
+            defaultType,
             defaultComment,
             id
         );
+    }
+
+    @Transactional
+    void addExerciseSet(ExerciseSetInDTO exerciseSetInDTO){
+        exerciseSetService.saveExerciseSet(exerciseSetInDTO);
+    }
+
+    @Transactional
+    public void deleteByTagImport(String tagImport){
+        workoutRepository.deleteByTagImport(tagImport);
     }
 
 }

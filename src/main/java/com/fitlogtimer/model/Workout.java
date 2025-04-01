@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fitlogtimer.constants.WorkoutConstants;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,8 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,6 +48,8 @@ public class Workout {
         sb.append("id: " + String.valueOf(id) + ", ");
         sb.append("date: " + String.valueOf(date) + ", ");
         sb.append("poids: " + String.valueOf(bodyWeight) + ", ");
+        sb.append("type: " + type + ", ");
+        sb.append("tag: " + tagImport + ", ");
         sb.append("commentaire: " + comment);
         return sb.toString();
     }

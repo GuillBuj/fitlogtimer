@@ -1,20 +1,18 @@
 package com.fitlogtimer.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
+import com.fitlogtimer.dto.FromXlsxDCHeavyDTO;
 import com.fitlogtimer.dto.WorkoutInDTO;
 import com.fitlogtimer.model.Workout;
 
-@Component
-public class WorkoutMapper {
-    
-    public Workout toWorkout(WorkoutInDTO workoutInDTO){
-        
-        Workout workout = new Workout();
-        workout.setDate(workoutInDTO.date());
-        workout.setBodyWeight(workoutInDTO.bodyWeight());
-        workout.setComment(workoutInDTO.comment());
+@Mapper(componentModel = "spring")
+public interface WorkoutMapper {
 
-        return workout;
-    }
+    public Workout toEntity(WorkoutInDTO dto);
+
+    @Mapping(target = "type", constant = "HEAVY")
+    @Mapping(target = "tagImport", constant = "importH")
+    public Workout toEntity(FromXlsxDCHeavyDTO dto);
 }

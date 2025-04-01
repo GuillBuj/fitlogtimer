@@ -18,6 +18,8 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
 
     void deleteById(int id);
 
+    void deleteByTagImport(String tagImport);
+
     boolean existsById(int id);
 
     List<Workout> findAllByOrderByDateDesc();

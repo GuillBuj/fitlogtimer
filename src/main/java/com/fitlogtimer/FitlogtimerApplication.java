@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FitlogtimerApplication {
 	
 	public static void main(String[] args) {
+		
 		SpringApplication.run(FitlogtimerApplication.class, args);
 	}
 

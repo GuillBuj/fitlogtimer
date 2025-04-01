@@ -7,5 +7,5 @@ import com.fitlogtimer.model.Exercise;
 
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Integer> {
-    
+    Exercise findByShortName(String shortName);
 }

@@ -5,6 +5,7 @@ public record ExerciseSetInDTO(
         double weight,
         int repNumber,
         boolean isMax,
+        String type,
         String comment,
         int workout_id) {
 }

@@ -25,7 +25,7 @@ public class XlsxMapper {
             int reps = parseReps(column[i + 1]);
 
             if (reps >= 0) {
-                sets.add(new SetBasicDTO(reps, weight));
+                sets.add(new SetBasicDTO(reps, weight + 8)); //barre
             }
         }
 

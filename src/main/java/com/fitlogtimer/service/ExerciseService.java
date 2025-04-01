@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.ExerciseCreateDTO;
@@ -15,22 +14,19 @@ import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.repository.ExerciseRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@Data
+@AllArgsConstructor
 public class ExerciseService {
 
-    @Autowired
-    private ExerciseRepository exerciseRepository;
+    private final ExerciseRepository exerciseRepository;
 
-    @Autowired
-    private ExerciseMapper exerciseMapper;
+    private final ExerciseMapper exerciseMapper;
 
-    @Autowired
-    private StatsService statsService;
+    private final StatsService statsService;
 
     @Transactional
     public Exercise createExercise(ExerciseCreateDTO exerciseCreateDTO) {

@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.SetInWorkoutDTO;
@@ -34,20 +33,19 @@ import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@AllArgsConstructor
 @Slf4j
 public class WorkoutService {
 
-    @Autowired
-    private WorkoutRepository workoutRepository;
+    private final WorkoutRepository workoutRepository;
 
-    @Autowired
-    private WorkoutMapper workoutMapper;
+    private final WorkoutMapper workoutMapper;
 
-    @Autowired
-    private ExerciseRepository exerciseRepository;
+    private final ExerciseRepository exerciseRepository;
 
     public List<Workout> getAllWorkouts() {
         return workoutRepository.findAllByOrderByDateDesc();

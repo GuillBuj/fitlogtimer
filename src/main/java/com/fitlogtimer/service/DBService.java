@@ -1,18 +1,19 @@
 package com.fitlogtimer.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
 
-@Service
-public class DBService {
-    @Autowired
-    private ExerciseSetRepository exerciseSetRepository;
+import lombok.AllArgsConstructor;
 
-    @Autowired
-    private WorkoutRepository workoutRepository;
+@Service
+@AllArgsConstructor
+public class DBService {
+    
+    private final ExerciseSetRepository exerciseSetRepository;
+
+    private final WorkoutRepository workoutRepository;
 
     public void clearExerciseSetAndWorkout(){
         exerciseSetRepository.deleteAllExerciseSets();

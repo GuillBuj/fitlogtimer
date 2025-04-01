@@ -16,8 +16,8 @@ public class XlsxMapper {
     public FromXlsxDCHeavyDTO mapToFromXlsxDCHeavyDTO(String[] column) {
 
         LocalDate date = LocalDate.parse(column[1], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        //LocalDate date = LocalDate.now();
         double bodyWeight = parseDouble(column[14]);
+        String type = column[0];
 
         List<SetBasicDTO> sets = new ArrayList<>();
         for (int i = 2; i < column.length-1; i += 2) {
@@ -28,8 +28,6 @@ public class XlsxMapper {
                 sets.add(new SetBasicDTO(reps, weight));
             }
         }
-
-        String type = column[0];
 
         return new FromXlsxDCHeavyDTO(date, bodyWeight, sets, type);
     }

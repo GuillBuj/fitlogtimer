@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.ExerciseSetInDTO;
@@ -33,23 +32,22 @@ import com.fitlogtimer.repository.WorkoutRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class ExerciseSetService {
-    @Autowired
-    private ExerciseSetRepository exerciseSetRepository;
+    
+    private final ExerciseSetRepository exerciseSetRepository;
 
-    @Autowired
-    private ExerciseRepository exerciseRepository;
+    private final ExerciseRepository exerciseRepository;
 
-    @Autowired
-    private WorkoutRepository workoutRepository;
+    private final WorkoutRepository workoutRepository;
 
-    @Autowired
-    private ExerciseSetMapper exerciseSetMapper;
+    private final ExerciseSetMapper exerciseSetMapper;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    // @PersistenceContext
+    // private EntityManager entityManager;
 
     @Transactional
     public ExerciseSetOutDTO saveExerciseSet(ExerciseSetInDTO exerciseSetDTO) {

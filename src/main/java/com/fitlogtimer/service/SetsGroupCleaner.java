@@ -8,20 +8,6 @@ import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
 @Service
 public class SetsGroupCleaner {
 
-    // public SetsGroupedFinalDTO cleanSetsGroup(SetsGroupedWithNameDTO sets){
-    //     if(hasSameWeight(sets)){
-    //         if(hasSameReps(sets)){
-    //             return new SetsGroupedFinalDTO(
-    //                 sets.exerciseNameShort(),
-    //                 new SetsSameWeightAndRepsDTO(
-    //                     sets.sets().size(),
-    //                     sets.sets().get(0).repNumber(),
-    //                     sets.sets().get(0).weight()));
-    //         }
-    //     }
-    //     return new SetsGroupedFinalDTO(sets.exerciseNameShort(), sets.sets());
-    // }
-    
     public boolean hasSameWeight(SetsGroupedWithNameDTO sets){
         double firstWeight = sets.sets().get(0).weight();
 

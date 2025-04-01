@@ -17,6 +17,7 @@
                 <th>Poids</th>
                 <th>Commentaires</th>
                 <th></th>
+                <th>Type</th>
             </tr>
         </thead>
         <tbody>
@@ -28,6 +29,7 @@
                     <a th:href="@{/workouts/{id}(id=${workoutData.id})}" class="btn-link">Détails</a>
                     <a th:href="@{/workouts/{id}/plus(id=${workoutData.id})}" class="btn-link">Set par set</a>
                 </td>
+                <td th:text="${workoutData.type}"></td>
             </tr>
         </tbody>
     </table>

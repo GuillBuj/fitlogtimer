@@ -46,6 +46,7 @@ public class ExerciseSet {
         sb.append("ex: " + exercise.getShortName());
         sb.append("reps: " + String.valueOf(repNumber) + ", ");
         sb.append("poids: " + String.valueOf(weight) + ", ");
+        sb.append("type: " + String.valueOf(type) + ", ");
         return sb.toString();
     }
 }

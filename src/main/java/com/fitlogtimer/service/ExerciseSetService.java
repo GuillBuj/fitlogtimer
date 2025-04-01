@@ -28,12 +28,16 @@ import com.fitlogtimer.model.Workout;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
+import com.fitlogtimer.util.helper.SetBasicConverter;
+import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ExerciseSetService {
     
     private final ExerciseSetRepository exerciseSetRepository;
@@ -43,26 +47,18 @@ public class ExerciseSetService {
     private final WorkoutRepository workoutRepository;
 
     private final ExerciseSetMapper exerciseSetMapper;
+    private final ExerciseSetMappingHelper exerciseSetMappingHelper;
 
+    private final SetBasicConverter setBasicConverter;
+
+    
     @Transactional
     public ExerciseSetOutDTO saveExerciseSet(ExerciseSetInDTO exerciseSetDTO) {
-        int exerciseId = exerciseSetDTO.exercise_id();
-        Exercise exercise = exerciseRepository.findById(exerciseId)
-                .orElseThrow(() -> new IllegalArgumentException("Exercise with ID " + exerciseId + " does not exist"));
-        int workoutId = exerciseSetDTO.workout_id();
-        Workout workout = workoutRepository.findById(workoutId)
-                .orElseThrow(() -> new IllegalArgumentException("Workout with ID " + workoutId + " does not exist"));
-
-        ExerciseSet exerciseSet = new ExerciseSet();
-        exerciseSet.setExercise(exercise);
-        exerciseSet.setWeight(exerciseSetDTO.weight());
-        exerciseSet.setRepNumber(exerciseSetDTO.repNumber());
-        exerciseSet.setMax(exerciseSetDTO.isMax());
-        exerciseSet.setComment(exerciseSetDTO.comment());
-        exerciseSet.setWorkout(workout);
-
-        ExerciseSet savedExercise = exerciseSetRepository.save(exerciseSet);
-        return exerciseSetMapper.toExerciseSetOutDTO(savedExercise);
+        
+        ExerciseSet exerciseSet = exerciseSetMapper.toEntity(exerciseSetDTO, exerciseSetMappingHelper);
+        ExerciseSet savedExerciseSet = exerciseSetRepository.save(exerciseSet);
+        
+        return exerciseSetMapper.toExerciseSetOutDTO(savedExerciseSet);
     }
 
     @Transactional
@@ -139,7 +135,7 @@ public class ExerciseSetService {
                     Workout workout = workoutRepository.findById(group.idWorkout())
                             .orElseThrow(() -> new NotFoundException("Workout not found: " + group.idWorkout()));
 
-                    List<SetBasicDTO> basicSets = exerciseSetMapper.toListSetBasicDTO(group.setGroup());
+                    List<SetBasicDTO> basicSets = setBasicConverter.convertSetBasicDTOList(group.setGroup());
     
                     Object cleanedSets = cleanSetsGroup(basicSets);
     

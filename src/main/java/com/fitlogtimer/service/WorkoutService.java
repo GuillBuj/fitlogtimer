@@ -61,7 +61,7 @@ public class WorkoutService {
         
         Workout savedWorkout = workoutRepository.save(workoutMapper.toEntity(workoutInDTO));
         
-        return new WorkoutOutDTO(savedWorkout.getId(), savedWorkout.getDate(), savedWorkout.getBodyWeight(), savedWorkout.getComment());
+        return new WorkoutOutDTO(savedWorkout.getId(), savedWorkout.getDate(), savedWorkout.getBodyWeight(), savedWorkout.getType(), savedWorkout.getComment());
     }
 
     @Transactional
@@ -115,6 +115,7 @@ public class WorkoutService {
                 addExerciseSet(exerciseSetInDTO);
             });
 
+        log.info("Workout created: {}. Sets: {}", workout, workout.getSetRecords());
         return workout;
     }
 

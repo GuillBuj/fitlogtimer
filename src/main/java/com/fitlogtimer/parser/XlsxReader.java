@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
+import com.fitlogtimer.constants.FileConstants;
 import com.fitlogtimer.mapper.XlsxMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -124,8 +125,8 @@ public class XlsxReader {
     }
 
     public static void main(String[] args) {
-        String excelFilePath = "docs/DCevoModParse.xlsx";
-        String sheetName = "DC séance lourde";
+        String excelFilePath = FileConstants.EXCEL_FILE;
+        String sheetName = FileConstants.HEAVY_WORKOUT_SHEET;
         int startRow = 0;
         int startColumn = 1;
         int endRow = 14;
@@ -138,7 +139,7 @@ public class XlsxReader {
             String[][] transposedData = transposeArray(data);
             
             printSpecificData(transposedData, 1);
-           System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
+            System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
            // System.out.println(data);
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());

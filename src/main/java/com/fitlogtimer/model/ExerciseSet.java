@@ -32,6 +32,7 @@ public class ExerciseSet {
     private double weight;
     private int repNumber;
     private boolean isMax;
+    private String type;
     private String comment;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

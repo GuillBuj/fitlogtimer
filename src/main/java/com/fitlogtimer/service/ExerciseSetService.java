@@ -29,8 +29,6 @@ import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -45,9 +43,6 @@ public class ExerciseSetService {
     private final WorkoutRepository workoutRepository;
 
     private final ExerciseSetMapper exerciseSetMapper;
-
-    // @PersistenceContext
-    // private EntityManager entityManager;
 
     @Transactional
     public ExerciseSetOutDTO saveExerciseSet(ExerciseSetInDTO exerciseSetDTO) {

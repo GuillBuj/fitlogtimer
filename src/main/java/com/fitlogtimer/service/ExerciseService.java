@@ -31,7 +31,7 @@ public class ExerciseService {
     @Transactional
     public Exercise createExercise(ExerciseCreateDTO exerciseCreateDTO) {
         
-        Exercise exercise = exerciseRepository.save(exerciseMapper.toExercise(exerciseCreateDTO));
+        Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(exerciseCreateDTO));
         log.info("Exercise created: " + exercise);
         
         return exercise;
@@ -59,7 +59,7 @@ public class ExerciseService {
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
         double personalBest = statsService.getPersonalBest(id);
         
-        return exerciseMapper.toExerciseListItem(exercise, personalBest);
+        return ExerciseListItemDTO.from(exercise, personalBest);
     }
 
     public List<ExerciseListItemDTO> getAllExerciseItems() {

@@ -1,9 +1,9 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.details;
 
 public record LastSetDTO(
     int exerciseId,
     String exerciseName,
-    int nbReps, 
+    int repNumber, 
     double weight) {
 
 }

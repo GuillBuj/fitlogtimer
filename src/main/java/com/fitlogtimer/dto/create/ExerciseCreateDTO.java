@@ -1,4 +1,4 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.create;
 
 import com.fitlogtimer.enums.Family;
 import com.fitlogtimer.enums.Muscle;

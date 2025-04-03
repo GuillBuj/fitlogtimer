@@ -1,4 +1,4 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.base;
 
 public record SetBasicDTO(
     int repNumber, 

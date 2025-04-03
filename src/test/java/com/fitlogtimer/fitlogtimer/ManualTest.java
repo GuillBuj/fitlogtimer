@@ -18,12 +18,12 @@ public class ManualTest {
             XlsxService xlsxService = context.getBean(XlsxService.class);
             WorkoutService workoutService = context.getBean(WorkoutService.class);
             
-            System.out.println("=== TEST DÉMARRÉ ===");
+            //System.out.println("=== TEST DÉMARRÉ ===");
             // System.out.println(workoutService.createWorkoutsFromXlsxDCHeavyDTOList(
             //     xlsxService.extractDTOs()
             // ));
             workoutService.deleteByTagImport("importH");
-            workoutService.createWorkoutsFromXlsxDCHeavyDTOList(xlsxService.extractDTOs());
+            workoutService.createWorkoutsFromXlsxDCHeavyDTOList(xlsxService.extractDTOsHeavySheetRegular());
         } catch (Exception e) {
             System.err.println("Échec du test : " + e.getMessage());
             e.printStackTrace();

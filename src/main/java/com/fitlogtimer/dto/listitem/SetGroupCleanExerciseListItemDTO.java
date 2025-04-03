@@ -1,8 +1,8 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.listitem;
 
 import java.time.LocalDate;
 
-public record SetsGroupedFinalForExDTO(
+public record SetGroupCleanExerciseListItemDTO(
     LocalDate date,
     double bodyWeight,
     String comment,

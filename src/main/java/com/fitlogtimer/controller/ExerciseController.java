@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fitlogtimer.dto.ExerciseCreateDTO;
+import com.fitlogtimer.dto.create.ExerciseCreateDTO;
 import com.fitlogtimer.enums.Family;
 import com.fitlogtimer.enums.Muscle;
 import com.fitlogtimer.service.ExerciseService;
@@ -37,14 +37,6 @@ public class ExerciseController {
         return "exercises-list";
     }
     
-    // @GetMapping("/create")
-    // public String createExercise(Model model) {
-    //     model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL));
-    //     model.addAttribute("muscles", Muscle.values());
-    //     model.addAttribute("families", Family.values());
-    //     return "exercise-create";
-    // }
-
     @PostMapping("/create")
     public String createExercise(@ModelAttribute("exercise") ExerciseCreateDTO exerciseCreateDTO, RedirectAttributes redirectAttributes){
         

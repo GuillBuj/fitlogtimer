@@ -10,24 +10,25 @@ import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.*;
 
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.SetInWorkoutDTO;
-import com.fitlogtimer.dto.SetInWorkoutOutDTO;
-import com.fitlogtimer.dto.SetsGroupedFinalDTO;
-import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
-import com.fitlogtimer.dto.postGroup.SetsAllDifferentDTO;
-import com.fitlogtimer.dto.postGroup.SetsSameRepsDTO;
-import com.fitlogtimer.dto.postGroup.SetsSameWeightAndRepsDTO;
-import com.fitlogtimer.dto.postGroup.SetsSameWeightDTO;
-import com.fitlogtimer.dto.workoutDisplay.WorkoutDetailsOutDTO;
-import com.fitlogtimer.dto.workoutDisplay.WorkoutGroupedDTO;
-import com.fitlogtimer.dto.SetsGroupedDTO;
-import com.fitlogtimer.dto.ExerciseSetInDTO;
-import com.fitlogtimer.dto.FromXlsxDCHeavyDTO;
-import com.fitlogtimer.dto.LastSetDTO;
-import com.fitlogtimer.dto.WorkoutInDTO;
-import com.fitlogtimer.dto.WorkoutOutDTO;
-import com.fitlogtimer.dto.SetBasicDTO;
+import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.postgroup.SetsAllDifferentDTO;
+import com.fitlogtimer.dto.postgroup.SetsSameRepsDTO;
+import com.fitlogtimer.dto.postgroup.SetsSameWeightAndRepsDTO;
+import com.fitlogtimer.dto.postgroup.SetsSameWeightDTO;
+import com.fitlogtimer.dto.transition.SetInWorkoutDTO;
+import com.fitlogtimer.dto.transition.SetsGroupedDTO;
+import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
+import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
+import com.fitlogtimer.dto.create.WorkoutCreateDTO;
+import com.fitlogtimer.dto.details.LastSetDTO;
+import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
+import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
+import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
+import com.fitlogtimer.dto.listitem.SetWorkoutListItemDTO;
+import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.exception.NotFoundException;
+import com.fitlogtimer.mapper.ExerciseSetMapper;
 import com.fitlogtimer.mapper.WorkoutMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
@@ -48,6 +49,8 @@ public class WorkoutService {
 
     private final WorkoutMapper workoutMapper;
 
+    private final ExerciseSetMapper exerciseSetMapper;
+
     private final ExerciseRepository exerciseRepository;
 
     private final ExerciseSetService exerciseSetService;
@@ -57,11 +60,11 @@ public class WorkoutService {
     }
     
     @Transactional
-    public WorkoutOutDTO createWorkout(WorkoutInDTO workoutInDTO) {
+    public WorkoutListItemDTO createWorkout(WorkoutCreateDTO workoutInDTO) {
         
         Workout savedWorkout = workoutRepository.save(workoutMapper.toEntity(workoutInDTO));
         
-        return new WorkoutOutDTO(savedWorkout.getId(), savedWorkout.getDate(), savedWorkout.getBodyWeight(), savedWorkout.getType(), savedWorkout.getComment());
+        return new WorkoutListItemDTO(savedWorkout.getId(), savedWorkout.getDate(), savedWorkout.getBodyWeight(), savedWorkout.getType(), savedWorkout.getComment());
     }
 
     @Transactional
@@ -101,11 +104,10 @@ public class WorkoutService {
                         type = "";
                     }
         
-                return new ExerciseSetInDTO(
+                return new ExerciseSetCreateDTO(
                     exerciseRepository.findByShortName("DC").getId(),
                     basicSet.weight(),
                     basicSet.repNumber(),
-                    false,
                     type,
                     "",
                     idWorkout
@@ -119,16 +121,16 @@ public class WorkoutService {
         return workout;
     }
 
-    public WorkoutDetailsOutDTO getWorkoutDetailsBrut(int id){
+    public WorkoutDetailsBrutDTO getWorkoutDetailsBrut(int id){
         Workout workout = workoutRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Workout not found: " + id));
 
-        List<SetInWorkoutOutDTO> setsDTO = getSetsOutDTO(workout);
+        List<SetWorkoutListItemDTO> setsDTO = getSetsOutDTO(workout);
         
-        return new WorkoutDetailsOutDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), setsDTO);
+        return new WorkoutDetailsBrutDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), setsDTO);
     }
     
-    public WorkoutGroupedDTO getWorkoutGrouped(int id){
+    public WorkoutDetailsGroupedDTO getWorkoutGrouped(int id){
         Workout workout = workoutRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Workout not found: " + id));
 
@@ -138,11 +140,11 @@ public class WorkoutService {
                 .map(this::groupedSetToGroupedSetWithName)
                 .toList();
 
-        List<SetsGroupedFinalDTO> finalGroupedSets = groupedSetsWithName.stream()
+        List<SetGroupCleanWorkoutListItemDTO> finalGroupedSets = groupedSetsWithName.stream()
                 .map(this::cleanSetsGroup)
                 .toList();
         
-        WorkoutGroupedDTO workoutGroupedDTO = new WorkoutGroupedDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), finalGroupedSets);
+        WorkoutDetailsGroupedDTO workoutGroupedDTO = new WorkoutDetailsGroupedDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), finalGroupedSets);
         System.out.println(workoutGroupedDTO);
         return workoutGroupedDTO;
     }
@@ -188,32 +190,20 @@ public class WorkoutService {
 
     public List<SetInWorkoutDTO> getSetsDTO(Workout workout){
         return workout.getSetRecords().stream()
-                .map(exerciseSet -> new SetInWorkoutDTO(
-                    exerciseSet.getId(),
-                    exerciseSet.getExercise().getId(),
-                    exerciseSet.getWeight(),
-                    exerciseSet.getRepNumber(),
-                    exerciseSet.isMax(),
-                    exerciseSet.getComment()))
+                .map(exerciseSetMapper::toSetInWorkoutDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<SetInWorkoutOutDTO> getSetsOutDTO(Workout workout){
+    public List<SetWorkoutListItemDTO> getSetsOutDTO(Workout workout){
         return workout.getSetRecords().stream()
-                .map(exerciseSet -> new SetInWorkoutOutDTO(
-                    exerciseSet.getId(),
-                    exerciseSet.getExercise().getShortName(),
-                    exerciseSet.getWeight(),
-                    exerciseSet.getRepNumber(),
-                    exerciseSet.isMax(),
-                    exerciseSet.getComment()))
+                .map(exerciseSetMapper::toSetListItemDTO)
                 .collect(Collectors.toList());
     }
 
-    public SetsGroupedFinalDTO cleanSetsGroup(SetsGroupedWithNameDTO sets){
+    public SetGroupCleanWorkoutListItemDTO cleanSetsGroup(SetsGroupedWithNameDTO sets){
         if(hasSameWeight(sets)){
             if(hasSameReps(sets)){
-                return new SetsGroupedFinalDTO(
+                return new SetGroupCleanWorkoutListItemDTO(
                     sets.exerciseNameShort(),
                     new SetsSameWeightAndRepsDTO(
                         sets.sets().size(),
@@ -224,7 +214,7 @@ public class WorkoutService {
                 for(int i=0; i<sets.sets().size(); i++){
                     repsSet.add(sets.sets().get(i).repNumber());
                 }
-                return new SetsGroupedFinalDTO(
+                return new SetGroupCleanWorkoutListItemDTO(
                     sets.exerciseNameShort(),
                     new SetsSameWeightDTO(
                         sets.sets().get(0).weight(),
@@ -235,7 +225,7 @@ public class WorkoutService {
             for(int i=0; i<sets.sets().size(); i++){
                 weights.add(sets.sets().get(i).weight());
             }
-            return new SetsGroupedFinalDTO(
+            return new SetGroupCleanWorkoutListItemDTO(
                 sets.exerciseNameShort(),
                 new SetsSameRepsDTO(
                     sets.sets().get(0).repNumber(),
@@ -245,7 +235,7 @@ public class WorkoutService {
             List<SetBasicDTO> setBasicDTOs = sets.sets().stream()
                 .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
                 .collect(Collectors.toList());
-                return new SetsGroupedFinalDTO(sets.exerciseNameShort(), new SetsAllDifferentDTO(setBasicDTOs));
+                return new SetGroupCleanWorkoutListItemDTO(sets.exerciseNameShort(), new SetsAllDifferentDTO(setBasicDTOs));
         }
     }
     
@@ -285,46 +275,39 @@ public class WorkoutService {
     
         if (lastSet == null || lastSet.getExercise() == null) {return null;}
     
-        return new LastSetDTO(
-            lastSet.getExercise().getId(),
-            lastSet.getExercise().getName(),
-            lastSet.getRepNumber(),
-            lastSet.getWeight()
-        );
+        return exerciseSetMapper.toLastSetDTO(lastSet);
     }
 
-    public ExerciseSetInDTO setFormByLastSetDTO(int id) {
+    public ExerciseSetCreateDTO setFormByLastSetDTO(int id) {
 
         int defaultExerciseId = id;
         double defaultWeight = 0.0;
         int defaultRepNumber = 0;
-        boolean defaultBoolean = false;
         String defaultType = "";
         String defaultComment = "";
     
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
-            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultType,defaultComment, id);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultType,defaultComment, id);
         }
     
         Workout workout = optionalWorkout.get();
     
         List<ExerciseSet> sets = workout.getSetRecords();
         if (sets == null || sets.isEmpty()) {
-            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultType, defaultComment, id);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultType, defaultComment, id);
         }
     
         ExerciseSet lastSet = sets.get(sets.size() - 1);
     
         if (lastSet == null || lastSet.getExercise() == null) {
-            return new ExerciseSetInDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBoolean, defaultType, defaultComment, id);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultType, defaultComment, id);
         }
     
-        return new ExerciseSetInDTO(
+        return new ExerciseSetCreateDTO(
             lastSet.getExercise().getId(),
             lastSet.getWeight(),
             lastSet.getRepNumber(),
-            defaultBoolean,
             defaultType,
             defaultComment,
             id
@@ -332,7 +315,7 @@ public class WorkoutService {
     }
 
     @Transactional
-    void addExerciseSet(ExerciseSetInDTO exerciseSetInDTO){
+    void addExerciseSet(ExerciseSetCreateDTO exerciseSetInDTO){
         exerciseSetService.saveExerciseSet(exerciseSetInDTO);
     }
 

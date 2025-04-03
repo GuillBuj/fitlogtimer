@@ -1,10 +1,9 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.transition;
 
 public record SetInWorkoutDTO(
         int id,
         int exercise_id,
         double weight,
         int repNumber,
-        boolean isMax,
         String comment) {
 }

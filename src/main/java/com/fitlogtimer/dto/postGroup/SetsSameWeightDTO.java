@@ -1,4 +1,4 @@
-package com.fitlogtimer.dto.postGroup;
+package com.fitlogtimer.dto.postgroup;
 
 import java.util.List;
 

@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fitlogtimer.dto.ExerciseSetInDTO;
-import com.fitlogtimer.dto.WorkoutInDTO;
-import com.fitlogtimer.dto.workoutDisplay.WorkoutDetailsOutDTO;
-import com.fitlogtimer.dto.workoutDisplay.WorkoutGroupedDTO;
+import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
+import com.fitlogtimer.dto.create.WorkoutCreateDTO;
+import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
+import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.Workout;
 import com.fitlogtimer.service.ExerciseService;
@@ -41,8 +41,8 @@ public class WorkoutController {
     @GetMapping("/{id}")
     public String getWorkoutDetails(@PathVariable int id, Model model) {
         
-        WorkoutGroupedDTO workoutData = workoutService.getWorkoutGrouped(id);
-        ExerciseSetInDTO exerciseSet = workoutService.setFormByLastSetDTO(id);
+        WorkoutDetailsGroupedDTO workoutData = workoutService.getWorkoutGrouped(id);
+        ExerciseSetCreateDTO exerciseSet = workoutService.setFormByLastSetDTO(id);
         List<Exercise> exercises = exerciseService.getAllExercises();
 
         model.addAttribute("workoutData", workoutData);
@@ -56,8 +56,8 @@ public class WorkoutController {
     @GetMapping("/{id}/plus")
     public String getWorkoutDetailsPlus(@PathVariable int id, Model model) {
         
-        WorkoutDetailsOutDTO workoutData = workoutService.getWorkoutDetailsBrut(id);
-        ExerciseSetInDTO exerciseSet = workoutService.setFormByLastSetDTO(id);
+        WorkoutDetailsBrutDTO workoutData = workoutService.getWorkoutDetailsBrut(id);
+        ExerciseSetCreateDTO exerciseSet = workoutService.setFormByLastSetDTO(id);
         List<Exercise> exercises=exerciseService.getAllExercises();
         
         model.addAttribute("workoutData", workoutData);
@@ -95,16 +95,16 @@ public class WorkoutController {
     @GetMapping("/create")
     public String showWorkoutForm(Model model) {
         LocalDate today = LocalDate.now();
-        model.addAttribute("workoutData", new WorkoutInDTO(today, 0.0, ""));
+        model.addAttribute("workoutData", new WorkoutCreateDTO(today, 0.0, ""));
         model.addAttribute("today", today);
         return "workout-create";
     }
 
     @PostMapping("/create")
-    public String createWorkout(@ModelAttribute("workoutData") WorkoutInDTO workoutInDTO, RedirectAttributes redirectAttributes) {
-        log.info("POST workouts/create: {}", workoutInDTO);
+    public String createWorkout(@ModelAttribute("workoutData") WorkoutCreateDTO workoutCreateDTO, RedirectAttributes redirectAttributes) {
+        log.info("POST workouts/create: {}", workoutCreateDTO);
         
-        workoutService.createWorkout(workoutInDTO);
+        workoutService.createWorkout(workoutCreateDTO);
 
         redirectAttributes.addFlashAttribute("successMessage", "Séance créée avec succès");
         return "redirect:/workouts";

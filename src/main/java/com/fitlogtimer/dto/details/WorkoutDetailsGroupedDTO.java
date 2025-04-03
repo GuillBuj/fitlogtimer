@@ -1,7 +1,9 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.details;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
 
 
 public record WorkoutDetailsGroupedDTO(
@@ -9,7 +11,7 @@ public record WorkoutDetailsGroupedDTO(
     LocalDate date,
     double bodyWeight,
     String comment,
-    List<SetsGroupedDTO> exerciseSets
+    List<SetGroupCleanWorkoutListItemDTO> exerciseSets
 ) {
     
 }

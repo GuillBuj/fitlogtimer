@@ -2,8 +2,8 @@ package com.fitlogtimer.service;
 
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.SetBasicDTO;
-import com.fitlogtimer.dto.SetsGroupedWithNameDTO;
+import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
 
 @Service
 public class SetsGroupCleaner {

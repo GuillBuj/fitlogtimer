@@ -1,10 +1,9 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.create;
 
-public record ExerciseSetInDTO(
+public record ExerciseSetCreateDTO(
         int exercise_id,
         double weight,
         int repNumber,
-        boolean isMax,
         String type,
         String comment,
         int workout_id) {

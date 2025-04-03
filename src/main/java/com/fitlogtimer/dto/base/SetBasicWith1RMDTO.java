@@ -1,4 +1,4 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.base;
 
 import com.fitlogtimer.service.StatsService;
 
@@ -7,6 +7,7 @@ public record SetBasicWith1RMDTO(
     double weight,
     double oneRepMax
 ) implements Comparable<SetBasicWith1RMDTO>{
+    
     public SetBasicWith1RMDTO(SetBasicDTO setBasicDTO){
         this(setBasicDTO.repNumber(), 
              setBasicDTO.weight(), 

@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.ExerciseCreateDTO;
-import com.fitlogtimer.dto.ExerciseListItemDTO;
+import com.fitlogtimer.dto.create.ExerciseCreateDTO;
+import com.fitlogtimer.dto.listitem.ExerciseListItemDTO;
 import com.fitlogtimer.exception.NotFoundException;
 import com.fitlogtimer.mapper.ExerciseMapper;
 import com.fitlogtimer.model.Exercise;

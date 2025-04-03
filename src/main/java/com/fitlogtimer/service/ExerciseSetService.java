@@ -8,18 +8,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.ExerciseSetInDTO;
-import com.fitlogtimer.dto.ExerciseSetOutDTO;
-import com.fitlogtimer.dto.SetBasicDTO;
-import com.fitlogtimer.dto.SetBasicWith1RMDTO;
-import com.fitlogtimer.dto.SetsByExGroupedDTO;
-import com.fitlogtimer.dto.SetsGroupedByWorkoutDTO;
-import com.fitlogtimer.dto.SetsGroupedFinalForExDTO;
-import com.fitlogtimer.dto.SetsGroupedForExDTO;
-import com.fitlogtimer.dto.postGroup.SetsAllDifferentDTO;
-import com.fitlogtimer.dto.postGroup.SetsSameRepsDTO;
-import com.fitlogtimer.dto.postGroup.SetsSameWeightAndRepsDTO;
-import com.fitlogtimer.dto.postGroup.SetsSameWeightDTO;
+import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
+import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
+import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
+import com.fitlogtimer.dto.listitem.SetGroupCleanExerciseListItemDTO;
+import com.fitlogtimer.dto.postgroup.SetsAllDifferentDTO;
+import com.fitlogtimer.dto.postgroup.SetsSameRepsDTO;
+import com.fitlogtimer.dto.postgroup.SetsSameWeightAndRepsDTO;
+import com.fitlogtimer.dto.postgroup.SetsSameWeightDTO;
+import com.fitlogtimer.dto.transition.SetsGroupedByWorkoutDTO;
+import com.fitlogtimer.dto.transition.SetsGroupedForExDTO;
 import com.fitlogtimer.exception.NotFoundException;
 import com.fitlogtimer.mapper.ExerciseSetMapper;
 import com.fitlogtimer.model.Exercise;
@@ -53,12 +52,10 @@ public class ExerciseSetService {
 
     
     @Transactional
-    public ExerciseSetOutDTO saveExerciseSet(ExerciseSetInDTO exerciseSetDTO) {
+    public ExerciseSet saveExerciseSet(ExerciseSetCreateDTO exerciseSetDTO) {
         
         ExerciseSet exerciseSet = exerciseSetMapper.toEntity(exerciseSetDTO, exerciseSetMappingHelper);
-        ExerciseSet savedExerciseSet = exerciseSetRepository.save(exerciseSet);
-        
-        return exerciseSetMapper.toExerciseSetOutDTO(savedExerciseSet);
+        return exerciseSetRepository.save(exerciseSet);
     }
 
     @Transactional
@@ -124,13 +121,13 @@ public class ExerciseSetService {
     }
 
     //affichage propre
-    public SetsByExGroupedDTO getSetsGroupedCleanedByWorkout(int id) {
+    public ExerciseDetailsGroupedDTO getSetsGroupedCleanedByWorkout(int id) {
         Exercise exercise = exerciseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Exercise not found: " + id));
     
         List<SetsGroupedForExDTO> groupedSets = groupSetsByWorkout(getSetsByExerciseId(id));
     
-        List<SetsGroupedFinalForExDTO> finalGroupedSets = groupedSets.stream()
+        List<SetGroupCleanExerciseListItemDTO> finalGroupedSets = groupedSets.stream()
                 .map(group -> {
                     Workout workout = workoutRepository.findById(group.idWorkout())
                             .orElseThrow(() -> new NotFoundException("Workout not found: " + group.idWorkout()));
@@ -141,7 +138,7 @@ public class ExerciseSetService {
     
                     SetBasicWith1RMDTO maxSet = getMaxByDateForEx(group.setGroup());
     
-                    return new SetsGroupedFinalForExDTO(
+                    return new SetGroupCleanExerciseListItemDTO(
                             workout.getDate(),
                             workout.getBodyWeight(),
                             workout.getComment(),
@@ -151,7 +148,7 @@ public class ExerciseSetService {
                 })
                 .collect(Collectors.toList());
     
-        return new SetsByExGroupedDTO(id, exercise.getName(), finalGroupedSets);
+        return new ExerciseDetailsGroupedDTO(id, exercise.getName(), finalGroupedSets);
     }
     
     //renvoie une version propre d'une liste de sets pour affichage

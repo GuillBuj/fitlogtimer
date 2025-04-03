@@ -40,14 +40,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ExerciseSetService {
     
     private final ExerciseSetRepository exerciseSetRepository;
-
     private final ExerciseRepository exerciseRepository;
-
     private final WorkoutRepository workoutRepository;
 
     private final ExerciseSetMapper exerciseSetMapper;
+    
     private final ExerciseSetMappingHelper exerciseSetMappingHelper;
-
     private final SetBasicConverter setBasicConverter;
 
     

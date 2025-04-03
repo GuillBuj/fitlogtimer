@@ -46,15 +46,14 @@ import lombok.extern.slf4j.Slf4j;
 public class WorkoutService {
 
     private final WorkoutRepository workoutRepository;
-
-    private final WorkoutMapper workoutMapper;
-
-    private final ExerciseSetMapper exerciseSetMapper;
-
     private final ExerciseRepository exerciseRepository;
 
     private final ExerciseSetService exerciseSetService;
 
+    private final WorkoutMapper workoutMapper;
+    private final ExerciseSetMapper exerciseSetMapper;
+
+    
     public List<Workout> getAllWorkouts() {
         return workoutRepository.findAllByOrderByDateDesc();
     }

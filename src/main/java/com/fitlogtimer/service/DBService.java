@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 public class DBService {
     
     private final ExerciseSetRepository exerciseSetRepository;
-
     private final WorkoutRepository workoutRepository;
 
     public void clearExerciseSetAndWorkout(){

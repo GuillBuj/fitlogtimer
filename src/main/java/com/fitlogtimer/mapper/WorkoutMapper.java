@@ -5,6 +5,8 @@ import org.mapstruct.Mapping;
 
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
 import com.fitlogtimer.model.Workout;
 
 @Mapper(componentModel = "spring")
@@ -15,4 +17,12 @@ public interface WorkoutMapper {
     @Mapping(target = "type", constant = "HEAVY")
     @Mapping(target = "tagImport", constant = "importH")
     public Workout toEntity(FromXlsxDCHeavyDTO dto);
+
+    @Mapping(target = "type", constant = "DL")
+    @Mapping(target = "tagImport", constant = "importDL")
+    public Workout toEntity(FromXlsxDeadliftDTO dto);
+
+    @Mapping(target = "type", constant = "LIGHT")
+    @Mapping(target = "tagImport", constant = "importH")
+    public Workout toEntity(FromXlsxDCLightDTO dto);
 }

@@ -13,6 +13,7 @@
         <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
         
         <h1>Séries de <span th:if="${#lists.size(sets) > 0}" th:text="${sets[0].exercise.name}"></span></h1>
+        <a th:href="@{/exercises}" class="btn-link">Retour</a>
         <table th:if="${#lists.size(sets) > 0}">
             <tr>
                 <th>Date</td>

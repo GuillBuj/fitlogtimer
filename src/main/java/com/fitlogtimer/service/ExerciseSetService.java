@@ -141,7 +141,7 @@ public class ExerciseSetService {
                     return new SetGroupCleanExerciseListItemDTO(
                             workout.getDate(),
                             workout.getBodyWeight(),
-                            workout.getComment(),
+                            workout.getType(),
                             cleanedSets,
                             maxSet.oneRepMax()
                     );

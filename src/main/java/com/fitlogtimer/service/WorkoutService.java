@@ -24,6 +24,7 @@ import com.fitlogtimer.dto.details.LastSetDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
 import com.fitlogtimer.dto.listitem.SetWorkoutListItemDTO;
 import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
@@ -82,6 +83,13 @@ public class WorkoutService {
             .map(this::createWorkoutFromXlsxDCHeavyDTO)
             .collect(Collectors.toList());
     }
+
+    @Transactional
+    public List<Workout> createWorkoutsFromXlsxDeadliftDTOList(List<FromXlsxDeadliftDTO> dtoList) {
+        return dtoList.stream()
+            .map(this::createWorkoutFromXlsxDeadliftDTO)
+            .collect(Collectors.toList());
+    }
     
     @Transactional
     public Workout createWorkoutFromXlsxDCHeavyDTO(FromXlsxDCHeavyDTO fromXlsxDCHeavyDTO){
@@ -116,6 +124,24 @@ public class WorkoutService {
             .forEach(exerciseSetInDTO -> {
                 addExerciseSet(exerciseSetInDTO);
             });
+
+        log.info("Workout created: {}. Sets: {}", workout, workout.getSetRecords());
+        return workout;
+    }
+
+    @Transactional
+    public Workout createWorkoutFromXlsxDeadliftDTO(FromXlsxDeadliftDTO fromXlsxDeadliftDTO){
+        Workout workout = workoutMapper.toEntity(fromXlsxDeadliftDTO);
+        int idWorkout = workoutRepository.save(workout).getId();
+       
+        addExerciseSet(new ExerciseSetCreateDTO(
+                    exerciseRepository.findByShortName("DL").getId(),
+                    fromXlsxDeadliftDTO.sets().weight(),
+                    fromXlsxDeadliftDTO.sets().repNumber(),
+                    "ONE DL",
+                    "",
+                    idWorkout
+        ));
 
         log.info("Workout created: {}. Sets: {}", workout, workout.getSetRecords());
         return workout;

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.fitlogtimer.dto.base.SetBasicDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
 
 @Component
 public class XlsxMapper {
@@ -30,6 +31,15 @@ public class XlsxMapper {
         }
 
         return new FromXlsxDCHeavyDTO(date, bodyWeight, sets, type);
+    }
+
+    public FromXlsxDeadliftDTO mapToFromXlsxDeadliftDTO(String[] column) {
+
+        LocalDate date = LocalDate.parse(column[0], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        double bodyWeight = parseDouble(column[2]);
+        SetBasicDTO set = new SetBasicDTO(1, parseDouble(column[1]));
+
+        return new FromXlsxDeadliftDTO(date, bodyWeight, set);
     }
 
     private double parseDouble(String value) {

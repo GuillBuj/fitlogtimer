@@ -24,6 +24,10 @@ public class ManualTest {
             // ));
             workoutService.deleteByTagImport("importH");
             workoutService.createWorkoutsFromXlsxDCHeavyDTOList(xlsxService.extractDTOsHeavySheetRegular());
+
+            workoutService.deleteByTagImport("importDL");
+            workoutService.createWorkoutsFromXlsxDeadliftDTOList(xlsxService.extractDTOsDeadliftSheet());
+
         } catch (Exception e) {
             System.err.println("Échec du test : " + e.getMessage());
             e.printStackTrace();

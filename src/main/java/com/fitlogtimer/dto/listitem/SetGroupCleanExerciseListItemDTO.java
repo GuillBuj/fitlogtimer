@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public record SetGroupCleanExerciseListItemDTO(
     LocalDate date,
     double bodyWeight,
-    String comment,
+    String type,
     Object sets,
     double est1RM) {
     @Override

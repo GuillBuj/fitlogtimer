@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fitlogtimer.dto.ExerciseSetInDTO;
-import com.fitlogtimer.dto.SetsByExGroupedDTO;
+import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
+import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.service.ExerciseSetService;
 
@@ -29,7 +29,7 @@ public class ExerciceSetController {
     private ExerciseSetService exerciseSetService;
 
     @PostMapping("/add")
-    public String addExerciseSet(@ModelAttribute ExerciseSetInDTO exerciseSetDTO, RedirectAttributes redirectAttributes) {
+    public String addExerciseSet(@ModelAttribute ExerciseSetCreateDTO exerciseSetDTO, RedirectAttributes redirectAttributes) {
         try {
             exerciseSetService.saveExerciseSet(exerciseSetDTO);
             redirectAttributes.addFlashAttribute("successMessage", "Série ajoutée avec succès");
@@ -75,7 +75,7 @@ public class ExerciceSetController {
     @GetMapping("/byExercise/{exerciseId}/groupedByDateClean")
     public String showSetsByExerciseGroupedCleanedByDate(@PathVariable int exerciseId, Model model){
 
-        SetsByExGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedByWorkout(exerciseId);
+        ExerciseDetailsGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedByWorkout(exerciseId);
 
         model.addAttribute("sets", groupedSets);
         log.info(model.toString());

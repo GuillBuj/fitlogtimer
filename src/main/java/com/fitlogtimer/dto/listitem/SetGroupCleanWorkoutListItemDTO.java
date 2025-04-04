@@ -1,6 +1,6 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.listitem;
 
-public record SetsGroupedFinalDTO(
+public record SetGroupCleanWorkoutListItemDTO(
     String exerciseNameShort,
     Object sets) {
     @Override

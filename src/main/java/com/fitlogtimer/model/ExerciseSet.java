@@ -15,9 +15,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ExerciseSet {
 
@@ -31,7 +31,6 @@ public class ExerciseSet {
 
     private double weight;
     private int repNumber;
-    private boolean isMax;
     private String type;
     private String comment;
 

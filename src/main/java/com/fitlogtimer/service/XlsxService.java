@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.constants.FileConstants;
-import com.fitlogtimer.dto.FromXlsxDCHeavyDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
 import com.fitlogtimer.mapper.XlsxMapper;
 import com.fitlogtimer.parser.XlsxReader;
 
@@ -27,7 +27,7 @@ public class XlsxService {
         this.xlsxReader = new XlsxReader();
     }
 
-    public List<FromXlsxDCHeavyDTO> extractDTOs(){
+    public List<FromXlsxDCHeavyDTO> extractDTOsHeavySheetRegular(){
         String excelFilePath = FileConstants.EXCEL_FILE;
         String sheetName = FileConstants.HEAVY_WORKOUT_SHEET;
         int startRow = 0;
@@ -58,8 +58,8 @@ public class XlsxService {
         return workouts;
     }
 
-    public static void main(String[] args){
-        XlsxService xlsxService= new XlsxService();
-        xlsxService.extractDTOs();
-    }
+    // public static void main(String[] args){
+    //     XlsxService xlsxService= new XlsxService();
+    //     xlsxService.extractDTOs();
+    // }
 }

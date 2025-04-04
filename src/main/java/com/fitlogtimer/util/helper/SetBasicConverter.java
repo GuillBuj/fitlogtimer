@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.fitlogtimer.dto.SetBasicDTO;
-import com.fitlogtimer.dto.SetBasicWith1RMDTO;
+import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
 
 @Component
 public class SetBasicConverter {

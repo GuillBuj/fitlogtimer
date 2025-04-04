@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.fitlogtimer.dto.FromXlsxDCHeavyDTO;
-import com.fitlogtimer.dto.SetBasicDTO;
+import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
 
 @Component
 public class XlsxMapper {

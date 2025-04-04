@@ -1,11 +1,9 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.create;
 
 import java.time.LocalDate;
 
-public record WorkoutOutDTO(
-    int id,
+public record WorkoutCreateDTO(
     LocalDate date,
     double bodyWeight,
-    String type,
     String comment){ 
 }

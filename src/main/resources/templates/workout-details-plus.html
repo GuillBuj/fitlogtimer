@@ -23,7 +23,6 @@
                 <th>Ex</th>
                 <th>Reps</th>
                 <th>Poids</th>
-                <th>Max?</th>
                 <th>Commentaires</th>
                 <th>Action</th>
             </tr>
@@ -32,7 +31,6 @@
             <td th:text="${set.exerciseNameShort}"></td>
             <td th:text="${set.repNumber}"></td>
             <td th:text="${set.weight}"></td>
-            <td th:text="${set.isMax}"></td>
             <td th:text="${set.comment}"></td>
             <td>
                 <form th:action="@{/exerciseSets/{id}(id=${set.id}, idWorkout=${workoutData.id})}" class="deleteForm"  method="post">
@@ -71,12 +69,6 @@
             <button type="submit" class="btnValid">Ajouter</button>
         </div>
 
-        <div class="form-group">
-            <label for="isMax">Max :</label>
-            <input type="hidden" name="_isMax" value="false" />
-            <input type="checkbox" id="isMax" name="isMax" th:field="*{max}" value="true" />
-        </div>
-    
         <div class="form-group">
             <label for="comment">Commentaire :</label>
             <input type="text" class="commentInput" id="comment" th:field="*{comment}" />

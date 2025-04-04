@@ -6,11 +6,23 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.*;
-
 import org.springframework.stereotype.Service;
 
+import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.HEAVY;
+import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.LIGHT_50;
+import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.MEDIUM_55;
 import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
+import com.fitlogtimer.dto.create.WorkoutCreateDTO;
+import com.fitlogtimer.dto.details.LastSetDTO;
+import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
+import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
+import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
+import com.fitlogtimer.dto.listitem.SetWorkoutListItemDTO;
+import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.dto.postgroup.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.postgroup.SetsSameRepsDTO;
 import com.fitlogtimer.dto.postgroup.SetsSameWeightAndRepsDTO;
@@ -18,16 +30,6 @@ import com.fitlogtimer.dto.postgroup.SetsSameWeightDTO;
 import com.fitlogtimer.dto.transition.SetInWorkoutDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
-import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
-import com.fitlogtimer.dto.create.WorkoutCreateDTO;
-import com.fitlogtimer.dto.details.LastSetDTO;
-import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
-import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
-import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
-import com.fitlogtimer.dto.listitem.SetWorkoutListItemDTO;
-import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.exception.NotFoundException;
 import com.fitlogtimer.mapper.ExerciseSetMapper;
 import com.fitlogtimer.mapper.WorkoutMapper;
@@ -85,6 +87,14 @@ public class WorkoutService {
     }
 
     @Transactional
+    public List<Workout> createWorkoutsFromXlsxDCLightDTOList(List<FromXlsxDCLightDTO> dtoList) {
+        log.info("-*-*- {}", dtoList);
+        return dtoList.stream()
+            .map(this::createWorkoutFromXlsxDCLightDTO)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional
     public List<Workout> createWorkoutsFromXlsxDeadliftDTOList(List<FromXlsxDeadliftDTO> dtoList) {
         return dtoList.stream()
             .map(this::createWorkoutFromXlsxDeadliftDTO)
@@ -122,6 +132,32 @@ public class WorkoutService {
                 );
                 })
             .forEach(exerciseSetInDTO -> {
+                addExerciseSet(exerciseSetInDTO);
+            });
+
+        log.info("Workout created: {}. Sets: {}", workout, workout.getSetRecords());
+        return workout;
+    }
+
+    @Transactional
+    public Workout createWorkoutFromXlsxDCLightDTO(FromXlsxDCLightDTO fromXlsxDCLightDTO){
+        Workout workout = workoutMapper.toEntity(fromXlsxDCLightDTO);
+        int idWorkout = workoutRepository.save(workout).getId();
+        //log.info("*** workout {} created", idWorkout);
+        fromXlsxDCLightDTO.sets().stream()
+            .map(basicSet -> {
+                log.info("**/*//** {}, short: ", basicSet, basicSet.exercise());
+                return new ExerciseSetCreateDTO(
+                    exerciseRepository.findByShortName(basicSet.exercise()).getId(),
+                    basicSet.weight(),
+                    basicSet.repNumber(),
+                    "",
+                    "",
+                    idWorkout
+                );
+                })
+            .forEach(exerciseSetInDTO -> {
+                log.info("-*-*-*-*-*-*-*-*-*-*{}", exerciseSetInDTO);
                 addExerciseSet(exerciseSetInDTO);
             });
 

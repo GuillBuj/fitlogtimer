@@ -23,6 +23,6 @@ public interface WorkoutMapper {
     public Workout toEntity(FromXlsxDeadliftDTO dto);
 
     @Mapping(target = "type", constant = "LIGHT")
-    @Mapping(target = "tagImport", constant = "importH")
+    @Mapping(target = "tagImport", constant = "importL")
     public Workout toEntity(FromXlsxDCLightDTO dto);
 }

@@ -28,6 +28,9 @@ public class ManualTest {
             workoutService.deleteByTagImport("importDL");
             workoutService.createWorkoutsFromXlsxDeadliftDTOList(xlsxService.extractDTOsDeadliftSheet());
 
+            workoutService.deleteByTagImport("importL");
+            workoutService.createWorkoutsFromXlsxDCLightDTOList(xlsxService.extractDTOsLightSheet());
+
         } catch (Exception e) {
             System.err.println("Échec du test : " + e.getMessage());
             e.printStackTrace();

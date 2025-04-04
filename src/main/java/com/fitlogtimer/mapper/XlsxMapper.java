@@ -8,7 +8,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.base.SetBasicWithExDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
 
 @Component
@@ -32,6 +34,46 @@ public class XlsxMapper {
 
         return new FromXlsxDCHeavyDTO(date, bodyWeight, sets, type);
     }
+
+    public FromXlsxDCLightDTO mapToFromXlsxDCLightDTO(String[] column) {
+
+        LocalDate date = LocalDate.parse(column[1], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        double bodyWeight = parseDouble(column[2]);
+
+        String type = column[0];
+        String ex1="", ex2="";
+        switch(type){
+            case "DC DC15": {ex1="DC"; ex2="DC15"; break;}
+            case "DC15 DC": {ex1="DC15"; ex2="DC"; break;}
+            case "DC15 DCD": {ex1="DC15"; ex2="DCD"; break;}
+            case "DC DCD": {ex1="DC"; ex2="DCD"; break;}
+            case "4DC15 DCD": {ex1="DC15"; ex2="DCD"; break;}
+            case "DC": {ex1="DC"; break;}
+        }
+
+
+        List<SetBasicWithExDTO> sets = new ArrayList<>();
+        sets.add(new SetBasicWithExDTO(parseReps(column[4]), parseDouble(column[3])+8, ex1));
+        sets.add(new SetBasicWithExDTO(parseReps(column[5]), parseDouble(column[3])+8, ex1));
+        sets.add(new SetBasicWithExDTO(parseReps(column[6]), parseDouble(column[3])+8, ex1));
+        if(!type.equals("4DC15 DCD") && !type.equals("DC")){
+            sets.add(new SetBasicWithExDTO(parseReps(column[8]), parseDouble(column[7])+8, ex2));
+            sets.add(new SetBasicWithExDTO(parseReps(column[9]), parseDouble(column[7])+8, ex2));
+            sets.add(new SetBasicWithExDTO(parseReps(column[10]), parseDouble(column[7])+8, ex2));
+        } else if(type.equals("4DC15 DCD")){
+            sets.add(new SetBasicWithExDTO(parseReps(column[7]), parseDouble(column[3])+8, ex1));
+            sets.add(new SetBasicWithExDTO(parseReps(column[8]), parseDouble(column[3])+8, ex2));
+            sets.add(new SetBasicWithExDTO(parseReps(column[9]), parseDouble(column[3])+8, ex2));
+            sets.add(new SetBasicWithExDTO(parseReps(column[10]), parseDouble(column[3])+8, ex2));
+            sets.add(new SetBasicWithExDTO(parseReps(column[11]), parseDouble(column[3])+8, ex2));
+        } else if(type.equals("DC")){
+            if(!column[7].equals("NA")){sets.add(new SetBasicWithExDTO(parseReps(column[7]), parseDouble(column[3])+8, ex1));}
+                else if(!column[8].equals("NA")){sets.add(new SetBasicWithExDTO(parseReps(column[8]), parseDouble(column[3])+8, ex1));}
+        }
+
+        return new FromXlsxDCLightDTO(date, bodyWeight, sets, type);
+    }
+
 
     public FromXlsxDeadliftDTO mapToFromXlsxDeadliftDTO(String[] column) {
 

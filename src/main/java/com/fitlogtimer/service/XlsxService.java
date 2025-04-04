@@ -75,13 +75,14 @@ public class XlsxService {
             String[][] transposedData = xlsxReader.transposeArray(data);
 
             for (String[] column : transposedData) {
-                if (column[0].equals("NA")) {
-                   // workouts.add(xlsxMapper.mapToFromXlsxDCHeavyDTO(column));  
+                if (!column[0].equals("NA")) {
+                   workouts.add(xlsxMapper.mapToFromXlsxDCLightDTO(column));  
                 }
             }
             //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
-            //workouts.forEach(workout -> log.info("Workout: {}", workout));
-            log.info("{} DTOs", workouts.size());
+            workouts.forEach(workout -> log.info("Workout: {}", workout));
+            // log.info("{} DTOs", workouts.size());
+            // log.info("DTOs: {}", workouts);
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
         }
@@ -111,7 +112,7 @@ public class XlsxService {
 
             workouts.forEach(workout -> log.info("Workout: {}", workout));
             //log.info("{} DTOs", workouts.size());
-            //log.info("DTOs: {}");
+            //log.info("DTOs: {}", workouts);
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
         }

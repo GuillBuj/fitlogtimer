@@ -11,5 +11,6 @@ public final class FileConstants {
     // Noms des feuilles
     public static final String HEAVY_WORKOUT_SHEET = "DC séance lourde";
     public static final String LIGHT_WORKOUT_SHEET = "DC séance légère";
+    public static final String VAR_WORKOUT_SHEET = "DC variantes";
     public static final String DEADLIFT_SHEET = "Max Deadlift";
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.fitlogtimer.constants.FileConstants;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCVarDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
 import com.fitlogtimer.mapper.XlsxMapper;
 import com.fitlogtimer.parser.XlsxReader;
@@ -90,6 +91,37 @@ public class XlsxService {
         return workouts;
     }
 
+    public List<FromXlsxDCVarDTO> extractDTOsVarSheet(){
+        String excelFilePath = FileConstants.EXCEL_FILE;
+        String sheetName = FileConstants.VAR_WORKOUT_SHEET;
+        int startRow = 1;
+        int startColumn = 3;
+        int endRow = 14;
+        int endColumn = 29;
+
+        List<FromXlsxDCVarDTO> workouts = new ArrayList<>();
+        try {
+            String[][] data = xlsxReader.readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
+
+            xlsxReader.printFormattedData(data);
+            String[][] transposedData = xlsxReader.transposeArray(data);
+
+            for (String[] column : transposedData) {
+                if (!column[0].equals("NA")) {
+                   workouts.add(xlsxMapper.mapToFromXlsxDCVarDTO(column));  
+                }
+            }
+            //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
+            workouts.forEach(workout -> log.info("Workout: {}", workout));
+            // log.info("{} DTOs", workouts.size());
+            //log.info("DTOs: {}", workouts);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
+        }
+        
+        return workouts;
+    }
+
 
     public List<FromXlsxDeadliftDTO> extractDTOsDeadliftSheet(){
         String excelFilePath = FileConstants.EXCEL_FILE;
@@ -122,6 +154,6 @@ public class XlsxService {
 
     public static void main(String[] args){
         XlsxService xlsxService= new XlsxService();
-        xlsxService.extractDTOsLightSheet();
+        xlsxService.extractDTOsVarSheet();
     }
 }

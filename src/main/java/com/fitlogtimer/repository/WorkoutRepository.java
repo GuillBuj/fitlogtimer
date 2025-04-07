@@ -1,5 +1,6 @@
 package com.fitlogtimer.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,6 +22,9 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     void deleteByTagImport(String tagImport);
 
     boolean existsById(int id);
+
+    boolean existsByDateAndTagImport(LocalDate date, String tagImport);
+    Workout findByDateAndTagImport(LocalDate date, String tagImport);
 
     List<Workout> findAllByOrderByDateDesc();
     

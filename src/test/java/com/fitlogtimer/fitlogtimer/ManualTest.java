@@ -31,6 +31,9 @@ public class ManualTest {
             workoutService.deleteByTagImport("importL");
             workoutService.createWorkoutsFromXlsxDCLightDTOList(xlsxService.extractDTOsLightSheet());
 
+            workoutService.deleteByTagImport("importV");
+            workoutService.createWorkoutsFromXlsxDCVarDTOList(xlsxService.extractDTOsVarSheet());
+
         } catch (Exception e) {
             System.err.println("Échec du test : " + e.getMessage());
             e.printStackTrace();

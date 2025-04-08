@@ -52,7 +52,7 @@ public class XlsxService {
             }
             //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
             //workouts.forEach(workout -> log.info("Workout: {}", workout));
-            log.info("{} DTOs", workouts.size());
+            //log.info("{} DTOs", workouts.size());
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
         }
@@ -72,7 +72,7 @@ public class XlsxService {
         try {
             String[][] data = xlsxReader.readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
 
-            xlsxReader.printFormattedData(data);
+            //xlsxReader.printFormattedData(data);
             String[][] transposedData = xlsxReader.transposeArray(data);
 
             for (String[] column : transposedData) {
@@ -81,7 +81,7 @@ public class XlsxService {
                 }
             }
             //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
-            workouts.forEach(workout -> log.info("Workout: {}", workout));
+            //workouts.forEach(workout -> log.info("Workout: {}", workout));
             // log.info("{} DTOs", workouts.size());
             // log.info("DTOs: {}", workouts);
         } catch (IOException e) {
@@ -103,7 +103,7 @@ public class XlsxService {
         try {
             String[][] data = xlsxReader.readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
 
-            xlsxReader.printFormattedData(data);
+            //xlsxReader.printFormattedData(data);
             String[][] transposedData = xlsxReader.transposeArray(data);
 
             for (String[] column : transposedData) {
@@ -112,7 +112,7 @@ public class XlsxService {
                 }
             }
             //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
-            workouts.forEach(workout -> log.info("Workout: {}", workout));
+            //workouts.forEach(workout -> log.info("Workout: {}", workout));
             // log.info("{} DTOs", workouts.size());
             //log.info("DTOs: {}", workouts);
         } catch (IOException e) {
@@ -142,7 +142,7 @@ public class XlsxService {
                 workouts.add(xlsxMapper.mapToFromXlsxDeadliftDTO(column));  
             }
 
-            workouts.forEach(workout -> log.info("Workout: {}", workout));
+            //workouts.forEach(workout -> log.info("Workout: {}", workout));
             //log.info("{} DTOs", workouts.size());
             //log.info("DTOs: {}", workouts);
         } catch (IOException e) {

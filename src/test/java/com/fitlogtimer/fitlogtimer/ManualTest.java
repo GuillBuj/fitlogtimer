@@ -25,14 +25,14 @@ public class ManualTest {
             workoutService.deleteByTagImport("importH");
             workoutService.createWorkoutsFromXlsxDCHeavyDTOList(xlsxService.extractDTOsHeavySheetRegular());
 
-            workoutService.deleteByTagImport("importDL");
-            workoutService.createWorkoutsFromXlsxDeadliftDTOList(xlsxService.extractDTOsDeadliftSheet());
+            workoutService.deleteByTagImport("importV"); //à executer après les importH
+            workoutService.createWorkoutsFromXlsxDCVarDTOList(xlsxService.extractDTOsVarSheet());
 
             workoutService.deleteByTagImport("importL");
             workoutService.createWorkoutsFromXlsxDCLightDTOList(xlsxService.extractDTOsLightSheet());
 
-            workoutService.deleteByTagImport("importV");
-            workoutService.createWorkoutsFromXlsxDCVarDTOList(xlsxService.extractDTOsVarSheet());
+            workoutService.deleteByTagImport("importDL"); //à executer après les importL
+            workoutService.createWorkoutsFromXlsxDeadliftDTOList(xlsxService.extractDTOsDeadliftSheet());            
 
         } catch (Exception e) {
             System.err.println("Échec du test : " + e.getMessage());

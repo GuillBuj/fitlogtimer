@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Service;
 
@@ -46,6 +48,22 @@ public class StatsService {
     public double getPersonalBest(int exerciseId){
         
         return maxByExAndReps(exerciseId, 1).maxWeight();
+    }
+
+    public double getBest1RMest(int exerciseId){
+        
+        List<Integer> listRepNumbers = IntStream.rangeClosed(1, 15)  // rangeClosed inclut la valeur finale
+                                     .boxed()  // Convertir les int en Integer
+                                     .collect(Collectors.toList());
+
+        MaxsByRepsDTO mapMaxsByReps = mapMaxWeightsByReps(exerciseId, listRepNumbers);
+
+        Map<Integer, MaxWeightWith1RMAndDateDTO> maxsByReps = mapMaxsByReps.maxsByReps();
+
+        return maxsByReps.values().stream()
+            .mapToDouble(MaxWeightWith1RMAndDateDTO::RMest)
+            .max()
+            .orElse(0.0);
     }
 
     //1RMest d'après un mix de 3 formules trouvées sur le net

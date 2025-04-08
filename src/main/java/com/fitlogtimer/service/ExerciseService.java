@@ -58,8 +58,9 @@ public class ExerciseService {
     public ExerciseListItemDTO getExerciseListItem(int id) {
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
         double personalBest = statsService.getPersonalBest(id);
+        double oneRepMaxEst = statsService.getBest1RMest(id);
         
-        return ExerciseListItemDTO.from(exercise, personalBest);
+        return ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst);
     }
 
     public List<ExerciseListItemDTO> getAllExerciseItems() {

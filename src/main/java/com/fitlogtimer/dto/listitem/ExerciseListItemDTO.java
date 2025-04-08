@@ -10,15 +10,18 @@ public record ExerciseListItemDTO(
     String shortName,
     Muscle muscle,
     Family family,
-    double personalBest) {
-        public static ExerciseListItemDTO from(Exercise exercise, double personalBest) {
+    double personalBest,
+    double oneRepMaxEst
+    ) {
+        public static ExerciseListItemDTO from(Exercise exercise, double personalBest, double oneRepMaxEst) {
                 return new ExerciseListItemDTO(
                     exercise.getId(),
                     exercise.getName(),
                     exercise.getShortName(),
                     exercise.getMuscle(),
                     exercise.getFamily(),
-                    personalBest
+                    personalBest,
+                    oneRepMaxEst
                 );
             }
     }

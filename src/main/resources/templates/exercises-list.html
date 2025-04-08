@@ -16,6 +16,7 @@
                 <th>Short</th>
                 <th>Nom</th>
                 <th>PB</th>
+                <th>1RMest</th>
                 <th>Muscles</th>
                 <th>Type</th>
                 <th>+</th>
@@ -26,7 +27,8 @@
             <tr th:each="exercise : ${exercises}">
                 <td th:text="${exercise.shortName}"></td>
                 <td th:text="${exercise.name}"></td>
-                <td th:text="${exercise.personalBest}"></td>
+                <td th:text="${exercise.personalBest}" class="personalBest"></td>
+                <td th:text="${exercise.oneRepMaxEst}"></td>
                 <td th:text="${exercise.muscle}"></td>
                 <td th:text="${exercise.family}"></td>
                 <td>

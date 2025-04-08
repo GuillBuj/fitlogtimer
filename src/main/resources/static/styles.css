@@ -253,16 +253,20 @@ form {
     font-size: 1.1em;
     padding: 5px 10px;
     border-radius: 4px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Effet au survol */
 .navbar-tabs a:hover {
     background-color: #555; /* Fond plus clair au survol */
+    /* transform: scale(1.05); */
 }
 
 .shortInput{
     width: 7ch;
+}
+
+.personalBest{
+    font-weight: bold;
 }
 
 
@@ -273,6 +277,7 @@ form {
     border-radius: 5px; /* Bords arrondis */
     margin-right: 5px; /* Espacement entre les rectangles */
     font-size: 14px; /* Taille du texte */
+    font-weight: 500;
 }
 
 .exercise-rect span {

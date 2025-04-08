@@ -264,3 +264,17 @@ form {
 .shortInput{
     width: 7ch;
 }
+
+
+.exercise-rect {
+    display: inline-block;
+    color: white; /* Couleur du texte (pour le contraste) */
+    padding: 5px ; /* Espacement autour du texte */
+    border-radius: 5px; /* Bords arrondis */
+    margin-right: 5px; /* Espacement entre les rectangles */
+    font-size: 14px; /* Taille du texte */
+}
+
+.exercise-rect span {
+    display: inline-block;
+}

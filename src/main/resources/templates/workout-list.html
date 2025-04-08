@@ -15,21 +15,30 @@
             <tr>
                 <th>Date</th>
                 <th>Poids</th>
-                <th>Commentaires</th>
-                <th></th>
+                <th>Exs</th>
+                <th></th>                
                 <th>Type</th>
+                <th>Commentaires</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="workoutData : ${workoutsList}">
+            <tr th:each="workoutData : ${workoutList}">
                 <td th:text="${workoutData.date}"></td>
                 <td th:text="${#numbers.formatDecimal(workoutData.bodyWeight, 1, 1)} + ' kg'"></td>
-                <td th:text="${workoutData.comment}"></td>
+                <td>
+                    <span th:each="exercise : ${workoutData.exercises}" 
+                    th:style="'background-color:' + ${exercise.color}" 
+                    class="exercise-rect">
+                    <span th:text="${exercise.name}"></span>
+                    </span>
+                </td>
                 <td>
                     <a th:href="@{/workouts/{id}(id=${workoutData.id})}" class="btn-link">Détails</a>
                     <a th:href="@{/workouts/{id}/plus(id=${workoutData.id})}" class="btn-link">Set par set</a>
                 </td>
                 <td th:text="${workoutData.type}"></td>
+                <td th:text="${workoutData.comment}"></td>
+
             </tr>
         </tbody>
     </table>

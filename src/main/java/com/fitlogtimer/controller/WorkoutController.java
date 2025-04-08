@@ -18,6 +18,8 @@ import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
+import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
+import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.Workout;
 import com.fitlogtimer.service.ExerciseService;
@@ -81,14 +83,15 @@ public class WorkoutController {
 
     @GetMapping
     public String getWorkoutsList(Model model) {
-        List<Workout> workoutsList = workoutService.getAllWorkouts();
-        if (workoutsList.size()>0){
-            log.info("-*-*-*-*-*-*-*-* Workouts: {}", workoutsList.toString());
+        //List<Workout> workoutsList = workoutService.getAllWorkouts();
+        List<WorkoutListDisplayDTO> workoutList = workoutService.getAllWorkoutsDisplayDTO();
+        if (workoutList.size()>0){
+            log.info("-*-*-*-*-*-*-*-* Workouts: {}", workoutList.toString());
         } else {
             log.info("-*-*-*-*-*-*-*-* Workouts: VIDE");
         }
         
-        model.addAttribute("workoutsList", workoutsList);
+        model.addAttribute("workoutList", workoutList);
         return "workout-list";
     }
     

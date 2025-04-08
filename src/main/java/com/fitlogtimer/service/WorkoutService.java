@@ -1,7 +1,9 @@
 package com.fitlogtimer.service;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +19,7 @@ import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.details.LastSetDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
+import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCVarDTO;
@@ -38,6 +41,7 @@ import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Workout;
 import com.fitlogtimer.repository.ExerciseRepository;
+import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
 
 import jakarta.transaction.Transactional;
@@ -59,6 +63,32 @@ public class WorkoutService {
 
     private final ExerciseSetService exerciseSetService;
 
+    private final ExerciseSetRepository exerciseSetRepository;
+
+    public List<WorkoutListDisplayDTO> getAllWorkoutsDisplayDTO() {
+        List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
+        Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
+
+        return workouts.stream()
+            .map(workout -> workoutMapper.toWorkoutDisplayDTO(
+                workout,
+                exercises.getOrDefault(workout.getId(), List.of())
+        ))
+            .toList();
+
+    }
+
+    public List<WorkoutListItemDTO> getAllWorkoutsDTO() {
+        List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
+        Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
+
+        return workouts.stream()
+                .map(workout -> workoutMapper.toWorkoutListItemDTO(
+                    workout,
+                    exercises.getOrDefault(workout.getId(), List.of())))
+                .toList();
+    }
+    
     public List<Workout> getAllWorkouts() {
         return workoutRepository.findAllByOrderByDateDesc();
     }
@@ -68,7 +98,11 @@ public class WorkoutService {
         
         Workout savedWorkout = workoutRepository.save(workoutMapper.toEntity(workoutInDTO));
         
-        return new WorkoutListItemDTO(savedWorkout.getId(), savedWorkout.getDate(), savedWorkout.getBodyWeight(), savedWorkout.getType(), savedWorkout.getComment());
+        // WorkoutListItemDTO workoutListItemDTO = workoutMapper.toWorkoutListItemDTOPartial(savedWorkout);
+
+        // return workoutListItemDTO.withExerciseShortNames(getExerciseShortNamesByWorkoutId(savedWorkout.getId()));
+
+        return workoutMapper.toWorkoutListItemDTO(savedWorkout, getExerciseShortNamesByWorkoutId(savedWorkout.getId()));
     }
 
     @Transactional
@@ -430,8 +464,31 @@ public class WorkoutService {
         );
     }
 
+    public List<String> getExerciseShortNamesByWorkoutId(int id){
+        return workoutRepository.findExerciseShortNamesByWorkoutId(id);
+    }
+
+    private Map<Integer, List<String>> getExerciseNamesForWorkouts(List<Workout> workouts) {
+        List<ExerciseSet> sets = exerciseSetRepository.findByWorkoutIdIn(
+            workouts.stream().map(Workout::getId).toList()
+        );
+        return sets.stream()
+            .collect(Collectors.groupingBy(
+                exerciseSet -> exerciseSet.getWorkout().getId(),
+                Collectors.mapping(
+                    exerciseSet -> exerciseSet.getExercise().getShortName(),
+                    Collectors.toCollection(LinkedHashSet::new) //garde l'ordre en supprimant les doublons
+                )
+            ))
+            .entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> new ArrayList<>(entry.getValue())
+            ));
+    }
+
     @Transactional
-    void addExerciseSet(ExerciseSetCreateDTO exerciseSetInDTO){
+    public void addExerciseSet(ExerciseSetCreateDTO exerciseSetInDTO){
         exerciseSetService.saveExerciseSet(exerciseSetInDTO);
     }
 

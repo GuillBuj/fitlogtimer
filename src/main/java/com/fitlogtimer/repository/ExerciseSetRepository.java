@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.fitlogtimer.model.ExerciseSet;
+import com.fitlogtimer.model.Workout;
 
 import jakarta.transaction.Transactional;
 
@@ -37,5 +38,7 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
            "WHERE exset.exercise.id = :exerciseId " +
            "ORDER BY s.date DESC, s.id DESC")
     List<ExerciseSet> findByExerciseIdOrderByWorkoutDateAndIdDesc(@Param("exerciseId") int exerciseId);
+
+    List<ExerciseSet> findByWorkoutIdIn(List<Integer> workoutIds);
 
 }

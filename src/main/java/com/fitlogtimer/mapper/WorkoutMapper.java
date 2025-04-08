@@ -60,4 +60,16 @@ public interface WorkoutMapper {
                 ))
                 .toList();
     }
+
+    @Mapping(target = "exercises", source = "exerciseShortNames", qualifiedByName = "mapExercises")
+    WorkoutListDisplayDTO toWorkoutListDisplayDTO(Workout workout, List<String> exerciseShortNames);
+
+    @Named("mapExercise")
+    static ExerciseDisplayForWorkoutListItem mapExercise(String name) {
+        if (name == null) return null;
+        return new ExerciseDisplayForWorkoutListItem(
+                        name,
+                        ExerciseColorConstants.getColorForExercise(name)
+                );
+    }
 }

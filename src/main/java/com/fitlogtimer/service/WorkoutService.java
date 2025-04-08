@@ -1,6 +1,8 @@
 package com.fitlogtimer.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +15,17 @@ import org.springframework.stereotype.Service;
 import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.HEAVY;
 import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.LIGHT_50;
 import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.MEDIUM_55;
+
+import com.fitlogtimer.constants.ExerciseColorConstants;
+import com.fitlogtimer.constants.WorkoutColorConstants;
 import com.fitlogtimer.dto.base.SetBasicDTO;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.details.LastSetDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
+import com.fitlogtimer.dto.display.CalendarItemDisplayDTO;
+import com.fitlogtimer.dto.display.ExerciseDisplayForWorkoutListItem;
 import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
@@ -77,6 +84,73 @@ public class WorkoutService {
             .toList();
 
     }
+
+
+// // Méthode pour récupérer les exercices associés à une séance
+//     private List<ExerciseDisplayForWorkoutListItem> getExercisesForWorkout(Workout workout) {
+//         // Logique pour récupérer les exercices de cette séance. Voici un exemple basique.
+//         return workout.getExercises().stream()
+//             .map(exercise -> new ExerciseDisplayForWorkoutListItem(
+//                 exercise.getShortName(),
+//                 ExerciseColorConstants.getColorForExercise(exercise.getShortName())
+//             ))
+//             .collect(Collectors.toList());
+//     }
+
+//     // Méthode pour la vue classique (liste des séances)
+//     public List<WorkoutListDisplayDTO> getAllWorkoutsDisplayDTO() {
+//         List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
+//         Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
+
+//         return workouts.stream()
+//             .map(workout -> workoutMapper.toWorkoutDisplayDTO(
+//                 workout,
+//                 exercises.getOrDefault(workout.getId(), List.of())
+//             ))
+//             .toList();
+//     }
+
+//     // Méthode pour générer les items du calendrier
+//     public List<CalendarItemDisplayDTO> getCalendarItems() {
+//         List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
+//         List<CalendarItemDisplayDTO> calendarItems = new ArrayList<>();
+
+//         for (Workout workout : workouts) {
+//             // Extraire les informations principales
+//             int id = workout.getId();
+//             String type = workout.getType();  // Type de la séance (ex: HEAVY, LIGHT)
+//             LocalDate date = workout.getDate();
+
+//             // Associer une couleur selon le type de séance
+//             String color = WorkoutColorConstants.getColorForWorkoutType(type);
+
+//             // Récupérer les exercices pour cette séance
+//             List<ExerciseDisplayForWorkoutListItem> exercises = getExercisesForWorkout(workout);
+
+//             // Créer un DTO pour cette séance
+//             CalendarItemDisplayDTO calendarItem = new CalendarItemDisplayDTO(id, type, date, color, exercises);
+
+//             // Ajouter l'élément à la liste des items du calendrier
+//             calendarItems.add(calendarItem);
+//         }
+
+//         return calendarItems;
+//     }
+
+//     // Méthode commune pour récupérer les exercices associés à une séance
+//     private Map<Integer, List<String>> getExerciseNamesForWorkouts(List<Workout> workouts) {
+//         Map<Integer, List<String>> exercises = new HashMap<>();
+
+//         for (Workout workout : workouts) {
+//             List<String> exerciseNames = workout.getExercises().stream()
+//                 .map(Exercise::getShortName) // Utiliser un nom court ou un autre identifiant pour l'exercice
+//                 .collect(Collectors.toList());
+//             exercises.put(workout.getId(), exerciseNames);
+//         }
+
+//         return exercises;
+//     }
+
 
     public List<WorkoutListItemDTO> getAllWorkoutsDTO() {
         List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();

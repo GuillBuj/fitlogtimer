@@ -1,6 +1,7 @@
 package com.fitlogtimer.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
+import com.fitlogtimer.dto.display.CalendarItemDisplayDTO;
+import com.fitlogtimer.dto.display.ExerciseDisplayForWorkoutListItem;
 import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
 import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.model.Exercise;
@@ -94,6 +97,40 @@ public class WorkoutController {
         model.addAttribute("workoutList", workoutList);
         return "workout-list";
     }
+
+    // @GetMapping("/workout-calendar")
+    // public String showWorkoutCalendar(Model model) {
+    //     List<Workout> workouts = workoutService.getAllWorkouts();  // Récupère toutes les séances de workout
+    //     List<CalendarItemDisplayDTO> calendarItems = new ArrayList<>();
+
+    //     for (Workout workout : workouts) {
+    //         // Extraire la date et le type
+    //         LocalDate date = workout.getDate();
+    //         String type = workout.getType();
+        
+    //     // Récupérer les exercices pour chaque workout
+    //     for (Exercise exercise : workout.getExercises()) {
+    //         // Créer un objet ExerciseDisplayForWorkoutListItem pour chaque exercice
+    //         ExerciseDisplayForWorkoutListItem exerciseDisplay = new ExerciseDisplayForWorkoutListItem(
+    //             exercise.getName(),
+    //             exercise.getColor() // Récupérer la couleur de l'exercice
+    //         );
+
+    //         // Créer un CalendarItemDisplayDTO
+    //         CalendarItemDisplayDTO calendarItem = new CalendarItemDisplayDTO(
+    //             type,
+    //             date,
+    //             exercise.getColor(), // Couleur de l'exercice
+    //             exerciseDisplay
+    //         );
+
+    //         calendarItems.add(calendarItem);
+    //     }
+    // }
+
+//     model.addAttribute("calendarItems", calendarItems); // Passer les éléments au modèle
+//     return "workout-calendar"; // Le nom de la vue HTML
+// }
     
     @GetMapping("/create")
     public String showWorkoutForm(Model model) {

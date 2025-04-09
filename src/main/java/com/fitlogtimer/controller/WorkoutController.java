@@ -20,7 +20,7 @@ import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
 import com.fitlogtimer.dto.display.CalendarItemDisplayDTO;
-import com.fitlogtimer.dto.display.ExerciseDisplayForWorkoutListItem;
+import com.fitlogtimer.dto.display.ExerciseDisplayDTO;
 import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
 import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.model.Exercise;

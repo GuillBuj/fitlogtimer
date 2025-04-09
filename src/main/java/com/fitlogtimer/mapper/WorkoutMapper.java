@@ -9,7 +9,7 @@ import org.mapstruct.Named;
 
 import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
-import com.fitlogtimer.dto.display.ExerciseDisplayForWorkoutListItem;
+import com.fitlogtimer.dto.display.ExerciseDisplayDTO;
 import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
@@ -51,10 +51,10 @@ public interface WorkoutMapper {
     WorkoutListDisplayDTO toWorkoutDisplayDTO(Workout workout, List<String> exerciseShortNames);
     
     @Named("mapExercises")
-    static List<ExerciseDisplayForWorkoutListItem> mapExercises(List<String> names) {
+    static List<ExerciseDisplayDTO> mapExercises(List<String> names) {
         if (names == null) return List.of();
         return names.stream()
-                .map(name -> new ExerciseDisplayForWorkoutListItem(
+                .map(name -> new ExerciseDisplayDTO(
                         name,
                         ExerciseColorConstants.getColorForExercise(name)
                 ))
@@ -65,9 +65,9 @@ public interface WorkoutMapper {
     WorkoutListDisplayDTO toWorkoutListDisplayDTO(Workout workout, List<String> exerciseShortNames);
 
     @Named("mapExercise")
-    static ExerciseDisplayForWorkoutListItem mapExercise(String name) {
+    static ExerciseDisplayDTO mapExercise(String name) {
         if (name == null) return null;
-        return new ExerciseDisplayForWorkoutListItem(
+        return new ExerciseDisplayDTO(
                         name,
                         ExerciseColorConstants.getColorForExercise(name)
                 );

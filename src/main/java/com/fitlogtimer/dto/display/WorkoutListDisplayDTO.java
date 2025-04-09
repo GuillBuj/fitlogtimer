@@ -9,6 +9,6 @@ public record WorkoutListDisplayDTO(
     double bodyWeight,
     String type,
     String comment,
-    List<ExerciseDisplayForWorkoutListItem> exercises){ 
+    List<ExerciseDisplayDTO> exercises){ 
 
 }

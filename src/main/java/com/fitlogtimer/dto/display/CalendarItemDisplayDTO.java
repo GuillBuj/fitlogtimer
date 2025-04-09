@@ -4,11 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record CalendarItemDisplayDTO(
-    int id,
-    String type,
+    int idWorkout,
+    WorkoutTypeDisplayDTO type,
     LocalDate date,
-    String color,
-    List<ExerciseDisplayForWorkoutListItem> exercises
+    List<ExerciseDisplayDTO> exercises
 
 ) {
 

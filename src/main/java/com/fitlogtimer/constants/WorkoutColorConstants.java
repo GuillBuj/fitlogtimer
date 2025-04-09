@@ -7,15 +7,22 @@ public class WorkoutColorConstants {
     private WorkoutColorConstants() {}
 
     public static final Map<String, String> COLORS = Map.of(
-        "HEAVY", "#D32F2F",  // Rouge intense pour les séances lourdes
-        "LIGHT", "#4CAF50",   // Vert pour les séances légères
-        "VAR", "#FF9800",     // Orange pour les séances variables
-        "DL", "#3F51B5"      // Bleu pour les Deadlifts
-        // "CARDIO", "#FFC107",  // Jaune pour les séances de cardio
-        // "MOBILITY", "#9C27B0" // Violet pour les séances de mobilité
+        "HEAVY", "#FFCDD2",  // Rouge pâle pour les séances lourdes
+        "LIGHT", "#C8E6C9",  // Vert pâle pour les séances légères
+        "VAR", "#FFE0B2",    // Orange pâle pour les séances variables
+        "DL", "#C5CAE9"    // Bleu pâle pour les Deadlifts
     );
 
     public static String getColorForWorkoutType(String workoutType) {
-        return COLORS.getOrDefault(workoutType, "#CCCCCC"); // Couleur par défaut
+        if (workoutType == null) return "#CCCCCC";
+        return COLORS.getOrDefault(workoutType, "#CCCCCC");
     }
 }
+
+
+// "CARDIO", "#FFF9C4", // Jaune pâle pour le cardio
+        // "MOBILITY", "#E1BEE7", // Violet pâle pour la mobilité
+        // "ENDURANCE", "#B3E5FC", // Bleu clair pour l'endurance
+        // "STRETCHING", "#F5F5F5", // Gris très clair pour les étirements
+        // "RECOVERY", "#D7CCC8",    // Brun grisâtre pour la récupération
+        // "CIRCUIT", "#F8BBD0"      // Rose pâle pour les circuits

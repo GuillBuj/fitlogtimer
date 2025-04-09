@@ -1,6 +1,6 @@
 package com.fitlogtimer.dto.display;
 
-public record ExerciseDisplayForWorkoutListItem(
+public record WorkoutTypeDisplayDTO(
     String name,
     String color) {
 

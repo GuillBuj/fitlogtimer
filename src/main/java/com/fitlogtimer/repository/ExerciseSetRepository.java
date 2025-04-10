@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.fitlogtimer.model.ExerciseSet;
-import com.fitlogtimer.model.Workout;
 
 import jakarta.transaction.Transactional;
 

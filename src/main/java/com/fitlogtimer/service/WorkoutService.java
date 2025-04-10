@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.HEAVY;
 import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.LIGHT_50;
 import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.MEDIUM_55;
+
+import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.constants.WorkoutColorConstants;
 import com.fitlogtimer.dto.base.SetBasicDTO;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
@@ -20,13 +22,13 @@ import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.details.LastSetDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsBrutDTO;
 import com.fitlogtimer.dto.details.WorkoutDetailsGroupedDTO;
-import com.fitlogtimer.dto.display.CalendarItemDisplayDTO;
+import com.fitlogtimer.dto.display.CalendarDTO;
 import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
-import com.fitlogtimer.dto.display.WorkoutTypeDisplayDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCVarDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
+import com.fitlogtimer.dto.listitem.CalendarItemDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
 import com.fitlogtimer.dto.listitem.SetWorkoutListItemDTO;
 import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
@@ -81,25 +83,24 @@ public class WorkoutService {
 
     }
 
-
-    public List<CalendarItemDisplayDTO> getCalendarItems() {
-    List<Workout> workouts = workoutRepository.findAll(); // ordre pas important ici, c'est JS qui trie par date
-    Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
-
-    return workouts.stream()
-            .map(workout -> new CalendarItemDisplayDTO(
-                    workout.getId(),
-                    new WorkoutTypeDisplayDTO(
-                        workout.getType(),
-                        WorkoutColorConstants.getColorForWorkoutType(workout.getType())
-                    ),
-                    workout.getDate(),
-                    WorkoutMapper.mapExercises(
-                        exercises.getOrDefault(workout.getId(), List.of())
-                    )
-            ))
-            .toList();
+    public CalendarDTO getCalendar(){
+        
+        return new CalendarDTO(getCalendarItems(), ExerciseColorConstants.COLORS, WorkoutColorConstants.COLORS);
     }
+
+    public List<CalendarItemDTO> getCalendarItems() {
+        List<Workout> workouts = workoutRepository.findAll(); // ordre pas important ici, c'est JS qui trie par date
+        Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
+    
+        return workouts.stream()
+                .map(workout -> new CalendarItemDTO(
+                        workout.getId(),
+                        workout.getType(),
+                        workout.getDate(),
+                        exercises.get(workout.getId()))
+                )
+                .toList();
+        }
 
     public List<WorkoutListItemDTO> getAllWorkoutsDTO() {
         List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
@@ -121,10 +122,6 @@ public class WorkoutService {
         
         Workout savedWorkout = workoutRepository.save(workoutMapper.toEntity(workoutInDTO));
         
-        // WorkoutListItemDTO workoutListItemDTO = workoutMapper.toWorkoutListItemDTOPartial(savedWorkout);
-
-        // return workoutListItemDTO.withExerciseShortNames(getExerciseShortNamesByWorkoutId(savedWorkout.getId()));
-
         return workoutMapper.toWorkoutListItemDTO(savedWorkout, getExerciseShortNamesByWorkoutId(savedWorkout.getId()));
     }
 

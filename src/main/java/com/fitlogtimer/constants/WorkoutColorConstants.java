@@ -14,8 +14,8 @@ public class WorkoutColorConstants {
     );
 
     public static String getColorForWorkoutType(String workoutType) {
-        if (workoutType == null) return "#CCCCCC";
-        return COLORS.getOrDefault(workoutType, "#CCCCCC");
+        if (workoutType == null) return "#F5F5F5";
+        return COLORS.getOrDefault(workoutType, "#F5F5F5");
     }
 }
 

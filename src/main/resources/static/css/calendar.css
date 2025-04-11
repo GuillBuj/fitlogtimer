@@ -1,0 +1,46 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: #f8f9fa;
+    margin: 0;
+    padding: 1rem;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+#calendar {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.fc .fc-daygrid-event {
+    border-radius: 0.5rem;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.85rem;
+    color: black !important;
+    border: none;
+}
+
+.fc .fc-toolbar-title {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #111;
+}
+
+.fc .fc-button {
+    background-color: #333;
+    border: none;
+    border-radius: 0.3rem;
+}
+
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #333;
+}

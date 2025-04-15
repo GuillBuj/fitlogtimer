@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -15,11 +19,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "set_type", discriminatorType = DiscriminatorType.STRING)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class ExerciseSet {
+public abstract class ExerciseSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +35,7 @@ public class ExerciseSet {
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
 
-    private double weight;
     private int repNumber;
-    private String type;
     private String comment;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -39,13 +43,10 @@ public class ExerciseSet {
     private Workout workout;
 
     @Override
-    public String toString(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("id: " + String.valueOf(id) + ", ");
-        sb.append("ex: " + exercise.getShortName());
-        sb.append("reps: " + String.valueOf(repNumber) + ", ");
-        sb.append("poids: " + String.valueOf(weight) + ", ");
-        sb.append("type: " + String.valueOf(type) + ", ");
-        return sb.toString();
+    public String toString() {
+        return "id: " + id +
+                ", ex: " + (exercise != null ? exercise.getShortName() : "null") +
+                ", reps: " + repNumber +
+                ", type: " + this.getClass().getSimpleName();
     }
 }

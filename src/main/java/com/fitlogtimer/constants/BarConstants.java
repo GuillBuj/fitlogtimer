@@ -1,6 +1,6 @@
 package com.fitlogtimer.constants;
 
-public class BarConstants {
+public final class BarConstants {
 
     public static final double STRAIGHT_BAR_WEIGHT = 8.0;
     public static final double EZ_BAR_WEIGHT = 6.0;

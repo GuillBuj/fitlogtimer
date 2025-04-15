@@ -1,9 +1,14 @@
 package com.fitlogtimer.util.mapperhelper;
 
+import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 
+import com.fitlogtimer.constants.ExerciseSetType;
+import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.model.Exercise;
+import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Workout;
+import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
 
@@ -15,6 +20,20 @@ public class ExerciseSetMappingHelper {
     private final ExerciseRepository exerciseRepository;
     private final WorkoutRepository workoutRepository;
 
+    @Named("createExerciseSet")
+    public ExerciseSet createExerciseSetFromDTO(ExerciseSetCreateDTO dto) {
+        return switch (dto.type()) {
+            case ExerciseSetType.FREE_WEIGHT -> {
+                FreeWeightSet set = new FreeWeightSet();
+                set.setWeight(dto.weight());
+                set.setRepNumber(dto.repNumber());
+                set.setComment(dto.comment());
+                yield set;
+            }
+            default -> throw new IllegalArgumentException("Type inconnu : " + dto.type());
+        };
+    }
+    
     public Exercise findExerciseOrThrow(int exerciseId) {
         return exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Exercise not found"));

@@ -2,7 +2,7 @@ package com.fitlogtimer.constants;
 
 import java.util.Map;
 
-public class WorkoutColorConstants {
+public final class WorkoutColorConstants {
     
     private WorkoutColorConstants() {}
 

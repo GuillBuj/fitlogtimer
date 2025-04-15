@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'fr',
-                firstDay: 1,
+                firstDay: 1, //débute la semaine le lundi
                 height: 'auto',
                 contentHeight: 'auto',
                 expandRows: true,
@@ -32,12 +32,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         text: '← 6',
                         click: function () {
                             calendar.incrementDate({ months: -6 });
-                        }
-                    },
-                    nextHalfYear: {
-                        text: '6 →',
-                        click: function () {
-                            calendar.incrementDate({ months: 6 });
                         }
                     },
                     prevYear: {

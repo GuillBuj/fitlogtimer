@@ -20,6 +20,7 @@ public class ExerciseSetFacadeMapper {
         return switch (dto.type()) {
             case ExerciseSetType.FREE_WEIGHT -> 
                 freeWeightSetMapper.toFreeWeightSet(dto, mappingHelper);
+            
             // mappings (à ajouter au fur et à mesure)
             
             default -> throw new IllegalArgumentException("Unsupported type: " + dto.type());

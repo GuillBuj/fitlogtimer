@@ -42,40 +42,7 @@
     </table>
     <p th:unless="${workoutData.exerciseSets}">Aucun exercice enregistré pour cette workout.</p>
 
-    <h2>Ajouter un exercice à cette séance</h2>
-    <form th:action="@{/exerciseSets/add}" method="post" th:object="${exerciseSetDTO}" class="single-line-form">
-        <input type="hidden" th:field="*{workout_id}" th:value="${workoutData.id}" />
-    
-        <div class="form-group">
-            <label for="exercise">Exercice :</label>
-            <select id="exercise" th:field="*{exercise_id}" required>
-                <option th:each="exercise : ${exercises}" th:value="${exercise.id}" th:text="${exercise.name}"
-                    th:data-type="${exercise.type}" 
-                    th:selected="${lastSet != null && lastSet.exerciseId == exercise.id}"></option>
-            </select>
-        </div>
-        <input type="hidden" name="type" id="setTypeInput" />
-    
-        <div class="form-group">
-            <label for="weight">Poids(kg) :</label>
-            <input type="number" class="weightInput" id="weight" th:field="*{weight}" step="0.5" required />
-        </div>
-    
-        <div class="form-group">
-            <label for="repNumber">Nombre de répétitions :</label>
-            <input type="number" class="repsInput" id="repNumber" th:field="*{repNumber}" 
-            th:value="${lastSet != null ? lastSet.nbReps : ''}" required />
-        </div>
-    
-        <div class="form-group">
-            <button type="submit" class="btnValid">Ajouter</button>
-        </div>
-
-        <div class="form-group">
-            <label for="comment">Commentaire :</label>
-            <input type="text" class="commentInput" id="comment" th:field="*{comment}" />
-        </div>
-    </form>
+    <div th:replace="fragments/exercise-set-form :: exerciseSetForm(${exerciseSetDTO}, ${workoutData}, ${exercises}, ${lastSet})"></div>
 
     <form th:action="@{/workouts/{id}(id=${workoutData.id})}" class="deleteForm"  method="post">
         <input type="hidden" name="_method" value="delete" />

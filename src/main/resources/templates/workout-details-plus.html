@@ -50,9 +50,11 @@
             <label for="exercise">Exercice :</label>
             <select id="exercise" th:field="*{exercise_id}" required>
                 <option th:each="exercise : ${exercises}" th:value="${exercise.id}" th:text="${exercise.name}"
+                    th:data-type="${exercise.type}" 
                     th:selected="${lastSet != null && lastSet.exerciseId == exercise.id}"></option>
             </select>
         </div>
+        <input type="hidden" name="type" id="setTypeInput" />
     
         <div class="form-group">
             <label for="weight">Poids(kg) :</label>
@@ -81,5 +83,7 @@
     </form>
     <br>
     <a href="/workouts" class="btn-link">Retour à la liste</a>
+
+    <script src="/js/set-type-handler.js"></script>
 </body>
 </html>

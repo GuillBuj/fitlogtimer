@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "set_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -36,6 +36,7 @@ public abstract class ExerciseSet {
     private Exercise exercise;
 
     private int repNumber;
+    private String tag;
     private String comment;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

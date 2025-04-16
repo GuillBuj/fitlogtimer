@@ -4,19 +4,16 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
-import com.fitlogtimer.dto.display.CalendarDTO;
 import com.fitlogtimer.dto.display.ExerciseDisplayDTO;
 import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDCVarDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
-import com.fitlogtimer.dto.listitem.CalendarItemDTO;
 import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.model.Workout;
 

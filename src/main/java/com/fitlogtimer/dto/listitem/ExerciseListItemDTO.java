@@ -10,6 +10,7 @@ public record ExerciseListItemDTO(
     String shortName,
     Muscle muscle,
     Family family,
+    String type,
     double personalBest,
     double oneRepMaxEst
     ) {
@@ -20,6 +21,7 @@ public record ExerciseListItemDTO(
                     exercise.getShortName(),
                     exercise.getMuscle(),
                     exercise.getFamily(),
+                    exercise.getType(),
                     personalBest,
                     oneRepMaxEst
                 );

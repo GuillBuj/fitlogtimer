@@ -5,5 +5,6 @@ public record SetInWorkoutDTO(
         int exercise_id,
         double weight,
         int repNumber,
-        String comment) {
+        String comment,
+        String type) {
 }

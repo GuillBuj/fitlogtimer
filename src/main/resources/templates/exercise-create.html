@@ -34,6 +34,15 @@
                         th:text="${family}">Family</option>
             </select>
         </div>
+        <div class="form-group">
+            <label for="type">Type de série :</label>
+            <select id="type" name="type" class="form-control" required>
+                <option th:each="entry : ${setTypes.entrySet()}"
+                        th:value="${entry.key}"
+                        th:text="${entry.value}">
+                </option>
+            </select>
+        </div>
         <div>
             <button type="submit" class="btnValid">Ajouter l'exercice</button>
         </div>

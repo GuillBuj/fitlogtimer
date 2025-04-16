@@ -5,5 +5,6 @@ public record SetWorkoutListItemDTO(
         String exerciseNameShort,
         double weight,
         int repNumber,
-        String comment) {
+        String comment,
+        String type) {
 }

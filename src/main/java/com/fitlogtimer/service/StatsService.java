@@ -13,6 +13,7 @@ import com.fitlogtimer.dto.stats.MaxWeightWith1RMAndDateDTO;
 import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
 import com.fitlogtimer.dto.stats.MaxsByRepsDTO;
 import com.fitlogtimer.model.ExerciseSet;
+import com.fitlogtimer.model.sets.FreeWeightSet;
 
 import lombok.AllArgsConstructor;
 
@@ -26,10 +27,12 @@ public class StatsService {
         List<ExerciseSet> exerciseSets = exerciseSetService.getSetsByExerciseId(exerciseId);
     
         return exerciseSets.stream()
-                .filter(set -> set.getRepNumber() >= nbReps)
-                .max(Comparator.comparingDouble(ExerciseSet::getWeight))
-                .map(set -> new MaxWeightWithDateDTO(set.getWeight(), set.getWorkout().getDate()))
-                .orElse(new MaxWeightWithDateDTO(0.0, null));
+            .filter(set -> set instanceof FreeWeightSet) // on ne considère que les FreeWeight
+            .map(set -> (FreeWeightSet) set)
+            .filter(set -> set.getRepNumber() >= nbReps)
+            .max(Comparator.comparingDouble(FreeWeightSet::getWeight))
+            .map(set -> new MaxWeightWithDateDTO(set.getWeight(), set.getWorkout().getDate()))
+            .orElse(new MaxWeightWithDateDTO(0.0, null));
     }
 
     public MaxsByRepsDTO mapMaxWeightsByReps(int exerciseId, List<Integer> repNumbers) {

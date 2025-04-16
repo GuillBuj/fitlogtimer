@@ -34,7 +34,7 @@ public class ExerciceSetController {
             exerciseSetService.saveExerciseSet(exerciseSetDTO);
             redirectAttributes.addFlashAttribute("successMessage", "Série ajoutée avec succès");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erreur lors de l'ajout");
+            redirectAttributes.addFlashAttribute("errorMessage", "Erreur lors de l'ajout:"+ e);
         }
         return "redirect:/workouts/" + exerciseSetDTO.workout_id();
     }

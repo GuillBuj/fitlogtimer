@@ -18,6 +18,7 @@
                 <th>PB</th>
                 <th>1RMest</th>
                 <th>Muscles</th>
+                <th>Famille</th>
                 <th>Type</th>
                 <th>+</th>
                 <th>Action</th>
@@ -31,6 +32,7 @@
                 <td th:text="${exercise.oneRepMaxEst}"></td>
                 <td th:text="${exercise.muscle}"></td>
                 <td th:text="${exercise.family}"></td>
+                <td th:text="${exercise.type}"></td>
                 <td>
                     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
                     <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
@@ -70,6 +72,15 @@
                 <option th:each="family : ${families}" 
                         th:value="${family}" 
                         th:text="${family}">Family</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="type">Type de série :</label>
+            <select id="type" th:field="*{type}" name="type" class="form-control" required>
+                <option th:each="entry : ${setTypes.entrySet()}"
+                        th:value="${entry.key}"
+                        th:text="${entry.value}">
+                </option>
             </select>
         </div>
         <div>

@@ -20,15 +20,15 @@ import com.fitlogtimer.dto.postgroup.SetsSameWeightDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedByWorkoutDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedForExDTO;
 import com.fitlogtimer.exception.NotFoundException;
-import com.fitlogtimer.mapper.ExerciseSetMapper;
+import com.fitlogtimer.mapper.ExerciseSetFacadeMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Workout;
+import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
 import com.fitlogtimer.util.helper.SetBasicConverter;
-import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -45,16 +45,15 @@ public class ExerciseSetService {
 
     private final WorkoutRepository workoutRepository;
 
-    private final ExerciseSetMapper exerciseSetMapper;
-    private final ExerciseSetMappingHelper exerciseSetMappingHelper;
+    private final ExerciseSetFacadeMapper exerciseSetFacadeMapper;
 
     private final SetBasicConverter setBasicConverter;
 
     
     @Transactional
     public ExerciseSet saveExerciseSet(ExerciseSetCreateDTO exerciseSetDTO) {
-        
-        ExerciseSet exerciseSet = exerciseSetMapper.toEntity(exerciseSetDTO, exerciseSetMappingHelper);
+        ExerciseSet exerciseSet = exerciseSetFacadeMapper.toEntity(exerciseSetDTO);
+        //ExerciseSet exerciseSet = exerciseSetMapper.toEntity(exerciseSetDTO, exerciseSetMappingHelper);
         return exerciseSetRepository.save(exerciseSet);
     }
 
@@ -100,10 +99,11 @@ public class ExerciseSetService {
                 currentGroup.clear();
                 currentWorkoutId = workoutId;
             }
-            int repNumber = currentSet.getRepNumber();
-            double weight = currentSet.getWeight();
-            
-            currentGroup.add(new SetBasicWith1RMDTO(repNumber, weight, StatsService.calculateOneRepMax(repNumber, weight)));
+            if (currentSet instanceof FreeWeightSet freeWeightSet) {
+                int repNumber = freeWeightSet.getRepNumber();
+                double weight = freeWeightSet.getWeight();
+                currentGroup.add(new SetBasicWith1RMDTO(repNumber, weight, StatsService.calculateOneRepMax(repNumber, weight)));
+            }
         }
     
         if (!currentGroup.isEmpty()) {

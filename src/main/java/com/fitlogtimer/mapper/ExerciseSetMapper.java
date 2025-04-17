@@ -6,7 +6,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import com.fitlogtimer.constants.ExerciseSetType;
-import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.details.LastSetDTO;
 import com.fitlogtimer.dto.listitem.SetWorkoutListItemDTO;
 import com.fitlogtimer.dto.transition.SetInWorkoutDTO;
@@ -21,7 +20,7 @@ import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
 @Mapper(componentModel = "spring", uses = ExerciseSetMappingHelper.class)
 public abstract class ExerciseSetMapper {
     
-    public abstract FreeWeightSet toFreeWeightEntity(ExerciseSetCreateDTO dto, @Context ExerciseSetMappingHelper helper);
+    //public abstract FreeWeightSet toFreeWeightEntity(ExerciseSetCreateDTO dto, @Context ExerciseSetMappingHelper helper);
 
     
     @Mapping(target = "exercise_id", source = "exercise.id")

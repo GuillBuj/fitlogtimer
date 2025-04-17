@@ -14,6 +14,7 @@ import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
 import com.fitlogtimer.dto.stats.MaxsByRepsDTO;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
+import com.fitlogtimer.repository.ExerciseSetRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -21,10 +22,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class StatsService {
 
-    private final ExerciseSetService exerciseSetService;
+    private final ExerciseSetRepository exerciseSetRepository;
     
     public MaxWeightWithDateDTO maxByExAndReps(int exerciseId, int nbReps) {
-        List<ExerciseSet> exerciseSets = exerciseSetService.getSetsByExerciseId(exerciseId);
+        List<ExerciseSet> exerciseSets = exerciseSetRepository.findByExerciseIdOrderByWorkoutDateAndIdDesc(exerciseId);
     
         return exerciseSets.stream()
             .filter(set -> set instanceof FreeWeightSet) // on ne considère que les FreeWeight

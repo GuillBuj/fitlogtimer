@@ -1,4 +1,4 @@
-package com.fitlogtimer.dto.postgroup;
+package com.fitlogtimer.dto.postGroup;
 
 public record SetsSameWeightAndRepsDTO(
     int setsNumber,

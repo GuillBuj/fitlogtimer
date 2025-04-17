@@ -12,18 +12,11 @@ import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
 
 @Mapper(componentModel = "spring")
-public interface ElasticSetMapper {
+public interface ElasticSetMapper extends TypeSetMapper{
 
     @Mapping(target = "id", ignore = true)
-    ElasticSet toElasticSet(ExerciseSetCreateDTO dto, ExerciseSetMappingHelper helper);
+    @Mapping(target = "exercise", source = "dto.exercise_id", qualifiedByName = "resolveExercise")
+    @Mapping(target = "workout", source = "dto.workout_id", qualifiedByName = "resolveWorkout")
+    ElasticSet toElasticSet(ExerciseSetCreateDTO dto, @Context ExerciseSetMappingHelper helper);
 
-    @Named("resolveExercise")
-    default Exercise resolveExercise(int exerciseId, @Context ExerciseSetMappingHelper helper) {
-        return helper.findExerciseOrThrow(exerciseId);
-    }
-
-    @Named("resolveWorkout")
-    default Workout resolveWorkout(int workoutId, @Context ExerciseSetMappingHelper helper) {
-        return helper.getWorkoutOrThrow(workoutId);
-    }
 }

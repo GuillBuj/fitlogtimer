@@ -12,18 +12,11 @@ import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
 
 @Mapper(componentModel = "spring")
-public interface FreeWeightSetMapper {
+public interface FreeWeightSetMapper extends TypeSetMapper{
     
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "exercise", source = "dto.exercise_id", qualifiedByName = "resolveExercise")
+    @Mapping(target = "workout", source = "dto.workout_id", qualifiedByName = "resolveWorkout")
     FreeWeightSet toFreeWeightSet(ExerciseSetCreateDTO dto, @Context ExerciseSetMappingHelper helper);
 
-    @Named("resolveExercise")
-    default Exercise resolveExercise(int exerciseId, @Context ExerciseSetMappingHelper helper) {
-        return helper.findExerciseOrThrow(exerciseId);
-    }
-
-    @Named("resolveWorkout")
-    default Workout resolveWorkout(int workoutId, @Context ExerciseSetMappingHelper helper) {
-        return helper.getWorkoutOrThrow(workoutId);
-    }
 }

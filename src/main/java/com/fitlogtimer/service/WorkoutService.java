@@ -180,9 +180,7 @@ public class WorkoutService {
                 currentGroup.clear();
                 currentGroup.add(currentSet);
             }
-            System.out.println(i + " after: groupedSets: " + groupedSets);
-            System.out.println(i + " after: currentGroup: " + currentGroup);
-
+            log.debug("{} after: groupedSets: {}, current: {}", i, groupedSets, currentGroup);
         }
 
         if(!currentGroup.isEmpty()){
@@ -206,7 +204,7 @@ public class WorkoutService {
     }
 
     public List<SetInWorkoutDTO> getSetsDTO(Workout workout){
-        log.info("*** getSetDTO ***");
+        log.debug("*** getSetDTO ***");
         return workout.getSetRecords().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
@@ -214,7 +212,7 @@ public class WorkoutService {
 
     private SetInWorkoutDTO mapToDTO(ExerciseSet exerciseSet) {
         //if (set instanceof FreeWeightSet freeSet) {
-            log.info("**********: $",exerciseSet.toString());
+            log.debug("***: {}",exerciseSet.toString());
             return exerciseSetMapper.toSetInWorkoutDTO(/*freeS*/exerciseSet);
        // }
     }

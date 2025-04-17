@@ -52,8 +52,10 @@ public class ExerciseSetService {
     
     @Transactional
     public ExerciseSet saveExerciseSet(ExerciseSetCreateDTO exerciseSetDTO) {
+        log.info("*-*-* exerciseSetDTO à ajouter: {}", exerciseSetDTO);
         ExerciseSet exerciseSet = exerciseSetFacadeMapper.toEntity(exerciseSetDTO);
         //ExerciseSet exerciseSet = exerciseSetMapper.toEntity(exerciseSetDTO, exerciseSetMappingHelper);
+        log.info("*-*-* exerciseSet à ajouter post-mapping: {}", exerciseSet);
         return exerciseSetRepository.save(exerciseSet);
     }
 

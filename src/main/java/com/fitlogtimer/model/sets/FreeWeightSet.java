@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class FreeWeightSet extends ExerciseSet{
-    @Column(nullable = false)
+    
     private Double weight;
 
     @Override

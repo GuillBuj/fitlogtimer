@@ -8,6 +8,7 @@ import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Workout;
+import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
@@ -22,7 +23,7 @@ public class ExerciseSetMappingHelper {
 
     @Named("createExerciseSet")
     public ExerciseSet createExerciseSetFromDTO(ExerciseSetCreateDTO dto) {
-        return switch (dto.type()) {
+        ExerciseSet exerciseSet = switch (dto.type()) {
             case ExerciseSetType.FREE_WEIGHT -> {
                 FreeWeightSet set = new FreeWeightSet();
                 set.setWeight(dto.weight());
@@ -30,8 +31,23 @@ public class ExerciseSetMappingHelper {
                 set.setComment(dto.comment());
                 yield set;
             }
+            case ExerciseSetType.ELASTIC -> {
+                ElasticSet set = new ElasticSet();
+                set.setBands(dto.bands());
+                set.setRepNumber(dto.repNumber());
+                set.setComment(dto.comment());
+                yield set;
+            }
             default -> throw new IllegalArgumentException("Type inconnu : " + dto.type());
         };
+
+        exerciseSet.setRepNumber(dto.repNumber());
+        exerciseSet.setComment(dto.comment());
+        exerciseSet.setTag(dto.tag()); // si présent dans le DTO
+        exerciseSet.setExercise(findExerciseOrThrow(dto.exercise_id()));
+        exerciseSet.setWorkout(getWorkoutOrThrow(dto.workout_id()));
+
+        return exerciseSet;
     }
     
     public Exercise findExerciseOrThrow(int exerciseId) {

@@ -13,48 +13,54 @@ import com.fitlogtimer.dto.transition.SetInWorkoutDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Workout;
+import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
 
 @Mapper(componentModel = "spring", uses = ExerciseSetMappingHelper.class)
 public abstract class ExerciseSetMapper {
     
-    @Mapping(target = "exercise", source = "dto.exercise_id", qualifiedByName = "resolveExercise")
-    @Mapping(target = "workout", source = "dto.workout_id", qualifiedByName = "resolveWorkout")
     public abstract FreeWeightSet toFreeWeightEntity(ExerciseSetCreateDTO dto, @Context ExerciseSetMappingHelper helper);
 
     
     @Mapping(target = "exercise_id", source = "exercise.id")
-    @Mapping(target = "weight", expression = "java(getWeight(entity))")
-    @Mapping(target = "type", expression = "java(setTypeToString(entity))")
-    public abstract SetInWorkoutDTO toSetInWorkoutDTO(ExerciseSet entity);
+    @Mapping(target = "weight", expression = "java(getWeight(exerciseSet))")
+    @Mapping(target = "type", expression = "java(setTypeToString(exerciseSet))")
+    public abstract SetInWorkoutDTO toSetInWorkoutDTO(ExerciseSet exerciseSet);
 
     @Mapping(target = "exerciseNameShort", source = "exercise.shortName")
-    @Mapping(target = "weight", expression = "java(getWeight(entity))")
-    @Mapping(target = "type", expression = "java(setTypeToString(entity))")
-    public abstract SetWorkoutListItemDTO toSetListItemDTO(ExerciseSet entity);
+    @Mapping(target = "weight", expression = "java(getWeight(exerciseSet))")
+    @Mapping(target = "type", expression = "java(setTypeToString(exerciseSet))")
+    public abstract SetWorkoutListItemDTO toSetListItemDTO(ExerciseSet exerciseSet);
 
 
 
     @Mapping(target = "exerciseId", source = "exercise.id")
     @Mapping(target = "exerciseName", source = "exercise.name")
-    @Mapping(target = "weight", expression = "java(getWeight(entity))")
-    public abstract LastSetDTO toLastSetDTO(ExerciseSet entity);
+    @Mapping(target = "weight", expression = "java(getWeight(exerciseSet))")
+    public abstract LastSetDTO toLastSetDTO(ExerciseSet exerciseSet);
 
-    protected String setTypeToString(ExerciseSet entity) {
-        if (entity instanceof FreeWeightSet) {
+    protected String setTypeToString(ExerciseSet exerciseSet) {
+        if (exerciseSet instanceof FreeWeightSet) {
             return ExerciseSetType.FREE_WEIGHT;
-        } /*else if (entity instanceof ElasticSet) {
-            return "ELASTIC";
-        } */
+        } else if (exerciseSet instanceof ElasticSet) {
+            return ExerciseSetType.ELASTIC;
+        } 
         return "UNKNOWN";
     }
     
-    protected double getWeight(ExerciseSet entity) {
-        if (entity instanceof FreeWeightSet) {
-            return ((FreeWeightSet) entity).getWeight();
+    protected double getWeight(ExerciseSet exerciseSet) {
+        if (exerciseSet instanceof FreeWeightSet) {
+            return ((FreeWeightSet) exerciseSet).getWeight();
         }
         return 0.0; // Pour les autres types qui n'ont pas de poids
+    }
+
+    protected String getBands(ExerciseSet exerciseSet){
+        if (exerciseSet instanceof ElasticSet){
+            return ((ElasticSet) exerciseSet).getBands();
+        }
+        return "";
     }
     
     @Named("resolveExercise")

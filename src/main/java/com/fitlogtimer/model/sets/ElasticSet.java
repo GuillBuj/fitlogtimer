@@ -18,6 +18,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class ElasticSet extends ExerciseSet{
+    
     @Column(nullable = false)
     private String bands;
 

@@ -8,14 +8,14 @@ import org.mapstruct.Named;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.Workout;
-import com.fitlogtimer.model.sets.FreeWeightSet;
+import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
 
 @Mapper(componentModel = "spring")
-public interface FreeWeightSetMapper {
-    
+public interface ElasticSetMapper {
+
     @Mapping(target = "id", ignore = true)
-    FreeWeightSet toFreeWeightSet(ExerciseSetCreateDTO dto, @Context ExerciseSetMappingHelper helper);
+    ElasticSet toElasticSet(ExerciseSetCreateDTO dto, ExerciseSetMappingHelper helper);
 
     @Named("resolveExercise")
     default Exercise resolveExercise(int exerciseId, @Context ExerciseSetMappingHelper helper) {

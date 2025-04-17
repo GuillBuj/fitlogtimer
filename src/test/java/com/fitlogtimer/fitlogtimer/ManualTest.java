@@ -12,34 +12,34 @@ import com.fitlogtimer.service.XlsxService;
 public class ManualTest {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(FitlogtimerApplication.class, args);
+        // ConfigurableApplicationContext context = SpringApplication.run(FitlogtimerApplication.class, args);
         
-        try {
-            XlsxService xlsxService = context.getBean(XlsxService.class);
-            WorkoutService workoutService = context.getBean(WorkoutService.class);
+        // try {
+        //     XlsxService xlsxService = context.getBean(XlsxService.class);
+        //     WorkoutService workoutService = context.getBean(WorkoutService.class);
             
-            //System.out.println("=== TEST DÉMARRÉ ===");
-            // System.out.println(workoutService.createWorkoutsFromXlsxDCHeavyDTOList(
-            //     xlsxService.extractDTOs()
-            // ));
-            workoutService.deleteByTagImport("importH");
-            workoutService.createWorkoutsFromXlsxDCHeavyDTOList(xlsxService.extractDTOsHeavySheetRegular());
+        //     //System.out.println("=== TEST DÉMARRÉ ===");
+        //     // System.out.println(workoutService.createWorkoutsFromXlsxDCHeavyDTOList(
+        //     //     xlsxService.extractDTOs()
+        //     // ));
+        //     workoutService.deleteByTagImport("importH");
+        //     workoutService.createWorkoutsFromXlsxDCHeavyDTOList(xlsxService.extractDTOsHeavySheetRegular());
 
-            workoutService.deleteByTagImport("importV"); //à executer après les importH
-            workoutService.createWorkoutsFromXlsxDCVarDTOList(xlsxService.extractDTOsVarSheet());
+        //     workoutService.deleteByTagImport("importV"); //à executer après les importH
+        //     workoutService.createWorkoutsFromXlsxDCVarDTOList(xlsxService.extractDTOsVarSheet());
 
-            workoutService.deleteByTagImport("importL");
-            workoutService.createWorkoutsFromXlsxDCLightDTOList(xlsxService.extractDTOsLightSheet());
+        //     workoutService.deleteByTagImport("importL");
+        //     workoutService.createWorkoutsFromXlsxDCLightDTOList(xlsxService.extractDTOsLightSheet());
 
-            workoutService.deleteByTagImport("importDL"); //à executer après les importL
-            workoutService.createWorkoutsFromXlsxDeadliftDTOList(xlsxService.extractDTOsDeadliftSheet());            
+        //     workoutService.deleteByTagImport("importDL"); //à executer après les importL
+        //     workoutService.createWorkoutsFromXlsxDeadliftDTOList(xlsxService.extractDTOsDeadliftSheet());            
 
-        } catch (Exception e) {
-            System.err.println("Échec du test : " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            context.close();
-            System.exit(0); // Important pour terminer proprement
-        }
+        // } catch (Exception e) {
+        //     System.err.println("Échec du test : " + e.getMessage());
+        //     e.printStackTrace();
+        // } finally {
+        //     context.close();
+        //     System.exit(0); // Important pour terminer proprement
+        // }
     }
 }

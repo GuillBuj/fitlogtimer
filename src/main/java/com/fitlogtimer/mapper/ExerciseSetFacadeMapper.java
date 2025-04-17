@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 public class ExerciseSetFacadeMapper {
 
     private final FreeWeightSetMapper freeWeightSetMapper;
+    private final ElasticSetMapper elasticSetMapper;
     private final ExerciseSetMappingHelper mappingHelper;
 
     public ExerciseSet toEntity(ExerciseSetCreateDTO dto) {
@@ -21,6 +22,8 @@ public class ExerciseSetFacadeMapper {
             case ExerciseSetType.FREE_WEIGHT -> 
                 freeWeightSetMapper.toFreeWeightSet(dto, mappingHelper);
             
+            case ExerciseSetType.ELASTIC -> 
+                elasticSetMapper.toElasticSet(dto, mappingHelper);
             // mappings (à ajouter au fur et à mesure)
             
             default -> throw new IllegalArgumentException("Unsupported type: " + dto.type());

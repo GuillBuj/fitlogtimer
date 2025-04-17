@@ -35,6 +35,7 @@ public class ExerciseController {
         model.addAttribute("muscles", Muscle.values());
         model.addAttribute("families", Family.values());
         model.addAttribute("setTypes", ExerciseSetType.DISPLAY_NAMES);
+        model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
         
         return "exercises-list";
     }
@@ -43,7 +44,7 @@ public class ExerciseController {
     public String createExercise(@ModelAttribute("exercise") ExerciseCreateDTO exerciseCreateDTO, RedirectAttributes redirectAttributes){
         
         exerciseService.createExercise(exerciseCreateDTO);
-        redirectAttributes.addFlashAttribute("successMessage", "Séance créée avec succès");
+        redirectAttributes.addFlashAttribute("successMessage", "Exercice créé avec succès");
         
         return "redirect:/exercises";
     }

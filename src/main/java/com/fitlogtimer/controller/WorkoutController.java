@@ -52,7 +52,7 @@ public class WorkoutController {
         return "workout-details";
     }
 
-    @GetMapping("/{id}/plus")
+    @GetMapping("/{id}/brut")
     public String getWorkoutDetailsPlus(@PathVariable int id, Model model) {
         
         WorkoutDetailsBrutDTO workoutData = workoutService.getWorkoutDetailsBrut(id);
@@ -64,7 +64,7 @@ public class WorkoutController {
         model.addAttribute("exerciseSetDTO", exerciseSet);
         
         log.info(model.toString());
-        return "workout-details-plus";
+        return "workout-details-brut";
     }
 
     @DeleteMapping("/{id}")

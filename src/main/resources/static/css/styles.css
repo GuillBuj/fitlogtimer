@@ -164,7 +164,13 @@ form {
 }
 
 .single-line-form .weightInput{
-    width: 9ch; /* 3 fois la largeur du caractère "0" */
+    width: 9ch;
+    padding: 8px; /* Ajoute un peu de padding pour améliorer l'apparence */
+    box-sizing: border-box; /* Inclut le padding dans la largeur totale */
+}
+
+.single-line-form .durationInput{
+    width: 9ch;
     padding: 8px; /* Ajoute un peu de padding pour améliorer l'apparence */
     box-sizing: border-box; /* Inclut le padding dans la largeur totale */
 }

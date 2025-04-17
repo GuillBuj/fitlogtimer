@@ -8,8 +8,10 @@ import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Workout;
+import com.fitlogtimer.model.sets.BodyweightSet;
 import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
+import com.fitlogtimer.model.sets.IsometricSet;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
 
@@ -30,16 +32,18 @@ public class ExerciseSetMappingHelper {
         ExerciseSet exerciseSet = switch (dto.type()) {
             case ExerciseSetType.FREE_WEIGHT -> {
                 FreeWeightSet set = new FreeWeightSet();
-                // set.setWeight(dto.weight());
-                // set.setRepNumber(dto.repNumber());
-                // set.setComment(dto.comment());
                 yield set;
             }
             case ExerciseSetType.ELASTIC -> {
                 ElasticSet set = new ElasticSet();
-                // set.setBands(dto.bands());
-                // set.setRepNumber(dto.repNumber());
-                // set.setComment(dto.comment());
+                yield set;
+            }
+            case ExerciseSetType.ISOMETRIC -> {
+                IsometricSet set = new IsometricSet();
+                yield set;
+            }
+            case ExerciseSetType.BODYWEIGHT -> {
+                BodyweightSet set = new BodyweightSet();
                 yield set;
             }
             default -> throw new IllegalArgumentException("Type inconnu : " + dto.type());

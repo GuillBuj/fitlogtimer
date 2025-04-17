@@ -47,7 +47,7 @@ public class ExerciceSetController {
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Série non supprimée");
         }
-        return "redirect:/workouts/" + idWorkout + "/plus";
+        return "redirect:/workouts/" + idWorkout + "/brut";
     }
 
     @GetMapping("/byExercise/{exerciseId}")

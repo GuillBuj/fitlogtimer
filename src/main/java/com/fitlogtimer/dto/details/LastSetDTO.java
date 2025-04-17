@@ -4,6 +4,8 @@ public record LastSetDTO(
     int exerciseId,
     String exerciseName,
     int repNumber, 
-    double weight) {
+    double weight,
+    String bands,
+    int durationS) {
 
 }

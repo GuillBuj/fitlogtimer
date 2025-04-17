@@ -9,6 +9,7 @@ public record ExerciseSetCreateDTO(
         @PositiveOrZero double weight,
         @Positive int repNumber,
         @Size(max=100) String bands,
+        @PositiveOrZero int durationS,
         String tag,
         @Size(max=100) String comment,
         @Positive int workout_id,

@@ -10,7 +10,7 @@
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
     <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
     <h1>Séance du <span th:text="${workoutData.date}"></span></h1>
-    <a th:href="@{/workouts/{id}/plus(id=${workoutData.id})}"  class="btn-link">Set par set</a>
+    <a th:href="@{/workouts/{id}/brut(id=${workoutData.id})}"  class="btn-link">Set par set</a>
     <p>Poids : <span th:text="${workoutData.bodyWeight}"></span> kg</p>
     <p>Commentaires : <span th:text="${workoutData.comment}"></span></p>
     

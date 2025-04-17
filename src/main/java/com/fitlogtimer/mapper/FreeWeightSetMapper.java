@@ -3,11 +3,8 @@ package com.fitlogtimer.mapper;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
-import com.fitlogtimer.model.Exercise;
-import com.fitlogtimer.model.Workout;
 import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
 

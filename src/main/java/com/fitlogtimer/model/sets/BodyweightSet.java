@@ -11,17 +11,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@DiscriminatorValue(ExerciseSetType.FREE_WEIGHT)
+@DiscriminatorValue(ExerciseSetType.BODYWEIGHT)
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-public class FreeWeightSet extends ExerciseSet{
+@EqualsAndHashCode(callSuper =  true)
+public class BodyweightSet extends ExerciseSet{
     
     private Double weight;
 
+    private String bands;
+
     @Override
     public String toString() {
-        return super.toString() + ", poids: " + weight;
+        return super.toString() + ", bandes: " + bands + ", poids: " + weight;
     }
 }

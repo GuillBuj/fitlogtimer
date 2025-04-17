@@ -46,7 +46,9 @@ import com.fitlogtimer.mapper.WorkoutMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Workout;
+import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
+import com.fitlogtimer.model.sets.IsometricSet;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
@@ -307,30 +309,40 @@ public class WorkoutService {
         double defaultWeight = 0.0;
         int defaultRepNumber = 0;
         String defaultBands = "-";
+        int defaultDuration = 0;
         String defaultTag = "";
         String defaultType = ExerciseSetType.FREE_WEIGHT;
         String defaultComment = "";
     
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
-            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultTag,defaultComment, id, defaultType);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultTag,defaultComment, id, defaultType);
         }
     
         Workout workout = optionalWorkout.get();
     
         List<ExerciseSet> sets = workout.getSetRecords();
         if (sets == null || sets.isEmpty()) {
-            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultTag,defaultComment, id, defaultType);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultTag,defaultComment, id, defaultType);
         }
     
         ExerciseSet lastSet = sets.get(sets.size() - 1);
     
         if (lastSet == null || lastSet.getExercise() == null) {
-            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultTag,defaultComment, id, defaultType);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultTag,defaultComment, id, defaultType);
         }
     
         if (lastSet instanceof FreeWeightSet freeWeightSet) {
             defaultWeight = freeWeightSet.getWeight();
+        }
+
+        if (lastSet instanceof ElasticSet elasticSet){
+            defaultBands = elasticSet.getBands();
+        }
+
+        if (lastSet instanceof IsometricSet isometricSet){
+            defaultDuration = isometricSet.getDurationS();
+            defaultWeight = isometricSet.getWeight();
         }
 
         return new ExerciseSetCreateDTO(
@@ -338,6 +350,7 @@ public class WorkoutService {
             defaultWeight,
             lastSet.getRepNumber(),
             defaultBands,
+            defaultDuration,
             defaultTag,
             defaultComment,
             id,

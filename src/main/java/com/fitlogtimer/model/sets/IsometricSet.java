@@ -17,6 +17,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class IsometricSet extends ExerciseSet{
+    
     private int durationS;
     private Double weight;
 

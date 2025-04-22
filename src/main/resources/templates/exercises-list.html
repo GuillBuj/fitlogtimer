@@ -33,12 +33,11 @@
                 <td th:text="${exercise.muscle}"></td>
                 <td th:text="${exercise.family}"></td>
                 <td th:text="${exercise.type}"></td>
-                <td th:if="${exercise.type == FREE_WEIGHT_TYPE}">
-                    <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
+                <td>
+                    <a th:if="${exercise.type == FREE_WEIGHT_TYPE}" th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
                     <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
-                    <a th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">Maxs/rép</a>
+                    <a th:if="${exercise.type == FREE_WEIGHT_TYPE}" th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">Maxs/rép</a>
                 </td>
-                <td th:unless="${exercise.type == FREE_WEIGHT_TYPE}" class="empty-cell"></td>
                 <td>
                     <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
                         <input type="hidden" name="_method" value="delete" />

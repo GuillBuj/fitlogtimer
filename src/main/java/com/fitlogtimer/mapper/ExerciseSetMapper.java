@@ -15,6 +15,7 @@ import com.fitlogtimer.model.Workout;
 import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.model.sets.IsometricSet;
+import com.fitlogtimer.model.sets.MovementSet;
 import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
 
 @Mapper(componentModel = "spring", uses = ExerciseSetMappingHelper.class)
@@ -67,6 +68,9 @@ public abstract class ExerciseSetMapper {
         if (exerciseSet instanceof ElasticSet){
             return ((ElasticSet) exerciseSet).getBands();
         }
+        if (exerciseSet instanceof MovementSet){
+            return ((MovementSet)exerciseSet).getBands(); 
+        }
         return "";
     }
 
@@ -75,6 +79,13 @@ public abstract class ExerciseSetMapper {
             return ((IsometricSet) exerciseSet).getDurationS();
         }
         return 0;
+    }
+
+    protected String getDistance(ExerciseSet exerciseSet){
+        if (exerciseSet instanceof MovementSet){
+            return ((MovementSet)exerciseSet).getDistance();
+        }
+        return "";
     }
     
     @Named("resolveExercise")

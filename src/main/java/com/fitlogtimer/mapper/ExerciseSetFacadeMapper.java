@@ -17,6 +17,7 @@ public class ExerciseSetFacadeMapper {
     private final ElasticSetMapper elasticSetMapper;
     private final IsometricSetMapper isometricSetMapper;
     private final BodyweightSetMapper bodyweightSetMapper;
+    private final MovementSetMapper movementSetMapper;
     private final ExerciseSetMappingHelper mappingHelper;
 
     public ExerciseSet toEntity(ExerciseSetCreateDTO dto) {
@@ -32,6 +33,9 @@ public class ExerciseSetFacadeMapper {
 
             case ExerciseSetType.BODYWEIGHT ->
                 bodyweightSetMapper.toBodyweightSet(dto, mappingHelper);
+
+            case ExerciseSetType.MOVEMENT ->
+                movementSetMapper.toMovementSet(dto, mappingHelper);
             // mappings (à ajouter au fur et à mesure)
             
             default -> throw new IllegalArgumentException("Unsupported type: " + dto.type());

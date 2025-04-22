@@ -5,13 +5,16 @@ function updateExerciseFields() {
     console.log("Exercice sélectionné - Type :", type);
 
     // DOM elements
-    const weightGroup = document.getElementById('weightGroup');
-    const bandsGroup = document.getElementById('elasticFields');
+    const weightGroup = document.getElementById('weightField');
+    const bandsGroup = document.getElementById('elasticField');
     const durationGroup = document.getElementById('durationField');
+    const distanceGroup = document.getElementById('distanceField');
 
+    const repsInput = document.getElementById('repNumber');
     const weightInput = document.getElementById('weight');
     const bandsInput = document.getElementById('bands');
     const durationInput = document.getElementById('durationS');
+    const distanceInput = document.getElementById('distance');
 
     // Reset visibility and required
     weightGroup.style.display = 'none';
@@ -43,6 +46,17 @@ function updateExerciseFields() {
 
     if (type === 'BODYWEIGHT') {
         weightGroup.style.display = 'block';
+    }
+
+    if (type === 'MOVEMENT') {
+        bandsGroup.style.display = 'block';
+        
+        distanceGroup.style.display = 'block';
+        distanceInput.required = true;
+        distanceInput.value = 'A/R tapis';
+
+        repsInput.value = 1;
+
     }
 }
 

@@ -24,15 +24,21 @@
                 <input type="number" class="durationInput" id="durationS" th:field="*{durationS}" step="1" min="0"/>
             </div>
 
-            <div class="form-group" id="weightGroup">
+            <div class="form-group" id="weightField">
                 <label for="weight">Poids(kg) :</label>
                 <input type="number" class="weightInput" id="weight" th:field="*{weight}" step="0.5" min="0"/>
             </div>
             
-            <div class="form-group" id="elasticFields" style="display: none;">
+            <div class="form-group" id="elasticField" style="display: none;">
                 <label for="bands">Bandes :</label>
                 <input type="text" class="bandsInput" id="bands" th:field="*{bands}" name="bands"/>
             </div>
+
+            <div class="form-group" id="distanceField" style="display: none;">
+                <label for="distance">Distance :</label>
+                <input type="text" class="distanceInput" id="distance" th:field="*{distance}" name="distance"/>
+            </div>
+
 
             <div class="form-group">
                 <label for="repNumber">Nombre de répétitions :</label>

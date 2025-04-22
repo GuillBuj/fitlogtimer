@@ -310,26 +310,27 @@ public class WorkoutService {
         int defaultRepNumber = 0;
         String defaultBands = "-";
         int defaultDuration = 0;
+        String defaultDistance = "";
         String defaultTag = "";
         String defaultType = ExerciseSetType.FREE_WEIGHT;
         String defaultComment = "";
     
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
-            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultTag,defaultComment, id, defaultType);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultDistance, defaultTag,defaultComment, id, defaultType);
         }
     
         Workout workout = optionalWorkout.get();
     
         List<ExerciseSet> sets = workout.getSetRecords();
         if (sets == null || sets.isEmpty()) {
-            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultTag,defaultComment, id, defaultType);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultDistance, defaultTag,defaultComment, id, defaultType);
         }
     
         ExerciseSet lastSet = sets.get(sets.size() - 1);
     
         if (lastSet == null || lastSet.getExercise() == null) {
-            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultTag,defaultComment, id, defaultType);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultDistance, defaultTag,defaultComment, id, defaultType);
         }
     
         if (lastSet instanceof FreeWeightSet freeWeightSet) {
@@ -351,6 +352,7 @@ public class WorkoutService {
             lastSet.getRepNumber(),
             defaultBands,
             defaultDuration,
+            defaultDistance,
             defaultTag,
             defaultComment,
             id,

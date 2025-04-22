@@ -11,11 +11,13 @@ public final class ExerciseSetType {
     public static final String BODYWEIGHT = "BODYWEIGHT";
     public static final String ISOMETRIC = "ISOMETRIC";
     public static final String ELASTIC = "ELASTIC";
+    public static final String MOVEMENT = "MOVEMENT";
 
     public static final Map<String, String> DISPLAY_NAMES = Map.of(
         FREE_WEIGHT, "Poids libres",
         BODYWEIGHT, "Poids de corps",
         ISOMETRIC, "Isométrique",
-        ELASTIC, "Bandes élastiques"
+        ELASTIC, "Bandes élastiques",
+        MOVEMENT, "Renfo mouvement"
     );
 }

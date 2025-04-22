@@ -8,6 +8,6 @@ public record SetsSameWeightDTO(
 ) {
     @Override
     public final String toString() {
-        return (reps + " @ " + weight + "kg");
+        return (weight!=0 ? reps + " @ " + weight + "kg" : reps.toString());
     }
 }

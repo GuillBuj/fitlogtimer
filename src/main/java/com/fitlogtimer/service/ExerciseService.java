@@ -61,21 +61,24 @@ public class ExerciseService {
         double personalBest = 0;
         double oneRepMaxEst = 0;
         
-        if (exercise.getType().equals(ExerciseSetType.FREE_WEIGHT)){
-            personalBest = statsService.getPersonalBest(id);
-            oneRepMaxEst = statsService.getBest1RMest(id);
-        } else if (exercise.getType().equals(ExerciseSetType.ISOMETRIC)){
-            personalBest = statsService.getPersonalBestDuration(id);
-        } else if (exercise.getType().equals(ExerciseSetType.BODYWEIGHT)){
-            personalBest = statsService.getPersonalBestZero(id);
+        switch (exercise.getType()) {
+            case ExerciseSetType.FREE_WEIGHT:
+                personalBest = statsService.getPersonalBest(id);
+                oneRepMaxEst = statsService.getBest1RMest(id);
+                break;
+            case ExerciseSetType.ISOMETRIC:
+                personalBest = statsService.getPersonalBestDuration(id);
+                break;
+            case ExerciseSetType.BODYWEIGHT:
+                personalBest = statsService.getPersonalBestZero(id);
+                break;
         }
-           
+         
         return ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst);
     }
 
     public List<ExerciseListItemDTO> getAllExerciseItems() {
         List<Exercise> exercises = exerciseRepository.findAll();
-
         return exercises.stream()
                         .map(exercise -> {
                             return getExerciseListItem(exercise.getId());

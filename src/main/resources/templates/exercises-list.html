@@ -29,15 +29,16 @@
                 <td th:text="${exercise.shortName}"></td>
                 <td th:text="${exercise.name}"></td>
                 <td th:if="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"
-                th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 2)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
+                    th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
                     <td th:unless="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}">-</td>
-                <td th:if="${exercise.type == FREE_WEIGHT_TYPE}" th:text="${exercise.oneRepMaxEst}"></td>
+                <td th:if="${exercise.type == FREE_WEIGHT_TYPE}"
+                    th:text="|${exercise.oneRepMaxEst % 1 == 0? exercise.oneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.oneRepMaxEst, 1, 1)} kg|"></td>
                     <td th:unless="${exercise.type == FREE_WEIGHT_TYPE}">-</td>
                 <td th:text="${exercise.muscle}"></td>
                 <td th:text="${exercise.family}"></td>
                 <td th:text="${exercise.type}"></td>
                 <td>
-                    <a th:if="${exercise.type == FREE_WEIGHT_TYPE}" th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
+                    <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
                     <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
                     <a th:if="${exercise.type == FREE_WEIGHT_TYPE}" th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">Maxs/rép</a>
                 </td>

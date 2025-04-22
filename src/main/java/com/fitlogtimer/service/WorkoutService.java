@@ -18,6 +18,8 @@ import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.constants.WorkoutColorConstants;
 import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
+import com.fitlogtimer.dto.base.SetBasicIsometricDTO;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.details.LastSetDTO;
@@ -198,8 +200,8 @@ public class WorkoutService {
                         .map(Exercise::getShortName)
                         .orElseThrow(()->new NoSuchElementException("Exercise not found with id: " + exerciseId));
 
-        List<SetBasicDTO> sets = entrySet.setGroup().stream()
-            .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
+        List<SetBasicInterfaceDTO> sets = entrySet.setGroup().stream()
+            .map(set -> (SetBasicInterfaceDTO) new SetBasicDTO(set.repNumber(), set.weight()))
             .toList();
 
         return new SetsGroupedWithNameDTO(shortName, sets);        
@@ -225,66 +227,165 @@ public class WorkoutService {
                 .collect(Collectors.toList());
     }
 
-    public SetGroupCleanWorkoutListItemDTO cleanSetsGroup(SetsGroupedWithNameDTO sets){
-        if(hasSameWeight(sets)){
-            if(hasSameReps(sets)){
-                return new SetGroupCleanWorkoutListItemDTO(
-                    sets.exerciseNameShort(),
-                    new SetsSameWeightAndRepsDTO(
-                        sets.sets().size(),
-                        sets.sets().get(0).repNumber(),
-                        sets.sets().get(0).weight()));
-            } else{
-                List<Integer> repsSet = new ArrayList<>();
-                for(int i=0; i<sets.sets().size(); i++){
-                    repsSet.add(sets.sets().get(i).repNumber());
-                }
-                return new SetGroupCleanWorkoutListItemDTO(
-                    sets.exerciseNameShort(),
-                    new SetsSameWeightDTO(
-                        sets.sets().get(0).weight(),
-                        repsSet));
-            }
-        } else if(hasSameReps(sets)){
-            List<Double> weights = new ArrayList<>();
-            for(int i=0; i<sets.sets().size(); i++){
-                weights.add(sets.sets().get(i).weight());
-            }
-            return new SetGroupCleanWorkoutListItemDTO(
-                sets.exerciseNameShort(),
-                new SetsSameRepsDTO(
-                    sets.sets().get(0).repNumber(),
-                    weights
-                ));
-        } else {
-            List<SetBasicDTO> setBasicDTOs = sets.sets().stream()
-                .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
-                .collect(Collectors.toList());
-                return new SetGroupCleanWorkoutListItemDTO(sets.exerciseNameShort(), new SetsAllDifferentDTO(setBasicDTOs));
+    public SetGroupCleanWorkoutListItemDTO cleanSetsGroup(SetsGroupedWithNameDTO sets) {
+        SetBasicInterfaceDTO first = sets.sets().get(0);
+
+        if (first instanceof SetBasicDTO) {
+            return cleanSetsGroupForSetBasic(sets);
+        } 
+        // else if (first instanceof SetBasicIsometricDTO) {
+        //     return cleanSetsGroupForIsometric(sets);
+        // } else if (first instanceof SetBasicElasticDTO) {
+        //     return cleanSetsGroupForElastic(sets);
+        // } else if (first instanceof SetBasicMovementDTO) {
+        //     return cleanSetsGroupForMovement(sets);
+        // } 
+        else 
+        {
+            throw new IllegalArgumentException("Unsupported set type: " + first.getClass());
         }
     }
     
-    public boolean hasSameWeight(SetsGroupedWithNameDTO sets){
-        double firstWeight = sets.sets().get(0).weight();
+    public SetGroupCleanWorkoutListItemDTO cleanSetsGroupForSetBasic(SetsGroupedWithNameDTO sets) {
+        // FREE_WEIGHT ou BODYWEIGHT
+    
+        List<SetBasicDTO> classicSets = sets.sets().stream()
+            .map(set -> (SetBasicDTO) set)
+            .toList();
+    
+        if (hasSameWeight(sets)) {
+            if (hasSameReps(sets)) {
+                return new SetGroupCleanWorkoutListItemDTO(
+                    sets.exerciseNameShort(),
+                    new SetsSameWeightAndRepsDTO(
+                        classicSets.size(),
+                        classicSets.get(0).repNumber(),
+                        classicSets.get(0).weight()
+                    )
+                );
+            } else {
+                List<Integer> repsSet = classicSets.stream()
+                    .map(SetBasicDTO::repNumber)
+                    .toList();
+    
+                return new SetGroupCleanWorkoutListItemDTO(
+                    sets.exerciseNameShort(),
+                    new SetsSameWeightDTO(
+                        classicSets.get(0).weight(),
+                        repsSet
+                    )
+                );
+            }
+        } else if (hasSameReps(sets)) {
+            List<Double> weights = classicSets.stream()
+                .map(SetBasicDTO::weight)
+                .toList();
+    
+            return new SetGroupCleanWorkoutListItemDTO(
+                sets.exerciseNameShort(),
+                new SetsSameRepsDTO(
+                    classicSets.get(0).repNumber(),
+                    weights
+                )
+            );
+        } else {
+            return new SetGroupCleanWorkoutListItemDTO(
+                sets.exerciseNameShort(),
+                new SetsAllDifferentDTO(classicSets)
+            );
+        }
+    }
 
-        for(SetBasicDTO set : sets.sets()){
-            if(set.weight() != firstWeight){
+    // public SetGroupCleanWorkoutListItemDTO cleanSetsGroup(SetsGroupedWithNameDTO sets){
+    //     if(hasSameWeight(sets)){
+    //         if(hasSameReps(sets)){
+    //             return new SetGroupCleanWorkoutListItemDTO(
+    //                 sets.exerciseNameShort(),
+    //                 new SetsSameWeightAndRepsDTO(
+    //                     sets.sets().size(),
+    //                     sets.sets().get(0).repNumber(),
+    //                     sets.sets().get(0).weight()));
+    //         } else{
+    //             List<Integer> repsSet = new ArrayList<>();
+    //             for(int i=0; i<sets.sets().size(); i++){
+    //                 repsSet.add(sets.sets().get(i).repNumber());
+    //             }
+    //             return new SetGroupCleanWorkoutListItemDTO(
+    //                 sets.exerciseNameShort(),
+    //                 new SetsSameWeightDTO(
+    //                     sets.sets().get(0).weight(),
+    //                     repsSet));
+    //         }
+    //     } else if(hasSameReps(sets)){
+    //         List<Double> weights = new ArrayList<>();
+    //         for(int i=0; i<sets.sets().size(); i++){
+    //             weights.add(sets.sets().get(i).weight());
+    //         }
+    //         return new SetGroupCleanWorkoutListItemDTO(
+    //             sets.exerciseNameShort(),
+    //             new SetsSameRepsDTO(
+    //                 sets.sets().get(0).repNumber(),
+    //                 weights
+    //             ));
+    //     } else {
+    //         List<SetBasicDTO> setBasicDTOs = sets.sets().stream()
+    //             .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
+    //             .collect(Collectors.toList());
+    //             return new SetGroupCleanWorkoutListItemDTO(sets.exerciseNameShort(), new SetsAllDifferentDTO(setBasicDTOs));
+    //     }
+    // }
+    
+    public boolean hasSameWeight(SetsGroupedWithNameDTO sets) {
+        if (sets.sets().isEmpty()) return true;
+
+        double firstWeight = ((SetBasicDTO) sets.sets().get(0)).weight();
+
+        for (SetBasicInterfaceDTO set : sets.sets()) {
+            double currentWeight = ((SetBasicDTO) set).weight();
+            if (currentWeight != firstWeight) {
                 return false;
             }
         }
+
         return true;
     }
 
-    public boolean hasSameReps(SetsGroupedWithNameDTO sets){
-        int firstNb = sets.sets().get(0).repNumber();
+    public boolean hasSameReps(SetsGroupedWithNameDTO sets) {
+        if (sets.sets().isEmpty()) return true;
 
-        for(SetBasicDTO set : sets.sets()){
-            if(set.repNumber() != firstNb){
+        double firstReps = ((SetBasicDTO) sets.sets().get(0)).repNumber();
+
+        for (SetBasicInterfaceDTO set : sets.sets()) {
+            double currentReps = ((SetBasicDTO) set).repNumber();
+            if (currentReps != firstReps) {
                 return false;
             }
         }
+
         return true;
     }
+
+    // public boolean hasSameWeight(SetsGroupedWithNameDTO sets){
+    //     double firstWeight = sets.sets().get(0).weight();
+
+    //     for(SetBasicDTO set : sets.sets()){
+    //         if(set.weight() != firstWeight){
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
+
+    // public boolean hasSameReps(SetsGroupedWithNameDTO sets){
+    //     int firstNb = sets.sets().get(0).repNumber();
+
+    //     for(SetBasicDTO set : sets.sets()){
+    //         if(set.repNumber() != firstNb){
+    //             return false;
+    //         }
+    //     }
+    //     return true;
+    // }
 
     public LastSetDTO getLastSetDTO(int id){
 

@@ -26,6 +26,9 @@ function updateExerciseFields() {
     durationGroup.style.display = 'none';
     durationInput.required = false;
 
+    distanceGroup.style.display = 'none';
+    distanceInput.required = false;
+
     // Logic based on type
     if (type === 'FREE_WEIGHT') {
         weightGroup.style.display = 'block';

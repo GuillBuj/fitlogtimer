@@ -36,7 +36,10 @@ public class ExerciseController {
         model.addAttribute("families", Family.values());
         model.addAttribute("setTypes", ExerciseSetType.DISPLAY_NAMES);
         model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
-        
+        model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
+        model.addAttribute("ELASTIC_TYPE", ExerciseSetType.ELASTIC);
+        model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
+
         return "exercises-list";
     }
     

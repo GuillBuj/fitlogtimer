@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.dto.create.ExerciseCreateDTO;
 import com.fitlogtimer.dto.listitem.ExerciseListItemDTO;
 import com.fitlogtimer.exception.NotFoundException;
@@ -57,9 +58,18 @@ public class ExerciseService {
 
     public ExerciseListItemDTO getExerciseListItem(int id) {
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
-        double personalBest = statsService.getPersonalBest(id);
-        double oneRepMaxEst = statsService.getBest1RMest(id);
+        double personalBest = 0;
+        double oneRepMaxEst = 0;
         
+        if (exercise.getType().equals(ExerciseSetType.FREE_WEIGHT)){
+            personalBest = statsService.getPersonalBest(id);
+            oneRepMaxEst = statsService.getBest1RMest(id);
+        } else if (exercise.getType().equals(ExerciseSetType.ISOMETRIC)){
+            personalBest = statsService.getPersonalBestDuration(id);
+        } else if (exercise.getType().equals(ExerciseSetType.BODYWEIGHT)){
+            personalBest = statsService.getPersonalBestZero(id);
+        }
+           
         return ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst);
     }
 

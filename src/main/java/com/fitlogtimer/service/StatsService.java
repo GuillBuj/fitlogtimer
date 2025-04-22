@@ -54,6 +54,16 @@ public class StatsService {
         return maxByExAndReps(exerciseId, 1).maxWeight();
     }
 
+    public double getPersonalBestDuration(int exerciseId){
+
+        return exerciseSetRepository.findMaxDurationByExerciseId(exerciseId).doubleValue();
+    }
+
+    public double getPersonalBestZero(int exerciseId){
+
+        return exerciseSetRepository.findMaxByExerciseId(exerciseId).doubleValue();
+    }
+
     public double getBest1RMest(int exerciseId){
         
         List<Integer> listRepNumbers = IntStream.rangeClosed(1, 15)  // rangeClosed inclut la valeur finale

@@ -32,6 +32,12 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
 
     List<ExerciseSet> findByExerciseId(int exerciseId);
 
+    @Query("SELECT MAX(e.durationS) FROM ExerciseSet e WHERE e.exercise.id = :exerciseId")
+    Integer findMaxDurationByExerciseId(@Param("exerciseId") int exerciseId);
+
+    @Query("SELECT MAX(e.repNumber) FROM ExerciseSet e WHERE e.exercise.id = :exerciseId")
+    Integer findMaxByExerciseId(@Param("exerciseId") int exerciseId);
+
     @Query("SELECT exset FROM ExerciseSet exset " +
            "JOIN exset.workout s " +
            "WHERE exset.exercise.id = :exerciseId " +

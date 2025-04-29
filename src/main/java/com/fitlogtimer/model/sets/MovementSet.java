@@ -20,10 +20,11 @@ public class MovementSet extends ExerciseSet{
 
     private String bands;
     private String distance; // String car A/R tapis, A/R chambre, etc
+    private Double weight;
 
     @Override
     public String toString(){
-        return super.toString() + ", bandes: " + bands + ", distance: " + distance;
+        return super.toString() + ", bandes: " + bands + ", distance: " + distance + ", poids: " + weight;
     }
 
 }

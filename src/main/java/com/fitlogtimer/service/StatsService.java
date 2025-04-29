@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -60,13 +61,14 @@ public class StatsService {
     }
 
     public double getPersonalBestZero(int exerciseId){
-
-        return exerciseSetRepository.findMaxByExerciseId(exerciseId).doubleValue();
+        return Optional.ofNullable(exerciseSetRepository.findMaxByExerciseId(exerciseId))
+                   .map(Integer::doubleValue)
+                   .orElse(0.0);
     }
 
     public double getBest1RMest(int exerciseId){
         
-        List<Integer> listRepNumbers = IntStream.rangeClosed(1, 15)  // rangeClosed inclut la valeur finale
+        List<Integer> listRepNumbers = IntStream.rangeClosed(1, 15)
                                      .boxed()  // Convertir les int en Integer
                                      .collect(Collectors.toList());
 

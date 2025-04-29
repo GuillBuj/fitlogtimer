@@ -56,10 +56,8 @@ function updateExerciseFields() {
         
         distanceGroup.style.display = 'block';
         distanceInput.required = true;
-        distanceInput.value = 'A/R tapis';
 
-        repsInput.value = 1;
-
+        weightGroup.style.display = 'block';
     }
 }
 

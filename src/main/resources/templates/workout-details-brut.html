@@ -4,6 +4,11 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <title>Détails de la séance</title>
 </head>
+<script th:inline="javascript">
+    // Vérifiez que le nom correspond à model.addAttribute("items", ...)
+    console.log("Données Thymeleaf :", /*[[${exerciseSets}]]*/);
+</script>
+
 <body>
     <div th:insert="~{fragments/navbar :: navbar}"></div>
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
@@ -15,7 +20,6 @@
     <p>Poids : <span th:text="${workoutData.bodyWeight}"></span> kg</p>
     <p>Commentaires : <span th:text="${workoutData.comment}"></span></p>
     
-
     <h2>Séries</h2>
     <table th:if="${workoutData.exerciseSets}">
         <thead>
@@ -25,6 +29,7 @@
                 <th>Poids</th>
                 <th>Bandes</th>
                 <th>Temps</th>
+                <th>Distance</th>
                 <th>Commentaires</th>
                 <th>Action</th>
             </tr>
@@ -35,6 +40,7 @@
             <td th:text="${set.weight}"></td>
             <td th:text="${set.bands}"></td>
             <td th:text="${set.durationS}"></td>
+            <td th:text="${set.distance}"></td>
             <td th:text="${set.comment}"></td>
             <td>
                 <form th:action="@{/exerciseSets/{id}(id=${set.id}, idWorkout=${workoutData.id})}" class="deleteForm"  method="post">
@@ -53,7 +59,7 @@
     </form>
     <br>
     <a href="/workouts" class="btn-link">Retour à la liste</a>
-
+    
     <script src="/js/set-type-handler.js"></script>
     <script src="/js/exercise-set-form.js"></script>
 </body>

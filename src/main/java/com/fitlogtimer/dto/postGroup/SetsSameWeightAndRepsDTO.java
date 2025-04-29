@@ -7,10 +7,9 @@ public record SetsSameWeightAndRepsDTO(
 ) {
     @Override
     public final String toString() {
-        if (weight == 0) {
-            return setsNumber + " * " + repNumber;
-        } else {
-            return (setsNumber + " * " + repNumber + " @ " + weight + "kg");
-        }
+        String sets = setsNumber == 1 ? "" : setsNumber + " * ";
+        String weights = weight == 0 ? "" : " @ " + weight + "kg";
+        
+        return sets + repNumber + weights;  
     }
 }

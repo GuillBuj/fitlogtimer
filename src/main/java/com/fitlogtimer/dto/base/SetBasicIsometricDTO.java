@@ -1,11 +1,17 @@
 package com.fitlogtimer.dto.base;
 
-public record SetBasicIsometricDTO(int durationS, double weight) implements SetBasicInterfaceDTO{
+public record SetBasicIsometricDTO(
+    int durationS,
+    int repNumber,
+    double weight) implements SetBasicInterfaceDTO{
+    
     @Override
     public final String toString() {
 
+        String reps = repNumber == 1? "" : String.valueOf(repNumber);
+        
         return weight == 0?
-                String.valueOf(durationS) + "\"" :
-                String.valueOf(durationS) + "\" (+" + weight + " kg)";
+                reps + String.valueOf(durationS) + "\"" :
+                reps + String.valueOf(durationS) + "\" (+" + weight + " kg)";
     }
 }

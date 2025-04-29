@@ -6,6 +6,7 @@ public record LastSetDTO(
     int repNumber, 
     double weight,
     String bands,
-    int durationS) {
+    int durationS,
+    String distance) {
 
 }

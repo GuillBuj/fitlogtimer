@@ -7,6 +7,7 @@ public record SetWorkoutListItemDTO(
         String bands,
         int repNumber,
         int durationS,
+        String distance,
         String comment,
         String type) {
 }

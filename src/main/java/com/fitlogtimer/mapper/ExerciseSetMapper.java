@@ -12,6 +12,7 @@ import com.fitlogtimer.dto.transition.SetInWorkoutDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Workout;
+import com.fitlogtimer.model.sets.BodyweightSet;
 import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.model.sets.IsometricSet;
@@ -28,6 +29,7 @@ public abstract class ExerciseSetMapper {
     @Mapping(target = "weight", expression = "java(getWeight(exerciseSet))")
     @Mapping(target = "bands", expression = "java(getBands(exerciseSet))")
     @Mapping(target = "durationS", expression = "java(getDurationS(exerciseSet))")
+    @Mapping(target = "distance", expression = "java(getDistance(exerciseSet))")
     @Mapping(target = "type", expression = "java(setTypeToString(exerciseSet))")
     public abstract SetInWorkoutDTO toSetInWorkoutDTO(ExerciseSet exerciseSet);
 
@@ -35,6 +37,7 @@ public abstract class ExerciseSetMapper {
     @Mapping(target = "weight", expression = "java(getWeight(exerciseSet))")
     @Mapping(target = "bands", expression = "java(getBands(exerciseSet))")
     @Mapping(target = "durationS", expression = "java(getDurationS(exerciseSet))")
+    @Mapping(target = "distance", expression = "java(getDistance(exerciseSet))")
     @Mapping(target = "type", expression = "java(setTypeToString(exerciseSet))")
     public abstract SetWorkoutListItemDTO toSetListItemDTO(ExerciseSet exerciseSet);
 
@@ -42,6 +45,7 @@ public abstract class ExerciseSetMapper {
     @Mapping(target = "exerciseName", source = "exercise.name")
     @Mapping(target = "bands", expression = "java(getBands(exerciseSet))")
     @Mapping(target = "durationS", expression = "java(getDurationS(exerciseSet))")
+    @Mapping(target = "distance", expression = "java(getDistance(exerciseSet))")
     @Mapping(target = "weight", expression = "java(getWeight(exerciseSet))")
     public abstract LastSetDTO toLastSetDTO(ExerciseSet exerciseSet);
 
@@ -58,8 +62,14 @@ public abstract class ExerciseSetMapper {
         if (exerciseSet instanceof FreeWeightSet) {
             return ((FreeWeightSet) exerciseSet).getWeight();
         }
+        if (exerciseSet instanceof BodyweightSet) {
+            return ((BodyweightSet) exerciseSet).getWeight();
+        }
         if (exerciseSet instanceof IsometricSet) {
             return ((IsometricSet) exerciseSet).getWeight();
+        }
+        if (exerciseSet instanceof MovementSet) {
+            return ((MovementSet) exerciseSet).getWeight();
         }
         return 0.0; // Pour les autres types qui n'ont pas de poids
     }

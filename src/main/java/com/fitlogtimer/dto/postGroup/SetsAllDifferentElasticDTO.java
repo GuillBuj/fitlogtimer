@@ -12,9 +12,9 @@ public record SetsAllDifferentElasticDTO(List<SetBasicElasticDTO> sets) {
         for (SetBasicElasticDTO set : sets) {
             if (sb.length() > 0) { sb.append(" , ");}
                 sb.append(set.repNumber())
-                .append(" ( ")
+                .append(" (")
                 .append(set.bands())
-                .append(" )"); 
+                .append(")"); 
         }
         return sb.toString();
     }

@@ -70,6 +70,7 @@ public class ExerciseSetService {
     }
 
     public List<ExerciseSet> getSetsByExerciseId(int id){
+        log.info("*-*-* Sets: {}", exerciseSetRepository.findByExerciseIdOrderByWorkoutDateAndIdDesc(id));
         return exerciseSetRepository.findByExerciseIdOrderByWorkoutDateAndIdDesc(id);
     }
 

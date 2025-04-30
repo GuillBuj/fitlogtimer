@@ -9,6 +9,7 @@ import com.fitlogtimer.dto.base.SetBasicElasticDTO;
 import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
 import com.fitlogtimer.dto.base.SetBasicIsometricDTO;
 import com.fitlogtimer.dto.base.SetBasicMovementDTO;
+import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
 import com.fitlogtimer.dto.postgroup.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.postgroup.SetsAllDifferentElasticDTO;
@@ -42,7 +43,7 @@ public class SetsGroupCleanerService {
         } else if (firstSet instanceof SetBasicMovementDTO) {
             //log.info("*-*-* : SetBasicMovementDTO");
             return cleanSetsGroupForSetBasicMovement(sets);
-        }
+        } 
 
         else 
         {

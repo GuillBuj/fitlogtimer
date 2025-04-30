@@ -2,29 +2,41 @@ package com.fitlogtimer.service;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.base.SetBasicElasticDTO;
+import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
+import com.fitlogtimer.dto.base.SetBasicIsometricDTO;
+import com.fitlogtimer.dto.base.SetBasicMovementDTO;
 import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanExerciseListItemDTO;
+import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
 import com.fitlogtimer.dto.postgroup.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.postgroup.SetsSameRepsDTO;
 import com.fitlogtimer.dto.postgroup.SetsSameWeightAndRepsDTO;
 import com.fitlogtimer.dto.postgroup.SetsSameWeightDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedByWorkoutDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedForExDTO;
+import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
 import com.fitlogtimer.exception.NotFoundException;
 import com.fitlogtimer.mapper.ExerciseSetFacadeMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.Workout;
+import com.fitlogtimer.model.sets.BodyweightSet;
+import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
+import com.fitlogtimer.model.sets.IsometricSet;
+import com.fitlogtimer.model.sets.MovementSet;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
@@ -48,6 +60,10 @@ public class ExerciseSetService {
     private final ExerciseSetFacadeMapper exerciseSetFacadeMapper;
 
     private final SetBasicConverter setBasicConverter;
+
+    private final SetsGroupCleanerService setsGroupCleanerService;
+
+    private final SetsGroupCleanerPlusService setsGroupCleanerPlusService;
 
     
     @Transactional
@@ -86,9 +102,10 @@ public class ExerciseSetService {
     public List<SetsGroupedForExDTO> groupSetsByWorkout(List<ExerciseSet> exerciseSets) {
         
         List<SetsGroupedForExDTO> groupedSets = new ArrayList<>();
-        List<SetBasicWith1RMDTO> currentGroup = new ArrayList<>();
+        List<SetBasicInterfaceDTO> currentGroup = new ArrayList<>();
     
         if (exerciseSets.isEmpty()) {
+            log.info("EMPTY SETS");
             return groupedSets;
         }
     
@@ -107,6 +124,30 @@ public class ExerciseSetService {
                 double weight = freeWeightSet.getWeight();
                 currentGroup.add(new SetBasicWith1RMDTO(repNumber, weight, StatsService.calculateOneRepMax(repNumber, weight)));
             }
+            if(currentSet instanceof ElasticSet elasticSet){
+                int repNumber = elasticSet.getRepNumber();
+                String bands = elasticSet.getBands();
+                currentGroup.add(new SetBasicElasticDTO(repNumber, bands));
+            }
+            if(currentSet instanceof IsometricSet isometricSet){
+                int durationS = isometricSet.getDurationS();
+                int repNumber = isometricSet.getRepNumber();
+                double weight = isometricSet.getWeight();
+                currentGroup.add(new SetBasicIsometricDTO(durationS, repNumber, weight));
+            }
+            if (currentSet instanceof BodyweightSet bodyweightSet) {
+                int repNumber = bodyweightSet.getRepNumber();
+                double weight = bodyweightSet.getWeight();
+                currentGroup.add(new SetBasicDTO(repNumber, weight));
+            }
+            if (currentSet instanceof MovementSet movementSet) {
+                int repNumber = movementSet.getRepNumber();
+                double weight = movementSet.getWeight();
+                String distance = movementSet.getDistance();
+                String bands = movementSet.getBands();
+                currentGroup.add(new SetBasicMovementDTO(repNumber, distance, bands, weight));
+            }
+
         }
     
         if (!currentGroup.isEmpty()) {
@@ -123,84 +164,44 @@ public class ExerciseSetService {
                 .orElseThrow(() -> new IllegalArgumentException("No sets available"));
     }
 
-    //affichage propre
     public ExerciseDetailsGroupedDTO getSetsGroupedCleanedByWorkout(int id) {
         Exercise exercise = exerciseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Exercise not found: " + id));
     
         List<SetsGroupedForExDTO> groupedSets = groupSetsByWorkout(getSetsByExerciseId(id));
     
+        log.info("*-*-* - SETS 1 {}", groupedSets);
+    
         List<SetGroupCleanExerciseListItemDTO> finalGroupedSets = groupedSets.stream()
-                .map(group -> {
-                    Workout workout = workoutRepository.findById(group.idWorkout())
-                            .orElseThrow(() -> new NotFoundException("Workout not found: " + group.idWorkout()));
-
-                    List<SetBasicDTO> basicSets = setBasicConverter.convertSetBasicDTOList(group.setGroup());
+            .map(group -> {
+                Workout workout = workoutRepository.findById(group.idWorkout())
+                        .orElseThrow(() -> new NotFoundException("Workout not found: " + group.idWorkout()));
     
-                    Object cleanedSets = cleanSetsGroup(basicSets);
+                SetsGroupedWithNameDTO setsGrouped = new SetsGroupedWithNameDTO(
+                    exercise.getShortName(),
+                    new ArrayList<>(group.setGroup())
+                );
     
-                    SetBasicWith1RMDTO maxSet = getMaxByDateForEx(group.setGroup());
+                log.info("*-*-* setsGrouped: {}", setsGrouped);
+                SetGroupCleanExerciseListItemDTO cleanedGroup = setsGroupCleanerPlusService.cleanWithMeta(
+                        workout.getDate(),
+                        workout.getBodyWeight(),
+                        workout.getType(),
+                        setsGrouped
+                );
+                log.info("*-*-* cleanedGrouped: {}", cleanedGroup);
+                return new SetGroupCleanExerciseListItemDTO(
+                        workout.getDate(),
+                        workout.getBodyWeight(),
+                        workout.getType(),
+                        cleanedGroup.sets(),
+                        cleanedGroup.est1RM()
+                );
+            })
+            .collect(Collectors.toList());
     
-                    return new SetGroupCleanExerciseListItemDTO(
-                            workout.getDate(),
-                            workout.getBodyWeight(),
-                            workout.getType(),
-                            cleanedSets,
-                            maxSet.oneRepMax()
-                    );
-                })
-                .collect(Collectors.toList());
-    
-        return new ExerciseDetailsGroupedDTO(id, exercise.getName(), finalGroupedSets);
+        return new ExerciseDetailsGroupedDTO(id, exercise.getName(), exercise.getType(), finalGroupedSets);
     }
     
-    //renvoie une version propre d'une liste de sets pour affichage
-    public Object cleanSetsGroup(List<SetBasicDTO> sets){
-        
-        if(hasSameWeight(sets)){
-            if(hasSameReps(sets)){
-                return new SetsSameWeightAndRepsDTO(sets.size(), sets.get(0).repNumber(), sets.get(0).weight());
-            } else{
-                List<Integer> repsSet = new ArrayList<>();
-                for(int i=0; i<sets.size(); i++){
-                    repsSet.add(sets.get(i).repNumber());
-                }
-                return new SetsSameWeightDTO(sets.get(0).weight(), repsSet);
-            }
-        } else if(hasSameReps(sets)){
-            List<Double> weights = new ArrayList<>();
-            for(int i=0; i<sets.size(); i++){
-                weights.add(sets.get(i).weight());
-            }
-            return new SetsSameRepsDTO(sets.get(0).repNumber(), weights);
-        } else {
-            List<SetBasicDTO> setBasicDTOs = sets.stream()
-                .map(set -> new SetBasicDTO(set.repNumber(), set.weight()))
-                .collect(Collectors.toList());
-                return new SetsAllDifferentDTO(setBasicDTOs);
-        }
-    }
-
-    public boolean hasSameWeight(List<SetBasicDTO> sets){
-        double firstWeight = sets.get(0).weight();
-
-        for(SetBasicDTO set : sets){
-            if(set.weight() != firstWeight){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean hasSameReps(List<SetBasicDTO> sets){
-        int firstNb = sets.get(0).repNumber();
-
-        for(SetBasicDTO set : sets){
-            if(set.repNumber() != firstNb){
-                return false;
-            }
-        }
-        return true;
-    }
-
+    
 }

@@ -1,0 +1,132 @@
+package com.fitlogtimer.service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.fitlogtimer.constants.ExerciseSetType;
+import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.base.SetBasicElasticDTO;
+import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
+import com.fitlogtimer.dto.base.SetBasicIsometricDTO;
+import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
+import com.fitlogtimer.dto.listitem.SetGroupCleanExerciseListItemDTO;
+import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
+import com.fitlogtimer.dto.postgroup.SetsAllDifferentDTO;
+import com.fitlogtimer.dto.postgroup.SetsSameRepsDTO;
+import com.fitlogtimer.dto.postgroup.SetsSameWeightAndRepsDTO;
+import com.fitlogtimer.dto.postgroup.SetsSameWeightDTO;
+import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
+
+import lombok.AllArgsConstructor;
+
+@Service
+@AllArgsConstructor
+public class SetsGroupCleanerPlusService {
+ 
+    private final SetsGroupCleanerService setsGroupCleanerService; 
+
+    public SetGroupCleanExerciseListItemDTO cleanWithMeta(
+            LocalDate date,
+            double bodyWeight,
+            String type,
+            SetsGroupedWithNameDTO setsGrouped
+    ) {
+        SetGroupCleanWorkoutListItemDTO cleaned;
+
+    if (setsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
+        cleaned = cleanSetsGroupForSetBasicWith1RM(setsGrouped);
+    } else {
+        cleaned = setsGroupCleanerService.cleanSetsGroup(setsGrouped);
+    }
+
+    double est1RM = estimate1RM(cleaned.sets(), type);
+
+    return new SetGroupCleanExerciseListItemDTO(
+            date,
+            bodyWeight,
+            type,
+            cleaned.sets(),
+            est1RM
+    );
+    }
+
+    private SetGroupCleanWorkoutListItemDTO cleanSetsGroupForSetBasicWith1RM(SetsGroupedWithNameDTO sets) {
+    List<SetBasicWith1RMDTO> sets1RM = sets.sets().stream()
+            .map(s -> (SetBasicWith1RMDTO) s)
+            .toList();
+
+    if (hasSameWeight(sets1RM)) {
+        if (hasSameReps(sets1RM)) {
+            return new SetGroupCleanWorkoutListItemDTO(
+                sets.exerciseNameShort(),
+                new SetsSameWeightAndRepsDTO(
+                    sets1RM.size(),
+                    sets1RM.get(0).repNumber(),
+                    sets1RM.get(0).weight()
+                )
+            );
+        } else {
+            List<Integer> reps = sets1RM.stream().map(SetBasicWith1RMDTO::repNumber).toList();
+            return new SetGroupCleanWorkoutListItemDTO(
+                sets.exerciseNameShort(),
+                new SetsSameWeightDTO(sets1RM.get(0).weight(), reps)
+            );
+        }
+    } else if (hasSameReps(sets1RM)) {
+        List<Double> weights = sets1RM.stream().map(SetBasicWith1RMDTO::weight).toList();
+        return new SetGroupCleanWorkoutListItemDTO(
+            sets.exerciseNameShort(),
+            new SetsSameRepsDTO(sets1RM.get(0).repNumber(), weights)
+        );
+    } else {
+        // Transforme en DTO "simplifié" si nécessaire
+        List<SetBasicDTO> converted = sets1RM.stream().map(SetBasicDTO::new).toList();
+        return new SetGroupCleanWorkoutListItemDTO(
+            sets.exerciseNameShort(),
+            new SetsAllDifferentDTO(converted)
+        );
+    }
+}
+
+    public boolean hasSameWeight(List<SetBasicWith1RMDTO> sets) {
+        if (sets.isEmpty()) return true;
+
+        double firstWeight = sets.get(0).weight();
+        for (SetBasicWith1RMDTO set : sets) {
+            if (set.weight() != firstWeight) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean hasSameReps(List<SetBasicWith1RMDTO> sets) {
+        if (sets.isEmpty()) return true;
+
+        int firstReps = sets.get(0).repNumber();
+        for (SetBasicWith1RMDTO set : sets) {
+            if (set.repNumber() != firstReps) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private double estimate1RM(Object sets, String type) {
+        if (sets instanceof List<?> list) {
+            return switch (type) {
+                case ExerciseSetType.FREE_WEIGHT, ExerciseSetType.BODYWEIGHT -> list.stream()
+                        .filter(SetBasicDTO.class::isInstance)
+                        .map(SetBasicDTO.class::cast)
+                        .mapToDouble(set -> StatsService.calculateOneRepMax(set.repNumber(), set.weight()))
+                        .max()
+                        .orElse(0);
+
+                default -> 0;
+            };
+        }
+        return 0;
+    }
+}

@@ -2,10 +2,9 @@ package com.fitlogtimer.dto.transition;
 
 import java.util.List;
 
-import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
+import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
 
 public record SetsGroupedForExDTO(
     int idWorkout,    
-    List<SetBasicWith1RMDTO> setGroup) {
-
+    List<? extends SetBasicInterfaceDTO> setGroup) {
 }

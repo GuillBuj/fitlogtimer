@@ -6,7 +6,7 @@ public record SetBasicWith1RMDTO(
     int repNumber, 
     double weight,
     double oneRepMax
-) implements Comparable<SetBasicWith1RMDTO>{
+) implements Comparable<SetBasicWith1RMDTO>, SetBasicInterfaceDTO{
     
     public SetBasicWith1RMDTO(SetBasicDTO setBasicDTO){
         this(setBasicDTO.repNumber(), 

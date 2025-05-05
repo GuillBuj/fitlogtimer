@@ -289,3 +289,23 @@ form {
 .exercise-rect span {
     display: inline-block;
 }
+
+.page-btn {
+    color: #333;
+    background-color: transparent;
+    border: 1px solid #dee2e6; /* Bordure légère */
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin: 0 2px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.page-btn:hover {
+    background-color: #f1f3f5; /* Gris très clair au survol */
+}
+
+.page-btn:active {
+    background-color: #e2e6ea; /* Gris légèrement plus foncé au clic */
+}

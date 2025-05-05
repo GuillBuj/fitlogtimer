@@ -8,6 +8,10 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.HEAVY;
@@ -73,17 +77,30 @@ public class WorkoutService {
 
     private final SetsGroupCleanerService setsGroupCleanerService;
 
-    public List<WorkoutListDisplayDTO> getAllWorkoutsDisplayDTO() {
-        List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
-        Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
+    // public List<WorkoutListDisplayDTO> getAllWorkoutsDisplayDTO() {
+    //     List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
+    //     Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
 
-        return workouts.stream()
+    //     return workouts.stream()
+    //         .map(workout -> workoutMapper.toWorkoutDisplayDTO(
+    //             workout,
+    //             exercises.getOrDefault(workout.getId(), List.of())
+    //     ))
+    //         .toList();
+    // }
+
+    public Page<WorkoutListDisplayDTO> getPaginatedWorkoutsDisplayDTO(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<Workout> workoutPage = workoutRepository.findAllByOrderByDateDesc(pageable);
+
+        Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workoutPage.getContent());
+
+        return workoutPage
             .map(workout -> workoutMapper.toWorkoutDisplayDTO(
                 workout,
                 exercises.getOrDefault(workout.getId(), List.of())
-        ))
-            .toList();
-
+        ));
     }
 
     public CalendarDTO getCalendar(){
@@ -105,16 +122,16 @@ public class WorkoutService {
                 .toList();
         }
 
-    public List<WorkoutListItemDTO> getAllWorkoutsDTO() {
-        List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
-        Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
+    // public List<WorkoutListItemDTO> getAllWorkoutsDTO() {
+    //     List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
+    //     Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
 
-        return workouts.stream()
-                .map(workout -> workoutMapper.toWorkoutListItemDTO(
-                    workout,
-                    exercises.getOrDefault(workout.getId(), List.of())))
-                .toList();
-    }
+    //     return workouts.stream()
+    //             .map(workout -> workoutMapper.toWorkoutListItemDTO(
+    //                 workout,
+    //                 exercises.getOrDefault(workout.getId(), List.of())))
+    //             .toList();
+    // }
     
     public List<Workout> getAllWorkouts() {
         return workoutRepository.findAllByOrderByDateDesc();

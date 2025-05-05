@@ -3,6 +3,8 @@ package com.fitlogtimer.repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +29,7 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     boolean existsByDateAndTagImport(LocalDate date, String tagImport);
     Workout findByDateAndTagImport(LocalDate date, String tagImport);
 
+    Page<Workout> findAllByOrderByDateDesc(Pageable pageable);
     List<Workout> findAllByOrderByDateDesc();
     
     @Query("SELECT DISTINCT exercise.shortName FROM Exercise exercise " +

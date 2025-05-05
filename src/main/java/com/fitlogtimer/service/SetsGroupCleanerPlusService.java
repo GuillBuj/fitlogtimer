@@ -2,10 +2,13 @@ package com.fitlogtimer.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.base.SetBasicDTO;
+import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
 import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanExerciseListItemDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
@@ -14,6 +17,7 @@ import com.fitlogtimer.dto.postgroup.freeweight.SetsSameRepsDTO;
 import com.fitlogtimer.dto.postgroup.freeweight.SetsSameWeightAndRepsDTO;
 import com.fitlogtimer.dto.postgroup.freeweight.SetsSameWeightDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
+import com.fitlogtimer.model.ExerciseSet;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,20 +33,37 @@ public class SetsGroupCleanerPlusService {
             LocalDate date,
             double bodyWeight,
             String type,
-            SetsGroupedWithNameDTO setsGrouped
+            SetsGroupedWithNameDTO setsGrouped,
+            Set<String> types
     ) {
         SetGroupCleanWorkoutListItemDTO cleaned;
 
         double est1RMmax = 0.0;
         double est1RMavg = 0.0;
 
-        if (setsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
-            est1RMmax = returnMax1RMest(setsGrouped);
-            est1RMavg = calculateAvg1RMest(setsGrouped);
-
-            cleaned = cleanSetsGroupForSetBasicWith1RM(setsGrouped);
+        // si 'types' vide, tout inclure
+        List<SetBasicInterfaceDTO> filteredSets;
+        if (types == null || types.isEmpty()) {
+            filteredSets = setsGrouped.sets();
         } else {
-            cleaned = setsGroupCleanerService.cleanSetsGroup(setsGrouped);
+            filteredSets = setsGrouped.sets().stream()
+                    .filter(set -> types.contains(type))
+                    .collect(Collectors.toList());
+        }
+
+        SetsGroupedWithNameDTO filteredSetsGrouped = new SetsGroupedWithNameDTO(
+                setsGrouped.exerciseNameShort(),
+                filteredSets
+        );
+
+        // Calcul des valeurs estimées 1RM uniquement si les sets sont du type SetBasicWith1RMDTO
+        if (filteredSetsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
+            est1RMmax = returnMax1RMest(filteredSetsGrouped);
+            est1RMavg = calculateAvg1RMest(filteredSetsGrouped);
+
+            cleaned = cleanSetsGroupForSetBasicWith1RM(filteredSetsGrouped);
+        } else {
+            cleaned = setsGroupCleanerService.cleanSetsGroup(filteredSetsGrouped);
         }
 
         return new SetGroupCleanExerciseListItemDTO(

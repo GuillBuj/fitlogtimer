@@ -1,0 +1,24 @@
+<div th:fragment="exerciseSets(sets)">
+    <table th:if="${sets}">
+        <tr>
+            <th>Date</th>
+            <th>Séries</th>
+            <th th:if="${sets.type == 'FREE_WEIGHT'}">1RMest max</th>
+            <th>Poids de corps</th>
+            <th th:if="${sets.type == 'FREE_WEIGHT'}">Ratio</th>
+            <th th:if="${sets.type == 'FREE_WEIGHT'}">1RMest avg</th>
+            <th>Type séance</th>
+        </tr>
+        <tr th:each="set : ${sets.exerciseSets}">
+            <td th:text="${set.date}"></td>
+            <td th:text="${set.sets}"></td>
+            <td th:if="${sets.type == 'FREE_WEIGHT'}" th:text="${set.est1RMmax}"></td>
+            <td th:text="${set.bodyWeight}"></td>
+            <td th:if="${sets.type == 'FREE_WEIGHT'}"
+                th:text="${set.bodyWeight != 0 ? #numbers.formatDecimal(set.est1RMmax / set.bodyWeight, 1, 3) : '-'}">
+            </td>
+            <td th:if="${sets.type == 'FREE_WEIGHT'}" th:text="${set.est1RMavg}"></td>
+            <td th:text="${set.type}"></td>
+        </tr>
+    </table>
+</div>

@@ -4,6 +4,8 @@ package com.fitlogtimer.service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -152,7 +154,7 @@ public class ExerciseSetService {
                 .orElseThrow(() -> new IllegalArgumentException("No sets available"));
     }
 
-    public ExerciseDetailsGroupedDTO getSetsGroupedCleanedByWorkout(int id) {
+    public ExerciseDetailsGroupedDTO getSetsGroupedCleanedByWorkout(int id, Set<String> types) {
         Exercise exercise = exerciseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Exercise not found: " + id));
     
@@ -172,13 +174,22 @@ public class ExerciseSetService {
                     workout.getDate(),
                     workout.getBodyWeight(),
                     workout.getType(),
-                    setsGrouped
+                    setsGrouped,
+                    types
             );
             })
             .collect(Collectors.toList());
     
         return new ExerciseDetailsGroupedDTO(id, exercise.getName(), exercise.getType(), finalGroupedSets);
     }
+
     
+    
+    public Set<String> extractTypes(ExerciseDetailsGroupedDTO exerciseDetailsGroupedDTO){
+        return exerciseDetailsGroupedDTO.exerciseSets().stream()
+            .map(SetGroupCleanExerciseListItemDTO::type)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+    }
     
 }

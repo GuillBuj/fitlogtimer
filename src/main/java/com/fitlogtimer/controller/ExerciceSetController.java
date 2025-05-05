@@ -1,6 +1,7 @@
 package com.fitlogtimer.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,26 +61,18 @@ public class ExerciceSetController {
         return "sets-by-exercise";
     }
 
-    // @GetMapping("/byExercise/{exerciseId}/groupedByDate")
-    // public String showSetsByExerciseGroupedByDate(@PathVariable int exerciseId, Model model){
-
-    //     List<ExerciseSet> sets = exerciseSetService.getSetsByExerciseId(exerciseId);
-
-    //     List<SetsGroupedForExDTO> groupedSets = exerciseSetService.groupSetsByWorkout(sets);
-
-    //     model.addAttribute("sets", groupedSets);
-    //     log.info(model.toString());
-    //     return "sets-by-exercise-grouped";
-    // }
-
     @GetMapping("/byExercise/{exerciseId}/groupedByDateClean")
-    public String showSetsByExerciseGroupedCleanedByDate(@PathVariable int exerciseId, Model model){
+    public String showSetsByExerciseGroupedCleanedByDate(@PathVariable int exerciseId, 
+                        @RequestParam(required = false) Set<String> selectedTypes,
+                        Model model){
 
-        ExerciseDetailsGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedByWorkout(exerciseId);
+        ExerciseDetailsGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedByWorkout(exerciseId, selectedTypes);
+        Set<String> allTypes = exerciseSetService.extractTypes(groupedSets);
 
         model.addAttribute("sets", groupedSets);
+        model.addAttribute("types", allTypes);
         log.info(model.toString());
-        return "sets-by-exercise-grouped-cleaned";
+        return "fragments/sets-by-exercise-cleaned-filtered :: exerciseSets";
     }
 
 }

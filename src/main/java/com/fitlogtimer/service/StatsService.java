@@ -95,6 +95,6 @@ public class StatsService {
             oneRepMax = ((weight * (1 + (0.0333 * repNumber))) + oneRepMax1) / 2;
         }
 
-        return Math.round(oneRepMax * 10) / 10.0;
+        return Math.round(oneRepMax * 100) / 100.0;
     }
 }

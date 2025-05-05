@@ -5,24 +5,22 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.dto.base.SetBasicDTO;
-import com.fitlogtimer.dto.base.SetBasicElasticDTO;
-import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
-import com.fitlogtimer.dto.base.SetBasicIsometricDTO;
 import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanExerciseListItemDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
-import com.fitlogtimer.dto.postgroup.SetsAllDifferentDTO;
-import com.fitlogtimer.dto.postgroup.SetsSameRepsDTO;
-import com.fitlogtimer.dto.postgroup.SetsSameWeightAndRepsDTO;
-import com.fitlogtimer.dto.postgroup.SetsSameWeightDTO;
+import com.fitlogtimer.dto.postgroup.freeweight.SetsAllDifferentDTO;
+import com.fitlogtimer.dto.postgroup.freeweight.SetsSameRepsDTO;
+import com.fitlogtimer.dto.postgroup.freeweight.SetsSameWeightAndRepsDTO;
+import com.fitlogtimer.dto.postgroup.freeweight.SetsSameWeightDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class SetsGroupCleanerPlusService {
  
     private final SetsGroupCleanerService setsGroupCleanerService; 
@@ -35,22 +33,28 @@ public class SetsGroupCleanerPlusService {
     ) {
         SetGroupCleanWorkoutListItemDTO cleaned;
 
-    if (setsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
-        cleaned = cleanSetsGroupForSetBasicWith1RM(setsGrouped);
-    } else {
-        cleaned = setsGroupCleanerService.cleanSetsGroup(setsGrouped);
-    }
+        double est1RMmax = 0.0;
+        double est1RMavg = 0.0;
 
-    double est1RM = estimate1RM(cleaned.sets(), type);
+        if (setsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
+            est1RMmax = returnMax1RMest(setsGrouped);
+            est1RMavg = calculateAvg1RMest(setsGrouped);
 
-    return new SetGroupCleanExerciseListItemDTO(
+            cleaned = cleanSetsGroupForSetBasicWith1RM(setsGrouped);
+        } else {
+            cleaned = setsGroupCleanerService.cleanSetsGroup(setsGrouped);
+        }
+
+        return new SetGroupCleanExerciseListItemDTO(
             date,
             bodyWeight,
             type,
             cleaned.sets(),
-            est1RM
-    );
+            est1RMmax,
+            est1RMavg       
+        );
     }
+
 
     private SetGroupCleanWorkoutListItemDTO cleanSetsGroupForSetBasicWith1RM(SetsGroupedWithNameDTO sets) {
     List<SetBasicWith1RMDTO> sets1RM = sets.sets().stream()
@@ -114,19 +118,39 @@ public class SetsGroupCleanerPlusService {
         return true;
     }
 
-    private double estimate1RM(Object sets, String type) {
-        if (sets instanceof List<?> list) {
-            return switch (type) {
-                case ExerciseSetType.FREE_WEIGHT, ExerciseSetType.BODYWEIGHT -> list.stream()
-                        .filter(SetBasicDTO.class::isInstance)
-                        .map(SetBasicDTO.class::cast)
-                        .mapToDouble(set -> StatsService.calculateOneRepMax(set.repNumber(), set.weight()))
-                        .max()
-                        .orElse(0);
+    // private double estimate1RM(Object sets, String type) {
+    //     if (sets instanceof List<?> list) {
+    //         return switch (type) {
+    //             case ExerciseSetType.FREE_WEIGHT, ExerciseSetType.BODYWEIGHT -> list.stream()
+    //                     .filter(SetBasicDTO.class::isInstance)
+    //                     .map(SetBasicDTO.class::cast)
+    //                     .mapToDouble(set -> StatsService.calculateOneRepMax(set.repNumber(), set.weight()))
+    //                     .max()
+    //                     .orElse(0);
 
-                default -> 0;
-            };
-        }
-        return 0;
+    //             default -> 0;
+    //         };
+    //     }
+    //     return 0;
+    // }
+
+    private double returnMax1RMest(SetsGroupedWithNameDTO setsGrouped){
+        return setsGrouped.sets().stream()
+            .filter(set -> set instanceof SetBasicWith1RMDTO)
+            .map(set -> (SetBasicWith1RMDTO) set)
+            .mapToDouble(SetBasicWith1RMDTO::oneRepMax)
+            .max()
+            .orElse(0.0);
+    }
+
+    private double calculateAvg1RMest(SetsGroupedWithNameDTO setsGrouped){
+        double est1RMavg = setsGrouped.sets().stream()
+        .filter(set -> set instanceof SetBasicWith1RMDTO)
+        .map(set -> (SetBasicWith1RMDTO) set)
+        .mapToDouble(SetBasicWith1RMDTO::oneRepMax)
+        .average()
+        .orElse(0.0);
+        
+        return Math.round(est1RMavg * 100.0) / 100.0;
     }
 }

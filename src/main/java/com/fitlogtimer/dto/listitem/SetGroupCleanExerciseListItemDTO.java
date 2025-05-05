@@ -9,7 +9,9 @@ public record SetGroupCleanExerciseListItemDTO(
     double bodyWeight,
     String type,
     Object sets,
-    @Nullable Double est1RM) {
+    @Nullable Double est1RMmax,
+    @Nullable Double est1RMavg
+    ) {
     @Override
     public final String toString() {
         return (date + " : " + sets);

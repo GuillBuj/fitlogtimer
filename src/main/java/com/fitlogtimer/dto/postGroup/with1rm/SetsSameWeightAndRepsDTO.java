@@ -12,6 +12,6 @@ public record SetsSameWeightAndRepsDTO(
         String weights = weight == 0 ? "" : " @ " + weight + "kg";
         String est1RMs = "(" + est1RM + ")";
         
-        return sets + repNumber + weights +est1RMs;  
+        return sets + repNumber + weights + est1RMs;  
     }
 }

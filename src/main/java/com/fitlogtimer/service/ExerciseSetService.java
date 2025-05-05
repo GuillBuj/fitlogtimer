@@ -2,10 +2,8 @@ package com.fitlogtimer.service;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -19,11 +17,6 @@ import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanExerciseListItemDTO;
-import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
-import com.fitlogtimer.dto.postgroup.SetsAllDifferentDTO;
-import com.fitlogtimer.dto.postgroup.SetsSameRepsDTO;
-import com.fitlogtimer.dto.postgroup.SetsSameWeightAndRepsDTO;
-import com.fitlogtimer.dto.postgroup.SetsSameWeightDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedByWorkoutDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedForExDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
@@ -40,7 +33,6 @@ import com.fitlogtimer.model.sets.MovementSet;
 import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.repository.ExerciseSetRepository;
 import com.fitlogtimer.repository.WorkoutRepository;
-import com.fitlogtimer.util.helper.SetBasicConverter;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -58,10 +50,6 @@ public class ExerciseSetService {
     private final WorkoutRepository workoutRepository;
 
     private final ExerciseSetFacadeMapper exerciseSetFacadeMapper;
-
-    private final SetBasicConverter setBasicConverter;
-
-    private final SetsGroupCleanerService setsGroupCleanerService;
 
     private final SetsGroupCleanerPlusService setsGroupCleanerPlusService;
 
@@ -170,8 +158,6 @@ public class ExerciseSetService {
     
         List<SetsGroupedForExDTO> groupedSets = groupSetsByWorkout(getSetsByExerciseId(id));
     
-        log.info("*-*-* - SETS 1 {}", groupedSets);
-    
         List<SetGroupCleanExerciseListItemDTO> finalGroupedSets = groupedSets.stream()
             .map(group -> {
                 Workout workout = workoutRepository.findById(group.idWorkout())
@@ -182,21 +168,12 @@ public class ExerciseSetService {
                     new ArrayList<>(group.setGroup())
                 );
     
-                log.info("*-*-* setsGrouped: {}", setsGrouped);
-                SetGroupCleanExerciseListItemDTO cleanedGroup = setsGroupCleanerPlusService.cleanWithMeta(
-                        workout.getDate(),
-                        workout.getBodyWeight(),
-                        workout.getType(),
-                        setsGrouped
-                );
-                log.info("*-*-* cleanedGrouped: {}", cleanedGroup);
-                return new SetGroupCleanExerciseListItemDTO(
-                        workout.getDate(),
-                        workout.getBodyWeight(),
-                        workout.getType(),
-                        cleanedGroup.sets(),
-                        cleanedGroup.est1RM()
-                );
+                return setsGroupCleanerPlusService.cleanWithMeta(
+                    workout.getDate(),
+                    workout.getBodyWeight(),
+                    workout.getType(),
+                    setsGrouped
+            );
             })
             .collect(Collectors.toList());
     

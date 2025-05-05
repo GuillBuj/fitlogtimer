@@ -9,9 +9,7 @@ import com.fitlogtimer.dto.base.SetBasicElasticDTO;
 import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
 import com.fitlogtimer.dto.base.SetBasicIsometricDTO;
 import com.fitlogtimer.dto.base.SetBasicMovementDTO;
-import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
-import com.fitlogtimer.dto.postgroup.SetsAllDifferentDTO;
 import com.fitlogtimer.dto.postgroup.SetsAllDifferentElasticDTO;
 import com.fitlogtimer.dto.postgroup.SetsAllDifferentIsometricDTO;
 import com.fitlogtimer.dto.postgroup.SetsAllDifferentMovementDTO;
@@ -19,10 +17,11 @@ import com.fitlogtimer.dto.postgroup.SetsSameBandsAndRepsDTO;
 import com.fitlogtimer.dto.postgroup.SetsSameBandsDTO;
 import com.fitlogtimer.dto.postgroup.SetsSameDurationRepsAndWeightDTO;
 import com.fitlogtimer.dto.postgroup.SetsSameMovementDTO;
-import com.fitlogtimer.dto.postgroup.SetsSameRepsDTO;
 import com.fitlogtimer.dto.postgroup.SetsSameRepsElasticDTO;
-import com.fitlogtimer.dto.postgroup.SetsSameWeightAndRepsDTO;
-import com.fitlogtimer.dto.postgroup.SetsSameWeightDTO;
+import com.fitlogtimer.dto.postgroup.freeweight.SetsAllDifferentDTO;
+import com.fitlogtimer.dto.postgroup.freeweight.SetsSameRepsDTO;
+import com.fitlogtimer.dto.postgroup.freeweight.SetsSameWeightAndRepsDTO;
+import com.fitlogtimer.dto.postgroup.freeweight.SetsSameWeightDTO;
 import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
 
 @Service

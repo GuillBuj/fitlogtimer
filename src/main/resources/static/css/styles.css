@@ -70,7 +70,9 @@ form {
     border: none;
     border-radius: 4px;
     font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .btnValid:hover {
@@ -112,10 +114,12 @@ form {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: 500;
 }
 
 .btnDelete:hover {
     background-color: #C0392B;
+    transform: scale(1.01);
 }
 
 .btnDelete:active {
@@ -192,15 +196,30 @@ form {
     margin: 5px 0;
 }
 
-.btn-link {
+/* .btn-link {
     display: inline-block;
     padding: 10px 20px;
     margin: 3px 0;
+    background-color: #495057;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+} */
+
+.btn-link {
+    display: inline-flex; /* Utiliser inline-flex pour s'assurer que le bouton est en ligne */
+    align-items: center;  /* Centrer verticalement le contenu dans le bouton */
+    padding: 10px 20px;
+    margin: 0 5px; /* Ajuste les marges si nécessaire */
     background-color: #495057; /* Gris foncé */
     color: white;
     text-decoration: none;
     border-radius: 4px;
     transition: background-color 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap; /* Empêcher la coupure du texte */
 }
 
 .btn-link:hover {
@@ -220,6 +239,7 @@ form {
     text-decoration: none;
     border-radius: 4px;
     transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
 .btn-new:hover {
@@ -251,6 +271,7 @@ form {
 .navbar-tabs {
     display: flex;
     gap: 15px; /* Espace entre les onglets */
+    font-weight: 500;
 }
 
 .navbar-tabs a {
@@ -300,6 +321,7 @@ form {
     text-decoration: none;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    font-weight: bold;
 }
 
 .page-btn:hover {
@@ -308,4 +330,104 @@ form {
 
 .page-btn:active {
     background-color: #e2e6ea; /* Gris légèrement plus foncé au clic */
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.filter-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #ccc;
+    color: #555;
+    transition: background-color 0.3s;
+}
+
+.filter-button.active {
+    background-color: darkgreen;
+    transform: scale(1.02);
+    color: #fff;
+}
+
+.filter-button.inactive {
+    background-color: #e0e0e0;
+    transform: scale(0.98);
+    color: #333;
+}
+
+.filter-button.active:hover {
+    background-color: #93b7a1;
+    transform: scale(0.98);
+}
+
+.filter-button.inactive:hover {
+    background-color: #a8d5ba;
+    color: #333;
+    transform: scale(1.02);
+}
+
+.filter-button.clear {
+    background-color: #555;
+    color: white;
+}
+
+.filter-button.clear:hover {
+    background-color: #777;
+    transform: scale(1.02);
+}
+
+.filter-container {
+    all: unset;
+    border: none;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.filter-form {
+    all: unset;
+}
+
+.header-container {
+    display: flex;               /* Utiliser Flexbox pour aligner les éléments en ligne */
+    align-items: center;         /* Centrer verticalement les éléments */
+    justify-content: center; /* Espacer les éléments à gauche et à droite */
+    width: 100%;                 /* Assurez-vous que le conteneur a une largeur complète */
+    gap: 10px;                   /* Espacer les éléments */
+    margin: 10px;
+}
+
+.header-container h1 {
+    margin: 0; /* Enlève la marge par défaut du h1 */
+}
+
+h1 span {
+    display: inline;
+    font-size: inherit;
+    line-height: inherit;
+    margin: 0;
+    margin-right: 10px;
+    padding: 0;
+}
+
+.link-back {
+    font-size: 1.5rem;
+    color: #495057;
+    text-decoration: none;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    transition: color 0.3s;
+}
+
+.link-back:hover {
+    color: #212529;
+    cursor: pointer;
+    transform: scale(1.1);
 }

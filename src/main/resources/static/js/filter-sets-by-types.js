@@ -1,40 +1,52 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Vérifie si on a une liste de checkboxes
-    const checkboxes = document.querySelectorAll('input[name="types"]');
-    
-    if (checkboxes.length > 0) {
-        checkboxes.forEach(cb => {
-            cb.addEventListener("change", function () {
-                const selectedTypes = Array.from(checkboxes)
-                    .filter(c => c.checked)
-                    .map(c => c.value);
 
-                loadFilteredSets(selectedTypes);
-            });
+    let selectedTypes = [];
+
+    const buttons = document.querySelectorAll('.filter-button:not(#clearFilters)');
+    const clearButton = document.getElementById('clearFilters');
+
+    buttons.forEach(button => {
+        button.addEventListener("click", function () {
+            const type = button.textContent.trim();
+
+            if (selectedTypes.includes(type)) {
+                selectedTypes = selectedTypes.filter(t => t !== type);
+                button.classList.remove('active');
+                button.classList.add('inactive');
+            } else {
+                selectedTypes.push(type);
+                button.classList.remove('inactive');
+                button.classList.add('active');
+            }
+
+            loadFilteredSets(selectedTypes);
         });
-    }
+    });
+
+    clearButton.addEventListener("click", function () {
+        selectedTypes = [];
+
+        buttons.forEach(button => {
+            button.classList.remove('active');
+            button.classList.add('inactive');
+        });
+
+        loadFilteredSets([]); // bien appeler avec une liste vide une seule fois
+    });
 
     function loadFilteredSets(selectedTypes) {
         const exerciseId = window.exerciseId || 0;
 
-        console.log("URL:", `/exerciseSets/byExercise/${exerciseId}/groupedByDateClean?types=${selectedTypes.join(',')}`);
-
         const url = `/exerciseSets/byExercise/${exerciseId}/groupedByDateClean/fragment?` +
             selectedTypes.map(type => `selectedTypes=${encodeURIComponent(type)}`).join('&');
 
-            fetch(url)
+        fetch(url)
             .then(response => response.text())
             .then(data => {
                 document.getElementById('filtered-sets').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des sets filtrés :', error);
             });
-    }
-
-    function clearFilters() {
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        checkboxes.forEach(checkbox => checkbox.checked = false);
-    
-        const selectedTypes = [];
-    
-        loadFilteredSets(selectedTypes);
     }
 });

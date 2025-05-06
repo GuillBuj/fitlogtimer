@@ -10,18 +10,26 @@
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
     <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
         
-    <h1>Séries de <span th:text="${sets.exercise}"></span></h1>
-    <a th:href="@{/exercises}" class="btn-link">Retour</a>
+    <div class="header-container">
+        <h1>Séries de <span th:text="${sets.exercise}"></span></h1>
+        <a th:href="@{/exercises}" class="link-back">&#x293A;</a>
+    </div>
 
-    <form id="filterForm">
-        <div th:each="type : ${types}">
-            <label>
-                <input type="checkbox" name="types" th:value="${type}" checked>
-                <span th:text="${type}"></span>
-            </label>
-        </div>
-        <button id="clearFilters" onclick="clearFilters()">Clear Filters</button>
-    </form>
+    <div class="filter-container">
+        <form id="filterForm" class="filter-form">
+            <div class="filter-buttons">
+                <div th:each="type : ${types}">
+                    <button type="button"
+                            th:id="'filterButton_' + ${type}"
+                            class="filter-button inactive"
+                            th:text="${type}">
+                    </button>
+                </div>
+                <button type="button" id="clearFilters" class="filter-button clear">Clear</button>
+            </div>
+        </form>
+    </div>
+    
     
     <div id="filtered-sets">
         <div th:replace="fragments/sets-by-exercise-cleaned-filtered :: exerciseSets(sets=${sets})"></div>

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.fitlogtimer.dto.base.SetBasicDTO;
 import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
 import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
+import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanExerciseListItemDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
 import com.fitlogtimer.dto.postgroup.freeweight.SetsAllDifferentDTO;
@@ -34,8 +35,9 @@ public class SetsGroupCleanerPlusService {
             double bodyWeight,
             String type,
             SetsGroupedWithNameDTO setsGrouped,
-            Set<String> types
+            Set<String> selectedTypes
     ) {
+       
         SetGroupCleanWorkoutListItemDTO cleaned;
 
         double est1RMmax = 0.0;
@@ -43,11 +45,11 @@ public class SetsGroupCleanerPlusService {
 
         // si 'types' vide, tout inclure
         List<SetBasicInterfaceDTO> filteredSets;
-        if (types == null || types.isEmpty()) {
+        if (selectedTypes == null || selectedTypes.isEmpty()) {
             filteredSets = setsGrouped.sets();
         } else {
             filteredSets = setsGrouped.sets().stream()
-                    .filter(set -> types.contains(type))
+                    .filter(set -> selectedTypes.contains(type))
                     .collect(Collectors.toList());
         }
 
@@ -56,21 +58,25 @@ public class SetsGroupCleanerPlusService {
                 filteredSets
         );
 
-        // Calcul des valeurs estimées 1RM uniquement si les sets sont du type SetBasicWith1RMDTO
-        if (filteredSetsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
+        if (!filteredSetsGrouped.sets().isEmpty() && filteredSetsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
             est1RMmax = returnMax1RMest(filteredSetsGrouped);
             est1RMavg = calculateAvg1RMest(filteredSetsGrouped);
 
             cleaned = cleanSetsGroupForSetBasicWith1RM(filteredSetsGrouped);
-        } else {
+        } else if (!filteredSetsGrouped.sets().isEmpty()) {
             cleaned = setsGroupCleanerService.cleanSetsGroup(filteredSetsGrouped);
+        } else {
+            cleaned = null;
+            log.info("Aucun set trouvé pour ce filtre (types sélectionnés :)." );
         }
+
+        Object cleanedSets = cleaned==null? null: cleaned.sets();
 
         return new SetGroupCleanExerciseListItemDTO(
             date,
             bodyWeight,
             type,
-            cleaned.sets(),
+            cleanedSets,
             est1RMmax,
             est1RMavg       
         );

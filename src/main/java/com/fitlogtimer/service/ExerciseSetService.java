@@ -178,6 +178,7 @@ public class ExerciseSetService {
                     types
             );
             })
+            .filter(dto -> dto.sets() != null)
             .collect(Collectors.toList());
     
         return new ExerciseDetailsGroupedDTO(id, exercise.getName(), exercise.getType(), finalGroupedSets);

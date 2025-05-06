@@ -63,16 +63,27 @@ public class ExerciceSetController {
 
     @GetMapping("/byExercise/{exerciseId}/groupedByDateClean")
     public String showSetsByExerciseGroupedCleanedByDate(@PathVariable int exerciseId, 
-                        @RequestParam(required = false) Set<String> selectedTypes,
-                        Model model){
+                                @RequestParam(required = false) Set<String> selectedTypes,
+                                Model model){
 
         ExerciseDetailsGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedByWorkout(exerciseId, selectedTypes);
         Set<String> allTypes = exerciseSetService.extractTypes(groupedSets);
-
+        log.info("Types sélectionnés : {}", selectedTypes);
         model.addAttribute("sets", groupedSets);
         model.addAttribute("types", allTypes);
-        log.info(model.toString());
-        return "fragments/sets-by-exercise-cleaned-filtered :: exerciseSets";
+        //log.info(model.toString());
+        return "sets-by-exercise-grouped-cleaned";
+    }
+
+    @GetMapping("/byExercise/{exerciseId}/groupedByDateClean/fragment")
+    public String showSetsByExerciseGroupedCleanedByDateGetFragmentOnly(@PathVariable int exerciseId,
+                                @RequestParam(required = false) Set<String> selectedTypes,
+                                Model model) {
+
+        ExerciseDetailsGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedByWorkout(exerciseId, selectedTypes);
+        model.addAttribute("sets", groupedSets);
+
+        return "fragments/sets-by-exercise-cleaned-filtered :: exerciseSets(sets=${sets})";
     }
 
 }

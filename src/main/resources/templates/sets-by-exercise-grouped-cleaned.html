@@ -8,30 +8,33 @@
     <div th:insert="~{fragments/navbar :: navbar}"></div>
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
-        <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
-        <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
-        <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
+    <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
         
-        <h1>Séries de <span th:text="${sets.exercise}"></span></h1>
-        <a th:href="@{/exercises}" class="btn-link">Retour</a>
-        <form id="filterForm">
-            <div th:each="type : ${types}">
-                <label>
-                    <input type="checkbox" name="types" th:value="${type}" checked onchange="applyFilter()">
-                    <span th:text="${type}">Type</span>
-                </label>
-            </div>
-        </form>
-        <script th:inline="javascript">
-            var exerciseId = [[${sets.id}]];  // Injecte l'ID de l'exercice
-            console.log('Exercice ID: ', exerciseId);  // Affiche l'ID dans la console pour vérification
-        </script>
-        <div id="filtered-sets">
-            <div th:replace="fragments/sets-by-exercise-cleaned-filtered :: exerciseSets(${sets})"></div>
-        </div>
-        
-        <a th:href="@{/exercises}" class="btn-link">Retour</a>
+    <h1>Séries de <span th:text="${sets.exercise}"></span></h1>
+    <a th:href="@{/exercises}" class="btn-link">Retour</a>
 
-        <script src="/js/filter-sets-by-types.js"></script>
+    <form id="filterForm">
+        <div th:each="type : ${types}">
+            <label>
+                <input type="checkbox" name="types" th:value="${type}" checked>
+                <span th:text="${type}"></span>
+            </label>
+        </div>
+        <button id="clearFilters" onclick="clearFilters()">Clear Filters</button>
+    </form>
+    
+    <div id="filtered-sets">
+        <div th:replace="fragments/sets-by-exercise-cleaned-filtered :: exerciseSets(sets=${sets})"></div>
+    </div>
+    
+    <a th:href="@{/exercises}" class="btn-link">Retour</a>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var exerciseId = /*[[${sets?.id}]]*/ 0;
+        console.log("Exercise ID:", exerciseId);
+        /*]]>*/
+    </script>
+    <script th:src="@{/js/filter-sets-by-types.js}"></script>
 </body>
 </html>

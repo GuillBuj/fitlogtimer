@@ -1,37 +1,40 @@
-// Attendre que le DOM soit prêt
-document.addEventListener("DOMContentLoaded", function() {
-    // Sélectionner l'élément de filtrage
-    const typesSelect = document.getElementById("types-filter");
+document.addEventListener("DOMContentLoaded", function () {
+    // Vérifie si on a une liste de checkboxes
+    const checkboxes = document.querySelectorAll('input[name="types"]');
+    
+    if (checkboxes.length > 0) {
+        checkboxes.forEach(cb => {
+            cb.addEventListener("change", function () {
+                const selectedTypes = Array.from(checkboxes)
+                    .filter(c => c.checked)
+                    .map(c => c.value);
 
-    // Ajouter un événement pour détecter les changements dans les options sélectionnées
-    typesSelect.addEventListener("change", function() {
-        // Récupérer les types sélectionnés
-        const selectedTypes = Array.from(typesSelect.selectedOptions)
-            .map(option => option.value);
-
-        // Appeler la fonction AJAX pour charger les sets filtrés
-        loadFilteredSets(selectedTypes);
-    });
-
-    // Fonction AJAX pour récupérer les sets filtrés
-    function loadFilteredSets(selectedTypes) {
-        
-        const exerciseId = /* récupérer l'ID de l'exercice de façon dynamique, par ex. via une variable JavaScript */;
-        
-        // Appeler le contrôleur avec AJAX
-        fetch(`/exerciseSets/byExercise/${exerciseId}/groupedByDateClean?types=${selectedTypes.join(',')}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.text()) // Utilise `.json()` si tu renvoies un JSON, `.text()` si c'est du HTML
-        .then(data => {
-            // Mettre à jour le contenu avec la réponse
-            document.getElementById('filtered-sets').innerHTML = data;
-        })
-        .catch(error => {
-            console.error('Error fetching filtered sets:', error);
+                loadFilteredSets(selectedTypes);
+            });
         });
+    }
+
+    function loadFilteredSets(selectedTypes) {
+        const exerciseId = window.exerciseId || 0;
+
+        console.log("URL:", `/exerciseSets/byExercise/${exerciseId}/groupedByDateClean?types=${selectedTypes.join(',')}`);
+
+        const url = `/exerciseSets/byExercise/${exerciseId}/groupedByDateClean/fragment?` +
+            selectedTypes.map(type => `selectedTypes=${encodeURIComponent(type)}`).join('&');
+
+            fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('filtered-sets').innerHTML = data;
+            });
+    }
+
+    function clearFilters() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+    
+        const selectedTypes = [];
+    
+        loadFilteredSets(selectedTypes);
     }
 });

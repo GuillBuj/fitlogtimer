@@ -19,6 +19,7 @@
     <a th:href="@{/workouts/{id}(id=${workoutData.id})}" class="btn-link">Groupé</a>
     <p>Poids : <span th:text="${workoutData.bodyWeight}"></span> kg</p>
     <p>Commentaires : <span th:text="${workoutData.comment}"></span></p>
+    <p>Type : <span th:text="${workoutData.type}"></span></p>
     
     <h2>Séries</h2>
     <table th:if="${workoutData.exerciseSets}">

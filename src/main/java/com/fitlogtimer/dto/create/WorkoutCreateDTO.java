@@ -5,5 +5,6 @@ import java.time.LocalDate;
 public record WorkoutCreateDTO(
     LocalDate date,
     double bodyWeight,
-    String comment){ 
+    String comment,
+    String type){
 }

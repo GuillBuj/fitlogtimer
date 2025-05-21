@@ -20,6 +20,7 @@ import com.fitlogtimer.model.Workout;
 @Mapper(componentModel = "spring")
 public interface WorkoutMapper {
 
+    @Mapping(target = "type", source = "type")
     public Workout toEntity(WorkoutCreateDTO dto);
 
     @Mapping(target = "type", constant = "HEAVY")

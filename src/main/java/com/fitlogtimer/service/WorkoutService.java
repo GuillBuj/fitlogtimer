@@ -139,9 +139,9 @@ public class WorkoutService {
     
     @Transactional
     public WorkoutListItemDTO createWorkout(WorkoutCreateDTO workoutInDTO) {
-        
+        log.info("WorkoutCreateDTO: {}", workoutInDTO);
         Workout savedWorkout = workoutRepository.save(workoutMapper.toEntity(workoutInDTO));
-        
+        log.info("Saved workout: {}", savedWorkout);
         return workoutMapper.toWorkoutListItemDTO(savedWorkout, getExerciseShortNamesByWorkoutId(savedWorkout.getId()));
     }
 
@@ -160,7 +160,7 @@ public class WorkoutService {
 
         List<SetWorkoutListItemDTO> setsDTO = getSetsOutDTO(workout);
         log.info(setsDTO.toString());
-        return new WorkoutDetailsBrutDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), setsDTO);
+        return new WorkoutDetailsBrutDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), workout.getType(), setsDTO);
     }
     
     public WorkoutDetailsGroupedDTO getWorkoutGrouped(int id){
@@ -177,7 +177,7 @@ public class WorkoutService {
                 .map(setsGroupCleanerService::cleanSetsGroup)
                 .toList();
         
-        WorkoutDetailsGroupedDTO workoutGroupedDTO = new WorkoutDetailsGroupedDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), finalGroupedSets);
+        WorkoutDetailsGroupedDTO workoutGroupedDTO = new WorkoutDetailsGroupedDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), workout.getType(), finalGroupedSets);
         System.out.println(workoutGroupedDTO);
         return workoutGroupedDTO;
     }

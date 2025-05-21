@@ -11,6 +11,7 @@ public record WorkoutDetailsGroupedDTO(
     LocalDate date,
     double bodyWeight,
     String comment,
+    String type,
     List<SetGroupCleanWorkoutListItemDTO> exerciseSets
 ) {
     

@@ -20,7 +20,11 @@
         </div>
         <div>
             <label for="comment">Commentaires :</label>
-            <textarea id="comment" th:field="*{comment}"></textarea>
+            <input type="text" id="comment" th:field="*{comment}">
+        </div>
+        <div>
+            <label for="type">Type :</label>
+            <input type="text" id="type" th:field="*{type}">
         </div>
         <div>
             <button type="submit" class="btnValid">Créer la séance</button>

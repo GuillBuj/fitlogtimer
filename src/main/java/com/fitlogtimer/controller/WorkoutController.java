@@ -115,7 +115,7 @@ public class WorkoutController {
     @GetMapping("/create")
     public String showWorkoutForm(Model model) {
         LocalDate today = LocalDate.now();
-        model.addAttribute("workoutData", new WorkoutCreateDTO(today, 0.0, ""));
+        model.addAttribute("workoutData", new WorkoutCreateDTO(today, 0.0, "", ""));
         model.addAttribute("today", today);
         return "workout-create";
     }

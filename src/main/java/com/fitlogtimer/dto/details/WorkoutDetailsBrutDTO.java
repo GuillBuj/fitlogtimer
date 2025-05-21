@@ -11,6 +11,7 @@ public record WorkoutDetailsBrutDTO(
     LocalDate date,
     double bodyWeight,
     String comment,
+    String type,
     List<SetWorkoutListItemDTO> exerciseSets
 ) {
     

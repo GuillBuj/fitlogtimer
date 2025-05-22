@@ -20,7 +20,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="entry : ${maxsWithName.maxs.maxsByReps}">
+            <tr th:each="entry : ${maxsWithName.maxs.maxsByReps}"
+                th:if="${entry.value.maxWeight > 0}">
                 <td th:text="${entry.key}">Reps</td>
                 <td th:text="${entry.value.maxWeight}">Max Weight</td>
                 <td th:text="${entry.value.RMest}">Max Weight</td>

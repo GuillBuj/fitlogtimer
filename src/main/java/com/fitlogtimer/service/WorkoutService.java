@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -370,6 +371,20 @@ public class WorkoutService {
     @Transactional
     public void addExerciseSet(ExerciseSetCreateDTO exerciseSetInDTO){
         exerciseSetService.saveExerciseSet(exerciseSetInDTO);
+    }
+
+    public void updateWorkout(WorkoutUpdateDTO workoutUpdateDTO){
+        Optional<Workout> optionalWorkout = workoutRepository.findById(workoutUpdateDTO.id());
+
+        optionalWorkout.ifPresent(workout -> {
+            workoutMapper.updateWorkoutFromDTO(workoutUpdateDTO,workout);
+            workoutRepository.save(workout);
+        });
+    }
+
+    public WorkoutUpdateDTO getWorkoutUpdateDTO(int id){
+        log.info("{}",workoutMapper.toWorkoutUpdateDTO(workoutRepository.findById(id).get()));
+        return workoutMapper.toWorkoutUpdateDTO(workoutRepository.findById(id).get());
     }
 
     @Transactional

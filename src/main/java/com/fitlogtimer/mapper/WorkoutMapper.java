@@ -2,9 +2,8 @@ package com.fitlogtimer.mapper;
 
 import java.util.List;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
+import org.mapstruct.*;
 
 import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
@@ -73,4 +72,10 @@ public interface WorkoutMapper {
                 );
     }
 
+    WorkoutUpdateDTO toWorkoutUpdateDTO(Workout workout);
+
+    Workout toEntity(WorkoutUpdateDTO dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateWorkoutFromDTO(WorkoutUpdateDTO dto, @MappingTarget Workout workout);
 }

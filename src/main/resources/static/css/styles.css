@@ -230,11 +230,33 @@ form {
     background-color: #212529; /* Gris encore plus foncé au clic */
 }
 
+.btn-edit{
+    display: inline-flex; /* Utiliser inline-flex pour s'assurer que le bouton est en ligne */
+    align-items: center;  /* Centrer verticalement le contenu dans le bouton */
+    padding: 10px 20px;
+    margin: 0 5px; /* Ajuste les marges si nécessaire */
+    background-color: #495057; /* Gris foncé */
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap; /* Empêcher la coupure du texte */
+}
+
+.btn-edit:hover {
+    background-color: #343a40; /* Gris plus foncé au survol */
+}
+
+.btn-edit:active {
+    background-color: #212529; /* Gris encore plus foncé au clic */
+}
+
 .btn-new {
     display: inline-block;
     padding: 10px 20px;
     margin: 3px 0;
-    background-color: #2E8B57; /* Gris foncé */
+    background-color: #2E8B57;
     color: white;
     text-decoration: none;
     border-radius: 4px;

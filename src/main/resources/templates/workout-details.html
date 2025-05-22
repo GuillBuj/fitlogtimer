@@ -9,12 +9,10 @@
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
     <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
-    <h1>Séance du <span th:text="${workoutData.date}"></span></h1>
-    <a th:href="@{/workouts/{id}/brut(id=${workoutData.id})}"  class="btn-link">Set par set</a>
-    <p>Poids : <span th:text="${workoutData.bodyWeight}"></span> kg</p>
-    <p>Commentaires : <span th:text="${workoutData.comment}"></span></p>
-    <p>Type : <span th:text="${workoutData.type}"></span></p>
-    
+
+    <div id="infos-section">
+        <div th:replace="~{fragments/workout-display :: workout-display(workoutData=${workoutData})}"></div>
+    </div>
 
     <h2>Séries</h2>
     <table th:if="${workoutData.exerciseSets}">
@@ -33,7 +31,10 @@
     <br>
     <a href="/workouts" class="btn-link">Retour à la liste</a>
 
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="/js/set-type-handler.js"></script>
     <script src="/js/exercise-set-form.js"></script>
+
+
 </body>
 </html>

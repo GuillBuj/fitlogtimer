@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workout info</title>
+</head>
+<body>
+<div th:fragment="workout-display(workoutData)" class="workout-display">
+    <h1>Séance du <span th:text="${workoutData.date}"></span></h1>
+    <a th:href="@{/workouts/{id}/brut(id=${workoutData.id})}"  class="btn-link">Set par set</a>
+    <a th:href="@{/workouts/{id}/edit-infos(id=${workoutData.id})}"
+       th:attr="hx-get=@{/workouts/{id}/edit-infos(id=${workoutData.id})}"
+       hx-target="#infos-section"
+       hx-swap="innerHTML"
+       class="btn btn-edit">
+        Modifier
+    </a>
+    <p>Poids : <span th:text="${workoutData.bodyWeight}"></span> kg</p>
+    <p>Commentaires : <span th:text="${workoutData.comment}"></span></p>
+    <p>Type : <span th:text="${workoutData.type}"></span></p>
+<!--    <div id="infos-section" hx-get="@{/workouts/edit/{id}(id=${workoutUpdateDTO.id})}" hx-trigger="click" hx-swap="innerHTML">-->
+<!--        <p>Poids : <span th:text="${workoutData.bodyWeight}"></span> kg</p>-->
+<!--        <p>Commentaires : <span th:text="${workoutData.comment}"></span></p>-->
+<!--        <p>Type : <span th:text="${workoutData.type}"></span></p>-->
+<!--    </div>-->
+</div>
+</body>
+</html>

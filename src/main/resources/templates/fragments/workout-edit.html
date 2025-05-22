@@ -8,6 +8,7 @@
 <div th:fragment="workout-edit(workoutUpdateDTO)">
     <h1>Séance du <span th:text="${workoutUpdateDTO.date}"></span></h1>
     <form
+            class="form-edit-simple workout-infos"
             th:action="@{/workouts/{id}(id=${workoutUpdateDTO.id})}"
             method="post"
             th:object="${workoutUpdateDTO}"
@@ -15,21 +16,28 @@
             hx-target="#infos-section"
             hx-swap="innerHTML"
     >
+        <div class="btn-group">
+            <button type="submit" class="btnValid">Enregistrer</button>
 
+            <button type="button"
+                    th:attr="hx-get=@{/workouts/{id}/infos(id=${workoutUpdateDTO.id})}"
+                    hx-target="#infos-section"
+                    hx-swap="innerHTML"
+                    class="btnDelete">
+                Annuler
+            </button>
+        </div>
         <input type="hidden" name="_method" value="put"/>
         <input type="hidden" th:field="*{date}" />
-        <label>Poids (kg) :<input type="number" th:field="*{bodyWeight}" step="0.1" /></label>
-        <label>Commentaire :<textarea th:field="*{comment}"></textarea></label>
+        <label>
+            Poids :
+            <input type="number" th:field="*{bodyWeight}" step="0.1" />
+            kg
+        </label>
+        <label>Commentaire :<input type="text" th:field="*{comment}"></label>
         <label>Type :<input type="text" th:field="*{type}" /></label>
-        <button type="submit" class="btn btnValid">Enregistrer</button>
 
-        <button type="button"
-                th:attr="hx-get=@{/workouts/{id}/infos(id=${workoutUpdateDTO.id})}"
-                hx-target="#infos-section"
-                hx-swap="innerHTML"
-                class="btnDelete">
-            Annuler
-        </button>
+
     </form>
 </div>
 </body>

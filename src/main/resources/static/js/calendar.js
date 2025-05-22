@@ -8,13 +8,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 return {
                     title: item.workoutType? item.workoutType : " ",
                     start: item.date,
-                    color: data.workoutTypeColors[item.workoutType],
+                    color: data.workoutTypeColors[item.workoutType] || '#999',
                     idWorkout: item.idWorkout,
                     extendedProps: {
-                        exercises: item.exerciseShortNames.map(exerciseName => ({
-                            name: exerciseName,
-                            color: data.exerciseColors[exerciseName] // Récupère la couleur de l'exercice
-                        }))
+                        exercises: Array.isArray(item.exerciseShortNames)
+                            ? item.exerciseShortNames.map(exerciseName => ({
+                                name: exerciseName,
+                                color: data.exerciseColors?.[exerciseName] || '#666'
+                            })) : []
                     }
                 };
             });

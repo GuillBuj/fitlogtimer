@@ -54,12 +54,13 @@
     <p th:unless="${workoutData.exerciseSets}">Aucun exercice enregistré pour cette workout.</p>
 
     <div th:replace="~{fragments/exercise-set-form :: exerciseSetForm(${exerciseSetDTO}, ${workoutData}, ${exercises}, ${lastSet})}"></div>
+    <div class="btn-group">
     <form th:action="@{/workouts/{id}(id=${workoutData.id})}" class="deleteForm"  method="post">
         <input type="hidden" name="_method" value="delete" />
         <button type="submit" class="btnDelete">Supprimer</button>
     </form>
-    <br>
     <a href="/workouts" class="btn-link">Retour à la liste</a>
+    </div>
     
     <script src="/js/set-type-handler.js"></script>
     <script src="/js/exercise-set-form.js"></script>

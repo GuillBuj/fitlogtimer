@@ -56,8 +56,8 @@ public class StatsService {
     }
 
     public double getPersonalBestDuration(int exerciseId){
-
-        return exerciseSetRepository.findMaxDurationByExerciseId(exerciseId).doubleValue();
+        Integer maxDuration = exerciseSetRepository.findMaxDurationByExerciseId(exerciseId);
+        return (maxDuration != null) ? maxDuration.doubleValue() : 0.0;
     }
 
     public double getPersonalBestZero(int exerciseId){

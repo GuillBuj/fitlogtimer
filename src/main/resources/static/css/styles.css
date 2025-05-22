@@ -63,7 +63,7 @@ form {
 }
 
 .btnValid {
-    width: 100%;
+    /*width: 100%;*/
     padding: 10px;
     background-color: #2E8B57;
     color: #fff;
@@ -452,4 +452,101 @@ h1 span {
     color: #212529;
     cursor: pointer;
     transform: scale(1.1);
+}
+
+.form-edit-simple {
+    font-family: inherit;
+    color: #333;
+    /*margin-top: 1em;*/
+    /*border: none;*/
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-edit-simple label {
+    display: flex;
+    align-items: center;
+    gap: 0.3em; /* espace entre le texte et le champ */
+    font-weight: 600;
+    margin: 0.5em 0 0.2em;
+}
+
+.form-edit-simple input[type="number"],
+.form-edit-simple input[type="text"],
+.form-edit-simple textarea {
+    background-color: white;
+    border: none; /* PAS de cadre par défaut */
+    border-radius: 4px;
+    padding: 0.3em 0.5em;
+    font-size: 1rem;
+    width: auto;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.form-edit-simple input[type="number"]:focus,
+.form-edit-simple input[type="text"]:focus,
+.form-edit-simple textarea:focus {
+    /*background-color: #e5f0ff;*/
+    outline: none;
+    /*border: 1px solid #7aa7ff; !* cadre uniquement au focus *!*/
+}
+
+.form-edit-simple p {
+    margin: 0.5em 0;
+}
+
+.form-edit-simple p strong {
+    margin-right: 0.3em;
+}
+
+.form-edit-simple label input,
+.form-edit-simple label textarea {
+    background-color: transparent; /* pas de fond */
+    border: none;                 /* pas de bordure */
+    padding: 0;                  /* pas de padding */
+    font-size: 1rem;
+    font-family: inherit;
+    color: inherit;
+    width: auto;
+    flex-shrink: 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Au focus, on met le style visible */
+.form-edit-simple label input:focus,
+.form-edit-simple label textarea:focus {
+    background-color: #e5f0ff;  /* léger fond bleu */
+    /*border: 1px solid #7aa7ff;  !* bordure bleue *!*/
+    padding: 0.3em 0.5em;
+    outline: none;
+    border-radius: 4px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 1em; /* espace entre les boutons */
+    /*margin-top: 1em; !* un peu d’espace au-dessus *!*/
+    align-items: center; /* alignement vertical centré */
+}
+
+.div-simple {
+    font-family: inherit;
+    color: #333;
+    margin-top: 1em;
+    /*border: none;*/
+    padding: 10px;
+    font-weight: 600;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.workout-infos{
+    min-height: 11em;
 }

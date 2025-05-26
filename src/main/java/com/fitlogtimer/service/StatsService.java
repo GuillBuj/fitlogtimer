@@ -75,8 +75,8 @@ public class StatsService {
     }
 
     public double getPersonalBest(int exerciseId){
-        
-        return maxByExAndReps(exerciseId, 1).maxWeight();
+        Double personalBest = exerciseSetRepository.findMaxWeightByExerciseId(exerciseId);
+        return personalBest != null ? personalBest : 0.0;
     }
 
     public double getPersonalBestDuration(int exerciseId){

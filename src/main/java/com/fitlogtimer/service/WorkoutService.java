@@ -8,7 +8,14 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDCVarDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
 import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -402,165 +409,188 @@ public class WorkoutService {
      * CREATE FROM XLS
      */
     
-    //  @Transactional
-    //  public List<Workout> createWorkoutsFromXlsxDCHeavyDTOList(List<FromXlsxDCHeavyDTO> dtoList) {
-    //      log.info("*** Import from Heavy Sheet ***");
-    //      return dtoList.stream()
-    //          .map(this::createWorkoutFromXlsxDCHeavyDTO)
-    //          .collect(Collectors.toList());
-    //  }
+      @Transactional
+      public List<Workout> createWorkoutsFromXlsxDCHeavyDTOList(List<FromXlsxDCHeavyDTO> dtoList) {
+          log.info("*** Import from Heavy Sheet ***");
+          return dtoList.stream()
+              .map(this::createWorkoutFromXlsxDCHeavyDTO)
+              .collect(Collectors.toList());
+      }
  
-    //  @Transactional
-    //  public List<Workout> createWorkoutsFromXlsxDCLightDTOList(List<FromXlsxDCLightDTO> dtoList) {
-    //      log.info("*** Import from Light Sheet ***");
-    //      return dtoList.stream()
-    //          .map(this::createWorkoutFromXlsxDCLightDTO)
-    //          .collect(Collectors.toList());
-    //  }
+      @Transactional
+      public List<Workout> createWorkoutsFromXlsxDCLightDTOList(List<FromXlsxDCLightDTO> dtoList) {
+          log.info("*** Import from Light Sheet ***");
+          return dtoList.stream()
+              .map(this::createWorkoutFromXlsxDCLightDTO)
+              .collect(Collectors.toList());
+      }
  
-    //  @Transactional
-    //  public List<Workout> createWorkoutsFromXlsxDCVarDTOList(List<FromXlsxDCVarDTO> dtoList) {
-    //      log.info("*** Import from Var Sheet ***");
-    //      return dtoList.stream()
-    //          .map(this::createWorkoutFromXlsxDCVarDTO)
-    //          .collect(Collectors.toList());
-    //  }
+      @Transactional
+      public List<Workout> createWorkoutsFromXlsxDCVarDTOList(List<FromXlsxDCVarDTO> dtoList) {
+          log.info("*** Import from Var Sheet ***");
+          return dtoList.stream()
+              .map(this::createWorkoutFromXlsxDCVarDTO)
+              .collect(Collectors.toList());
+      }
  
-    //  @Transactional
-    //  public List<Workout> createWorkoutsFromXlsxDeadliftDTOList(List<FromXlsxDeadliftDTO> dtoList) {
-    //      log.info("*** Import from Deadlift Sheet ***");
-    //      return dtoList.stream()
-    //          .map(this::createWorkoutFromXlsxDeadliftDTO)
-    //          .collect(Collectors.toList());
-    //  }
+      @Transactional
+      public List<Workout> createWorkoutsFromXlsxDeadliftDTOList(List<FromXlsxDeadliftDTO> dtoList) {
+          log.info("*** Import from Deadlift Sheet ***");
+          return dtoList.stream()
+              .map(this::createWorkoutFromXlsxDeadliftDTO)
+              .collect(Collectors.toList());
+      }
      
-    //  @Transactional
-    //  public Workout createWorkoutFromXlsxDCHeavyDTO(FromXlsxDCHeavyDTO fromXlsxDCHeavyDTO){
-    //      Workout workout = workoutMapper.toEntity(fromXlsxDCHeavyDTO);
-    //      int idWorkout = workoutRepository.save(workout).getId();
-    //      fromXlsxDCHeavyDTO.sets().stream()
-    //          .map(basicSet -> {
-    //                  int position = fromXlsxDCHeavyDTO.sets().indexOf(basicSet) + 1; // 1-based index
-    //                  String tag;
+      @Transactional
+      public Workout createWorkoutFromXlsxDCHeavyDTO(FromXlsxDCHeavyDTO fromXlsxDCHeavyDTO){
+          Workout workout = workoutMapper.toEntity(fromXlsxDCHeavyDTO);
+          int idWorkout = workoutRepository.save(workout).getId();
+          fromXlsxDCHeavyDTO.sets().stream()
+              .map(basicSet -> {
+                      int position = fromXlsxDCHeavyDTO.sets().indexOf(basicSet) + 1; // 1-based index
+                      String tag;
                      
-    //                  if (position <= 3) {
-    //                      tag = HEAVY;
-    //                  } else if (position == 5) {
-    //                      tag = MEDIUM_55;
-    //                  } else if (position == 6) {
-    //                      tag = LIGHT_50;
-    //                  } else if (position == 4) {
-    //                      tag = basicSet.weight() > 56 ? HEAVY : MEDIUM_55;
-    //                  } else {
-    //                      tag = "";
-    //                  }
+                      if (position <= 3) {
+                          tag = HEAVY;
+                      } else if (position == 5) {
+                          tag = MEDIUM_55;
+                      } else if (position == 6) {
+                          tag = LIGHT_50;
+                      } else if (position == 4) {
+                          tag = basicSet.weight() > 56 ? HEAVY : MEDIUM_55;
+                      } else {
+                          tag = "";
+                      }
          
-    //              return new ExerciseSetCreateDTO(
-    //                  exerciseRepository.findByShortName("DC").getId(),
-    //                  basicSet.weight(),
-    //                  basicSet.repNumber(),
-    //                  tag,
-    //                  "",
-    //                  idWorkout,
-    //                  ExerciseSetType.FREE_WEIGHT
-    //              );
-    //              })
-    //          .forEach(exerciseSetInDTO -> {
-    //              addExerciseSet(exerciseSetInDTO);
-    //          });
+                  return new ExerciseSetCreateDTO(
+                      exerciseRepository.findByShortName("DC").getId(),
+                      basicSet.weight(),
+                      basicSet.repNumber(),
+                      "",
+                      0,
+                      "",
+                      "",
+                      "",
+                      idWorkout,
+                      ExerciseSetType.FREE_WEIGHT
+                  );
+                  })
+              .forEach(exerciseSetInDTO -> {
+                  addExerciseSet(exerciseSetInDTO);
+              });
  
-    //          log.info("Workout saved: {}", workoutRepository.getReferenceById(idWorkout));
-    //      return workout;
-    //  }
+              log.info("Workout saved: {}", workoutRepository.getReferenceById(idWorkout));
+          return workout;
+      }
  
-    //  @Transactional
-    //  public Workout createWorkoutFromXlsxDCLightDTO(FromXlsxDCLightDTO fromXlsxDCLightDTO){
-    //      Workout workout = workoutMapper.toEntity(fromXlsxDCLightDTO);
-    //      int idWorkout = workoutRepository.save(workout).getId();
-    //      //log.info("*** workout {} created", idWorkout);
-    //      fromXlsxDCLightDTO.sets().stream()
-    //          .map(basicSet -> {
-    //              //log.info("**/*//** {}, short: ", basicSet, basicSet.exercise());
-    //              return new ExerciseSetCreateDTO(
-    //                  exerciseRepository.findByShortName(basicSet.exercise()).getId(),
-    //                  basicSet.weight(),
-    //                  basicSet.repNumber(),
-    //                  "",
-    //                  "",
-    //                  idWorkout,
-    //                  ExerciseSetType.FREE_WEIGHT
-    //              );
-    //              })
-    //          .forEach(exerciseSetInDTO -> {
-    //              //log.info("-*-*-*-*-*-*-*-*-*-*{}", exerciseSetInDTO);
-    //              addExerciseSet(exerciseSetInDTO);
-    //          });
+      @Transactional
+      public Workout createWorkoutFromXlsxDCLightDTO(FromXlsxDCLightDTO fromXlsxDCLightDTO){
+          Workout workout = workoutMapper.toEntity(fromXlsxDCLightDTO);
+          int idWorkout = workoutRepository.save(workout).getId();
+          //log.info("*** workout {} created", idWorkout);
+          fromXlsxDCLightDTO.sets().stream()
+              .map(basicSet -> {
+                  //log.info("**/*//** {}, short: ", basicSet, basicSet.exercise());
+                  return new ExerciseSetCreateDTO(
+                      exerciseRepository.findByShortName(basicSet.exercise()).getId(),
+                      basicSet.weight(),
+                      basicSet.repNumber(),
+                      "",
+                      0,
+                      "",
+                      "",
+                      "",
+                      idWorkout,
+                      ExerciseSetType.FREE_WEIGHT
+                  );
+
+//                  @Positive int exercise_id,
+//                  @PositiveOrZero double weight,
+//                  @Positive int repNumber,
+//                  @Size(max=100) String bands,
+//                  @PositiveOrZero int durationS,
+//                  @Size(max=100) String distance,
+//                  String tag,
+//                  @Size(max=100) String comment,
+//                  @Positive int workout_id,
+//                  String type
+                  })
+              .forEach(exerciseSetInDTO -> {
+                  //log.info("-*-*-*-*-*-*-*-*-*-*{}", exerciseSetInDTO);
+                  addExerciseSet(exerciseSetInDTO);
+              });
  
-    //      log.info("Workout saved: {}", workoutRepository.getReferenceById(idWorkout));
-    //      return workout;
-    //  }
+          log.info("Workout saved: {}", workoutRepository.getReferenceById(idWorkout));
+          return workout;
+      }
  
-    //  @Transactional
-    //  public Workout createWorkoutFromXlsxDCVarDTO(FromXlsxDCVarDTO fromXlsxDCVarDTO){
-    //      Workout workout = workoutMapper.toEntity(fromXlsxDCVarDTO);
+      @Transactional
+      public Workout createWorkoutFromXlsxDCVarDTO(FromXlsxDCVarDTO fromXlsxDCVarDTO){
+          Workout workout = workoutMapper.toEntity(fromXlsxDCVarDTO);
          
-    //      final int idWorkout;
-    //      if(!workoutRepository.existsByDateAndTagImport(fromXlsxDCVarDTO.date(), "importH")){
-    //          idWorkout = workoutRepository.save(workout).getId();
-    //      } else {
-    //          idWorkout = workoutRepository.findByDateAndTagImport(fromXlsxDCVarDTO.date(), "importH").getId();
-    //          log.info("Using existing workout: {}", idWorkout);
-    //      }
+          final int idWorkout;
+          if(!workoutRepository.existsByDateAndTagImport(fromXlsxDCVarDTO.date(), "importH")){
+              idWorkout = workoutRepository.save(workout).getId();
+          } else {
+              idWorkout = workoutRepository.findByDateAndTagImport(fromXlsxDCVarDTO.date(), "importH").getId();
+              log.info("Using existing workout: {}", idWorkout);
+          }
          
-    //      //log.info("*** workout {} created", idWorkout);
-    //      fromXlsxDCVarDTO.sets().stream()
-    //          .map(basicSet -> {
-    //              //log.info("**/*//** {}, short: ", basicSet, basicSet.exercise());
-    //              return new ExerciseSetCreateDTO(
-    //                  exerciseRepository.findByShortName(basicSet.exercise()).getId(),
-    //                  basicSet.weight(),
-    //                  basicSet.repNumber(),
-    //                  "",
-    //                  "",
-    //                  idWorkout,
-    //                  ExerciseSetType.FREE_WEIGHT
-    //              );
-    //              })
-    //          .forEach(exerciseSetInDTO -> {
-    //              //log.info("-*-*-*-*-*-*-*-*-*-*{}", exerciseSetInDTO);
-    //              addExerciseSet(exerciseSetInDTO);
-    //          });
+          //log.info("*** workout {} created", idWorkout);
+          fromXlsxDCVarDTO.sets().stream()
+              .map(basicSet -> {
+                  //log.info("**/*//** {}, short: ", basicSet, basicSet.exercise());
+                  return new ExerciseSetCreateDTO(
+                      exerciseRepository.findByShortName(basicSet.exercise()).getId(),
+                      basicSet.weight(),
+                      basicSet.repNumber(),
+                          "",
+                          0,
+                          "",
+                          "",
+                          "",
+                      idWorkout,
+                      ExerciseSetType.FREE_WEIGHT
+                  );
+                  })
+              .forEach(exerciseSetInDTO -> {
+                  //log.info("-*-*-*-*-*-*-*-*-*-*{}", exerciseSetInDTO);
+                  addExerciseSet(exerciseSetInDTO);
+              });
  
-    //      log.info("Workout saved: {}", workoutRepository.getReferenceById(idWorkout));
-    //      return workout;
-    //  }
+          log.info("Workout saved: {}", workoutRepository.getReferenceById(idWorkout));
+          return workout;
+      }
  
-    //  @Transactional
-    //  public Workout createWorkoutFromXlsxDeadliftDTO(FromXlsxDeadliftDTO fromXlsxDeadliftDTO){
-    //      Workout workout = workoutMapper.toEntity(fromXlsxDeadliftDTO);
-    //      //int idWorkout = workoutRepository.save(workout).getId();
-    //      final int idWorkout;
-    //      if(!workoutRepository.existsByDateAndTagImport(fromXlsxDeadliftDTO.date(), "importL")){
-    //          idWorkout = workoutRepository.save(workout).getId();
-    //          log.info("New workout created: {}", idWorkout);
-    //      } else {
-    //          idWorkout = workoutRepository.findByDateAndTagImport(fromXlsxDeadliftDTO.date(), "importL").getId();
-    //          log.info("Using existing workout: {}", idWorkout);
-    //      }
+      @Transactional
+      public Workout createWorkoutFromXlsxDeadliftDTO(FromXlsxDeadliftDTO fromXlsxDeadliftDTO){
+          Workout workout = workoutMapper.toEntity(fromXlsxDeadliftDTO);
+          //int idWorkout = workoutRepository.save(workout).getId();
+          final int idWorkout;
+          if(!workoutRepository.existsByDateAndTagImport(fromXlsxDeadliftDTO.date(), "importL")){
+              idWorkout = workoutRepository.save(workout).getId();
+              log.info("New workout created: {}", idWorkout);
+          } else {
+              idWorkout = workoutRepository.findByDateAndTagImport(fromXlsxDeadliftDTO.date(), "importL").getId();
+              log.info("Using existing workout: {}", idWorkout);
+          }
         
-    //      //un seul elément ds le format récupéré
-    //      addExerciseSet(new ExerciseSetCreateDTO(
-    //                  exerciseRepository.findByShortName("DL").getId(),
-    //                  fromXlsxDeadliftDTO.sets().weight(),
-    //                  fromXlsxDeadliftDTO.sets().repNumber(),
-    //                  "ONE DL",
-    //                  "",
-    //                  idWorkout,
-    //                  ExerciseSetType.FREE_WEIGHT
-    //      ));
+          //un seul elément ds le format récupéré
+          addExerciseSet(new ExerciseSetCreateDTO(
+                      exerciseRepository.findByShortName("DL").getId(),
+                      fromXlsxDeadliftDTO.sets().weight(),
+                      fromXlsxDeadliftDTO.sets().repNumber(),
+                      "",
+                      0,
+                      "",
+                      "",
+                      "",
+                      idWorkout,
+                      ExerciseSetType.FREE_WEIGHT
+          ));
  
-    //      log.info("Workout saved: {}", workoutRepository.getReferenceById(idWorkout));
-    //      return workout;
-    //  }
+          log.info("Workout saved: {}", workoutRepository.getReferenceById(idWorkout));
+          return workout;
+      }
 
 }

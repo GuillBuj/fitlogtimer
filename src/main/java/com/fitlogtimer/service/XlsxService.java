@@ -126,9 +126,9 @@ public class XlsxService {
     public List<FromXlsxDeadliftDTO> extractDTOsDeadliftSheet(){
         String excelFilePath = FileConstants.EXCEL_FILE;
         String sheetName = FileConstants.DEADLIFT_SHEET;
-        int startRow = 3;
+        int startRow = 5;
         int startColumn = 1;
-        int endRow = 5;
+        int endRow = 7;
         int endColumn = 20;
 
         List<FromXlsxDeadliftDTO> workouts = new ArrayList<>();

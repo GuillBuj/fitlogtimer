@@ -4,6 +4,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <title>Détails de la séance</title>
 </head>
+
 <body>
     <div th:insert="~{fragments/navbar :: navbar}"></div>
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>

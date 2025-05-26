@@ -64,6 +64,13 @@ public class WorkoutController {
         return "workout-details-brut";
     }
 
+    @GetMapping("/{id}/brut/edit-infos")
+    public String editWorkoutInfosBrut(@PathVariable int id, Model model) {
+        WorkoutUpdateDTO workout = workoutService.getWorkoutUpdateDTO(id);
+        model.addAttribute("workoutUpdateDTO", workout);
+        return "fragments/workout-edit :: workout-edit";
+    }
+
     @GetMapping("/{id}/edit-infos")
     public String editWorkoutInfos(@PathVariable int id, Model model) {
         WorkoutUpdateDTO workout = workoutService.getWorkoutUpdateDTO(id);

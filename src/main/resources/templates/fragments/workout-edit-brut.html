@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workout info</title>
+</head>
+<body>
+<div th:fragment="workout-edit-brut(workoutUpdateDTO)">
+    <h1>Séance du <span th:text="${workoutUpdateDTO.date}"></span></h1>
+    <form
+            class="form-edit-simple workout-infos"
+            th:action="@{/workouts/brut/{id}(id=${workoutUpdateDTO.id})}"
+            method="post"
+            th:object="${workoutUpdateDTO}"
+            th:attr="hx-post=@{/workouts/brut/{id}(id=${workoutUpdateDTO.id})}"
+            hx-target="#infos-section"
+            hx-swap="innerHTML"
+    >
+        <div class="btn-group">
+            <button type="submit" class="btnValid">Enregistrer</button>
+
+            <button type="button"
+                    th:attr="hx-get=@{/workouts/{id}/infos(id=${workoutUpdateDTO.id})}"
+                    hx-target="#infos-section"
+                    hx-swap="innerHTML"
+                    class="btnDelete">
+                Annuler
+            </button>
+        </div>
+        <input type="hidden" name="_method" value="put"/>
+        <input type="hidden" th:field="*{date}" />
+        <label>
+            Poids :
+            <input type="number" th:field="*{bodyWeight}" step="0.1" />
+            kg
+        </label>
+        <label>Commentaire :<input type="text" th:field="*{comment}"></label>
+        <label>Type :<input type="text" th:field="*{type}" /></label>
+
+
+    </form>
+</div>
+</body>
+</html>

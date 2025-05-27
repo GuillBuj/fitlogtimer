@@ -329,6 +329,47 @@ SCRIPT TO './backups/backup_2025-05-26.sql' [90001-232]
 	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
 	at org.springframework.boot.SpringApplicationShutdownHook.run(SpringApplicationShutdownHook.java:116)
 	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-05-27 19:40:26.760060+02:00 database: close
+org.h2.message.DbException: IO Exception: "Closing"
+IO Exception: "Closing" [90028-232]
+	at org.h2.message.DbException.get(DbException.java:212)
+	at org.h2.mvstore.db.Store.close(Store.java:374)
+	at org.h2.engine.Database.closeOpenFilesAndUnlock(Database.java:1292)
+	at org.h2.engine.Database.closeImpl(Database.java:1254)
+	at org.h2.engine.Database.close(Database.java:1173)
+	at org.h2.engine.Database.onShutdown(Database.java:1158)
+	at org.h2.engine.OnExitDatabaseCloser.onShutdown(OnExitDatabaseCloser.java:85)
+	at org.h2.engine.OnExitDatabaseCloser.run(OnExitDatabaseCloser.java:114)
+Caused by: org.h2.jdbc.JdbcSQLNonTransientException: IO Exception: "Closing"
+IO Exception: "Closing" [90028-232]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:566)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	... 8 more
+Caused by: org.h2.mvstore.MVStoreException: Reading from file sun.nio.ch.FileChannelImpl@2584bd4e failed at 347181 (length 0), read 0, remaining 40 [2.3.232/1]
+	at org.h2.mvstore.DataUtils.newMVStoreException(DataUtils.java:996)
+	at org.h2.mvstore.DataUtils.readFully(DataUtils.java:455)
+	at org.h2.mvstore.FileStore.readFully(FileStore.java:721)
+	at org.h2.mvstore.SingleFileStore.readFully(SingleFileStore.java:60)
+	at org.h2.mvstore.SingleFileStore.readFully(SingleFileStore.java:28)
+	at org.h2.mvstore.SFChunk.readFully(SFChunk.java:35)
+	at org.h2.mvstore.Chunk.readToC(Chunk.java:496)
+	at org.h2.mvstore.FileStore.getToC(FileStore.java:2070)
+	at org.h2.mvstore.FileStore.rewriteChunks(FileStore.java:1913)
+	at org.h2.mvstore.FileStore.compactRewrite(FileStore.java:1901)
+	at org.h2.mvstore.FileStore.rewriteChunks(FileStore.java:1862)
+	at org.h2.mvstore.FileStore.lambda$compact$0(FileStore.java:879)
+	at org.h2.mvstore.MVStore.tryExecuteUnderStoreLock(MVStore.java:937)
+	at org.h2.mvstore.FileStore.compact(FileStore.java:879)
+	at org.h2.mvstore.RandomAccessStore.compactStore(RandomAccessStore.java:441)
+	at org.h2.mvstore.FileStore.compactStore(FileStore.java:890)
+	at org.h2.mvstore.FileStore.stop(FileStore.java:275)
+	at org.h2.mvstore.MVStore.closeStore(MVStore.java:693)
+	at org.h2.mvstore.MVStore.close(MVStore.java:643)
+	at org.h2.mvstore.db.Store.close(Store.java:364)
+	... 6 more
+Caused by: java.io.EOFException
+	at org.h2.mvstore.DataUtils.readFully(DataUtils.java:443)
+	... 24 more
 2025-05-27 16:55:24.560967+02:00 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "show [*]* from EXERCISE"
 Syntax error in SQL statement "show [*]* from EXERCISE"; SQL statement:
@@ -368,3 +409,7 @@ Caused by: java.lang.AssertionError
 	at org.h2.mvstore.FileStore.executeFileStoreOperation(FileStore.java:1893)
 	at org.h2.mvstore.MVStore.executeFilestoreOperation(MVStore.java:922)
 	... 13 more
+2025-05-27 19:53:16.180249+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "select * [*]fromEXERCISE"
+Syntax error in SQL statement "select * [*]fromEXERCISE"; SQL statement:
+select * fromEXERCISE [42000-232]

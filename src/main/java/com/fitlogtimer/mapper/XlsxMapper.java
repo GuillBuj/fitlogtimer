@@ -5,22 +5,30 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fitlogtimer.constants.FileConstants;
+import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
+import com.fitlogtimer.dto.fromxlsx.*;
+import com.fitlogtimer.model.Exercise;
+import com.fitlogtimer.repository.ExerciseRepository;
+import com.fitlogtimer.util.helper.XlsxHelper;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.fitlogtimer.constants.BarConstants;
 import com.fitlogtimer.dto.base.SetBasicDTO;
 import com.fitlogtimer.dto.base.SetBasicWithExDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCVarDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
 
 import static com.fitlogtimer.util.helper.XlsxHelper.*;
 
 @Component
+@AllArgsConstructor
+@Slf4j
 public class XlsxMapper {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private final ExerciseRepository exerciseRepository;
 
     public FromXlsxDCHeavyDTO mapToFromXlsxDCHeavyDTO(String[] column) {
 
@@ -64,6 +72,110 @@ public class XlsxMapper {
         add3Sets(sets, column, 10, "DC30", weightOffset);
 
         return new FromXlsxDCVarDTO(date, bodyWeight, sets);
+    }
+
+    public FromXlsxGenericWorkoutDTO mapToFromXlsxGenericWorkoutDTO(String[] dataColumn, String[] shortNameColumn, int workoutId) {
+        LocalDate date = parseDate(dataColumn[0]);
+        double bodyWeight = parseDouble(dataColumn[1]);
+
+        List<ExerciseSetCreateDTO> sets = new ArrayList<>();
+        Exercise currentExercise = null;
+        double barWeight = 0.0;
+
+        for (int row = 2; row < dataColumn.length; row++) {
+            // Décalage ici : shortNameColumn index commence à 0 pour dataColumn[2]
+            String shortName = shortNameColumn[row - 2];
+
+            if (FileConstants.GENERIC_END_MARKERS.contains(shortName)) {
+                break;
+            }
+
+            String cell = dataColumn[row];
+            log.info("cell: {} shortName: {} currentExercise: {} barWeight: {}", cell, shortName, currentExercise, barWeight);
+            if (shortName != null && !shortName.isBlank()) {
+                currentExercise = exerciseRepository.findByShortName(shortName.trim().toUpperCase());
+                barWeight = parseDouble(cell);
+                log.info("short name : {} currentExercise: {} barWeight: {}", shortName, currentExercise, barWeight);
+            } else if (currentExercise != null && cell != null && !cell.isBlank()) {
+                double weight = currentExercise.getType().equalsIgnoreCase("ELASTIC")
+                        ? 0.0
+                        : parseDouble(cell) + barWeight;
+
+                String bands = currentExercise.getType().equalsIgnoreCase("ELASTIC") ? cell : "";
+                int nbReps = findNbRepsBelowIfPresent(dataColumn, shortNameColumn, row);
+            log.info("currentExercise: {} weight: {} bands: {} nbReps: {}", currentExercise, weight, bands, nbReps);
+                ExerciseSetCreateDTO set = new ExerciseSetCreateDTO(
+                        currentExercise.getId(),
+                        weight,
+                        nbReps,
+                        bands,
+                        0,
+                        "",
+                        "",
+                        "",
+                        workoutId,
+                        currentExercise.getType()
+                );
+                log.info("set: {}", set);
+                sets.add(set);
+            }
+        }
+
+
+
+//        for (int row = 2; row < dataColumn.length; row++) {
+//            int shortNameIndex = row - 2;
+//            String shortName = shortNameIndex >= 0 && shortNameIndex < shortNameColumn.length
+//                    ? shortNameColumn[shortNameIndex]
+//                    : null;
+//
+//            if (shortName != null && !shortName.isBlank() && !"NA".equalsIgnoreCase(shortName.trim())) {
+//                currentExercise = exerciseRepository.findByShortName(shortName.trim());
+//                barWeight = parseDouble(dataColumn[row]);
+//                log.info("short name : {} currentExercise: {} barWeight: {}", shortName, currentExercise, barWeight);
+//            } else if (currentExercise != null && dataColumn[row] != null && !dataColumn[row].isBlank()) {
+//                double weight = currentExercise.getType().equalsIgnoreCase("ELASTIC")
+//                        ? 0.0
+//                        : parseDouble(dataColumn[row]) + barWeight;
+//
+//                String bands = currentExercise.getType().equalsIgnoreCase("ELASTIC") ? dataColumn[row] : "";
+//                int nbReps = findNbRepsBelowIfPresent(dataColumn, shortNameColumn, row);
+//
+//                ExerciseSetCreateDTO set = new ExerciseSetCreateDTO(
+//                        currentExercise.getId(),
+//                        weight,
+//                        nbReps,
+//                        bands,
+//                        0,
+//                        "",
+//                        "",
+//                        "",
+//                        workoutId,
+//                        currentExercise.getType()
+//                );
+//                log.info("set: {}", set);
+//                sets.add(set);
+//            } else {
+//                // Si shortName est NA ou vide et currentExercise est null, on ne fait rien
+//                log.debug("Ignoring row {} due to shortName='{}' and currentExercise=null", row, shortName);
+//            }
+//        }
+
+
+        return new FromXlsxGenericWorkoutDTO(date, bodyWeight, sets);
+    }
+
+    private int findNbRepsBelowIfPresent(String[] dataColumn, String[] shortNameColumn, int currentRow) {
+        for (int i = 1; i <= 2; i++) {
+            int nextRow = currentRow + i;
+            if (nextRow < dataColumn.length) {
+                if (shortNameColumn[nextRow] == null || shortNameColumn[nextRow].isBlank()) {
+                    int reps = parseReps(dataColumn[nextRow]);
+                    if (reps > 0) return reps;
+                }
+            }
+        }
+        return 0;
     }
 
     private ExercisePair determineExercises(String type) {
@@ -135,7 +247,7 @@ public class XlsxMapper {
     }
  
     private LocalDate parseDate(String dateStr) {
-        if (dateStr == null || dateStr.trim().isEmpty()) {
+        if (dateStr == null || dateStr.trim().isEmpty() || dateStr.trim().equalsIgnoreCase("NA")) {
             throw new IllegalArgumentException("Date cannot be null or empty");
         }
         return LocalDate.parse(dateStr, DATE_FORMATTER);

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
+import com.fitlogtimer.constants.FileConstants;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,39 @@ public class XlsxReader {
 
             return data;
         }
+    }
+
+    public String[][] readSheetData(String excelFilePath, String sheetName, int startRow, int startColumn) throws IOException {
+        try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheet(sheetName);
+
+            int lastRow = sheet.getLastRowNum();
+            int lastCol = 0;
+            for (int i = startRow; i <= lastRow; i++) {
+                Row row = sheet.getRow(i);
+                if (row != null && row.getLastCellNum() > lastCol) {
+                    lastCol = row.getLastCellNum();
+                }
+            }
+
+            return readSheetData(sheet, startRow, startColumn, lastRow, lastCol - 1);
+        }
+    }
+
+
+    private String[][] readSheetData(Sheet sheet, int startRow, int startColumn, int endRow, int endColumn) {
+        String[][] data = new String[endRow - startRow + 1][endColumn - startColumn + 1];
+
+        for (int j = startColumn; j <= endColumn; j++) {
+            for (int i = startRow; i <= endRow; i++) {
+                Row row = sheet.getRow(i);
+                data[i - startRow][j - startColumn] = getCellValue(row, j).orElse(NA);
+            }
+        }
+
+        return data;
     }
 
     /**
@@ -119,6 +153,35 @@ public class XlsxReader {
             System.out.print(transposedData[columnIndex][i] + "\t");
         }
         System.out.println();
+    }
+
+    public int findEndRow(String[][] data) {
+        for (int i = 0; i < data.length; i++) {
+            String cell = data[i][1]; // seulement colonne 2
+            if (cell != null && FileConstants.GENERIC_END_MARKERS.contains(cell.trim())) {
+                return i;
+            }
+        }
+        return data.length;
+    }
+
+    public int findEndColumn(String[][] data) {
+        if (data.length == 0) return 0;
+        for (int j = 0; j < data[0].length; j++) {
+            String cell = data[0][j]; // ligne 1
+            if (cell != null && FileConstants.GENERIC_END_MARKERS.contains(cell.trim())) {
+                return j;
+            }
+        }
+        return data[0].length;
+    }
+
+    public String[][] trim(String[][] data, int endRow, int endCol) {
+        String[][] trimmed = new String[endRow][endCol];
+        for (int i = 0; i < endRow; i++) {
+            System.arraycopy(data[i], 0, trimmed[i], 0, endCol);
+        }
+        return trimmed;
     }
 
     public static void main(String[] args) {

@@ -1,34 +1,55 @@
 package com.fitlogtimer.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
+import com.fitlogtimer.FitlogtimerApplication;
+import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
+import com.fitlogtimer.dto.fromxlsx.*;
+import com.fitlogtimer.model.Exercise;
+import com.fitlogtimer.repository.ExerciseRepository;
+import com.fitlogtimer.util.helper.XlsxHelper;
+import com.fitlogtimer.util.parser.GenericStrengthWorkoutParser;
+import org.apache.catalina.core.ApplicationContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.constants.FileConstants;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCVarDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
 import com.fitlogtimer.mapper.XlsxMapper;
 import com.fitlogtimer.parser.XlsxReader;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 @Slf4j
 public class XlsxService {
 
     private final XlsxMapper xlsxMapper;
     private final XlsxReader xlsxReader;
+    //private final GenericStrengthWorkoutParser genericStrengthWorkoutParser;
 
-    public XlsxService(){
-        this.xlsxMapper = new XlsxMapper();
+    //private final ExerciseRepository exerciseRepository;
+
+    public XlsxService(ExerciseRepository exerciseRepository){
+        this.xlsxMapper = new XlsxMapper(exerciseRepository);
         this.xlsxReader = new XlsxReader();
+        //this.genericStrengthWorkoutParser = new GenericStrengthWorkoutParser(exerciseRepository);
+       // this.exerciseRepository = exerciseRepository;
     }
+
+
 
     public List<FromXlsxDCHeavyDTO> extractDTOsHeavySheetRegular(){
         String excelFilePath = FileConstants.EXCEL_FILE;
@@ -111,10 +132,6 @@ public class XlsxService {
                    workouts.add(xlsxMapper.mapToFromXlsxDCVarDTO(column));  
                 }
             }
-            //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
-            //workouts.forEach(workout -> log.info("Workout: {}", workout));
-            // log.info("{} DTOs", workouts.size());
-            //log.info("DTOs: {}", workouts);
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
         }
@@ -152,8 +169,63 @@ public class XlsxService {
         return workouts;
     }
 
-    public static void main(String[] args){
-        XlsxService xlsxService= new XlsxService();
-        xlsxService.extractDTOsVarSheet();
+    public FromXlsxGenericDTO extractGenericSheet(String sheetName) throws IOException {
+
+        String[][] rawData = xlsxReader.readSheetData(FileConstants.EXCEL_FILE, sheetName, 0, 1);
+        log.info("rawData: {}", (Object) rawData);
+
+        int endRow = xlsxReader.findEndRow(rawData);
+        int endCol = xlsxReader.findEndColumn(rawData);
+        log.info("endRow: {}, endCol: {}", endRow, endCol);
+
+        // On tronque au bon nombre de lignes/colonnes
+        String[][] trimmed = xlsxReader.trim(rawData, endRow, endCol);
+        log.info("trimmed: {}", (Object) trimmed);
+
+        String[][] data = xlsxReader.transposeArray(trimmed); // chaque colonne représente un workout
+        log.info("data: {}", (Object) data);
+
+        // B1 = nom de la séance
+        String name = rawData[0][0];
+        log.info("name: {}", name);
+
+        String[] shortNameColumn = new String[endRow - 2];
+        for (int i = 2; i < endRow; i++) {
+            shortNameColumn[i - 2] = rawData[i][0]; // colonne 0 car startColumn = 1 en lecture
+        }
+        log.info("shortNameColumn: {}", (Object) shortNameColumn);
+
+        List<FromXlsxGenericWorkoutDTO> workouts = new ArrayList<>();
+
+        for (int col = 3; col < data.length; col++) {
+            log.info("*** Next workout ***", col);
+            String[] dataColumn = data[col];
+            log.info("Mapping column {}: {}", col, Arrays.toString(dataColumn));
+            log.info("Short names: {}", Arrays.toString(shortNameColumn));
+
+            FromXlsxGenericWorkoutDTO workout = xlsxMapper.mapToFromXlsxGenericWorkoutDTO(
+                    dataColumn,
+                    shortNameColumn,
+                    col
+            );
+
+            if (workout.sets() != null && !workout.sets().isEmpty()) {
+                workouts.add(workout);
+            }
+        }
+
+        log.info("name: {}, workouts: {}", name, workouts);
+        return new FromXlsxGenericDTO(name, workouts);
     }
+
+
+
+
+//    public static void main(String[] args) throws IOException {
+//        ApplicationContext context = SpringApplication.run(FitlogtimerApplication.class, args);
+//        ExerciseRepository exerciseRepository = context.getBean(ExerciseRepository.class);
+//
+//        XlsxService xlsxService= new XlsxService(exerciseRepository);
+//        xlsxService.extractGenericSheet("Muscu46 comp");
+//    }
 }

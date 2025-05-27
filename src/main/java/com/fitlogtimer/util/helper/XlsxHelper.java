@@ -1,5 +1,7 @@
 package com.fitlogtimer.util.helper;
 
+import java.time.LocalDate;
+
 public class XlsxHelper {
     
     private XlsxHelper(){}
@@ -14,7 +16,7 @@ public class XlsxHelper {
         try {
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {
-            System.err.println("Erreur de conversion : " + value);
+            System.err.println("Erreur de conversion vers double: " + value);
             return 0.0;
         }
     }
@@ -23,14 +25,14 @@ public class XlsxHelper {
         if (value == null || value.isEmpty()) {
             return -1;
         }
-    
+
         try {
             value = value.replaceAll("[^\\d.]", "");
-            
+
             if (value.contains(".")) {
                 return (int) Double.parseDouble(value);
             }
-    
+
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             System.err.println("Erreur de conversion de reps : " + value);

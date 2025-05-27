@@ -1,17 +1,36 @@
 package com.fitlogtimer.fitlogtimer;
 
+//import com.fitlogtimer.repository.ExerciseRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.fitlogtimer.FitlogtimerApplication;
-import com.fitlogtimer.service.WorkoutService;
-import com.fitlogtimer.service.XlsxService;
+//import com.fitlogtimer.FitlogtimerApplication;
+//import com.fitlogtimer.service.WorkoutService;
+//import com.fitlogtimer.service.XlsxService;
+
+import java.io.IOException;
 
 @SpringBootApplication
 public class ManualTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+//        ApplicationContext context = SpringApplication.run(FitlogtimerApplication.class, args);
+//
+//        try {
+//            ExerciseRepository exerciseRepository = context.getBean(ExerciseRepository.class);
+//            XlsxService xlsxService = context.getBean(XlsxService.class);
+//            xlsxService.extractGenericSheet("Muscu46 comp");
+//        } catch (Exception e) {
+//            System.err.println("Erreur lors de l'exécution : " + e.getMessage());
+//            e.printStackTrace();
+//        }
+
+
+
+
         // ConfigurableApplicationContext context = SpringApplication.run(FitlogtimerApplication.class, args);
         
         // try {

@@ -91,34 +91,41 @@ public class XlsxMapper {
             }
 
             String cell = dataColumn[row];
-            log.info("cell: {} shortName: {} currentExercise: {} barWeight: {}", cell, shortName, currentExercise, barWeight);
-            if (shortName != null && !shortName.isBlank()) {
+
+            if(!cell.equals("NA")){
+                log.info("cell: {} shortName: {} currentExercise: {} barWeight: {}", cell, shortName, currentExercise, barWeight);
+            if (!shortName.equals("NA")) {
                 currentExercise = exerciseRepository.findByShortName(shortName.trim().toUpperCase());
                 barWeight = parseDouble(cell);
                 log.info("short name : {} currentExercise: {} barWeight: {}", shortName, currentExercise, barWeight);
-            } else if (currentExercise != null && cell != null && !cell.isBlank()) {
-                double weight = currentExercise.getType().equalsIgnoreCase("ELASTIC")
-                        ? 0.0
-                        : parseDouble(cell) + barWeight;
+            } else {
+                log.info("- else -");
+                if (currentExercise != null && cell != null && !cell.isBlank()) {
+                    log.info("- else if -");
+                    double weight = currentExercise.getType().equalsIgnoreCase("ELASTIC")
+                            ? 0.0
+                            : parseDouble(cell) + barWeight;
 
-                String bands = currentExercise.getType().equalsIgnoreCase("ELASTIC") ? cell : "";
-                int nbReps = findNbRepsBelowIfPresent(dataColumn, shortNameColumn, row);
-            log.info("currentExercise: {} weight: {} bands: {} nbReps: {}", currentExercise, weight, bands, nbReps);
-                ExerciseSetCreateDTO set = new ExerciseSetCreateDTO(
-                        currentExercise.getId(),
-                        weight,
-                        nbReps,
-                        bands,
-                        0,
-                        "",
-                        "",
-                        "",
-                        workoutId,
-                        currentExercise.getType()
-                );
-                log.info("set: {}", set);
-                sets.add(set);
+                    String bands = currentExercise.getType().equalsIgnoreCase("ELASTIC") ? cell : "";
+                    int nbReps = findNbRepsBelowIfPresent(dataColumn, shortNameColumn, row);
+                    log.info("currentExercise: {} weight: {} bands: {} nbReps: {}", currentExercise, weight, bands, nbReps);
+                    ExerciseSetCreateDTO set = new ExerciseSetCreateDTO(
+                            currentExercise.getId(),
+                            weight,
+                            nbReps,
+                            bands,
+                            0,
+                            "",
+                            "",
+                            "",
+                            workoutId,
+                            currentExercise.getType()
+                    );
+                    log.info("set: {}", set);
+                    sets.add(set);
+                }
             }
+            } else log.info("cell NA -> RIEN");
         }
 
 

@@ -413,3 +413,7 @@ Caused by: java.lang.AssertionError
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "select * [*]fromEXERCISE"
 Syntax error in SQL statement "select * [*]fromEXERCISE"; SQL statement:
 select * fromEXERCISE [42000-232]
+2025-05-28 10:15:44.535561+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "select * [*]fromEXERCISE"
+Syntax error in SQL statement "select * [*]fromEXERCISE"; SQL statement:
+select * fromEXERCISE [42000-232]

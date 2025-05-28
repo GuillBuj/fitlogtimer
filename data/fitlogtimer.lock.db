@@ -1,6 +1,6 @@
 #FileLock
-#Tue May 27 20:22:41 CEST 2025
-hostName=DESKTOP-L90BOMK
-id=19712fb74bfe9ee65a89c17595221ffa80cf3a50d88
+#Wed May 28 10:23:07 CEST 2025
+hostName=T4-03.greta.local
+id=19715fcde6a28a38e7baa126bff0a03770286a1fc8b
 method=file
-server=10.5.0.2\:52784
+server=192.168.56.1\:58012

@@ -198,23 +198,26 @@ public class XlsxService {
         List<FromXlsxGenericWorkoutDTO> workouts = new ArrayList<>();
 
         for (int col = 3; col < data.length; col++) {
-            log.info("*** Next workout ***", col);
-            String[] dataColumn = data[col];
-            log.info("Mapping column {}: {}", col, Arrays.toString(dataColumn));
-            log.info("Short names: {}", Arrays.toString(shortNameColumn));
+            if(col==20 || col==21) { //TODO: à supprimer, juste le temps de coder
+                log.info("*** Next workout ***", col);
+                String[] dataColumn = data[col];
+                log.info("Mapping column {}: {}", col, Arrays.toString(dataColumn));
+                log.info("Short names: {}", Arrays.toString(shortNameColumn));
 
-            FromXlsxGenericWorkoutDTO workout = xlsxMapper.mapToFromXlsxGenericWorkoutDTO(
-                    dataColumn,
-                    shortNameColumn,
-                    col
-            );
-
-            if (workout.sets() != null && !workout.sets().isEmpty()) {
-                workouts.add(workout);
+                FromXlsxGenericWorkoutDTO workout = xlsxMapper.mapToFromXlsxGenericWorkoutDTO(
+                        dataColumn,
+                        shortNameColumn,
+                        col
+                );
+                log.info("workout post mapper: {}", (Object) workout);
+                if (workout.sets() != null && !workout.sets().isEmpty()) {
+                    workouts.add(workout);
+                }
+                log.info("workouts: {}", (Object) workouts);
             }
         }
 
-        log.info("name: {}, workouts: {}", name, workouts);
+        log.info("name: {}, workouts size: {}, workouts: {}", name, workouts.size(), workouts);
         return new FromXlsxGenericDTO(name, workouts);
     }
 

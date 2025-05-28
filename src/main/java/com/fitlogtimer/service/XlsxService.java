@@ -180,7 +180,7 @@ public class XlsxService {
 
         // On tronque au bon nombre de lignes/colonnes
         String[][] trimmed = xlsxReader.trim(rawData, endRow, endCol);
-        log.info("trimmed: {}", (Object) trimmed);
+        log.info("trimmed: {}",(Object) trimmed);
 
         String[][] data = xlsxReader.transposeArray(trimmed); // chaque colonne représente un workout
         log.info("data: {}", (Object) data);
@@ -189,24 +189,38 @@ public class XlsxService {
         String name = rawData[0][0];
         log.info("name: {}", name);
 
-        String[] shortNameColumn = new String[endRow - 2];
+        List<String> shortNameList = new ArrayList<>();
+        List<String> barWeightList = new ArrayList<>();
+
         for (int i = 2; i < endRow; i++) {
-            shortNameColumn[i - 2] = rawData[i][0]; // colonne 0 car startColumn = 1 en lecture
+            String shortName = rawData[i][0];
+
+            // Stop si on atteint un marqueur de fin
+            if (FileConstants.GENERIC_END_MARKERS.contains(shortName)) {
+                break;
+            }
+
+            shortNameList.add(shortName);
+            barWeightList.add(rawData[i][1]);
         }
-        log.info("shortNameColumn: {}", (Object) shortNameColumn);
+
+        String[] shortNameColumn = shortNameList.toArray(new String[0]);
+        String[] barWeightColumn = barWeightList.toArray(new String[0]);
+
+        log.info("shortNameColumn(size:{}): {}", shortNameColumn.length, (Object) shortNameColumn);
+        log.info("barWeightColumn(size:{}): {}", barWeightColumn.length, (Object) barWeightColumn);
 
         List<FromXlsxGenericWorkoutDTO> workouts = new ArrayList<>();
 
-        for (int col = 3; col < data.length; col++) {
-            if(col==20 || col==21) { //TODO: à supprimer, juste le temps de coder
-                log.info("*** Next workout ***", col);
-                String[] dataColumn = data[col];
-                log.info("Mapping column {}: {}", col, Arrays.toString(dataColumn));
-                log.info("Short names: {}", Arrays.toString(shortNameColumn));
-
+        for (int col = 2; col < data.length; col++) {
+            //if (col == 4 || col == 21) { // TODO: à supprimer une fois que ça fonctionne
+                log.info("*** Next workout *** col {}", col);
+                String[] dataColumn = Arrays.copyOf(data[col], endRow);
+                log.info("dataColumn(size: {}): {}", dataColumn.length, dataColumn);
                 FromXlsxGenericWorkoutDTO workout = xlsxMapper.mapToFromXlsxGenericWorkoutDTO(
                         dataColumn,
                         shortNameColumn,
+                        barWeightColumn,
                         col
                 );
                 log.info("workout post mapper: {}", (Object) workout);
@@ -215,13 +229,15 @@ public class XlsxService {
                 }
                 log.info("workouts: {}", (Object) workouts);
             }
-        }
+        //}
 
         log.info("name: {}, workouts size: {}, workouts: {}", name, workouts.size(), workouts);
         return new FromXlsxGenericDTO(name, workouts);
     }
 
-
+    public static boolean isEndMarker(String value) {
+        return value != null && FileConstants.GENERIC_END_MARKERS.contains(value.trim());
+    }
 
 
 //    public static void main(String[] args) throws IOException {

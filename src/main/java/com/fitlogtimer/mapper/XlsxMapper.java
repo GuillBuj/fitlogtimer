@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.constants.FileConstants;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.fromxlsx.*;
@@ -26,7 +27,7 @@ import static com.fitlogtimer.util.helper.XlsxHelper.*;
 @Slf4j
 public class XlsxMapper {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
 
     private final ExerciseRepository exerciseRepository;
 
@@ -74,13 +75,15 @@ public class XlsxMapper {
         return new FromXlsxDCVarDTO(date, bodyWeight, sets);
     }
 
-    public FromXlsxGenericWorkoutDTO mapToFromXlsxGenericWorkoutDTO(String[] dataColumn, String[] shortNameColumn, int workoutId) {
+    public FromXlsxGenericWorkoutDTO mapToFromXlsxGenericWorkoutDTO(String[] dataColumn, String[] shortNameColumn, String[] barWeightColumn, int workoutId) {
         LocalDate date = parseDate(dataColumn[0]);
         double bodyWeight = parseDouble(dataColumn[1]);
 
         List<ExerciseSetCreateDTO> sets = new ArrayList<>();
         Exercise currentExercise = null;
         double barWeight = 0.0;
+        double weight = 0.0;
+        String bands = "";
 
         for (int row = 2; row < dataColumn.length; row++) {
             // Décalage ici : shortNameColumn index commence à 0 pour dataColumn[2]
@@ -91,98 +94,45 @@ public class XlsxMapper {
             }
 
             String cell = dataColumn[row];
+            String currentExerciseType = "";
+            if(!cell.equals("NA")){ //ligne avec nom de l'ex
+                if (!shortName.equals("NA")) {
+                    currentExercise = exerciseRepository.findByShortName(shortName.trim().toUpperCase());
+                    currentExerciseType = currentExercise.getType();
+                    barWeight = parseDouble(barWeightColumn[row-2]);
 
-            if(!cell.equals("NA")){
-                log.info("cell: {} shortName: {} currentExercise: {} barWeight: {}", cell, shortName, currentExercise, barWeight);
-            if (!shortName.equals("NA")) {
-                currentExercise = exerciseRepository.findByShortName(shortName.trim().toUpperCase());
-                barWeight = parseDouble(cell);
-                log.info("short name : {} currentExercise: {} barWeight: {}", shortName, currentExercise, barWeight);
-            } else {
-                log.info("- else -");
-                if (currentExercise != null && cell != null && !cell.isBlank()) {
-                    log.info("- else if -");
-                    double weight = currentExercise.getType().equalsIgnoreCase("ELASTIC")
+                    weight = currentExerciseType.equalsIgnoreCase("ELASTIC")
                             ? 0.0
                             : parseDouble(cell) + barWeight;
+                    bands = currentExerciseType.equalsIgnoreCase(ExerciseSetType.ELASTIC)
+                            ? cell
+                            :"";
+                    log.debug("cell: {}, short name : {} currentExercise: {} barWeight: {} bands: {}", cell, shortName, currentExercise.getName(), barWeight, bands);
+                } else if (currentExercise != null && !cell.isBlank()) {
+                        currentExerciseType = currentExercise.getType();
+                        log.debug("Type: {}", currentExerciseType );
 
-                    String bands = currentExercise.getType().equalsIgnoreCase("ELASTIC") ? cell : "";
-                    int nbReps = findNbRepsBelowIfPresent(dataColumn, shortNameColumn, row);
-                    log.info("currentExercise: {} weight: {} bands: {} nbReps: {}", currentExercise, weight, bands, nbReps);
-                    ExerciseSetCreateDTO set = new ExerciseSetCreateDTO(
-                            currentExercise.getId(),
-                            weight,
-                            nbReps,
-                            bands,
-                            0,
-                            "",
-                            "",
-                            "",
-                            workoutId,
-                            currentExercise.getType()
-                    );
-                    log.info("set: {}", set);
-                    sets.add(set);
-                }
-            }
-            } else log.info("cell NA -> RIEN");
+                        int nbReps = parseReps(cell);
+                        log.debug("currentExercise: {} weight: {} bands: {} nbReps: {} barWeight: {}", currentExercise.getName(), weight, bands, nbReps, barWeight);
+                        ExerciseSetCreateDTO set = new ExerciseSetCreateDTO(
+                                currentExercise.getId(),
+                                weight,
+                                nbReps,
+                                bands,
+                                0,
+                                "",
+                                "",
+                                "",
+                                workoutId,
+                                currentExercise.getType()
+                        );
+                        log.info("+++ : {}", set);
+                        sets.add(set);
+                    }
+            } else log.debug("cell NA -> RIEN");
         }
-
-
-
-//        for (int row = 2; row < dataColumn.length; row++) {
-//            int shortNameIndex = row - 2;
-//            String shortName = shortNameIndex >= 0 && shortNameIndex < shortNameColumn.length
-//                    ? shortNameColumn[shortNameIndex]
-//                    : null;
-//
-//            if (shortName != null && !shortName.isBlank() && !"NA".equalsIgnoreCase(shortName.trim())) {
-//                currentExercise = exerciseRepository.findByShortName(shortName.trim());
-//                barWeight = parseDouble(dataColumn[row]);
-//                log.info("short name : {} currentExercise: {} barWeight: {}", shortName, currentExercise, barWeight);
-//            } else if (currentExercise != null && dataColumn[row] != null && !dataColumn[row].isBlank()) {
-//                double weight = currentExercise.getType().equalsIgnoreCase("ELASTIC")
-//                        ? 0.0
-//                        : parseDouble(dataColumn[row]) + barWeight;
-//
-//                String bands = currentExercise.getType().equalsIgnoreCase("ELASTIC") ? dataColumn[row] : "";
-//                int nbReps = findNbRepsBelowIfPresent(dataColumn, shortNameColumn, row);
-//
-//                ExerciseSetCreateDTO set = new ExerciseSetCreateDTO(
-//                        currentExercise.getId(),
-//                        weight,
-//                        nbReps,
-//                        bands,
-//                        0,
-//                        "",
-//                        "",
-//                        "",
-//                        workoutId,
-//                        currentExercise.getType()
-//                );
-//                log.info("set: {}", set);
-//                sets.add(set);
-//            } else {
-//                // Si shortName est NA ou vide et currentExercise est null, on ne fait rien
-//                log.debug("Ignoring row {} due to shortName='{}' and currentExercise=null", row, shortName);
-//            }
-//        }
-
 
         return new FromXlsxGenericWorkoutDTO(date, bodyWeight, sets);
-    }
-
-    private int findNbRepsBelowIfPresent(String[] dataColumn, String[] shortNameColumn, int currentRow) {
-        for (int i = 1; i <= 2; i++) {
-            int nextRow = currentRow + i;
-            if (nextRow < dataColumn.length) {
-                if (shortNameColumn[nextRow] == null || shortNameColumn[nextRow].isBlank()) {
-                    int reps = parseReps(dataColumn[nextRow]);
-                    if (reps > 0) return reps;
-                }
-            }
-        }
-        return 0;
     }
 
     private ExercisePair determineExercises(String type) {
@@ -253,10 +203,5 @@ public class XlsxMapper {
         return new FromXlsxDeadliftDTO(date, bodyWeight, set);
     }
  
-    private LocalDate parseDate(String dateStr) {
-        if (dateStr == null || dateStr.trim().isEmpty() || dateStr.trim().equalsIgnoreCase("NA")) {
-            throw new IllegalArgumentException("Date cannot be null or empty");
-        }
-        return LocalDate.parse(dateStr, DATE_FORMATTER);
-    }
+
 }

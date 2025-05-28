@@ -157,7 +157,7 @@ public class XlsxReader {
 
     public int findEndRow(String[][] data) {
         for (int i = 0; i < data.length; i++) {
-            String cell = data[i][1]; // seulement colonne 2
+            String cell = data[i][0];
             if (cell != null && FileConstants.GENERIC_END_MARKERS.contains(cell.trim())) {
                 return i;
             }
@@ -168,7 +168,7 @@ public class XlsxReader {
     public int findEndColumn(String[][] data) {
         if (data.length == 0) return 0;
         for (int j = 0; j < data[0].length; j++) {
-            String cell = data[0][j]; // ligne 1
+            String cell = data[0][j];
             if (cell != null && FileConstants.GENERIC_END_MARKERS.contains(cell.trim())) {
                 return j;
             }

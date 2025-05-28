@@ -10,7 +10,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fitlogtimer.constants.FileConstants;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericDTO;
+import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericWorkoutDTO;
 import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
+import com.fitlogtimer.mapper.ExerciseSetFacadeMapper;
 import com.fitlogtimer.parser.XlsxReader;
 import com.fitlogtimer.util.parser.GenericStrengthWorkoutParser;
 import org.springframework.data.domain.Page;
@@ -85,6 +88,7 @@ public class WorkoutService {
     private final GenericStrengthWorkoutParser genericStrengthWorkoutParser;
 
     private final XlsxService xlsxService;
+    private final ExerciseSetFacadeMapper exerciseSetFacadeMapper;
 
     // public List<WorkoutListDisplayDTO> getAllWorkoutsDisplayDTO() {
     //     List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
@@ -409,7 +413,15 @@ public class WorkoutService {
     /*
      * CREATE FROM XLS
      */
-    
+
+    public List<Workout> createWorkoutsFromXlsxGenericDTO(FromXlsxGenericDTO dto){
+        String name = dto.name();
+        log.info("Import from generic sheet: {}",name);
+        return dto.workouts().stream()
+                .map(workoutDTO -> createWorkoutFromXlsxGenericWorkoutDTO(workoutDTO, name))
+                .collect(Collectors.toList());
+    }
+
     //  @Transactional
     //  public List<Workout> createWorkoutsFromXlsxDCHeavyDTOList(List<FromXlsxDCHeavyDTO> dtoList) {
     //      log.info("*** Import from Heavy Sheet ***");
@@ -572,7 +584,21 @@ public class WorkoutService {
     //  }
 
 
+    public Workout createWorkoutFromXlsxGenericWorkoutDTO(FromXlsxGenericWorkoutDTO fromXlsxGenericWorkoutDTO, String name){
+        Workout workout = workoutMapper.toEntity(fromXlsxGenericWorkoutDTO, name);
 
+        List<ExerciseSet> sets = fromXlsxGenericWorkoutDTO.sets().stream()
+                .map(exerciseSetFacadeMapper::toEntity)
+                .peek(set -> set.setWorkout(workout)) // lien bidirectionnel si besoin
+                .collect(Collectors.toList());
+
+        workout.setSetRecords(sets);
+
+        Workout savedWorkout = workoutRepository.save(workout);
+        log.info("Workout with id {} created with {} sets", savedWorkout.getId(), sets.size());
+
+        return savedWorkout;
+    }
 
 
 

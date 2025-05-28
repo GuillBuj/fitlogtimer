@@ -213,7 +213,7 @@ public class XlsxService {
         List<FromXlsxGenericWorkoutDTO> workouts = new ArrayList<>();
 
         for (int col = 2; col < data.length; col++) {
-            //if (col == 4 || col == 21) { // TODO: à supprimer une fois que ça fonctionne
+            if (col == 4 || col == 21) { // TODO: à supprimer une fois que ça fonctionne
                 log.info("*** Next workout *** col {}", col);
                 String[] dataColumn = Arrays.copyOf(data[col], endRow);
                 log.info("dataColumn(size: {}): {}", dataColumn.length, dataColumn);
@@ -229,7 +229,7 @@ public class XlsxService {
                 }
                 log.info("workouts: {}", (Object) workouts);
             }
-        //}
+        }
 
         log.info("name: {}, workouts size: {}, workouts: {}", name, workouts.size(), workouts);
         return new FromXlsxGenericDTO(name, workouts);

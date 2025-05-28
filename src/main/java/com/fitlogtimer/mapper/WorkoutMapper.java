@@ -2,6 +2,7 @@ package com.fitlogtimer.mapper;
 
 import java.util.List;
 
+import com.fitlogtimer.dto.fromxlsx.*;
 import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
 import org.mapstruct.*;
 
@@ -9,10 +10,6 @@ import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.display.ExerciseDisplayDTO;
 import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCHeavyDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCLightDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDCVarDTO;
-import com.fitlogtimer.dto.fromxlsx.FromXlsxDeadliftDTO;
 import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.model.Workout;
 
@@ -37,6 +34,9 @@ public interface WorkoutMapper {
     @Mapping(target = "type", constant = "VAR")
     @Mapping(target = "tagImport", constant = "importV")
     public Workout toEntity(FromXlsxDCVarDTO dto);
+
+    @Mapping(target = "tagImport",  expression = "java(\"import\" + type)")
+    public Workout toEntity(FromXlsxGenericWorkoutDTO dto, String type);
 
     // WorkoutListItemDTO toWorkoutListItemDTOPartial(Workout workout);
 

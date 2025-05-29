@@ -15,4 +15,19 @@ public record ExerciseSetCreateDTO(
         @Size(max=100) String comment,
         @Positive int workout_id,
         String type) {
+
+    public ExerciseSetCreateDTO withWorkoutId(int newWorkoutId) {
+        return new ExerciseSetCreateDTO(
+                exercise_id,
+                weight,
+                repNumber,
+                bands,
+                durationS,
+                distance,
+                tag,
+                comment,
+                newWorkoutId,
+                type
+        );
+    }
 }

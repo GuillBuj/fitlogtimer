@@ -585,19 +585,19 @@ public class WorkoutService {
 
 
     public Workout createWorkoutFromXlsxGenericWorkoutDTO(FromXlsxGenericWorkoutDTO fromXlsxGenericWorkoutDTO, String name){
+        log.info("Create workout from DTO {}",fromXlsxGenericWorkoutDTO);
         Workout workout = workoutMapper.toEntity(fromXlsxGenericWorkoutDTO, name);
+        log.info("Workout: {}",workout);
+        final int idWorkout = workoutRepository.save(workout).getId();
+        log.info("Workout ID: {}",idWorkout);
 
-        List<ExerciseSet> sets = fromXlsxGenericWorkoutDTO.sets().stream()
-                .map(exerciseSetFacadeMapper::toEntity)
-                .peek(set -> set.setWorkout(workout)) // lien bidirectionnel si besoin
-                .collect(Collectors.toList());
+        fromXlsxGenericWorkoutDTO.sets()
+                .forEach(exerciseSetCreateDTO -> {
+                    addExerciseSet(exerciseSetCreateDTO.withWorkoutId(idWorkout));
+                });
 
-        workout.setSetRecords(sets);
-
-        Workout savedWorkout = workoutRepository.save(workout);
-        log.info("Workout with id {} created with {} sets", savedWorkout.getId(), sets.size());
-
-        return savedWorkout;
+        log.info("Exercise sets added");
+        return workout;
     }
 
 

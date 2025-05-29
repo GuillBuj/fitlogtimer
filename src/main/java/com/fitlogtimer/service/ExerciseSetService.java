@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.base.SetBasicDTO;
@@ -57,10 +58,9 @@ public class ExerciseSetService {
 
     
     @Transactional
-    public ExerciseSet saveExerciseSet(ExerciseSetCreateDTO exerciseSetDTO) {
+    public ExerciseSet saveExerciseSet(@Valid ExerciseSetCreateDTO exerciseSetDTO) {
         log.info("*-*-* exerciseSetDTO à ajouter: {}", exerciseSetDTO);
         ExerciseSet exerciseSet = exerciseSetFacadeMapper.toEntity(exerciseSetDTO);
-        //ExerciseSet exerciseSet = exerciseSetMapper.toEntity(exerciseSetDTO, exerciseSetMappingHelper);
         log.info("*-*-* exerciseSet à ajouter post-mapping: {}", exerciseSet);
         return exerciseSetRepository.save(exerciseSet);
     }

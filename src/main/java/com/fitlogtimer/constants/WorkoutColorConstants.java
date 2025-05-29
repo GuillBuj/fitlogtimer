@@ -10,7 +10,8 @@ public final class WorkoutColorConstants {
         "HEAVY", "#FFCDD2",  // Rouge pâle pour les séances lourdes
         "LIGHT", "#C8E6C9",  // Vert pâle pour les séances légères
         "VAR", "#FFE0B2",    // Orange pâle pour les séances variables
-        "DL", "#C5CAE9"    // Bleu pâle pour les Deadlifts
+        "DL", "#C5CAE9",    // Bleu pâle pour les Deadlifts
+        "Muscu6+","#C8E6C9" //séance proche du Light
     );
 
     public static String getColorForWorkoutType(String workoutType) {

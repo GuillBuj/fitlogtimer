@@ -3,6 +3,7 @@ package com.fitlogtimer.fitlogtimer;
 //import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.FitlogtimerApplication;
 import com.fitlogtimer.repository.ExerciseRepository;
+import com.fitlogtimer.service.WorkoutService;
 import com.fitlogtimer.service.XlsxService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,15 +21,20 @@ public class ManualTest {
 
     public static void main(String[] args) throws IOException {
 
-        ApplicationContext context = SpringApplication.run(FitlogtimerApplication.class, args);
 
-        try {
+        ConfigurableApplicationContext context = SpringApplication.run(FitlogtimerApplication.class, args);
+        try  {
+            WorkoutService workoutService = context.getBean(WorkoutService.class);
             ExerciseRepository exerciseRepository = context.getBean(ExerciseRepository.class);
             XlsxService xlsxService = context.getBean(XlsxService.class);
-            xlsxService.extractGenericSheet("Muscu46 comp");
+            workoutService.deleteByTagImport("importMuscu6+");
+            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Muscu46 comp"));
         } catch (Exception e) {
             System.err.println("Erreur lors de l'exécution : " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            context.close();
+            System.exit(0); // Important pour terminer proprement
         }
 
 

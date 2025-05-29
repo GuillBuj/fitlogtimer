@@ -114,6 +114,7 @@ public class XlsxMapper {
 
                         int nbReps = parseReps(cell);
                         log.debug("currentExercise: {} weight: {} bands: {} nbReps: {} barWeight: {}", currentExercise.getName(), weight, bands, nbReps, barWeight);
+                        if(!(nbReps <0)){
                         ExerciseSetCreateDTO set = new ExerciseSetCreateDTO(
                                 currentExercise.getId(),
                                 weight,
@@ -128,6 +129,7 @@ public class XlsxMapper {
                         );
                         log.info("+++ : {}", set);
                         sets.add(set);
+                        }
                     }
             } else log.debug("cell NA -> RIEN");
         }

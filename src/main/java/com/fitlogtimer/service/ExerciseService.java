@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.fitlogtimer.dto.update.ExerciseUpdateDTO;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.constants.ExerciseSetType;
@@ -84,5 +85,17 @@ public class ExerciseService {
                             return getExerciseListItem(exercise.getId());
                         })
                         .collect(Collectors.toList());
+    }
+
+    public Exercise findById(int id) {
+        return exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
+    }
+
+    public Exercise updateExercise(ExerciseUpdateDTO exerciseUpdateDTO) {
+        return exerciseRepository.save(exerciseMapper.toEntity(exerciseUpdateDTO));
+    }
+
+    public ExerciseUpdateDTO getExerciseUpdateDTO(int id) {
+        return exerciseMapper.toExerciseUpdateDTO(exerciseRepository.getById(id));
     }
 }

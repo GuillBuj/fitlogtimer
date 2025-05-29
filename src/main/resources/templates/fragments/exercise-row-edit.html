@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<tr th:fragment="editRow" th:object="${exercise}">
+    <td><input type="text" th:field="*{shortName}" required/></td>
+    <td><input type="text" th:field="*{name}" required/></td>
+    <td></td>
+    <td></td>
+    <td>
+        <select th:field="*{muscle}">
+            <option th:each="m : ${muscles}" th:value="${m}" th:text="${m}"></option>
+        </select>
+    </td>
+    <td>
+        <select th:field="*{family}">
+            <option th:each="f : ${families}" th:value="${f}" th:text="${f}"></option>
+        </select>
+    </td>
+    <td>
+        <select th:field="*{type}">
+            <option th:each="entry : ${setTypes.entrySet()}" th:value="${entry.key}" th:text="${entry.value}"></option>
+        </select>
+    </td>
+    <td></td>
+    <td>
+        <input type="hidden" th:field="*{id}"/>
+        <button
+                th:attr="hx-post=@{/exercises/update}"
+                hx-include="closest tr"
+                hx-target="closest tr"
+                hx-swap="outerHTML"
+                class="btnValid">
+            Sauver
+        </button>
+        <button
+                type="button"
+                th:attr="hx-get=@{/exercises/viewRow/{id}(id=${exercise.id})}"
+                hx-target="closest tr"
+                hx-swap="outerHTML"
+                class="btn-link">
+            Annuler
+        </button>
+
+    </td>
+</tr>
+</body>
+</html>

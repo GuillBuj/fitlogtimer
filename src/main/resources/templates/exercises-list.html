@@ -43,11 +43,20 @@
                     <a th:if="${exercise.type == FREE_WEIGHT_TYPE}" th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">Maxs/rép</a>
                 </td>
                 <td>
+                    <button class="btnEdit"
+                            th:attr="hx-get=@{/exercises/editForm/{id}(id=${exercise.id})}"
+                            hx-target="closest tr"
+                            hx-swap="outerHTML">
+                        Modifier
+                    </button>
                     <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
                         <input type="hidden" name="_method" value="delete" />
                         <button type="submit" class="btnDelete">Supprimer</button>
                     </form>
                 </td>
+            </tr>
+            <tr class="edit-form" th:if="false" th:attr="data-exercise-id=${exercise.id}">
+                <!-- Cette ligne sera remplacée par le formulaire -->
             </tr>
         </tbody>
     </table>
@@ -90,5 +99,7 @@
         <div>
             <button type="submit" class="btnValid">Ajouter l'exercice</button>
         </div>
+
+        <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 </body>
 </html>

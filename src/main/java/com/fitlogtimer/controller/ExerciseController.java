@@ -1,5 +1,7 @@
 package com.fitlogtimer.controller;
 
+import com.fitlogtimer.dto.update.ExerciseUpdateDTO;
+import com.fitlogtimer.model.Exercise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,6 +53,45 @@ public class ExerciseController {
         
         return "redirect:/exercises";
     }
+
+    @GetMapping("/editForm/{id}")
+    public String getEditForm(@PathVariable int id, Model model) {
+        ExerciseUpdateDTO dto = exerciseService.getExerciseUpdateDTO(id);
+        model.addAttribute("exercise", dto);
+        model.addAttribute("muscles", Muscle.values());
+        model.addAttribute("families", Family.values());
+        model.addAttribute("setTypes", ExerciseSetType.DISPLAY_NAMES);
+        return "fragments/exercise-row-edit:: editRow";
+    }
+
+    @GetMapping("/viewRow/{id}")
+    public String getExerciseRow(@PathVariable int id, Model model) {
+        model.addAttribute("exercise", exerciseService.findById(id));
+        model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
+        model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
+        model.addAttribute("ELASTIC_TYPE", ExerciseSetType.ELASTIC);
+        model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
+        return "fragments/exercise-row :: row";
+    }
+
+    @PostMapping("/update")
+    public String updateExercise(@ModelAttribute ExerciseUpdateDTO dto, Model model) {
+        exerciseService.updateExercise(dto);
+        model.addAttribute("exercise", exerciseService.findById(dto.id()));
+        model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
+        model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
+        model.addAttribute("ELASTIC_TYPE", ExerciseSetType.ELASTIC);
+        model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
+        return "fragments/exercise-row :: row";
+    }
+
+    @GetMapping("/exercises/cancel/{id}")
+    public String cancelEdit(@PathVariable int id, Model model) {
+        model.addAttribute("exercise", exerciseService.findById(id));
+        return "exercises/list :: #specific-row-" + id;
+    }
+
+
 
     @DeleteMapping("/{id}")
     public String deleteExercise(@PathVariable int id, RedirectAttributes redirectAttributes){

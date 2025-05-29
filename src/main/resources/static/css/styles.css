@@ -83,6 +83,26 @@ form {
     background-color: #1F5C3D;
 }
 
+.btnEdit {
+    padding: 10px;
+    background-color: #1E4B8B;  /* Bleu marine foncé */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btnEdit:hover {
+    background-color: #173A6B;  /* Bleu légèrement plus foncé au survol */
+}
+
+.btnEdit:active {
+    background-color: #0F294A;  /* Bleu très foncé au clic */
+}
+
 .alert {
     text-align: center;
     border-radius: 0.25rem;

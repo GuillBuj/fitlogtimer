@@ -1,16 +1,12 @@
 package com.fitlogtimer.controller;
 
+import com.fitlogtimer.dto.listitem.ExerciseListItemDTO;
 import com.fitlogtimer.dto.update.ExerciseUpdateDTO;
 import com.fitlogtimer.model.Exercise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fitlogtimer.constants.ExerciseSetType;
@@ -55,18 +51,29 @@ public class ExerciseController {
     }
 
     @GetMapping("/editForm/{id}")
-    public String getEditForm(@PathVariable int id, Model model) {
-        ExerciseUpdateDTO dto = exerciseService.getExerciseUpdateDTO(id);
-        model.addAttribute("exercise", dto);
+    public String getEditForm(@PathVariable int id,
+                              @RequestParam(required = false) Double pb,
+                              @RequestParam(required = false) Double orm,
+                              Model model) {
+        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm);
+        model.addAttribute("exercise", exercise);
         model.addAttribute("muscles", Muscle.values());
         model.addAttribute("families", Family.values());
         model.addAttribute("setTypes", ExerciseSetType.DISPLAY_NAMES);
+        model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
+        model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
+        model.addAttribute("ELASTIC_TYPE", ExerciseSetType.ELASTIC);
+        model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
         return "fragments/exercise-row-edit:: editRow";
     }
 
     @GetMapping("/viewRow/{id}")
-    public String getExerciseRow(@PathVariable int id, Model model) {
-        model.addAttribute("exercise", exerciseService.findById(id));
+    public String getExerciseRow(@PathVariable int id,
+                                 @RequestParam(required = false) Double pb,
+                                 @RequestParam(required = false) Double orm,
+                                 Model model) {
+        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm);
+        model.addAttribute("exercise", exercise);
         model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
         model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
         model.addAttribute("ELASTIC_TYPE", ExerciseSetType.ELASTIC);
@@ -75,9 +82,14 @@ public class ExerciseController {
     }
 
     @PostMapping("/update")
-    public String updateExercise(@ModelAttribute ExerciseUpdateDTO dto, Model model) {
+    public String updateExercise(@ModelAttribute ExerciseListItemDTO dto,
+                                 @RequestParam(required = false) Double pb,
+                                 @RequestParam(required = false) Double orm,
+                                 Model model) {
+        log.info("Updating exercise " + dto);
         exerciseService.updateExercise(dto);
-        model.addAttribute("exercise", exerciseService.findById(dto.id()));
+        log.info("Exercise updated");
+        model.addAttribute("exercise", dto);
         model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
         model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
         model.addAttribute("ELASTIC_TYPE", ExerciseSetType.ELASTIC);

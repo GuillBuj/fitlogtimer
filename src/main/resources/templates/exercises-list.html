@@ -44,7 +44,7 @@
                 </td>
                 <td>
                     <button class="btnEdit"
-                            th:attr="hx-get=@{/exercises/editForm/{id}(id=${exercise.id})}"
+                            th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}|}"
                             hx-target="closest tr"
                             hx-swap="outerHTML">
                         Modifier

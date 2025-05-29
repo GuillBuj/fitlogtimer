@@ -87,12 +87,20 @@ public class ExerciseService {
                         .collect(Collectors.toList());
     }
 
+    public ExerciseListItemDTO getExerciseListItemDTO(Exercise exercise, Double personalBest, Double oneRepMaxEst) {
+        return  ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst);
+    }
+
     public Exercise findById(int id) {
         return exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
     }
 
-    public Exercise updateExercise(ExerciseUpdateDTO exerciseUpdateDTO) {
-        return exerciseRepository.save(exerciseMapper.toEntity(exerciseUpdateDTO));
+//    public Exercise updateExercise(ExerciseUpdateDTO exerciseUpdateDTO) {
+//        return exerciseRepository.save(exerciseMapper.toEntity(exerciseUpdateDTO));
+//    }
+
+    public Exercise updateExercise(ExerciseListItemDTO exerciseListItemDTO){
+        return exerciseRepository.save(exerciseMapper.toEntity(exerciseListItemDTO));
     }
 
     public ExerciseUpdateDTO getExerciseUpdateDTO(int id) {

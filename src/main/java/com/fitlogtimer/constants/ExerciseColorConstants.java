@@ -6,15 +6,45 @@ public final class ExerciseColorConstants {
     
     private ExerciseColorConstants() {}
 
-    public static final Map<String, String> COLORS = Map.of(
-        "DC", "#3E4A59",  // Gris très foncé
-        "DC30", "#5C6A77",  // Gris-vert plus clair
-        "DCS", "#4B5E4C",  // Vert foncé légèrement plus marqué
-        "DM", "#5A4A66",  // Violet foncé (ajusté pour plus de contraste)
-        "DC15", "#5A6B7C",  // Gris-bleu clair, similaire à DC30
-        "DCD", "#7A8C9B",  // Gris clair mais un peu plus chaud
-        "DL", "#A53A3A"  // Rouge sombre (Firebrick)
+    public static final Map<String, String> COLORS = Map.ofEntries(
+            Map.entry("DC", "#3E4A59"),
+            Map.entry("DC30", "#5C6A77"),
+            Map.entry("DCS", "#4B5E4C"),
+            Map.entry("DM", "#5A4A66"),
+            Map.entry("D15", "#5A6B7C"),
+            Map.entry("DCD", "#7A8C9B"),
+            Map.entry("DL", "#A53A3A"),
+            Map.entry("B", "#000000"),
+            Map.entry("HSQ", "#1A237E"),
+            Map.entry("SH", "#2B2B2B"),
+            Map.entry("DE", "#3D0C3C"),
+            Map.entry("DO", "#381819"),
+            Map.entry("TH", "#3B3C36"),
+            Map.entry("TVH", "#2C3539")
+
     );
+
+//    Noir	#000000
+//    Gris charbon	#2B2B2B
+//    Bleu nuit	#0B3D91
+//    Bordeaux	#581845
+//    Vert sapin	#014421
+//    Bleu pétrole	#003B46
+//    Gris anthracite	#3B3B3B
+//    Marron foncé	#4B2E2E
+//    Indigo foncé	#1A237E
+//    Prune	#3D0C3C
+//    Vert forêt	#0B3D0B
+//    Bleu marine	#000080
+//    Gris plomb	#1E1E1E
+//    Rouge foncé	#8B0000
+//    Brun chocolat	#381819
+//    Violet foncé	#301934
+//    Acier bleuté	#2C3539
+//    Olive foncée	#3B3C36
+//    Bleu minuit	#191970
+//    Ardoise foncée	#2F4F4F
+
 
     public static String getColorForExercise(String exerciseName) {
         return COLORS.getOrDefault(exerciseName, "#CCCCCC"); // Couleur par défaut

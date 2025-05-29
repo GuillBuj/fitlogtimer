@@ -1,5 +1,6 @@
 package com.fitlogtimer.mapper;
 
+import com.fitlogtimer.dto.listitem.ExerciseListItemDTO;
 import com.fitlogtimer.dto.update.ExerciseUpdateDTO;
 import org.mapstruct.Mapper;
 
@@ -14,4 +15,6 @@ public interface ExerciseMapper {
     ExerciseUpdateDTO toExerciseUpdateDTO(Exercise exercise);
 
     Exercise toEntity(ExerciseUpdateDTO exerciseUpdateDTO);
+
+    Exercise toEntity(ExerciseListItemDTO exerciseListItemDTO);
 }

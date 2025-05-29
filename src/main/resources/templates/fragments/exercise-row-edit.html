@@ -7,8 +7,12 @@
 <tr th:fragment="editRow" th:object="${exercise}">
     <td><input type="text" th:field="*{shortName}" required/></td>
     <td><input type="text" th:field="*{name}" required/></td>
-    <td></td>
-    <td></td>
+    <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"
+        th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
+    <td th:unless="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}">-</td>
+    <td th:if="${exercise.type == FREE_WEIGHT_TYPE}"
+        th:text="|${exercise.oneRepMaxEst % 1 == 0? exercise.oneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.oneRepMaxEst, 1, 1)} kg|"></td>
+    <td th:unless="${exercise.type == FREE_WEIGHT_TYPE}">-</td>
     <td>
         <select th:field="*{muscle}">
             <option th:each="m : ${muscles}" th:value="${m}" th:text="${m}"></option>
@@ -24,9 +28,15 @@
             <option th:each="entry : ${setTypes.entrySet()}" th:value="${entry.key}" th:text="${entry.value}"></option>
         </select>
     </td>
-    <td></td>
+    <td>
+        <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
+        <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
+        <a th:if="${type == FREE_WEIGHT_TYPE}" th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">Maxs/rép</a>
+    </td>
     <td>
         <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{personalBest}"/>
+        <input type="hidden" th:field="*{oneRepMaxEst}"/>
         <button
                 th:attr="hx-post=@{/exercises/update}"
                 hx-include="closest tr"
@@ -37,7 +47,7 @@
         </button>
         <button
                 type="button"
-                th:attr="hx-get=@{/exercises/viewRow/{id}(id=${exercise.id})}"
+                th:attr="hx-get=@{|/exercises/viewRow/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}|}"
                 hx-target="closest tr"
                 hx-swap="outerHTML"
                 class="btn-link">

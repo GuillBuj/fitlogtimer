@@ -31,7 +31,7 @@
     <td>
         <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
         <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
-        <a th:if="${type == FREE_WEIGHT_TYPE}" th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">Maxs/rép</a>
+        <a th:if="${exercise.type == FREE_WEIGHT_TYPE}" th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">Maxs/rép</a>
     </td>
     <td>
         <input type="hidden" th:field="*{id}"/>

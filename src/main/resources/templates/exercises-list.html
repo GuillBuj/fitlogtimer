@@ -29,13 +29,18 @@
                         <option th:each="family : ${families}" th:value="${family}" th:text="${family}"></option>
                     </select>
                 </th>
-                <th>Type</th>
+                <th>Type<br>
+                    <select id="typeFilter">
+                        <option value="all">Toutes</option>
+                        <option th:each="entry : ${setTypes}" th:value="${entry.key}" th:text="${entry.value}"></option>
+                    </select>
+                </th>
                 <th>+</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="exercise : ${exercises}" th:attr="data-family=${exercise.family()}, data-muscle=${exercise.muscle()}">
+            <tr th:each="exercise : ${exercises}" th:attr="data-family=${exercise.family()}, data-muscle=${exercise.muscle()}, data-type=${exercise.type()}">
                 <td th:text="${exercise.shortName}"></td>
                 <td th:text="${exercise.name}"></td>
                 <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"

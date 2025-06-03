@@ -609,3 +609,24 @@ select option {
     border: 1px solid #ccc;
     display: inline-block;
 }
+
+.suggested-colors {
+    margin-top: 6px;
+    display: flex;
+    gap: 3px;
+}
+
+.suggestedColor {
+    width: 6px;
+    height: 6px;
+    display: inline-block;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    margin: 1px;
+}
+
+.suggestedColor:hover {
+    border-color: #000;
+}
+

@@ -1,6 +1,7 @@
 package com.fitlogtimer.controller;
 
 import com.fitlogtimer.constants.ExerciseColorConstants;
+import com.fitlogtimer.constants.SuggestedExerciseColors;
 import com.fitlogtimer.dto.listitem.ExerciseListItemDTO;
 import com.fitlogtimer.dto.update.ExerciseUpdateDTO;
 import com.fitlogtimer.model.Exercise;
@@ -28,7 +29,9 @@ public class ExerciseController {
 
     @GetMapping
     public String showExercisesList(Model model){
-        
+
+        log.info(SuggestedExerciseColors.COLORS.toString());
+
         model.addAttribute("exercises", exerciseService.getAllExerciseItems());
         model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL, ExerciseSetType.FREE_WEIGHT));
         model.addAttribute("muscles", Muscle.values());
@@ -65,6 +68,8 @@ public class ExerciseController {
         model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
         model.addAttribute("ELASTIC_TYPE", ExerciseSetType.ELASTIC);
         model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
+        model.addAttribute("suggestedColors", SuggestedExerciseColors.COLORS);
+
         return "fragments/exercise-row-edit:: editRow";
     }
 

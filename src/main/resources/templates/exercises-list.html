@@ -19,7 +19,7 @@
                 <th>1RMest</th>
                 <th>Muscles<br>
                     <select id="muscleFilter">
-                        <option value="all">Toutes</option>
+                        <option value="all">Tous</option>
                         <option th:each="muscle : ${muscles}" th:value="${muscle}" th:text="${muscle}"></option>
                     </select>
                 </th>
@@ -31,7 +31,7 @@
                 </th>
                 <th>Type<br>
                     <select id="typeFilter">
-                        <option value="all">Toutes</option>
+                        <option value="all">Tous</option>
                         <option th:each="entry : ${setTypes}" th:value="${entry.key}" th:text="${entry.value}"></option>
                     </select>
                 </th>

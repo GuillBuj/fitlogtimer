@@ -18,14 +18,19 @@
                 <th>PB</th>
                 <th>1RMest</th>
                 <th>Muscles</th>
-                <th>Famille</th>
+                <th>Famille
+                    <select id="familyFilter">
+                        <option value="all">Toutes</option>
+                        <option th:each="family : ${families}" th:value="${family}" th:text="${family}"></option>
+                    </select>
+                </th>
                 <th>Type</th>
                 <th>+</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="exercise : ${exercises}">
+            <tr th:each="exercise : ${exercises}" th:attr="data-family=${exercise.family()}">
                 <td th:text="${exercise.shortName}"></td>
                 <td th:text="${exercise.name}"></td>
                 <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"
@@ -49,7 +54,8 @@
                             hx-swap="outerHTML">
                         Modifier
                     </button>
-                    <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
+                    <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post"
+                          onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
                         <input type="hidden" name="_method" value="delete" />
                         <button type="submit" class="btnDelete">Supprimer</button>
                     </form>
@@ -99,7 +105,7 @@
         <div>
             <button type="submit" class="btnValid">Ajouter l'exercice</button>
         </div>
-
+        <script src="/js/exercise-filters.js"></script>
         <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 </body>
 </html>

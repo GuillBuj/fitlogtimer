@@ -6,6 +6,9 @@
 <body>
 <tr th:fragment="editRow" th:object="${exercise}">
     <td><input type="text" th:field="*{shortName}" required/></td>
+    <td><input type="color" name="color"
+               th:value="${@exerciseColorUtil.getDisplayColor(exercise.color, exercise.shortName)}"
+    /></td>
     <td><input type="text" th:field="*{name}" required/></td>
     <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"
         th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>

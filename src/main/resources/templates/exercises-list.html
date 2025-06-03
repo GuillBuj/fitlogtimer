@@ -14,6 +14,7 @@
         <thead>
             <tr>
                 <th>Short</th>
+                <th></th>
                 <th>Nom</th>
                 <th>PB</th>
                 <th>1RMest</th>
@@ -42,6 +43,11 @@
         <tbody>
             <tr th:each="exercise : ${exercises}" th:attr="data-family=${exercise.family()}, data-muscle=${exercise.muscle()}, data-type=${exercise.type()}">
                 <td th:text="${exercise.shortName}"></td>
+                <td>
+                    <div class="color-swatch"
+                         th:style="|background-color: ${@exerciseColorUtil.getDisplayColor(exercise.color, exercise.shortName)}|">
+                    </div>
+                </td>
                 <td th:text="${exercise.name}"></td>
                 <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"
                     th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>

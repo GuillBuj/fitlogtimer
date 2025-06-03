@@ -1,5 +1,6 @@
 package com.fitlogtimer.controller;
 
+import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.dto.listitem.ExerciseListItemDTO;
 import com.fitlogtimer.dto.update.ExerciseUpdateDTO;
 import com.fitlogtimer.model.Exercise;

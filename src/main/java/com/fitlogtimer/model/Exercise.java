@@ -39,4 +39,6 @@ public class Exercise {
     private String imageUrl;
 
     private String type; //free weight, elastic, bodyweight, iso
+
+    private String color;
 }

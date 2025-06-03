@@ -11,6 +11,7 @@ public record ExerciseListItemDTO(
     Muscle muscle,
     Family family,
     String type,
+    String color,
     double personalBest,
     double oneRepMaxEst
     ) {
@@ -22,6 +23,7 @@ public record ExerciseListItemDTO(
                     exercise.getMuscle(),
                     exercise.getFamily(),
                     exercise.getType(),
+                    exercise.getColor(),
                     personalBest,
                     oneRepMaxEst
                 );

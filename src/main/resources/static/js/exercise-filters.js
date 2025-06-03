@@ -1,18 +1,33 @@
 function setUpFamilyFilter(){
-    const filter = document.getElementById('familyFilter');
+    const familyFilter = document.getElementById('familyFilter');
+    const muscleFilter = document.getElementById('muscleFilter')
     const rows = document.querySelectorAll('tbody tr[data-family]');
 
-    if (!filter) return;
+    if (!familyFilter && !muscleFilter) return;
 
-    filter.addEventListener('change', function(){
-        const selectedFamily = this.value;
+    function applyFilters(){
+        const selectedFamily = familyFilter?.value || 'all';
+        const selectedMuscle = muscleFilter?.value || 'all';
 
         rows.forEach(row=> {
-            const  rowFamily = row.getAttribute('data-family');
-            row.style.display =(selectedFamily === 'all' || rowFamily === selectedFamily ?
-                '' : 'none')
-        })
-    })
+            const rowFamily = row.getAttribute('data-family');
+            const rowMuscle = row.getAttribute('data-muscle');
+
+            const familyMatch = selectedFamily === 'all' || rowFamily === selectedFamily;
+            const muscleMatch = selectedMuscle === 'all' || rowMuscle === selectedMuscle;
+            row.style.display =(familyMatch && muscleMatch)?
+                '' : 'none';
+        });
+    }
+
+    if(familyFilter){
+        familyFilter.addEventListener('change', applyFilters);
+    }
+    if(muscleFilter){
+        muscleFilter.addEventListener('change', applyFilters)
+    }
 }
 
 document.addEventListener('DOMContentLoaded', setUpFamilyFilter)
+//à decom si ajax
+//document.body.addEventListener('htmx:afterSwap', setUpFamilyFilter)

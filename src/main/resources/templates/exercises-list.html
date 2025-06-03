@@ -17,8 +17,13 @@
                 <th>Nom</th>
                 <th>PB</th>
                 <th>1RMest</th>
-                <th>Muscles</th>
-                <th>Famille
+                <th>Muscles<br>
+                    <select id="muscleFilter">
+                        <option value="all">Toutes</option>
+                        <option th:each="muscle : ${muscles}" th:value="${muscle}" th:text="${muscle}"></option>
+                    </select>
+                </th>
+                <th>Famille<br>
                     <select id="familyFilter">
                         <option value="all">Toutes</option>
                         <option th:each="family : ${families}" th:value="${family}" th:text="${family}"></option>
@@ -30,7 +35,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="exercise : ${exercises}" th:attr="data-family=${exercise.family()}">
+            <tr th:each="exercise : ${exercises}" th:attr="data-family=${exercise.family()}, data-muscle=${exercise.muscle()}">
                 <td th:text="${exercise.shortName}"></td>
                 <td th:text="${exercise.name}"></td>
                 <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"

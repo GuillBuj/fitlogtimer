@@ -5,7 +5,7 @@
 </head>
 <body>
 <tr th:fragment="editRow" th:object="${exercise}">
-    <td><input type="text" th:field="*{shortName}" required/></td>
+    <td><input class="shortName" type="text" th:field="*{shortName}" maxlength="5" required/></td>
     <td>
         <input type="color" name="color"
                th:value="${@exerciseColorUtil.getDisplayColor(exercise.color, exercise.shortName)}"/>

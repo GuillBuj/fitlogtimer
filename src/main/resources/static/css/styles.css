@@ -603,7 +603,7 @@ select option {
 }
 
 .color-swatch {
-    width: 20px;
+    width: 40px;
     height: 20px;
     border-radius: 4px;
     border: 1px solid #ccc;
@@ -617,8 +617,8 @@ select option {
 }
 
 .suggestedColor {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
     display: inline-block;
     border-radius: 2px;
     cursor: pointer;
@@ -628,5 +628,10 @@ select option {
 
 .suggestedColor:hover {
     border-color: #000;
+}
+
+.shortName{
+    max-width: 5ch;
+    width: auto;
 }
 

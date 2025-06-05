@@ -85,22 +85,12 @@ public class WorkoutService {
 
     private final SetsGroupCleanerService setsGroupCleanerService;
 
+    private final ExerciseService exerciseService;
+
     private final GenericStrengthWorkoutParser genericStrengthWorkoutParser;
 
     private final XlsxService xlsxService;
     private final ExerciseSetFacadeMapper exerciseSetFacadeMapper;
-
-    // public List<WorkoutListDisplayDTO> getAllWorkoutsDisplayDTO() {
-    //     List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
-    //     Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
-
-    //     return workouts.stream()
-    //         .map(workout -> workoutMapper.toWorkoutDisplayDTO(
-    //             workout,
-    //             exercises.getOrDefault(workout.getId(), List.of())
-    //     ))
-    //         .toList();
-    // }
 
     public Page<WorkoutListDisplayDTO> getPaginatedWorkoutsDisplayDTO(int page, int size) {
 
@@ -117,35 +107,25 @@ public class WorkoutService {
     }
 
     public CalendarDTO getCalendar(){
-        
-        return new CalendarDTO(getCalendarItems(), ExerciseColorConstants.COLORS, WorkoutColorConstants.COLORS);
+        List<Workout> workouts = workoutRepository.findAll();
+        Map<Integer, List<String>> exercisesByWorkout = getExerciseNamesForWorkouts(workouts);
+        Map<String, String> exerciseColors = exerciseService.getAllExerciseColors();
+
+        return new CalendarDTO(getCalendarItems(workouts, exercisesByWorkout), exerciseColors, WorkoutColorConstants.COLORS);
     }
 
-    public List<CalendarItemDTO> getCalendarItems() {
-        List<Workout> workouts = workoutRepository.findAll(); // ordre pas important ici, c'est JS qui trie par date
-        Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
-    
+    public List<CalendarItemDTO> getCalendarItems(List<Workout> workouts, Map<Integer, List<String>> exercisesByWorkout) {
+
         return workouts.stream()
                 .map(workout -> new CalendarItemDTO(
                         workout.getId(),
                         workout.getType(),
                         workout.getDate(),
-                        exercises.get(workout.getId()))
+                        exercisesByWorkout.get(workout.getId()))
                 )
                 .toList();
-        }
+    }
 
-    // public List<WorkoutListItemDTO> getAllWorkoutsDTO() {
-    //     List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc();
-    //     Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workouts);
-
-    //     return workouts.stream()
-    //             .map(workout -> workoutMapper.toWorkoutListItemDTO(
-    //                 workout,
-    //                 exercises.getOrDefault(workout.getId(), List.of())))
-    //             .toList();
-    // }
-    
     public List<Workout> getAllWorkouts() {
         return workoutRepository.findAllByOrderByDateDesc();
     }

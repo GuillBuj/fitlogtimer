@@ -12,6 +12,7 @@ public final class WorkoutColorConstants {
         "VAR", "#FFE0B2",    // Orange pâle pour les séances variables
         "DL", "#C5CAE9",    // Bleu pâle pour les Deadlifts
         "Muscu6+","#C8E6C9", //séance proche du Light
+        "Muscu9bis","#FFE6C9",
         "TigerShark", "#EDBB99",
             "TEST", "111111"
     );

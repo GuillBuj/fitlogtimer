@@ -7,16 +7,21 @@
 <tr th:fragment="editRow" th:object="${exercise}">
     <td><input class="shortName" type="text" th:field="*{shortName}" maxlength="5" required/></td>
     <td>
+        <!-- Color picker natif standard -->
         <input type="color" name="color"
                th:value="${@exerciseColorUtil.getDisplayColor(exercise.color, exercise.shortName)}"/>
-        <div class="suggested-colors">
+
+        <!-- Barre de couleurs scrollable -->
+        <div class="suggested-colors-scroll-container">
+            <div class="suggested-colors">
             <span th:each="col : ${suggestedColors}"
-                  th:style="|background-color: ${col}|"
                   th:attr="data-color=${col}"
+                  th:style="'background-color:' + ${col}"
                   class="suggestedColor"
-                  title="Cliquez pour choisir cette couleur"
-                  onclick="this.closest('tr').querySelector('input[type=color]').value=this.getAttribute('data-color')">
+                  onclick="this.closest('td').querySelector('input[type=color]').value=this.getAttribute('data-color')"
+                  title="Cliquer pour sélectionner">
             </span>
+            </div>
         </div>
     </td>
     <td><input type="text" th:field="*{name}" required/></td>
@@ -69,5 +74,7 @@
 
     </td>
 </tr>
+
+<script src="/js/color-picker-plus.js"></script>
 </body>
 </html>

@@ -610,25 +610,46 @@ select option {
     display: inline-block;
 }
 
-.suggested-colors {
+.suggested-colors-scroll-container {
     margin-top: 6px;
+    max-width: 120px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.suggested-colors {
     display: flex;
-    gap: 3px;
+    gap: 4px;
+    padding: 2px 0;
+    width: max-content;
 }
 
 .suggestedColor {
-    width: 8px;
-    height: 8px;
-    display: inline-block;
-    border-radius: 2px;
-    cursor: pointer;
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    border-radius: 3px;
     border: 1px solid #ccc;
-    margin: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
 .suggestedColor:hover {
+    transform: scale(1.1);
     border-color: #000;
 }
+
+/* Style minimal pour la scrollbar */
+.suggested-colors-scroll-container::-webkit-scrollbar {
+    height: 4px;
+}
+
+.suggested-colors-scroll-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 2px;
+}
+
+
 
 .shortName{
     max-width: 5ch;

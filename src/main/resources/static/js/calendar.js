@@ -4,17 +4,21 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('/api/calendar')
         .then(response => response.json())
         .then(data => {
-            const events = data.calendarItems.map(item => {
+            const calendarItems = data.calendarItems ?? [];
+            const exerciseColors = data.exerciseColors ?? {};
+            const workoutTypeColors = data.workoutTypeColors ?? {};
+
+            const events = calendarItems.map(item => {
                 return {
                     title: item.workoutType? item.workoutType : " ",
                     start: item.date,
-                    color: data.workoutTypeColors[item.workoutType] || '#999',
+                    color: workoutTypeColors[item.workoutType] || '#999',
                     idWorkout: item.idWorkout,
                     extendedProps: {
                         exercises: Array.isArray(item.exerciseShortNames)
                             ? item.exerciseShortNames.map(exerciseName => ({
                                 name: exerciseName,
-                                color: data.exerciseColors?.[exerciseName] || '#666'
+                                color: exerciseColors[exerciseName] || '#666'
                             })) : []
                     }
                 };

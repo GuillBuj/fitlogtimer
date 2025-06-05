@@ -99,6 +99,7 @@ public class XlsxMapper {
                 if (!shortName.equals("NA")) {
                     currentExercise = exerciseRepository.findByShortName(shortName.trim().toUpperCase());
                     currentExerciseType = currentExercise.getType();
+                    log.info("currentExercise: {}", currentExercise.toString());
                     barWeight = parseDouble(barWeightColumn[row-2]);
 
                     weight = currentExerciseType.equalsIgnoreCase("ELASTIC")
@@ -130,10 +131,12 @@ public class XlsxMapper {
                         log.info("+++ : {}", set);
                         sets.add(set);
                         }
-                    }
+
+                }
+
             } else log.debug("cell NA -> RIEN");
         }
-
+        log.info("fin de colonne");
         return new FromXlsxGenericWorkoutDTO(date, bodyWeight, sets);
     }
 

@@ -1,6 +1,7 @@
 package com.fitlogtimer.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -105,5 +106,12 @@ public class ExerciseService {
 
     public ExerciseUpdateDTO getExerciseUpdateDTO(int id) {
         return exerciseMapper.toExerciseUpdateDTO(exerciseRepository.getById(id));
+    }
+
+    public Map<String, String> getAllExerciseColors(){
+        return exerciseRepository.findAll().stream()
+                .collect(Collectors.toMap(
+                        Exercise::getShortName,
+                        exercise -> exercise.getColor() != null ? exercise.getColor() : "#666666"));
     }
 }

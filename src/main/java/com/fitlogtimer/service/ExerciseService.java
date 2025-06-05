@@ -33,7 +33,7 @@ public class ExerciseService {
 
     @Transactional
     public Exercise createExercise(ExerciseCreateDTO exerciseCreateDTO) {
-        
+        log.info("exerciseCreateDTO: {}",exerciseCreateDTO.toString());
         Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(exerciseCreateDTO));
         log.info("Exercise created: " + exercise);
         

@@ -1,5 +1,6 @@
 package com.fitlogtimer.controller;
 
+import com.fitlogtimer.constants.ColorConstants;
 import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.constants.SuggestedExerciseColors;
 import com.fitlogtimer.dto.listitem.ExerciseListItemDTO;
@@ -33,7 +34,7 @@ public class ExerciseController {
         log.info(SuggestedExerciseColors.COLORS.toString());
 
         model.addAttribute("exercises", exerciseService.getAllExerciseItems());
-        model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL, ExerciseSetType.FREE_WEIGHT));
+        model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL, ExerciseSetType.FREE_WEIGHT, ""));
         model.addAttribute("muscles", Muscle.values());
         model.addAttribute("families", Family.values());
         model.addAttribute("setTypes", ExerciseSetType.DISPLAY_NAMES);
@@ -47,7 +48,7 @@ public class ExerciseController {
     
     @PostMapping("/create")
     public String createExercise(@ModelAttribute("exercise") ExerciseCreateDTO exerciseCreateDTO, RedirectAttributes redirectAttributes){
-        
+        log.info(exerciseCreateDTO.toString());
         exerciseService.createExercise(exerciseCreateDTO);
         redirectAttributes.addFlashAttribute("successMessage", "Exercice créé avec succès");
         
@@ -68,7 +69,7 @@ public class ExerciseController {
         model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
         model.addAttribute("ELASTIC_TYPE", ExerciseSetType.ELASTIC);
         model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
-        model.addAttribute("suggestedColors", SuggestedExerciseColors.COLORS);
+        //model.addAttribute("suggestedColors", SuggestedExerciseColors.COLORS);
 
         return "fragments/exercise-row-edit:: editRow";
     }

@@ -3,6 +3,7 @@ package com.fitlogtimer.repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fitlogtimer.model.Exercise;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,6 +37,9 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
        "JOIN ExerciseSet exerciseset ON exercise.id = exerciseset.exercise.id " +
        "WHERE exerciseset.workout.id = :workoutId")
     List<String> findExerciseShortNamesByWorkoutId(@Param("workoutId") int workoutId);
+
+    @Query("SELECT DISTINCT es.exercise FROM ExerciseSet es WHERE es.workout.id = :workoutId")
+    List<Exercise> findExercisesByWorkoutId(@Param("workoutId") int workoutId);
 
     @Modifying
     @Transactional

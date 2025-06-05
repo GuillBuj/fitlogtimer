@@ -14,7 +14,7 @@
         <!-- Barre de couleurs scrollable -->
         <div class="suggested-colors-scroll-container">
             <div class="suggested-colors">
-            <span th:each="col : ${suggestedColors}"
+            <span th:each="col : ${@suggestedExerciseColors.colors}"
                   th:attr="data-color=${col}"
                   th:style="'background-color:' + ${col}"
                   class="suggestedColor"

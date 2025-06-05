@@ -93,6 +93,19 @@
             <label for="shortName">Short :</label>
             <input type="text" id="shortName" th:field="*{shortName}" maxlength="5" oninput="this.value = this.value.toUpperCase()" class="shortInput" required>
         </div>
+        <input id="colorPicker" type="color" th:field="*{color}"/>
+
+        <div class="suggested-colors-scroll-container">
+            <div class="suggested-colors">
+            <span th:each="col : ${@suggestedExerciseColors.colors15}"
+                  th:attr="data-color=${col}"
+                  th:style="'background-color:' + ${col}"
+                  class="suggestedColor"
+                  onclick="document.getElementById('colorPicker').value = this.getAttribute('data-color')"
+                  title="Cliquer pour sélectionner">
+            </span>
+            </div>
+        </div>
         <div class="form-group">
             <label for="muscle">Muscle :</label>
             <select id="muscle" th:field="*{muscle}" required>
@@ -102,7 +115,7 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="family">Family :</label>
+            <label for="family">Famille :</label>
             <select id="family" th:field="*{family}" required>
                 <option th:each="family : ${families}" 
                         th:value="${family}" 
@@ -110,7 +123,7 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="type">Type de série :</label>
+            <label for="type">Type :</label>
             <select id="type" th:field="*{type}" name="type" class="form-control" required>
                 <option th:each="entry : ${setTypes.entrySet()}"
                         th:value="${entry.key}"

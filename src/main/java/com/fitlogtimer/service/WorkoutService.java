@@ -10,9 +10,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fitlogtimer.constants.FileConstants;
+import com.fitlogtimer.dto.display.ExerciseDisplayDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericWorkoutDTO;
 import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
+import com.fitlogtimer.mapper.ExerciseMapper;
 import com.fitlogtimer.mapper.ExerciseSetFacadeMapper;
 import com.fitlogtimer.parser.XlsxReader;
 import com.fitlogtimer.util.parser.GenericStrengthWorkoutParser;
@@ -77,6 +79,8 @@ public class WorkoutService {
 
     private final ExerciseSetMapper exerciseSetMapper;
 
+    private final ExerciseMapper exerciseMapper;
+
     private final ExerciseRepository exerciseRepository;
 
     private final ExerciseSetService exerciseSetService;
@@ -105,6 +109,23 @@ public class WorkoutService {
                 exercises.getOrDefault(workout.getId(), List.of())
         ));
     }
+
+
+    //TODO
+//    public Page<WorkoutListDisplayDTO> getPaginatedWorkoutsDisplayDTO(int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+//        Page<Workout> workoutPage = workoutRepository.findAllByOrderByDateDesc(pageable);
+//
+//        Map<Integer, List<ExerciseDisplayDTO>> exercisesByWorkout =
+//                getExerciseDTOsForWorkouts(workoutPage.getContent());
+//
+//        return workoutPage.map(workout ->
+//                workoutMapper.toWorkoutDisplayDTO(
+//                        workout,
+//                        exercisesByWorkout.getOrDefault(workout.getId(), List.of())
+//                )
+//        );
+//    }
 
     public CalendarDTO getCalendar(){
         List<Workout> workouts = workoutRepository.findAll();
@@ -358,6 +379,37 @@ public class WorkoutService {
                 Map.Entry::getKey,
                 entry -> new ArrayList<>(entry.getValue())
             ));
+    }
+
+    private Map<Integer, List<Exercise>> getExercisesForWorkouts(List<Workout> workouts) {
+        List<ExerciseSet> sets = exerciseSetRepository.findByWorkoutIdIn(
+                workouts.stream().map(Workout::getId).toList()
+        );
+
+        return sets.stream()
+                .collect(Collectors.groupingBy(
+                        exerciseSet -> exerciseSet.getWorkout().getId(),
+                        Collectors.mapping(
+                                ExerciseSet::getExercise,
+                                Collectors.toCollection(LinkedHashSet::new)//garde l'ordre en supprimant les doublons
+                        )
+                ))
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> new ArrayList<>(entry.getValue())
+                ));
+    }
+
+    private Map<Integer, List<ExerciseDisplayDTO>> getExerciseDTOsForWorkouts(List<Workout> workouts) {
+        Map<Integer, List<Exercise>> rawMap = getExercisesForWorkouts(workouts);
+        return rawMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream()
+                                .map(exerciseMapper::toExerciseDisplayDTO)
+                                .toList()
+                ));
     }
 
     @Transactional

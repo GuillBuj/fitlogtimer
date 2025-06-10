@@ -46,22 +46,22 @@ public interface WorkoutMapper {
     // @Mapping(target = "exercises", source = "exerciseShortNames", qualifiedByName = "mapExercises")
     // WorkoutListDisplayDTO toWorkoutDisplayDTO(WorkoutListItemDTO dto);
 
-    @Mapping(target = "exercises", source = "exerciseShortNames", qualifiedByName = "mapExercises")
+    @Mapping(target = "exercises", source = "exerciseShortNames")
     WorkoutListDisplayDTO toWorkoutDisplayDTO(Workout workout, List<String> exerciseShortNames);
     
-    @Named("mapExercises")
-    static List<ExerciseDisplayDTO> mapExercises(List<String> names) {
-        if (names == null) return List.of();
-        return names.stream()
-                .map(name -> new ExerciseDisplayDTO(
-                        name,
-                        ExerciseColorConstants.getColorForExercise(name)
-                ))
-                .toList();
-    }
+//    @Named("mapExercises")
+//    static List<ExerciseDisplayDTO> mapExercises(List<String> names) {
+//        if (names == null) return List.of();
+//        return names.stream()
+//                .map(name -> new ExerciseDisplayDTO(
+//                        name,
+//                        ExerciseColorConstants.getColorForExercise(name)
+//                ))
+//                .toList();
+//    }
 
-    @Mapping(target = "exercises", source = "exerciseShortNames", qualifiedByName = "mapExercises")
-    WorkoutListDisplayDTO toWorkoutListDisplayDTO(Workout workout, List<String> exerciseShortNames);
+//    @Mapping(target = "exercises", source = "exerciseShortNames", qualifiedByName = "mapExercises")
+//    WorkoutListDisplayDTO toWorkoutListDisplayDTO(Workout workout, List<String> exerciseShortNames);
 
 //    @Named("mapExercise")
 //    static ExerciseDisplayDTO mapExercise(String name) {

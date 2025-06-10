@@ -26,10 +26,10 @@
                 <td th:text="${workoutData.date}"></td>
                 <td th:text="${#numbers.formatDecimal(workoutData.bodyWeight, 1, 1)} + ' kg'"></td>
                 <td>
-                    <span th:each="exercise : ${workoutData.exercises}" 
-                    th:style="'background-color:' + ${exercise.color}" 
+                    <span th:each="exercise : ${workoutData.exercises}"
+                          th:style="|background-color: ${@exerciseColorUtil.getDisplayColor(exercise)}|"
                     class="exercise-rect">
-                    <span th:text="${exercise.name}"></span>
+                    <span th:text="${exercise}"></span>
                     </span>
                 </td>
                 <td>

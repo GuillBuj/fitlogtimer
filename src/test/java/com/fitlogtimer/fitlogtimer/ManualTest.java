@@ -29,6 +29,8 @@ public class ManualTest {
             XlsxService xlsxService = context.getBean(XlsxService.class);
             workoutService.deleteByTagImport("importMuscu6+");
             workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Muscu46 comp"));
+            workoutService.deleteByTagImport("importImpro");
+            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Impro"));
 //            workoutService.deleteByTagImport("importMuscu9bis");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("IMPORT vierge2"));
 //            workoutService.deleteByTagImport("importTigerShark");

@@ -127,16 +127,13 @@ public class WorkoutController {
             @RequestParam(defaultValue = "10") int size,
             Model model) {
         Page<WorkoutListDisplayDTO> workoutPage = workoutService.getPaginatedWorkoutsDisplayDTO(page, size);
-        // if (workoutList.size()>0){
-        //     log.info("-*-*-*-*-*-*-*-* Workouts: {}", workoutList.toString());
-        // } else {
-        //     log.info("-*-*-*-*-*-*-*-* Workouts: VIDE");
-        // }
-        
+
         model.addAttribute("workoutPage", workoutPage);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", workoutPage.getTotalPages());
         model.addAttribute("workoutList", workoutPage.getContent());
+        //model.addAttribute("exerciseColors", exerciseService.getAllExerciseColors());
+
         return "workout-list";
     }
     

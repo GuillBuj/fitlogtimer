@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Liste des séances</title>
+</head>
+<body>
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
+    <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+    <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+
+    <h1>Liste des séances </h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Poids</th>
+                <th>Exs</th>
+                <th></th>                
+                <th>Type</th>
+                <th>Commentaires</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="workoutData : ${workoutList}">
+                <td th:text="${workoutData.date}"></td>
+                <td th:text="${#numbers.formatDecimal(workoutData.bodyWeight, 1, 1)} + ' kg'"></td>
+                <td>
+                    <span th:each="exercise : ${workoutData.exercises}"
+                          th:style="|background-color: ${@exerciseColorUtil.getDisplayColor(exercise)}|"
+                    class="exercise-rect">
+                    <span th:text="${exercise}"></span>
+                    </span>
+                </td>
+                <td>
+                    <a th:href="@{/workouts/{id}(id=${workoutData.id})}" class="btn-link">Détails</a>
+                    <a th:href="@{/workouts/{id}/brut(id=${workoutData.id})}" class="btn-link">Set par set</a>
+                </td>
+                <td th:text="${workoutData.type}"></td>
+                <td th:text="${workoutData.comment}"></td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <a th:if="${workoutPage.hasPrevious()}"
+            th:href="@{/workouts(page=${workoutPage.number - 1}, size=${workoutPage.size})}"
+            class="page-btn">&lt;</a>
+
+        <span th:text="(${workoutPage.number + 1}) + ' / ' + ${workoutPage.totalPages}"></span>
+
+        <a th:if="${workoutPage.hasNext()}"
+            th:href="@{/workouts(page=${workoutPage.number + 1}, size=${workoutPage.size})}"
+            class="page-btn">&gt;</a>
+    </div>
+
+    <a href="/workouts/create" class="btn-new">Nouvelle séance</a>
+
+
+</body>
+</html>

@@ -32,7 +32,9 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
 
     Page<Workout> findAllByOrderByDateDesc(Pageable pageable);
     List<Workout> findAllByOrderByDateDesc();
-    
+
+    Page<Workout> findAllByOrderByDateDesc(String type, Pageable pageable);
+
     @Query("SELECT DISTINCT exercise.shortName FROM Exercise exercise " +
        "JOIN ExerciseSet exerciseset ON exercise.id = exerciseset.exercise.id " +
        "WHERE exerciseset.workout.id = :workoutId")

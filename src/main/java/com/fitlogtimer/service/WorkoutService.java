@@ -97,9 +97,19 @@ public class WorkoutService {
     private final ExerciseSetFacadeMapper exerciseSetFacadeMapper;
 
     public Page<WorkoutListDisplayDTO> getPaginatedWorkoutsDisplayDTO(int page, int size) {
+        return getPaginatedWorkoutsDisplayDTO(page, size, null);
+    }
+
+    public Page<WorkoutListDisplayDTO> getPaginatedWorkoutsDisplayDTO(int page, int size, String type) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Page<Workout> workoutPage = workoutRepository.findAllByOrderByDateDesc(pageable);
+        Page<Workout> workoutPage;
+
+        if (type == null || type.isEmpty()) {
+            workoutPage = workoutRepository.findAllByOrderByDateDesc(pageable);
+        } else {
+            workoutPage = workoutRepository.findAllByOrderByDateDesc(type,pageable);
+        }
 
         Map<Integer, List<String>> exercises = getExerciseNamesForWorkouts(workoutPage.getContent());
 

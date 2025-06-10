@@ -26,7 +26,7 @@ public class ExerciseColorUtil {
     }
 
     public String getDisplayColor(String colorFromEntity, String shortName) {
-        log.info("getDisplayColor({}, {})", colorFromEntity, shortName);
+        //log.info("getDisplayColor({}, {})", colorFromEntity, shortName);
         if (StringUtils.hasText(colorFromEntity)){
             return colorFromEntity;
         }
@@ -36,7 +36,7 @@ public class ExerciseColorUtil {
     }
 
     public String getDisplayColor(String shortName) {
-        log.info("getDisplayColor({}): {}", shortName, colorCache.getOrDefault(shortName, "default"));
+        //log.info("getDisplayColor({}): {}", shortName, colorCache.getOrDefault(shortName, "default"));
         return colorCache.getOrDefault(shortName, "#666666");
     }
 }

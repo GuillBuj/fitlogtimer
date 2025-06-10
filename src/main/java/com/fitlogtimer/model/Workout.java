@@ -6,13 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,7 +26,10 @@ public class Workout {
 
     private LocalDate date;
     private double bodyWeight;
-    private String type;
+    //private String type;
+    @ManyToOne
+    @JoinColumn(name = "workout_type_name") // référence au champ name
+    private WorkoutType type;
     private String comment;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

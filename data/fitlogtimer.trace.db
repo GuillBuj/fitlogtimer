@@ -213,3 +213,7 @@ Caused by: java.lang.NumberFormatException: Error at index 2 in: "05/02/"
 	at org.h2.util.DateTimeUtils.parseDateValue(DateTimeUtils.java:190)
 	at org.h2.value.ValueDate.parse(ValueDate.java:51)
 	... 59 more
+2025-06-10 14:46:16.843475+02:00 jdbc[131]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: La table "HTE_WORKOUT_TYPE" existe déjà
+Table "HTE_WORKOUT_TYPE" already exists; SQL statement:
+create global temporary table HTE_workout_type(id integer, rn_ integer not null, name varchar(255), primary key (rn_)) TRANSACTIONAL [42101-232]

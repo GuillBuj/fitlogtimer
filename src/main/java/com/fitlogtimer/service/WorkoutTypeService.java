@@ -1,8 +1,8 @@
 package com.fitlogtimer.service;
 
 import com.fitlogtimer.dto.listitem.WorkoutTypeListItemDTO;
-import com.fitlogtimer.mapper.WorkoutListMapper;
-import com.fitlogtimer.mapper.WorkoutMapper;
+import com.fitlogtimer.dto.update.WorkoutTypeUpdateDTO;
+import com.fitlogtimer.mapper.WorkoutTypeMapper;
 import com.fitlogtimer.model.WorkoutType;
 import com.fitlogtimer.repository.WorkoutRepository;
 import com.fitlogtimer.repository.WorkoutTypeRepository;
@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 public class WorkoutTypeService {
 
     private final WorkoutTypeRepository workoutTypeRepository;
-    private final WorkoutListMapper workoutListMapper;
+    private final WorkoutTypeMapper workoutTypeMapper;
     private final WorkoutRepository workoutRepository;
     //private final WorkoutService workoutService;
 
@@ -42,9 +41,28 @@ public class WorkoutTypeService {
         return false;
     }
 
+    public boolean updateWorkoutType(WorkoutTypeUpdateDTO dto) {
+        Optional<WorkoutType> optional = workoutTypeRepository.findByName(dto.name());
+        if (optional.isEmpty()) {
+            return false;
+        }
+
+        WorkoutType workoutType = optional.get();
+        workoutTypeMapper.updateWorkoutTypeFromDTO(dto, workoutType);
+        workoutTypeRepository.save(workoutType);
+
+        return true;
+    }
+
+    public WorkoutTypeUpdateDTO getWorkoutTypeUpdateDTO(String name) {
+        return workoutTypeRepository.findByName(name)
+                .map(workoutTypeMapper::toWorkoutTypeUpdateDTO)
+                .orElseThrow(() -> new IllegalArgumentException("Aucun WorkoutType trouvé pour le nom : " + name));
+    }
+
     public Set<WorkoutTypeListItemDTO> getAllWorkoutTypeItems(){
         Set<WorkoutTypeListItemDTO> items = workoutTypeRepository.findAll().stream()
-                .map(workoutListMapper::toWorkoutTypeListItemDTO)
+                .map(workoutTypeMapper::toWorkoutTypeListItemDTO)
                 .collect(Collectors.toSet());
 
         log.info("Workout types found: {}", items.stream().map(WorkoutTypeListItemDTO::name).toList());

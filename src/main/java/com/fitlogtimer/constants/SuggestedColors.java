@@ -7,13 +7,24 @@ public final class SuggestedColors {
     private SuggestedColors() {}
 
     public static final List<String> LIGHT_COLORS = List.of(
-            "#1A2B3C", "#3C4F6E", "#264653", // Bleus
-            "#4E3A65", "#6A3973",           // Violets
-            "#6F3E37", "#4B2E2E",           // Bruns
-            "#2E8B57", "#0B3D0B",           // Verts
-            "#6B6B47", "#7A4F00",           // Jaunes/ocres
-            "#A53A3A", "#8B0000",           // Rouges
-            "#5C6A77", "#7A8C9B"            // Gris/bleu acier
+            "#FFCDD2", // Rouge pâle
+            "#F8BBD0", // Rose clair
+            "#E1BEE7", // Violet clair
+            "#D1C4E9", // Lavande
+            "#C5CAE9", // Bleu pâle
+            "#BBDEFB", // Bleu ciel
+            "#B3E5FC", // Bleu clair
+            "#B2EBF2", // Cyan pâle
+            "#B2DFDB", // Vert d'eau
+            "#C8E6C9", // Vert pâle
+            "#DCEDC8", // Vert clair
+            "#F0F4C3", // Jaune pâle
+            "#FFF9C4", // Jaune clair
+            "#FFECB3", // Jaune doux
+            "#FFE0B2", // Orange pâle
+            "#FFCCBC", // Corail clair
+            "#D7CCC8", // Brun clair
+            "#CFD8DC"  // Gris clair
     );
 
     public static final List<String> COLORS_15 = List.of(

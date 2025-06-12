@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{|/workout-types/${workoutTypeUpdateDTO.name}/edit|}" method="post"
+      th:object="${workoutTypeUpdateDTO}">
+  <input type="hidden" th:field="*{name}" />
+
+  <label>Description</label>
+  <input type="text" th:field="*{description}" />
+  <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description invalide</div>
+  <input type="color" name="color"/>
+
+  <!-- Barre de couleurs scrollable -->
+  <div class="suggested-colors-scroll-container">
+    <div class="suggested-colors">
+            <span th:each="col : ${@suggestedColors.lightColors}"
+                  th:attr="data-color=${col}"
+                  th:style="'background-color:' + ${col}"
+                  class="suggestedColor"
+                  onclick="this.closest('td').querySelector('input[type=color]').value=this.getAttribute('data-color')"
+                  title="Cliquer pour sélectionner">
+            </span>
+    </div>
+  </div>
+
+  <button type="submit">Mettre à jour</button>
+</form>
+</body>
+</html>

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fitlogtimer.model.Exercise;
+import com.fitlogtimer.model.WorkoutType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,4 +48,6 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     @Transactional
     @Query(value = "ALTER TABLE workout ALTER COLUMN id RESTART WITH 1", nativeQuery = true)
     void resetWorkoutId();
+
+    boolean existsByType(WorkoutType workoutType);
 }

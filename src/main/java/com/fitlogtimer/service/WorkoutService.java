@@ -16,6 +16,7 @@ import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericWorkoutDTO;
 import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
 import com.fitlogtimer.mapper.ExerciseMapper;
 import com.fitlogtimer.mapper.ExerciseSetFacadeMapper;
+import com.fitlogtimer.model.WorkoutType;
 import com.fitlogtimer.parser.XlsxReader;
 import com.fitlogtimer.util.parser.GenericStrengthWorkoutParser;
 import org.springframework.data.domain.Page;
@@ -452,11 +453,6 @@ public class WorkoutService {
     public void deleteByTagImport(String tagImport){
         workoutRepository.deleteByTagImport(tagImport);
     }
-
-
-
-
-
 
 
     /*

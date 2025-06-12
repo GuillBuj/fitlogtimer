@@ -1,16 +1,56 @@
 package com.fitlogtimer.service;
 
+import com.fitlogtimer.dto.listitem.WorkoutTypeListItemDTO;
+import com.fitlogtimer.mapper.WorkoutListMapper;
+import com.fitlogtimer.mapper.WorkoutMapper;
 import com.fitlogtimer.model.WorkoutType;
+import com.fitlogtimer.repository.WorkoutRepository;
 import com.fitlogtimer.repository.WorkoutTypeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class WorkoutTypeService {
+
     private final WorkoutTypeRepository workoutTypeRepository;
+    private final WorkoutListMapper workoutListMapper;
+    private final WorkoutRepository workoutRepository;
+    //private final WorkoutService workoutService;
+
+    public boolean deleteWorkoutType(String name) {
+        Optional<WorkoutType> workoutType = workoutTypeRepository.findByName(name);
+        if (workoutType.isPresent()) {
+            if (
+                    !existsWithWorkoutType(workoutType.get())
+            )
+            {
+                workoutTypeRepository.delete(workoutType.get());
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public Set<WorkoutTypeListItemDTO> getAllWorkoutTypeItems(){
+        Set<WorkoutTypeListItemDTO> items = workoutTypeRepository.findAll().stream()
+                .map(workoutListMapper::toWorkoutTypeListItemDTO)
+                .collect(Collectors.toSet());
+
+        log.info("Workout types found: {}", items.stream().map(WorkoutTypeListItemDTO::name).toList());
+
+        return items;
+    }
 
     public WorkoutType findOrCreate(String name){
 
@@ -25,5 +65,9 @@ public class WorkoutTypeService {
                     WorkoutType newType = new WorkoutType(name);
                     return workoutTypeRepository.save(newType);
                 });
+    }
+
+    public boolean existsWithWorkoutType(WorkoutType workoutType) {
+        return workoutRepository.existsByType(workoutType);
     }
 }

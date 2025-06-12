@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <title>Liste des séances</title>
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+<p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+<p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
+<table>
+  <thead>
+  <tr>
+    <th>Nom</th>
+    <th>Couleur</th>
+    <th>Description</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="type : ${workoutTypes}">
+    <td th:text="${type.name}"></td>
+    <td>
+                <span th:text="${type.color}"
+                      th:style="'background-color:' + ${type.color}"
+                      class="color-box"></span>
+    </td>
+    <td th:text="${type.description}"></td>
+    <td>
+      <form th:action="@{/workout-types/{name}(name=${type.name()})}" class="deleteForm"  method="post">
+        <input type="hidden" name="_method" value="delete" />
+        <button type="submit" class="btnDelete"  onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">Supprimer</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<a href="/workout-types/create" class="btn-new">Nouveau type</a>
+</body>
+</html>

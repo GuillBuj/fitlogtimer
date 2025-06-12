@@ -97,7 +97,7 @@
 
         <div class="suggested-colors-scroll-container">
             <div class="suggested-colors">
-            <span th:each="col : ${@suggestedExerciseColors.colors15}"
+            <span th:each="col : ${@suggestedColors.colors15}"
                   th:attr="data-color=${col}"
                   th:style="'background-color:' + ${col}"
                   class="suggestedColor"

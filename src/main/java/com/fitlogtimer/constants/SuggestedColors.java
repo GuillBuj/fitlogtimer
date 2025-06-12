@@ -2,9 +2,19 @@ package com.fitlogtimer.constants;
 
 import java.util.List;
 
-public final class SuggestedExerciseColors {
+public final class SuggestedColors {
 
-    private SuggestedExerciseColors() {}
+    private SuggestedColors() {}
+
+    public static final List<String> LIGHT_COLORS = List.of(
+            "#1A2B3C", "#3C4F6E", "#264653", // Bleus
+            "#4E3A65", "#6A3973",           // Violets
+            "#6F3E37", "#4B2E2E",           // Bruns
+            "#2E8B57", "#0B3D0B",           // Verts
+            "#6B6B47", "#7A4F00",           // Jaunes/ocres
+            "#A53A3A", "#8B0000",           // Rouges
+            "#5C6A77", "#7A8C9B"            // Gris/bleu acier
+    );
 
     public static final List<String> COLORS_15 = List.of(
             "#1A2B3C", "#3C4F6E", "#264653", // Bleus

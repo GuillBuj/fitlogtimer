@@ -173,7 +173,7 @@ public class ExerciseSetService {
                 return setsGroupCleanerPlusService.cleanWithMeta(
                     workout.getDate(),
                     workout.getBodyWeight(),
-                    workout.getType(),
+                    workout.getTypeName(),
                     setsGrouped,
                     types
             );

@@ -25,11 +25,17 @@ public class Workout {
     private int id;
 
     private LocalDate date;
+
     private double bodyWeight;
-    //private String type;
+
+    // provisoire
+//    @Column(name = "type", insertable = false, updatable = false)
+//    private String rawType;
+
     @ManyToOne
     @JoinColumn(name = "workout_type_name") // référence au champ name
     private WorkoutType type;
+
     private String comment;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -38,6 +44,10 @@ public class Workout {
 
     // pour savoir si le workout vient d'un import pour éventuellement supprimer si nouvel import de la même source
     private String tagImport;
+
+    public String getTypeName(){
+        return type!=null ? type.getName() : "";
+    }
 
     @Override
     public String toString(){

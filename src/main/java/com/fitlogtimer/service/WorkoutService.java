@@ -95,6 +95,7 @@ public class WorkoutService {
 
     private final XlsxService xlsxService;
     private final ExerciseSetFacadeMapper exerciseSetFacadeMapper;
+    private final WorkoutTypeService workoutTypeService;
 
     public Page<WorkoutListDisplayDTO> getPaginatedWorkoutsDisplayDTO(int page, int size) {
         return getPaginatedWorkoutsDisplayDTO(page, size, null);
@@ -150,7 +151,7 @@ public class WorkoutService {
         return workouts.stream()
                 .map(workout -> new CalendarItemDTO(
                         workout.getId(),
-                        workout.getType(),
+                        workout.getTypeName(),
                         workout.getDate(),
                         exercisesByWorkout.get(workout.getId()))
                 )
@@ -164,8 +165,13 @@ public class WorkoutService {
     @Transactional
     public WorkoutListItemDTO createWorkout(WorkoutCreateDTO workoutInDTO) {
         log.info("WorkoutCreateDTO: {}", workoutInDTO);
-        Workout savedWorkout = workoutRepository.save(workoutMapper.toEntity(workoutInDTO));
+
+        Workout workout = workoutMapper.toEntity(workoutInDTO);
+        workout.setType(workoutTypeService.findOrCreate(workoutInDTO.type()));
+
+        Workout savedWorkout = workoutRepository.save(workout);
         log.info("Saved workout: {}", savedWorkout);
+
         return workoutMapper.toWorkoutListItemDTO(savedWorkout, getExerciseShortNamesByWorkoutId(savedWorkout.getId()));
     }
 
@@ -184,7 +190,7 @@ public class WorkoutService {
 
         List<SetWorkoutListItemDTO> setsDTO = getSetsOutDTO(workout);
         log.info(setsDTO.toString());
-        return new WorkoutDetailsBrutDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), workout.getType(), setsDTO);
+        return new WorkoutDetailsBrutDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), workout.getTypeName(), setsDTO);
     }
     
     public WorkoutDetailsGroupedDTO getWorkoutGrouped(int id){
@@ -201,7 +207,7 @@ public class WorkoutService {
                 .map(setsGroupCleanerService::cleanSetsGroup)
                 .toList();
         
-        WorkoutDetailsGroupedDTO workoutGroupedDTO = new WorkoutDetailsGroupedDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), workout.getType(), finalGroupedSets);
+        WorkoutDetailsGroupedDTO workoutGroupedDTO = new WorkoutDetailsGroupedDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), workout.getTypeName(), finalGroupedSets);
         System.out.println(workoutGroupedDTO);
         return workoutGroupedDTO;
     }
@@ -432,6 +438,7 @@ public class WorkoutService {
 
         optionalWorkout.ifPresent(workout -> {
             workoutMapper.updateWorkoutFromDTO(workoutUpdateDTO,workout);
+            workout.setType(workoutTypeService.findOrCreate(workoutUpdateDTO.type()));
             workoutRepository.save(workout);
         });
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fitlogtimer.dto.fromxlsx.*;
 import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
+import com.fitlogtimer.util.mapperhelper.WorkoutTypeMapperHelper;
 import org.mapstruct.*;
 
 import com.fitlogtimer.constants.ExerciseColorConstants;
@@ -13,28 +14,13 @@ import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
 import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.model.Workout;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = WorkoutTypeMapperHelper.class)
 public interface WorkoutMapper {
 
-    @Mapping(target = "type", source = "type")
+    @Mapping(target = "type", ignore = true)
     public Workout toEntity(WorkoutCreateDTO dto);
 
-    @Mapping(target = "type", constant = "HEAVY")
-    @Mapping(target = "tagImport", constant = "importH")
-    public Workout toEntity(FromXlsxDCHeavyDTO dto);
-
-    @Mapping(target = "type", constant = "DL")
-    @Mapping(target = "tagImport", constant = "importDL")
-    public Workout toEntity(FromXlsxDeadliftDTO dto);
-
-    @Mapping(target = "type", constant = "LIGHT")
-    @Mapping(target = "tagImport", constant = "importL")
-    public Workout toEntity(FromXlsxDCLightDTO dto);
-
-    @Mapping(target = "type", constant = "VAR")
-    @Mapping(target = "tagImport", constant = "importV")
-    public Workout toEntity(FromXlsxDCVarDTO dto);
-
+    @Mapping(target = "type", expression = "java(workoutTypeMapperHelper.map(type))")
     @Mapping(target = "tagImport",  expression = "java(\"import\" + type)")
     public Workout toEntity(FromXlsxGenericWorkoutDTO dto, String type);
 
@@ -76,6 +62,23 @@ public interface WorkoutMapper {
 
     Workout toEntity(WorkoutUpdateDTO dto);
 
+    //    @Mapping(target = "type", constant = "HEAVY")
+//    @Mapping(target = "tagImport", constant = "importH")
+//    public Workout toEntity(FromXlsxDCHeavyDTO dto);
+//
+//    @Mapping(target = "type", constant = "DL")
+//    @Mapping(target = "tagImport", constant = "importDL")
+//    public Workout toEntity(FromXlsxDeadliftDTO dto);
+//
+//    @Mapping(target = "type", constant = "LIGHT")
+//    @Mapping(target = "tagImport", constant = "importL")
+//    public Workout toEntity(FromXlsxDCLightDTO dto);
+//
+//    @Mapping(target = "type", constant = "VAR")
+//    @Mapping(target = "tagImport", constant = "importV")
+//    public Workout toEntity(FromXlsxDCVarDTO dto);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "type", ignore = true)
     void updateWorkoutFromDTO(WorkoutUpdateDTO dto, @MappingTarget Workout workout);
 }

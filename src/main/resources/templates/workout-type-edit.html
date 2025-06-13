@@ -12,8 +12,10 @@
 
   <label>Description</label>
   <input type="text" th:field="*{description}" />
+    <br>
   <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description invalide</div>
-  <input type="color" name="color"/>
+  <input type="color" name="color"
+            th:value="*{color}"/>
 
   <!-- Barre de couleurs scrollable -->
   <div class="suggested-colors-scroll-container">
@@ -22,7 +24,7 @@
                   th:attr="data-color=${col}"
                   th:style="'background-color:' + ${col}"
                   class="suggestedColor"
-                  onclick="this.closest('td').querySelector('input[type=color]').value=this.getAttribute('data-color')"
+                  onclick="document.querySelector('input[type=color]').value=this.getAttribute('data-color')"
                   title="Cliquer pour sélectionner">
             </span>
     </div>
@@ -30,5 +32,7 @@
 
   <button type="submit">Mettre à jour</button>
 </form>
+<script src="/js/color-picker-plus.js"></script>
 </body>
+
 </html>

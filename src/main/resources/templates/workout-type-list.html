@@ -13,7 +13,7 @@
   <thead>
   <tr>
     <th>Nom</th>
-    <th>Couleur</th>
+    <th></th>
     <th>Description</th>
     <th></th>
   </tr>
@@ -21,10 +21,9 @@
   <tbody>
   <tr th:each="type : ${workoutTypes}">
     <td th:text="${type.name}"></td>
-    <td>
-                <span th:text="${type.color}"
-                      th:style="'background-color:' + ${type.color}"
-                      class="color-box"></span>
+    <td><div class="color-swatch" th:style="'background-color:' + ${type.color}">
+
+    </div>
     </td>
     <td th:text="${type.description}"></td>
     <td>

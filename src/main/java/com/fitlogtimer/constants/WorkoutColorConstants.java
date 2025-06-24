@@ -15,7 +15,8 @@ public final class WorkoutColorConstants {
         "Muscu9bis","#FFE6C9",
         "TigerShark", "#EDBB99",
             "TEST", "#666666",
-            "IMPRO", "#CCCCCC"
+            "IMPRO", "#CCCCCC",
+            "Power","#AAAAAA"
     );
 
     public static String getColorForWorkoutType(String workoutType) {

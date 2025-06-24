@@ -143,8 +143,9 @@ public class WorkoutService {
         List<Workout> workouts = workoutRepository.findAll();
         Map<Integer, List<String>> exercisesByWorkout = getExerciseNamesForWorkouts(workouts);
         Map<String, String> exerciseColors = exerciseService.getAllExerciseColors();
+        Map<String, String> workoutTypeColors = workoutTypeService.getAllExerciseColors();
 
-        return new CalendarDTO(getCalendarItems(workouts, exercisesByWorkout), exerciseColors, WorkoutColorConstants.COLORS);
+        return new CalendarDTO(getCalendarItems(workouts, exercisesByWorkout), exerciseColors, workoutTypeColors);
     }
 
     public List<CalendarItemDTO> getCalendarItems(List<Workout> workouts, Map<Integer, List<String>> exercisesByWorkout) {

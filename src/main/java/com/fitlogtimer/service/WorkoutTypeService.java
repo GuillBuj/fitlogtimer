@@ -3,6 +3,7 @@ package com.fitlogtimer.service;
 import com.fitlogtimer.dto.listitem.WorkoutTypeListItemDTO;
 import com.fitlogtimer.dto.update.WorkoutTypeUpdateDTO;
 import com.fitlogtimer.mapper.WorkoutTypeMapper;
+import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.WorkoutType;
 import com.fitlogtimer.repository.WorkoutRepository;
 import com.fitlogtimer.repository.WorkoutTypeRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -87,5 +89,12 @@ public class WorkoutTypeService {
 
     public boolean existsWithWorkoutType(WorkoutType workoutType) {
         return workoutRepository.existsByType(workoutType);
+    }
+
+    public Map<String, String> getAllExerciseColors(){
+        return workoutTypeRepository.findAll().stream()
+                .collect(Collectors.toMap(
+                        WorkoutType::getName,
+                        workoutType -> workoutType.getColor() != null ? workoutType.getColor() : "#666666"));
     }
 }

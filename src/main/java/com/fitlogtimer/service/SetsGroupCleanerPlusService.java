@@ -1,6 +1,7 @@
 package com.fitlogtimer.service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ public class SetsGroupCleanerPlusService {
 
         double est1RMmax = 0.0;
         double est1RMavg = 0.0;
+        Double est1RMbest3Avg = 0.0;
 
         // si 'types' vide, tout inclure
         List<SetBasicInterfaceDTO> filteredSets;
@@ -61,6 +63,7 @@ public class SetsGroupCleanerPlusService {
         if (!filteredSetsGrouped.sets().isEmpty() && filteredSetsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
             est1RMmax = returnMax1RMest(filteredSetsGrouped);
             est1RMavg = calculateAvg1RMest(filteredSetsGrouped);
+            est1RMbest3Avg = calculateBest3Avg1RMest(filteredSetsGrouped);
 
             cleaned = cleanSetsGroupForSetBasicWith1RM(filteredSetsGrouped);
         } else if (!filteredSetsGrouped.sets().isEmpty()) {
@@ -78,7 +81,8 @@ public class SetsGroupCleanerPlusService {
             type,
             cleanedSets,
             est1RMmax,
-            est1RMavg       
+            est1RMavg,
+            est1RMbest3Avg
         );
     }
 
@@ -179,5 +183,26 @@ public class SetsGroupCleanerPlusService {
         .orElse(0.0);
         
         return Math.round(est1RMavg * 100.0) / 100.0;
+    }
+
+    private Double calculateBest3Avg1RMest(SetsGroupedWithNameDTO setsGrouped) {
+        List<Double> top3 = setsGrouped.sets().stream()
+                .filter(set -> set instanceof SetBasicWith1RMDTO)
+                .map(set -> (SetBasicWith1RMDTO) set)
+                .map(SetBasicWith1RMDTO::oneRepMax)
+                .sorted(Comparator.reverseOrder()) // tri décroissant
+                .limit(3)
+                .toList();
+
+        if (top3.size() < 3) {
+            return null;
+        }
+
+        double avg = top3.stream()
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElse(0.0);
+
+        return Math.round(avg * 100.0) / 100.0;
     }
 }

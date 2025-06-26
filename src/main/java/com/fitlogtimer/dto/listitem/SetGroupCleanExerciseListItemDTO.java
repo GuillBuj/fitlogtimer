@@ -10,7 +10,8 @@ public record SetGroupCleanExerciseListItemDTO(
     String type,
     Object sets,
     @Nullable Double est1RMmax,
-    @Nullable Double est1RMavg
+    @Nullable Double est1RMavg,
+    @Nullable Double est1RM3bestAvg
     ) {
     @Override
     public final String toString() {

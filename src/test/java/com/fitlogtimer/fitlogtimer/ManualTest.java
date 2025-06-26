@@ -27,14 +27,14 @@ public class ManualTest {
             WorkoutService workoutService = context.getBean(WorkoutService.class);
             ExerciseRepository exerciseRepository = context.getBean(ExerciseRepository.class);
             XlsxService xlsxService = context.getBean(XlsxService.class);
-            workoutService.deleteByTagImport("importMuscu6+");
-            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Muscu46 comp"));
+//            workoutService.deleteByTagImport("importMuscu6+");
+//            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Muscu46 comp"));
 //            workoutService.deleteByTagImport("importImpro");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Impro"));
 //            workoutService.deleteByTagImport("importPower");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Power"));
-//            workoutService.deleteByTagImport("importMuscu9bis");
-//            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("IMPORT vierge2"));
+            workoutService.deleteByTagImport("importMuscu9bis");
+            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("IMPORT vierge2"));
 //            workoutService.deleteByTagImport("importTigerShark");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("IMPORT vierge"));
         } catch (Exception e) {

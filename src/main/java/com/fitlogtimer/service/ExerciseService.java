@@ -114,4 +114,5 @@ public class ExerciseService {
                         Exercise::getShortName,
                         exercise -> exercise.getColor() != null ? exercise.getColor() : "#666666"));
     }
+
 }

@@ -50,6 +50,29 @@ public class StatsService {
                 : results.get(0); // la plus lourde
     }
 
+    public MaxsByRepsDTO mapFilteredMaxWeightsByReps(int exerciseId) {
+        Map<Double, Map.Entry<Integer, MaxWeightWith1RMAndDateDTO>> weightToBestEntry = new HashMap<>();
+
+        for (int nbReps = 1; nbReps <= 30; nbReps++) {
+            MaxWeightWithDateDTO maxWeightWithDateDTO = maxByExAndReps(exerciseId, nbReps);
+            double weight = maxWeightWithDateDTO.maxWeight();
+            if (weight == 0) continue; // ignore les entrées sans données
+            MaxWeightWith1RMAndDateDTO enriched = new MaxWeightWith1RMAndDateDTO(
+                    weight,
+                    calculateOneRepMax(nbReps, weight),
+                    maxWeightWithDateDTO.date()
+            );
+
+            if (!weightToBestEntry.containsKey(weight) || nbReps > weightToBestEntry.get(weight).getKey()) {
+                weightToBestEntry.put(weight, Map.entry(nbReps, enriched));
+            }
+        }
+        Map<Integer, MaxWeightWith1RMAndDateDTO> filtered = new TreeMap<>();
+        for (Map.Entry<Integer, MaxWeightWith1RMAndDateDTO> entry : weightToBestEntry.values()) {
+            filtered.put(entry.getKey(), entry.getValue());
+        }
+        return new MaxsByRepsDTO(filtered);}
+
     private MaxsByRepsDTO mapMaxWeightsByRepsGeneric(List<Integer> repNumbers, MaxWeightFetcher fetcher) {
         Map<Integer, MaxWeightWith1RMAndDateDTO> result = new HashMap<>();
 

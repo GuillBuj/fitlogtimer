@@ -27,15 +27,15 @@ public class StatsController {
     @Autowired
     private ExerciseService exerciseService;
     
-//    @GetMapping("/maxsByReps/{exerciseId}")
-//    public String showMaxsByExercise(@PathVariable int exerciseId, Model model){
-//
-//        // MaxsByRepsDTO maxsByRepsDTO = statsService.mapMaxWeightsByReps(exerciseId, List.of(1,2,3,4,5,6,8,10,12, 15));
-//        MaxsByRepsDTO maxsByRepsDTO = statsService.mapFilteredMaxWeightsByReps(exerciseId);
-//        String exerciseName = exerciseService.getById(exerciseId).get().getName();
-//
-//        model.addAttribute("maxsWithName", new MaxsByRepsWithNameDTO(exerciseName, maxsByRepsDTO));
-//        log.info(model.toString());
-//        return "maxs-by-reps";
-//    }
+    @GetMapping("/maxsByReps/{exerciseId}")
+    public String showMaxsByExercise(@PathVariable int exerciseId, Model model){
+
+        // MaxsByRepsDTO maxsByRepsDTO = statsService.mapMaxWeightsByReps(exerciseId, List.of(1,2,3,4,5,6,8,10,12, 15));
+        MaxsByRepsDTO maxsByRepsDTO = statsService.mapFilteredMaxWeightsByReps(exerciseId);
+        String exerciseName = exerciseService.getById(exerciseId).get().getName();
+
+        model.addAttribute("maxsWithName", new MaxsByRepsWithNameDTO(exerciseName, maxsByRepsDTO));
+        log.info(model.toString());
+        return "maxs-by-reps";
+    }
 }

@@ -17,8 +17,9 @@
                 <th></th>
                 <th>Nom</th>
                 <th>PB</th>
-                <th>SB<span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span></th>
+                <th>SB<span th:text="${#dates.format(#dates.createNow(), 'yy')}"></span></th>
                 <th>1RMest</th>
+                <th>1RMest<span th:text="${#dates.format(#dates.createNow(), 'yy')}"></span></th>
                 <th>Muscles<br>
                     <select id="muscleFilter">
                         <option value="all">Tous</option>
@@ -59,6 +60,9 @@
                 <td th:if="${exercise.type == FREE_WEIGHT_TYPE}"
                     th:text="|${exercise.oneRepMaxEst % 1 == 0? exercise.oneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.oneRepMaxEst, 1, 1)} kg|"></td>
                     <td th:unless="${exercise.type == FREE_WEIGHT_TYPE}">-</td>
+                <td th:if="${exercise.seasonOneRepMaxEst != null and exercise.seasonOneRepMaxEst>0 and exercise.type == FREE_WEIGHT_TYPE}"
+                    th:text="|${exercise.seasonOneRepMaxEst % 1 == 0? exercise.seasonOneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.seasonOneRepMaxEst, 1, 1)} kg|"></td>
+                <td th:unless="${exercise.type == FREE_WEIGHT_TYPE and exercise.seasonOneRepMaxEst>0}">-</td>
                 <td th:text="${exercise.muscle}"></td>
                 <td th:text="${exercise.family}"></td>
                 <td th:text="${@exerciseUtil.getDisplayName(exercise.type)}"></td>

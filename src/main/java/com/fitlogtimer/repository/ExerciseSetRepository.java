@@ -2,6 +2,7 @@ package com.fitlogtimer.repository;
 
 import java.util.List;
 
+import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -60,6 +61,18 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "AND FUNCTION('YEAR', fws.workout.date) = :year")
     Double findMaxWeightByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
 
+    @Query("""
+    SELECT NEW com.fitlogtimer.dto.stats.MaxWeightWithDateDTO(fws.weight, fws.workout.date)
+    FROM FreeWeightSet fws
+    WHERE fws.exercise.id = :exerciseId
+      AND fws.repNumber = :repNumber
+      AND FUNCTION('YEAR', fws.workout.date) = :year
+    ORDER BY fws.weight DESC
+    """)
+    List<MaxWeightWithDateDTO> findMaxWeightByExerciseIdAndRepsAndYear(
+            @Param("exerciseId") int exerciseId,
+            @Param("repNumber") int repNumber,
+            @Param("year") int year);
 
     List<ExerciseSet> findByWorkoutIdIn(List<Integer> workoutIds);
 

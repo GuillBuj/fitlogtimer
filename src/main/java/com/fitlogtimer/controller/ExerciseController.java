@@ -27,7 +27,7 @@ public class ExerciseController {
     @GetMapping
     public String showExercisesList(Model model){
 
-        log.info(SuggestedColors.COLORS.toString());
+        //log.info(SuggestedColors.COLORS.toString());
 
         model.addAttribute("exercises", exerciseService.getAllExerciseItems());
         model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL, ExerciseSetType.FREE_WEIGHT, ""));
@@ -56,8 +56,9 @@ public class ExerciseController {
                               @RequestParam(required = false) Double pb,
                               @RequestParam(required = false) Double orm,
                               @RequestParam(required = false) Double sb,
+                              @RequestParam(required = false) Double sorm,
                               Model model) {
-        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm, sb);
+        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm, sb, sorm);
         model.addAttribute("exercise", exercise);
         model.addAttribute("muscles", Muscle.values());
         model.addAttribute("families", Family.values());
@@ -76,8 +77,9 @@ public class ExerciseController {
                                  @RequestParam(required = false) Double pb,
                                  @RequestParam(required = false) Double orm,
                                  @RequestParam(required = false) Double sb,
+                                 @RequestParam(required = false) Double sorm,
                                  Model model) {
-        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm, sb);
+        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm, sb, sorm);
         model.addAttribute("exercise", exercise);
         model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
         model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
@@ -91,6 +93,7 @@ public class ExerciseController {
                                  @RequestParam(required = false) Double pb,
                                  @RequestParam(required = false) Double orm,
                                  @RequestParam(required = false) Double sb,
+                                 @RequestParam(required = false) Double sorm,
                                  Model model) {
         log.info("Updating exercise " + dto);
         exerciseService.updateExercise(dto);

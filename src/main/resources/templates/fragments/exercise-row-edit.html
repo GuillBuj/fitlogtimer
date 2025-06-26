@@ -28,10 +28,15 @@
     <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"
         th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
     <td th:unless="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}">-</td>
+    <td th:if="${exercise.seasonBest != null and exercise.seasonBest>0 and exercise.type == FREE_WEIGHT_TYPE}"
+        th:text="|${exercise.seasonBest % 1 == 0 ? exercise.seasonBest.intValue() : #numbers.formatDecimal(exercise.seasonBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
+    <td th:unless="${exercise.type == FREE_WEIGHT_TYPE and exercise.seasonBest>0}">-</td>
     <td th:if="${exercise.type == FREE_WEIGHT_TYPE}"
         th:text="|${exercise.oneRepMaxEst % 1 == 0? exercise.oneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.oneRepMaxEst, 1, 1)} kg|"></td>
     <td th:unless="${exercise.type == FREE_WEIGHT_TYPE}">-</td>
-    <td>
+    <td th:if="${exercise.seasonOneRepMaxEst != null and exercise.seasonOneRepMaxEst>0 and exercise.type == FREE_WEIGHT_TYPE}"
+        th:text="|${exercise.seasonOneRepMaxEst % 1 == 0? exercise.seasonOneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.seasonOneRepMaxEst, 1, 1)} kg|"></td>
+    <td th:unless="${exercise.type == FREE_WEIGHT_TYPE and exercise.seasonOneRepMaxEst>0}">-</td><td>
         <select th:field="*{muscle}">
             <option th:each="m : ${muscles}" th:value="${m}" th:text="${m}"></option>
         </select>
@@ -55,6 +60,8 @@
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{personalBest}"/>
         <input type="hidden" th:field="*{oneRepMaxEst}"/>
+        <input type="hidden" th:field="*{seasonBest}"/>
+        <input type="hidden" th:field="*{seasonOneRepMaxEst}"/>
         <button
                 th:attr="hx-post=@{/exercises/update}"
                 hx-include="closest tr"

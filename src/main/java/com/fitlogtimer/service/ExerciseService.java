@@ -63,12 +63,14 @@ public class ExerciseService {
         double personalBest = 0;
         double oneRepMaxEst = 0;
         double seasonBest = 0;
+        double seasonOneRepMax = 0;
         
         switch (exercise.getType()) {
             case ExerciseSetType.FREE_WEIGHT:
                 personalBest = statsService.getPersonalBest(id);
                 oneRepMaxEst = statsService.getBest1RMest(id);
                 seasonBest = statsService.getSeasonBest(id);
+                seasonOneRepMax = statsService.getSeasonBest1RMest(id);
                 break;
             case ExerciseSetType.ISOMETRIC:
                 personalBest = statsService.getPersonalBestDuration(id);
@@ -78,7 +80,7 @@ public class ExerciseService {
                 break;
         }
          
-        return ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst, seasonBest);
+        return ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst, seasonBest, seasonOneRepMax);
     }
 
     public List<ExerciseListItemDTO> getAllExerciseItems() {
@@ -90,8 +92,13 @@ public class ExerciseService {
                         .collect(Collectors.toList());
     }
 
-    public ExerciseListItemDTO getExerciseListItemDTO(Exercise exercise, Double personalBest, Double oneRepMaxEst, Double seasonBest) {
-        return  ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst, seasonBest);
+    public ExerciseListItemDTO getExerciseListItemDTO(Exercise exercise, Double personalBest, Double oneRepMaxEst, Double seasonBest, Double seasonOneRepMax) {
+        return  ExerciseListItemDTO.from(
+                exercise,
+                personalBest != null ? personalBest : 0.0,
+                oneRepMaxEst != null ? oneRepMaxEst : 0.0,
+                seasonBest != null ? seasonBest : 0.0,
+                seasonOneRepMax != null ? seasonOneRepMax : 0.0);
     }
 
     public Exercise findById(int id) {

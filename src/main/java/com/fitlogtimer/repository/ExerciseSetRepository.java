@@ -53,6 +53,14 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "WHERE fws.exercise.id = :exerciseId AND fws.repNumber >=1" )
     Double findMaxWeightByExerciseId(@Param("exerciseId") int exerciseId);
 
+    @Query("SELECT MAX(fws.weight) " +
+            "FROM FreeWeightSet fws " +
+            "WHERE fws.exercise.id = :exerciseId " +
+            "AND fws.repNumber >= 1 " +
+            "AND FUNCTION('YEAR', fws.workout.date) = :year")
+    Double findMaxWeightByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
+
+
     List<ExerciseSet> findByWorkoutIdIn(List<Integer> workoutIds);
 
 }

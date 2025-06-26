@@ -55,8 +55,9 @@ public class ExerciseController {
     public String getEditForm(@PathVariable int id,
                               @RequestParam(required = false) Double pb,
                               @RequestParam(required = false) Double orm,
+                              @RequestParam(required = false) Double sb,
                               Model model) {
-        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm);
+        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm, sb);
         model.addAttribute("exercise", exercise);
         model.addAttribute("muscles", Muscle.values());
         model.addAttribute("families", Family.values());
@@ -74,8 +75,9 @@ public class ExerciseController {
     public String getExerciseRow(@PathVariable int id,
                                  @RequestParam(required = false) Double pb,
                                  @RequestParam(required = false) Double orm,
+                                 @RequestParam(required = false) Double sb,
                                  Model model) {
-        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm);
+        ExerciseListItemDTO exercise = exerciseService.getExerciseListItemDTO(exerciseService.findById(id), pb, orm, sb);
         model.addAttribute("exercise", exercise);
         model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
         model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
@@ -88,6 +90,7 @@ public class ExerciseController {
     public String updateExercise(@ModelAttribute ExerciseListItemDTO dto,
                                  @RequestParam(required = false) Double pb,
                                  @RequestParam(required = false) Double orm,
+                                 @RequestParam(required = false) Double sb,
                                  Model model) {
         log.info("Updating exercise " + dto);
         exerciseService.updateExercise(dto);

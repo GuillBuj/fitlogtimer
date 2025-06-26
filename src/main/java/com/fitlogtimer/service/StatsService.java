@@ -1,5 +1,6 @@
 package com.fitlogtimer.service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -76,6 +77,11 @@ public class StatsService {
 
     public double getPersonalBest(int exerciseId){
         Double personalBest = exerciseSetRepository.findMaxWeightByExerciseId(exerciseId);
+        return personalBest != null ? personalBest : 0.0;
+    }
+
+    public double getSeasonBest(int exerciseId){
+        Double personalBest = exerciseSetRepository.findMaxWeightByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
         return personalBest != null ? personalBest : 0.0;
     }
 

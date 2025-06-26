@@ -62,11 +62,13 @@ public class ExerciseService {
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(() -> new NotFoundException("Exercise not found"));
         double personalBest = 0;
         double oneRepMaxEst = 0;
+        double seasonBest = 0;
         
         switch (exercise.getType()) {
             case ExerciseSetType.FREE_WEIGHT:
                 personalBest = statsService.getPersonalBest(id);
                 oneRepMaxEst = statsService.getBest1RMest(id);
+                seasonBest = statsService.getSeasonBest(id);
                 break;
             case ExerciseSetType.ISOMETRIC:
                 personalBest = statsService.getPersonalBestDuration(id);
@@ -76,7 +78,7 @@ public class ExerciseService {
                 break;
         }
          
-        return ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst);
+        return ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst, seasonBest);
     }
 
     public List<ExerciseListItemDTO> getAllExerciseItems() {
@@ -88,8 +90,8 @@ public class ExerciseService {
                         .collect(Collectors.toList());
     }
 
-    public ExerciseListItemDTO getExerciseListItemDTO(Exercise exercise, Double personalBest, Double oneRepMaxEst) {
-        return  ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst);
+    public ExerciseListItemDTO getExerciseListItemDTO(Exercise exercise, Double personalBest, Double oneRepMaxEst, Double seasonBest) {
+        return  ExerciseListItemDTO.from(exercise, personalBest, oneRepMaxEst, seasonBest);
     }
 
     public Exercise findById(int id) {

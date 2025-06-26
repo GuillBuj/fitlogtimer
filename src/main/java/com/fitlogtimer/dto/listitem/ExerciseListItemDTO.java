@@ -13,9 +13,10 @@ public record ExerciseListItemDTO(
     String type,
     String color,
     double personalBest,
-    double oneRepMaxEst
+    double oneRepMaxEst,
+    double seasonBest
     ) {
-        public static ExerciseListItemDTO from(Exercise exercise, double personalBest, double oneRepMaxEst) {
+        public static ExerciseListItemDTO from(Exercise exercise, double personalBest, double oneRepMaxEst, double personalSeasonBest) {
                 return new ExerciseListItemDTO(
                     exercise.getId(),
                     exercise.getName(),
@@ -25,7 +26,8 @@ public record ExerciseListItemDTO(
                     exercise.getType(),
                     exercise.getColor(),
                     personalBest,
-                    oneRepMaxEst
+                    oneRepMaxEst,
+                    personalSeasonBest
                 );
             }
     }

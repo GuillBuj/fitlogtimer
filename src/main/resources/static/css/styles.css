@@ -656,3 +656,7 @@ select option {
     width: auto;
 }
 
+
+table.auto-width-table{
+    width: auto;
+}

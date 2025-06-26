@@ -2,9 +2,11 @@ package com.fitlogtimer.service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.fitlogtimer.dto.stats.CombinedMaxDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -50,13 +52,68 @@ public class StatsService {
                 : results.get(0); // la plus lourde
     }
 
+//    public MaxsByRepsDTO mapFilteredMaxWeightsByReps(int exerciseId) {
+//        Map<Double, Map.Entry<Integer, MaxWeightWith1RMAndDateDTO>> weightToBestEntry = new HashMap<>();
+//
+//        for (int nbReps = 1; nbReps <= 30; nbReps++) {
+//            MaxWeightWithDateDTO maxWeightWithDateDTO = maxByExAndReps(exerciseId, nbReps);
+//            //MaxWeightWithDateDTO maxWeightWithDateDTO = maxByExAndRepsForYear(exerciseId, nbReps, 2025);
+//            double weight = maxWeightWithDateDTO.maxWeight();
+//            if (weight == 0) continue; // ignore les entrées sans données
+//            MaxWeightWith1RMAndDateDTO enriched = new MaxWeightWith1RMAndDateDTO(
+//                    weight,
+//                    calculateOneRepMax(nbReps, weight),
+//                    maxWeightWithDateDTO.date()
+//            );
+//
+//            if (!weightToBestEntry.containsKey(weight) || nbReps > weightToBestEntry.get(weight).getKey()) {
+//                weightToBestEntry.put(weight, Map.entry(nbReps, enriched));
+//            }
+//        }
+//
+//        Map<Integer, MaxWeightWith1RMAndDateDTO> filtered = new TreeMap<>();
+//        for (Map.Entry<Integer, MaxWeightWith1RMAndDateDTO> entry : weightToBestEntry.values()) {
+//            filtered.put(entry.getKey(), entry.getValue());
+//        }
+//
+//        return new MaxsByRepsDTO(filtered);
+//    }
+
+    public List<CombinedMaxDTO> mergeMaxsByReps(
+            Map<Integer, MaxWeightWith1RMAndDateDTO> personalBests,
+            Map<Integer, MaxWeightWith1RMAndDateDTO> seasonBests
+    ) {
+        Set<Integer> allReps = new TreeSet<>();
+        allReps.addAll(personalBests.keySet());
+        allReps.addAll(seasonBests.keySet());
+
+        List<CombinedMaxDTO> combined = new ArrayList<>();
+        for (Integer reps : allReps) {
+            MaxWeightWith1RMAndDateDTO personalBest = personalBests.get(reps);
+            MaxWeightWith1RMAndDateDTO seasonBest = seasonBests.get(reps);
+            combined.add(new CombinedMaxDTO(reps, personalBest, seasonBest));
+        }
+
+        return combined;
+    }
+
     public MaxsByRepsDTO mapFilteredMaxWeightsByReps(int exerciseId) {
+        return mapFilteredMaxWeightsByReps(exerciseId, this::maxByExAndReps);
+    }
+
+    public MaxsByRepsDTO mapFilteredMaxWeightsByRepsForYear(int exerciseId, int year) {
+        return mapFilteredMaxWeightsByReps(exerciseId, (exId, reps) -> maxByExAndRepsForYear(exId, reps, year));
+    }
+
+    private MaxsByRepsDTO mapFilteredMaxWeightsByReps(int exerciseId,
+                                                      BiFunction<Integer, Integer, MaxWeightWithDateDTO> fetcher) {
         Map<Double, Map.Entry<Integer, MaxWeightWith1RMAndDateDTO>> weightToBestEntry = new HashMap<>();
 
         for (int nbReps = 1; nbReps <= 30; nbReps++) {
-            MaxWeightWithDateDTO maxWeightWithDateDTO = maxByExAndReps(exerciseId, nbReps);
+            MaxWeightWithDateDTO maxWeightWithDateDTO = fetcher.apply(exerciseId, nbReps);
             double weight = maxWeightWithDateDTO.maxWeight();
-            if (weight == 0) continue; // ignore les entrées sans données
+            if (weight == 0) continue;
+
             MaxWeightWith1RMAndDateDTO enriched = new MaxWeightWith1RMAndDateDTO(
                     weight,
                     calculateOneRepMax(nbReps, weight),
@@ -67,11 +124,14 @@ public class StatsService {
                 weightToBestEntry.put(weight, Map.entry(nbReps, enriched));
             }
         }
+
         Map<Integer, MaxWeightWith1RMAndDateDTO> filtered = new TreeMap<>();
         for (Map.Entry<Integer, MaxWeightWith1RMAndDateDTO> entry : weightToBestEntry.values()) {
             filtered.put(entry.getKey(), entry.getValue());
         }
-        return new MaxsByRepsDTO(filtered);}
+
+        return new MaxsByRepsDTO(filtered);
+    }
 
     private MaxsByRepsDTO mapMaxWeightsByRepsGeneric(List<Integer> repNumbers, MaxWeightFetcher fetcher) {
         Map<Integer, MaxWeightWith1RMAndDateDTO> result = new HashMap<>();

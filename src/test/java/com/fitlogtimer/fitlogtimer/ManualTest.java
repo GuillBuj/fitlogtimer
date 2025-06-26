@@ -33,8 +33,8 @@ public class ManualTest {
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Impro"));
 //            workoutService.deleteByTagImport("importPower");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Power"));
-            workoutService.deleteByTagImport("importMuscu9bis");
-            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("IMPORT vierge2"));
+//            workoutService.deleteByTagImport("importMuscu9bis");
+//            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("IMPORT vierge2"));
 //            workoutService.deleteByTagImport("importTigerShark");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("IMPORT vierge"));
         } catch (Exception e) {

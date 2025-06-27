@@ -107,30 +107,37 @@ public class StatsService {
 
     private MaxsByRepsDTO mapFilteredMaxWeightsByReps(int exerciseId,
                                                       BiFunction<Integer, Integer, MaxWeightWithDateDTO> fetcher) {
-        Map<Double, Map.Entry<Integer, MaxWeightWith1RMAndDateDTO>> weightToBestEntry = new HashMap<>();
+        Map<Integer, MaxWeightWith1RMAndDateDTO> filtered = filterBestPerformances(exerciseId, fetcher);
+        return new MaxsByRepsDTO(filtered);
+    }
 
-        for (int nbReps = 1; nbReps <= 30; nbReps++) {
-            MaxWeightWithDateDTO maxWeightWithDateDTO = fetcher.apply(exerciseId, nbReps);
-            double weight = maxWeightWithDateDTO.maxWeight();
+    private Map<Integer, MaxWeightWith1RMAndDateDTO> filterBestPerformances(
+            int exerciseId,
+            BiFunction<Integer, Integer, MaxWeightWithDateDTO> fetcher
+    ) {
+        Map<Integer, MaxWeightWith1RMAndDateDTO> bestByReps = new TreeMap<>();
+
+        double currentMaxWeight = 0;
+
+        // Parcours décroissant : des plus grosses reps aux plus petites
+        for (int nbReps = 30; nbReps >= 1; nbReps--) {
+            MaxWeightWithDateDTO dto = fetcher.apply(exerciseId, nbReps);
+            double weight = dto.maxWeight();
             if (weight == 0) continue;
 
-            MaxWeightWith1RMAndDateDTO enriched = new MaxWeightWith1RMAndDateDTO(
-                    weight,
-                    calculateOneRepMax(nbReps, weight),
-                    maxWeightWithDateDTO.date()
-            );
+            // Si cette perf n'est pas éclipsée par une à + de reps
+            if (weight > currentMaxWeight) {
+                currentMaxWeight = weight;
 
-            if (!weightToBestEntry.containsKey(weight) || nbReps > weightToBestEntry.get(weight).getKey()) {
-                weightToBestEntry.put(weight, Map.entry(nbReps, enriched));
+                bestByReps.put(nbReps, new MaxWeightWith1RMAndDateDTO(
+                        weight,
+                        calculateOneRepMax(nbReps, weight),
+                        dto.date()
+                ));
             }
         }
 
-        Map<Integer, MaxWeightWith1RMAndDateDTO> filtered = new TreeMap<>();
-        for (Map.Entry<Integer, MaxWeightWith1RMAndDateDTO> entry : weightToBestEntry.values()) {
-            filtered.put(entry.getKey(), entry.getValue());
-        }
-
-        return new MaxsByRepsDTO(filtered);
+        return bestByReps;
     }
 
     private MaxsByRepsDTO mapMaxWeightsByRepsGeneric(List<Integer> repNumbers, MaxWeightFetcher fetcher) {

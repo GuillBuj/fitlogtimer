@@ -16,11 +16,11 @@
         <thead>
         <tr>
             <th>Nb reps</th>
-            <th>Poids (all time)</th>
+            <th>PB</th>
             <th>1RMest</th>
             <th>Date</th>
             <th>Nb reps</th>
-            <th>Poids (<span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>)</th>
+            <th>SB(<span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>)</th>
             <th>1RMest</th>
             <th>Date</th>
         </tr>
@@ -31,13 +31,13 @@
 
             <td th:text="${entry.personalBest() != null ? entry.personalBest().maxWeight() : '-'}">-</td>
             <td th:text="${entry.personalBest() != null ? entry.personalBest().RMest() : '-'}">-</td>
-            <td th:text="${entry.personalBest() != null ? entry.personalBest().date() : '-'}">-</td>
+            <td th:text="${entry.personalBest() != null ? #temporals.format(entry.personalBest().date(), 'dd/MM/yyyy') : '-'}">-</td>
 
             <td th:text="${entry.nbReps()}">Nb Reps</td>
 
             <td th:text="${entry.seasonBest() != null ? entry.seasonBest().maxWeight() : '-'}">-</td>
             <td th:text="${entry.seasonBest() != null ? entry.seasonBest().RMest() : '-'}">-</td>
-            <td th:text="${entry.seasonBest() != null ? entry.seasonBest().date() : '-'}">-</td>
+            <td th:text="${entry.seasonBest() != null ? #temporals.format(entry.seasonBest().date(), 'dd/MM/yyyy') : '-'}">-</td>
         </tr>
         </tbody>
     </table>

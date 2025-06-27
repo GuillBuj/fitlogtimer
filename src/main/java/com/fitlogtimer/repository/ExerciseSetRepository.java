@@ -67,7 +67,7 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     WHERE fws.exercise.id = :exerciseId
       AND fws.repNumber = :repNumber
       AND FUNCTION('YEAR', fws.workout.date) = :year
-    ORDER BY fws.weight DESC
+    ORDER BY fws.weight DESC, fws.workout.date ASC 
     """)
     List<MaxWeightWithDateDTO> findMaxWeightByExerciseIdAndRepsAndYear(
             @Param("exerciseId") int exerciseId,

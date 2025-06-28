@@ -29,14 +29,16 @@ public class ManualTest {
             XlsxService xlsxService = context.getBean(XlsxService.class);
 //            workoutService.deleteByTagImport("importMuscu6+");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Muscu46 comp"));
-//            workoutService.deleteByTagImport("importImpro");
-//            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Impro"));
-            workoutService.deleteByTagImport("importPower");
-            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Power"));
+            workoutService.deleteByTagImport("importImpro");
+            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Impro"));
+//            workoutService.deleteByTagImport("importPower");
+//            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Power"));
 //            workoutService.deleteByTagImport("importMuscu9bis");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("IMPORT vierge2"));
 //            workoutService.deleteByTagImport("importTigerShark");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("IMPORT vierge"));
+//            workoutService.deleteByTagImport("importSBs");
+//            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("SBs"));
         } catch (Exception e) {
             System.err.println("Erreur lors de l'exécution : " + e.getMessage());
             e.printStackTrace();

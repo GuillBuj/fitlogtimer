@@ -633,7 +633,12 @@ public class WorkoutService {
     @Transactional
     Workout createWorkoutFromXlsxGenericWorkoutDTO(FromXlsxGenericWorkoutDTO fromXlsxGenericWorkoutDTO, String name){
         log.info("Create workout from DTO {}",fromXlsxGenericWorkoutDTO);
+
+        WorkoutType workoutType = workoutTypeService.findOrCreate(name);
         Workout workout = workoutMapper.toEntity(fromXlsxGenericWorkoutDTO, name);
+
+
+
         log.info("Workout: {}",workout);
         final int idWorkout = workoutRepository.save(workout).getId();
         log.info("Workout ID: {}",idWorkout);

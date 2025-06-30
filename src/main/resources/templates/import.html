@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Import de données</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="p-5">
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<h1>Import de fichier Excel</h1>
+
+<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+<a th:href="@{/run-import-script}" class="btn btn-primary">Télécharger le fichier depuis Drive</a>
+
+<form th:action="@{/run-import}" method="post" class="form-inline">
+    <label for="sheetName" class="form-label">Sélectionnez un onglet :</label>
+    <select id="sheetName" name="sheetName" class="form-select mb-3" required>
+        <option value="" disabled selected>-- Choisir un onglet --</option>
+        <option th:each="sheet : ${sheets}"
+                th:value="${sheet}"
+                th:text="${sheet}"></option>
+    </select>
+    <button type="submit" class="btn btn-success">Importer</button>
+</form>
+
+</body>
+</html>

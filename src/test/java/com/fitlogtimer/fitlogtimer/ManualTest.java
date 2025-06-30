@@ -27,10 +27,10 @@ public class ManualTest {
             WorkoutService workoutService = context.getBean(WorkoutService.class);
             ExerciseRepository exerciseRepository = context.getBean(ExerciseRepository.class);
             XlsxService xlsxService = context.getBean(XlsxService.class);
-//            workoutService.deleteByTagImport("importMuscu6+");
-//            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Muscu46 comp"));
-            workoutService.deleteByTagImport("importImpro");
-            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Impro"));
+            workoutService.deleteByTagImport("importMuscu6+");
+            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Muscu46 comp"));
+//            workoutService.deleteByTagImport("importImpro");
+//            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Impro"));
 //            workoutService.deleteByTagImport("importPower");
 //            workoutService.createWorkoutsFromXlsxGenericDTO(xlsxService.extractGenericSheet("Power"));
 //            workoutService.deleteByTagImport("importMuscu9bis");

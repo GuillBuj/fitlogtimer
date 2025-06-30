@@ -1,5 +1,6 @@
 package com.fitlogtimer.service;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +18,11 @@ import com.fitlogtimer.repository.ExerciseRepository;
 import com.fitlogtimer.util.helper.XlsxHelper;
 import com.fitlogtimer.util.parser.GenericStrengthWorkoutParser;
 import org.apache.catalina.core.ApplicationContext;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,18 +43,33 @@ public class XlsxService {
 
     private final XlsxMapper xlsxMapper;
     private final XlsxReader xlsxReader;
+
     //private final GenericStrengthWorkoutParser genericStrengthWorkoutParser;
 
     //private final ExerciseRepository exerciseRepository;
 
-    public XlsxService(ExerciseRepository exerciseRepository){
+    public XlsxService(ExerciseRepository exerciseRepository) {
         this.xlsxMapper = new XlsxMapper(exerciseRepository);
         this.xlsxReader = new XlsxReader();
+        //this.workoutService = workoutService;
         //this.genericStrengthWorkoutParser = new GenericStrengthWorkoutParser(exerciseRepository);
        // this.exerciseRepository = exerciseRepository;
     }
 
 
+    public List<String> listImportableSheetNames() throws IOException {
+        List<String> allSheets = new ArrayList<>();
+        try (FileInputStream fileInputStream = new FileInputStream(FileConstants.EXCEL_FILE);
+             Workbook workbook = WorkbookFactory.create(fileInputStream)) {
+            int numberOfSheets = workbook.getNumberOfSheets();
+            for (int i = 0; i < numberOfSheets; i++) {
+                allSheets.add(workbook.getSheetName(i));
+            }
+        }
+        return allSheets.stream()
+                .filter(name -> name.startsWith("."))
+                .toList();
+    }
 
     public List<FromXlsxDCHeavyDTO> extractDTOsHeavySheetRegular(){
         String excelFilePath = FileConstants.EXCEL_FILE;

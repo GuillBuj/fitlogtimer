@@ -452,6 +452,7 @@ public class WorkoutService {
 
     @Transactional
     public void deleteByTagImport(String tagImport){
+        log.info("deleteByTagImport: {}", tagImport);
         workoutRepository.deleteByTagImport(tagImport);
     }
 

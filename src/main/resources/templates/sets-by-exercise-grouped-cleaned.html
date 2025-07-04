@@ -13,6 +13,7 @@
     <div class="header-container">
         <h1>Séries de <span th:text="${sets.exercise}"></span></h1>
         <a th:href="@{/exercises}" class="link-back">&#x293A;</a>
+        <a th:href="@{/stats/maxsByReps/{id}(id=${exercise_id})}" class="link-back">🏆</a>
     </div>
 
     <div class="filter-container">
@@ -34,8 +35,6 @@
     <div id="filtered-sets">
         <div th:replace="fragments/sets-by-exercise-cleaned-filtered :: exerciseSets(sets=${sets})"></div>
     </div>
-    
-    <a th:href="@{/exercises}" class="btn-link">Retour</a>
 
     <script th:inline="javascript">
         /*<![CDATA[*/

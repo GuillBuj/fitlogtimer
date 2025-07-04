@@ -8,5 +8,6 @@ public enum Family {
     ELEVATION,
     TIRAGE_ELASTIQUE,
     PLANCHE,
-    SQUAT
+    SQUAT,
+    DEADLIFT
 }

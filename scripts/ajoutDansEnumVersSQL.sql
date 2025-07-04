@@ -10,7 +10,8 @@ ALTER TABLE exercise ADD COLUMN family ENUM(
   'PRESS',
   'TIRAGE_ELASTIQUE',
   'POMPES',
-  'SQUAT'
+  'SQUAT',
+  'DEADLIFT'
 );
 
 -- 3. Copier les données de l’ancienne colonne vers la nouvelle

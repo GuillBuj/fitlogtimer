@@ -44,6 +44,7 @@ public class StatsController {
 
         model.addAttribute("exerciseName", exerciseName);
         model.addAttribute("combinedMaxs", combinedMaxs);
+        model.addAttribute("exercise_id", exerciseId);
 //        model.addAttribute("maxsWithName", new MaxsByRepsWithNameDTO(exerciseName, maxsByRepsDTO));
 //        model.addAttribute("seasonMaxsWithName", new MaxsByRepsWithNameDTO(exerciseName, seasonMaxsByRepsDTO));
         log.info(model.toString());

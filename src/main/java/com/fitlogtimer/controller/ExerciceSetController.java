@@ -71,6 +71,7 @@ public class ExerciceSetController {
         log.info("Types sélectionnés : {}", selectedTypes);
         model.addAttribute("sets", groupedSets);
         model.addAttribute("types", allTypes);
+        model.addAttribute("exercise_id", exerciseId);
         //log.info(model.toString());
         return "sets-by-exercise-grouped-cleaned";
     }

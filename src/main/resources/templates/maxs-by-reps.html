@@ -9,7 +9,11 @@
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 
-    <h1><span th:text="${exerciseName}"></span> : maxs</h1>
+    <div class="header-container">
+        <h1><span th:text="${exerciseName}"></span> : maxs</h1>
+        <a th:href="@{/exercises}" class="link-back">&#x293A;</a>
+        <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise_id})}" class="link-back">📜</a>
+    </div>
 
 
     <table class="auto-width-table">

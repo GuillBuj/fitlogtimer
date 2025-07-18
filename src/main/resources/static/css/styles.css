@@ -673,3 +673,7 @@ table.auto-width-table{
 .centered-text{
     text-align: center;
 }
+
+th.exercises-list-column{
+    min-width: 600px;
+}

@@ -8,9 +8,10 @@
     <div th:insert="~{fragments/navbar :: navbar}"></div>
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
-
-    <h1>Liste des exercices</h1>
-    <table>
+    <div class="header-container">
+        <h1>Liste des exercices</h1>
+    </div>
+    <table class="auto-width-table centered">
         <thead>
             <tr>
                 <th>Short</th>

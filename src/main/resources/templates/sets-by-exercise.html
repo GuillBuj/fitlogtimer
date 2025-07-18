@@ -12,17 +12,23 @@
         <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
         <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
         
-        <h1>Séries de <span th:if="${#lists.size(sets) > 0}" th:text="${sets[0].exercise.name}"></span></h1>
-        <a th:href="@{/exercises}" class="btn-link">Retour</a>
-        <table th:if="${#lists.size(sets) > 0}">
+<!--        <h1>Séries de <span th:if="${#lists.size(sets) > 0}" th:text="${sets[0].exercise.name}"></span></h1>-->
+<!--        <a th:href="@{/exercises}" class="btn-link">Retour</a>-->
+    <div class="header-container">
+        <h1>Séries de <span th:text="${sets[0].exercise.name}"></span></h1>
+        <a th:href="@{/exercises}" class="link-back">&#x293A;</a>
+        <a th:href="@{/stats/maxsByReps/{id}(id=${exercise_id})}" class="link-back">🏆</a>
+    </div>
+
+        <table th:if="${#lists.size(sets) > 0}" class="auto-width-table centered centered-text">
             <tr>
-                <th>Date</td>
-                <th>Reps</td>
+                <th>Date</th>
+                <th>Reps</th>
                 <th th:if="${sets[0].exercise.type == 'ISOMETRIC'}">Temps</th>
                 <th th:if="${sets[0].exercise.type == 'FREE_WEIGHT'}">Poids</th>
                 <th th:if="${sets[0].exercise.type == 'MOVEMENT'}">Distance</th>
                 <th th:if="${sets[0].exercise.type == 'ELASTIC' or sets[0].exercise.type == 'MOVEMENT'}">Bandes</th>
-                <th>Poids de corps</th>
+                <th>PDC</th>
                 <th th:if="${sets[0].exercise.type == 'FREE_WEIGHT'}">Ratio</th>
             </tr>
             <tr th:each="set : ${sets}">

@@ -7,7 +7,10 @@
 </head>
 <body>
     <div th:insert="~{fragments/navbar :: navbar}"></div>
-    <h1>Créer une nouvelle séance</h1>
+    <div class="header-container">
+        <h1>Créer une nouvelle séance</h1>
+        <a th:href="@{/workouts}" class="link-back">&#x293A;</a>
+    </div>
 
     <form th:action="@{/workouts/create}" class="vertical-form" th:object="${workoutData}" method="post">
         <div>
@@ -30,7 +33,5 @@
             <button type="submit" class="btnValid">Créer la séance</button>
         </div>
     </form>
-
-    <a th:href="@{/workouts/}">Retour à la liste des séances</a>
 </body>
 </html>

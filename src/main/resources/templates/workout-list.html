@@ -9,13 +9,16 @@
     <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 
-    <h1>Liste des séances </h1>
-    <table>
+    <div class="header-container">
+        <h1>Liste des séances </h1>
+    </div>
+
+    <table class="auto-width-table centered centered-text">
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Poids</th>
-                <th>Exs</th>
+                <th class="exercises-list-column">Exs</th>
                 <th></th>                
                 <th>Type</th>
                 <th>Commentaires</th>
@@ -43,7 +46,7 @@
         </tbody>
     </table>
 
-    <div class="pagination">
+    <div class="pagination centered-text">
         <a th:if="${workoutPage.hasPrevious()}"
             th:href="@{/workouts(page=${workoutPage.number - 1}, size=${workoutPage.size})}"
             class="page-btn">&lt;</a>
@@ -54,8 +57,10 @@
             th:href="@{/workouts(page=${workoutPage.number + 1}, size=${workoutPage.size})}"
             class="page-btn">&gt;</a>
     </div>
+    <div class="centered-text">
+        <a href="/workouts/create" class="btn-new">Nouvelle séance</a>
+    </div>
 
-    <a href="/workouts/create" class="btn-new">Nouvelle séance</a>
 
 
 </body>

@@ -16,7 +16,7 @@
     </div>
 
 
-    <table class="auto-width-table">
+    <table class="auto-width-table centered centered-text">
         <thead>
         <tr>
             <th>Nb reps</th>
@@ -31,16 +31,16 @@
         </thead>
         <tbody>
         <tr th:each="entry : ${combinedMaxs}">
-            <td th:text="${entry.nbReps()}">Nb Reps</td>
+            <td th:text="${entry.personalBest() != null ? entry.nbReps() : '-'}" class="bold-text"></td>
 
-            <td th:text="${entry.personalBest() != null ? entry.personalBest().maxWeight() : '-'}">-</td>
-            <td th:text="${entry.personalBest() != null ? entry.personalBest().RMest() : '-'}">-</td>
+            <td th:text="${entry.personalBest() != null ? entry.personalBest().maxWeight() + ' kg' : '-'}" class="bold-text">-</td>
+            <td th:text="${entry.personalBest() != null ? entry.personalBest().RMest() + ' kg' : '-'}">-</td>
             <td th:text="${entry.personalBest() != null ? #temporals.format(entry.personalBest().date(), 'dd/MM/yyyy') : '-'}">-</td>
 
-            <td th:text="${entry.nbReps()}">Nb Reps</td>
+            <td th:text="${entry.seasonBest() != null ? entry.nbReps() : '-'}" class="bold-text"></td>
 
-            <td th:text="${entry.seasonBest() != null ? entry.seasonBest().maxWeight() : '-'}">-</td>
-            <td th:text="${entry.seasonBest() != null ? entry.seasonBest().RMest() : '-'}">-</td>
+            <td th:text="${entry.seasonBest() != null ? entry.seasonBest().maxWeight() + ' kg' : '-'}" class="bold-text">-</td>
+            <td th:text="${entry.seasonBest() != null ? entry.seasonBest().RMest() + ' kg' : '-'}">-</td>
             <td th:text="${entry.seasonBest() != null ? #temporals.format(entry.seasonBest().date(), 'dd/MM/yyyy') : '-'}">-</td>
         </tr>
         </tbody>

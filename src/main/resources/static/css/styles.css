@@ -660,3 +660,16 @@ select option {
 table.auto-width-table{
     width: auto;
 }
+
+.centered{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bold-text{
+    font-weight: bold;
+}
+
+.centered-text{
+    text-align: center;
+}

@@ -1,9 +1,12 @@
 package com.fitlogtimer.controller;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import com.fitlogtimer.dto.stats.CombinedMaxDTO;
+import com.fitlogtimer.dto.stats.CombinedMultiYearDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,21 +35,22 @@ public class StatsController {
     @GetMapping("/maxsByReps/{exerciseId}")
     public String showMaxsByExercise(@PathVariable int exerciseId, Model model){
 
-        // MaxsByRepsDTO maxsByRepsDTO = statsService.mapMaxWeightsByReps(exerciseId, List.of(1,2,3,4,5,6,8,10,12, 15));
-//        MaxsByRepsDTO maxsByRepsDTO = statsService.mapFilteredMaxWeightsByReps(exerciseId);
-//        MaxsByRepsDTO seasonMaxsByRepsDTO  = statsService.mapFilteredMaxWeightsByRepsForYear(exerciseId, LocalDate.now().getYear());
         String exerciseName = exerciseService.getById(exerciseId).get().getName();
 
-        List<CombinedMaxDTO> combinedMaxs = statsService.mergeMaxsByReps(
-                statsService.mapFilteredMaxWeightsByReps(exerciseId).maxsByReps(),
-                statsService.mapFilteredMaxWeightsByRepsForYear(exerciseId, LocalDate.now().getYear()).maxsByReps()
-        );
+        MaxsByRepsDTO personalBests = statsService.mapFilteredMaxWeightsByReps(exerciseId);
+        Map<Integer, MaxsByRepsDTO> bestsByYear = statsService.mapFilteredMaxWeightsByRepsForAllYears(exerciseId);
+
+        List<CombinedMultiYearDTO> combinedMaxs = statsService.mergeMultiYearMaxsByReps(personalBests, bestsByYear);
+
+        List<Integer> allYears = bestsByYear.keySet().stream().sorted(Comparator.reverseOrder()).toList();
+
+        log.info("****************************************************** combinedMaxs: {} **************************************", combinedMaxs);
 
         model.addAttribute("exerciseName", exerciseName);
         model.addAttribute("combinedMaxs", combinedMaxs);
         model.addAttribute("exercise_id", exerciseId);
-//        model.addAttribute("maxsWithName", new MaxsByRepsWithNameDTO(exerciseName, maxsByRepsDTO));
-//        model.addAttribute("seasonMaxsWithName", new MaxsByRepsWithNameDTO(exerciseName, seasonMaxsByRepsDTO));
+        model.addAttribute("allYears", allYears);
+
         log.info(model.toString());
         return "maxs-by-reps";
     }

@@ -6,13 +6,10 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.fitlogtimer.dto.stats.CombinedMaxDTO;
+import com.fitlogtimer.dto.stats.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.stats.MaxWeightWith1RMAndDateDTO;
-import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
-import com.fitlogtimer.dto.stats.MaxsByRepsDTO;
 import com.fitlogtimer.model.ExerciseSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.repository.ExerciseSetRepository;
@@ -52,32 +49,6 @@ public class StatsService {
                 : results.get(0); // la plus lourde
     }
 
-//    public MaxsByRepsDTO mapFilteredMaxWeightsByReps(int exerciseId) {
-//        Map<Double, Map.Entry<Integer, MaxWeightWith1RMAndDateDTO>> weightToBestEntry = new HashMap<>();
-//
-//        for (int nbReps = 1; nbReps <= 30; nbReps++) {
-//            MaxWeightWithDateDTO maxWeightWithDateDTO = maxByExAndReps(exerciseId, nbReps);
-//            //MaxWeightWithDateDTO maxWeightWithDateDTO = maxByExAndRepsForYear(exerciseId, nbReps, 2025);
-//            double weight = maxWeightWithDateDTO.maxWeight();
-//            if (weight == 0) continue; // ignore les entrées sans données
-//            MaxWeightWith1RMAndDateDTO enriched = new MaxWeightWith1RMAndDateDTO(
-//                    weight,
-//                    calculateOneRepMax(nbReps, weight),
-//                    maxWeightWithDateDTO.date()
-//            );
-//
-//            if (!weightToBestEntry.containsKey(weight) || nbReps > weightToBestEntry.get(weight).getKey()) {
-//                weightToBestEntry.put(weight, Map.entry(nbReps, enriched));
-//            }
-//        }
-//
-//        Map<Integer, MaxWeightWith1RMAndDateDTO> filtered = new TreeMap<>();
-//        for (Map.Entry<Integer, MaxWeightWith1RMAndDateDTO> entry : weightToBestEntry.values()) {
-//            filtered.put(entry.getKey(), entry.getValue());
-//        }
-//
-//        return new MaxsByRepsDTO(filtered);
-//    }
 
     public List<CombinedMaxDTO> mergeMaxsByReps(
             Map<Integer, MaxWeightWith1RMAndDateDTO> personalBests,
@@ -97,12 +68,63 @@ public class StatsService {
         return combined;
     }
 
+    public List<CombinedMultiYearDTO> mergeMultiYearMaxsByReps(
+            MaxsByRepsDTO personalBests,
+            Map<Integer, MaxsByRepsDTO> bestsByYear
+    ) {
+        // Union de toutes les répétitions présentes dans les PB et les années
+        Set<Integer> allReps = new TreeSet<>();
+        allReps.addAll(personalBests.maxsByReps().keySet());
+        for (MaxsByRepsDTO yearlyDTO : bestsByYear.values()) {
+            allReps.addAll(yearlyDTO.maxsByReps().keySet());
+        }
+
+        List<CombinedMultiYearDTO> combined = new ArrayList<>();
+        for (Integer reps : allReps) {
+            // Collecte des meilleurs perfs pour cette rep dans chaque année
+            Map<Integer, MaxWeightWith1RMAndDateDTO> bestsForRepByYear = new TreeMap<>();
+            for (Map.Entry<Integer, MaxsByRepsDTO> entry : bestsByYear.entrySet()) {
+                int year = entry.getKey();
+                MaxWeightWith1RMAndDateDTO dto = entry.getValue().maxsByReps().get(reps);
+                if (dto != null) {
+                    bestsForRepByYear.put(year, dto);
+                }
+            }
+
+            // Ajout du résultat combiné
+            combined.add(new CombinedMultiYearDTO(
+                    reps,
+                    personalBests.maxsByReps().get(reps),
+                    bestsForRepByYear
+            ));
+        }
+
+        return combined;
+    }
+
     public MaxsByRepsDTO mapFilteredMaxWeightsByReps(int exerciseId) {
         return mapFilteredMaxWeightsByReps(exerciseId, this::maxByExAndReps);
     }
 
     public MaxsByRepsDTO mapFilteredMaxWeightsByRepsForYear(int exerciseId, int year) {
         return mapFilteredMaxWeightsByReps(exerciseId, (exId, reps) -> maxByExAndRepsForYear(exId, reps, year));
+    }
+
+    public Map<Integer, MaxsByRepsDTO> mapFilteredMaxWeightsByRepsForAllYears(int exerciseId) {
+        Integer firstYear = exerciseSetRepository.findFirstYearWithData(exerciseId);
+        int currentYear = LocalDate.now().getYear();
+
+        if (firstYear == null) {
+            return Collections.emptyMap();
+        }
+
+        Map<Integer, MaxsByRepsDTO> result = new TreeMap<>();
+        for (int year = firstYear; year <= currentYear; year++) {
+            MaxsByRepsDTO dto = mapFilteredMaxWeightsByRepsForYear(exerciseId, year);
+            result.put(year, dto);
+        }
+
+        return result;
     }
 
     private MaxsByRepsDTO mapFilteredMaxWeightsByReps(int exerciseId,

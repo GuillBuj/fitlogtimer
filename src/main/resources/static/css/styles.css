@@ -677,3 +677,11 @@ table.auto-width-table{
 th.exercises-list-column{
     min-width: 600px;
 }
+
+.empty-separator {
+    border: none !important;
+    background: white !important;
+    width: 50px; /* Largeur de l'espace vide */
+    min-width: 50px;
+    padding: 0;
+}

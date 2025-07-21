@@ -24,15 +24,16 @@
 
             <th class="empty-separator"></th>
 
-            <th colspan="4">SB (<span th:text="${currentYear}"></span>)</th>
+            <th colspan="4">SB</th>
 
             <th class="empty-separator"></th>
 
-            <th th:each="year : ${allYears}"
-                th:if="${year != currentYear}"
-                colspan="3"
-                th:text="'Year ' + year">
-            </th>
+            <th th:colspan="${allYears.size()}">Poids</th>
+
+            <th class="empty-separator"></th>
+
+            <th th:colspan="${allYears.size()}">1RMest</th>
+
         </tr>
         <tr>
             <!-- PB -->
@@ -52,16 +53,9 @@
             <th class="empty-separator"></th>
 
             <!-- Years -->
-            <th th:each="year : ${allYears}" th:if="${year != currentYear}">Poids</th>
-            <th th:each="year : ${allYears}" th:if="${year != currentYear}">1RM</th>
-        </tr>
-        <tr>
-            <th colspan="5"></th> <!-- espace pour PB -->
-
-            <th th:each="year : ${allYears}">Reps</th>
-            <th th:each="year : ${allYears}">Poids</th>
-            <th th:each="year : ${allYears}">1RMest</th>
-            <th th:each="year : ${allYears}">Date</th>
+            <th th:each="year : ${allYears}"><span th:text="${year}"></span></th>
+            <th class="empty-separator"></th>
+            <th th:each="year : ${allYears}"><span th:text="${year}"></span></th>
         </tr>
         </thead>
         <tbody>
@@ -76,8 +70,8 @@
             <td class="empty-separator"></td>
 
             <!-- SBs pour l'année en cours -->
-
-            <td><span th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).maxWeight + ' kg' : '-'}"></span></td>
+            <td th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? entry.nbReps : '-'}" class="bold-text"></td>
+            <td><span th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).maxWeight + ' kg' : '-'}"  class="bold-text"></span></td>
             <td><span th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).RMest + ' kg' : '-'}"></span></td>
             <td><span th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? #temporals.format(entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).date(), 'dd/MM/yyyy') : '-'}"></span></td>
 
@@ -88,6 +82,8 @@
             <td th:each="year : ${allYears}">
                 <span th:text="${entry.getYearlyBest(year) != null ? entry.getYearlyBest(year).maxWeight + ' kg' : '-'}"></span>
             </td>
+
+            <td class="empty-separator"></td>
 
             <td th:each="year : ${allYears}">
                 <span th:text="${entry.getYearlyBest(year) != null ? entry.getYearlyBest(year).RMest + ' kg' : '-'}"></span>

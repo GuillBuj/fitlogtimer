@@ -681,7 +681,7 @@ th.exercises-list-column{
 .empty-separator {
     border: none !important;
     background: white !important;
-    width: 50px; /* Largeur de l'espace vide */
+    width: 50px;
     min-width: 50px;
     padding: 0;
 }

@@ -685,3 +685,25 @@ th.exercises-list-column{
     min-width: 50px;
     padding: 0;
 }
+
+
+/*PREFERENCES*/
+
+.exercise-pill {
+    display: inline-block;
+    color: #fff;
+    padding: 5px 10px;
+    margin-right: 10px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+.sortable-list {
+    list-style: none;
+    padding: 0;
+}
+.sortable-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}

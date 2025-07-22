@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Modifier la liste - Préférences</title>
+  <style>
+    .draggable {
+      padding: 10px;
+      margin-bottom: 5px;
+      background-color: #f7f7f7;
+      cursor: move;
+      display: inline-block;
+      border-radius: 50px;
+      margin-right: 10px;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      width: 150px;
+      text-transform: uppercase;
+    }
+
+    .draggable input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    .sortable-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-start;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<h2 th:text="'Liste : ' + ${listName}"></h2>
+
+<form method="post" action="/preferences/save">
+  <input type="hidden" name="listName" th:value="${listName}"/>
+
+  <div id="sortable" class="sortable-container">
+    <div class="draggable" th:each="exercise : ${exercises}" draggable="true" th:attr="data-id=${exercise.id}, id='ex-${ex.id}'"
+         th:style="'background-color:' + ${exercise.color}">
+      <input type="hidden" name="ids" th:value="${exercise.id}"/>
+      <input type="checkbox" name="visible" th:value="${exercise.id}" th:checked="${exercise.visible}" class="hidden"/>
+      <span th:text="${exercise.name}"></span>
+    </div>
+  </div>
+
+  <button type="submit">Sauvegarder</button>
+</form>
+
+<!-- Charger le fichier JS externe -->
+<script src="/js/preferences.js"></script>
+</body>
+</html>

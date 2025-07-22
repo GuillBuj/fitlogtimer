@@ -28,11 +28,11 @@
 
             <th class="empty-separator"></th>
 
-            <th th:colspan="${allYears.size()}">Poids</th>
+            <th th:colspan="${allYears.size()}+1">Poids</th>
 
             <th class="empty-separator"></th>
 
-            <th th:colspan="${allYears.size()}">1RMest</th>
+            <th th:colspan="${allYears.size()}+1">1RMest</th>
 
         </tr>
         <tr>
@@ -53,8 +53,10 @@
             <th class="empty-separator"></th>
 
             <!-- Years -->
+            <th>Reps</th>
             <th th:each="year : ${allYears}"><span th:text="${year}"></span></th>
             <th class="empty-separator"></th>
+            <th>Reps</th>
             <th th:each="year : ${allYears}"><span th:text="${year}"></span></th>
         </tr>
         </thead>
@@ -79,12 +81,14 @@
             <td class="empty-separator"></td>
 
             <!-- Troisième section: Anciens records (pour chaque année) -->
+            <td th:text="${entry.nbReps}" class="bold-text"></td>
             <td th:each="year : ${allYears}">
                 <span th:text="${entry.getYearlyBest(year) != null ? entry.getYearlyBest(year).maxWeight + ' kg' : '-'}"></span>
             </td>
 
             <td class="empty-separator"></td>
 
+            <td th:text="${entry.nbReps}" class="bold-text"></td>
             <td th:each="year : ${allYears}">
                 <span th:text="${entry.getYearlyBest(year) != null ? entry.getYearlyBest(year).RMest + ' kg' : '-'}"></span>
             </td>

@@ -16,6 +16,8 @@ import com.fitlogtimer.service.ExerciseService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+
 @Controller
 @RequestMapping("/exercises")
 @Slf4j
@@ -25,11 +27,12 @@ public class ExerciseController {
     private ExerciseService exerciseService;
 
     @GetMapping
-    public String showExercisesList(Model model){
+    public String showExercisesList(Model model) throws IOException {
 
         //log.info(SuggestedColors.COLORS.toString());
 
-        model.addAttribute("exercises", exerciseService.getAllExerciseItems());
+        //model.addAttribute("exercises", exerciseService.getAllExerciseItems());
+        model.addAttribute("exercises", exerciseService.getDefaultExerciseItems());
         model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL, ExerciseSetType.FREE_WEIGHT, ""));
         model.addAttribute("muscles", Muscle.values());
         model.addAttribute("families", Family.values());

@@ -1,11 +1,13 @@
 package com.fitlogtimer.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.fitlogtimer.dto.update.ExerciseUpdateDTO;
+import com.fitlogtimer.model.preference.ExerciseListPreference;
+import com.fitlogtimer.model.preference.ExercisePreference;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.constants.ExerciseSetType;
@@ -30,6 +32,8 @@ public class ExerciseService {
     private final ExerciseMapper exerciseMapper;
 
     private final StatsService statsService;
+
+    private final ExercisePreferenceService exercisePreferenceService;
 
     @Transactional
     public Exercise createExercise(ExerciseCreateDTO exerciseCreateDTO) {
@@ -90,6 +94,26 @@ public class ExerciseService {
                             return getExerciseListItem(exercise.getId());
                         })
                         .collect(Collectors.toList());
+    }
+
+    public List<ExerciseListItemDTO> getDefaultExerciseItems() throws IOException {
+        ExerciseListPreference defaultList = exercisePreferenceService.getListByName("default");
+        if (defaultList == null) return List.of();
+
+        // On prépare une Map des entités Exercise pour accès rapide par ID
+        Map<Integer, Exercise> exerciseMap = exerciseRepository.findAll().stream()
+                .collect(Collectors.toMap(Exercise::getId, Function.identity()));
+
+        // Filtrer et trier les exercices visibles
+        return defaultList.getExercises().stream()
+                .filter(ExercisePreference::isVisible)  // Filtrer les exercices visibles
+                .sorted(Comparator.comparingInt(ExercisePreference::getOrder))  // Trier par ordre
+                .map(pref -> {
+                    Exercise ex = exerciseMap.get(pref.getExerciseId());
+                    return ex != null ? getExerciseListItem(ex.getId()) : null;
+                })
+                .filter(Objects::nonNull)  // Exclure les exercices nuls
+                .collect(Collectors.toList());
     }
 
     public ExerciseListItemDTO getExerciseListItemDTO(Exercise exercise, Double personalBest, Double oneRepMaxEst, Double seasonBest, Double seasonOneRepMax) {

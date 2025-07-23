@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script src="js/calculator.js" defer></script>
+    <title>Calculateur 1RM estimé</title>
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<main class="calculator-container">
+
+    <h2 class="calculator-title">Calculateur 1RM estimé</h2>
+
+    <form class="calculator-form" onsubmit="return false;">
+        <label for="weight">Poids (kg):</label>
+        <input type="number" id="weight"step="0.1" min="0" />
+
+        <label for="reps">Repetitions:</label>
+        <input type="number" id="reps" step="0.1" min="1" />
+
+        <label for="estimatedOneRM">1RM estimé:</label>
+        <input type="number" id="estimatedOneRM" step="0.1" min="0" />
+    </form>
+
+    <div id="rmTableContainer"></div>
+
+</main>
+
+</body>
+</html>

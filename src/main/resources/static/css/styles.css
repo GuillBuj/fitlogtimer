@@ -707,3 +707,66 @@ th.exercises-list-column{
     gap: 10px;
     margin-bottom: 8px;
 }
+
+/*CALCULATOR*/
+
+.calculator-container {
+    max-width: 500px;
+    margin: 2em auto;
+    font-family: Arial, sans-serif;
+    padding: 1em;
+}
+
+.calculator-title {
+    text-align: center;
+}
+
+.calculator-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.calculator-label {
+    margin-top: 1.5em;
+    font-weight: bold;
+}
+
+.calculator-input {
+    padding: 0.5em;
+    font-size: 1em;
+    margin-top: 0.3em;
+}
+
+.calculator-output {
+    margin-top: 1.5em;
+    background-color: #f9f9f9;
+    padding: 1em;
+    border-radius: 5px;
+}
+
+.calculator-output h4 {
+    margin-bottom: 0.3em;
+}
+
+.calculator-output ul {
+    padding-left: 1.2em;
+}
+
+.rm-table {
+    border-collapse: collapse;
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.rm-table th,
+.rm-table td {
+    border: 1px solid #ccc;
+    padding: 6px 8px;
+}
+
+.rm-table .target-cell {
+    background-color: #def;
+    font-weight: bold;
+}

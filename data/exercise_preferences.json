@@ -186,153 +186,153 @@
       "order" : 3,
       "visible" : true
     }, {
-      "exerciseId" : 3,
+      "exerciseId" : 33,
       "order" : 4,
       "visible" : true
     }, {
-      "exerciseId" : 33,
+      "exerciseId" : 3,
       "order" : 5,
       "visible" : true
     }, {
       "exerciseId" : 97,
       "order" : 6,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 129,
       "order" : 7,
-      "visible" : false
-    }, {
-      "exerciseId" : 163,
-      "order" : 8,
-      "visible" : false
-    }, {
-      "exerciseId" : 193,
-      "order" : 9,
-      "visible" : false
-    }, {
-      "exerciseId" : 194,
-      "order" : 10,
-      "visible" : false
-    }, {
-      "exerciseId" : 225,
-      "order" : 11,
-      "visible" : false
-    }, {
-      "exerciseId" : 257,
-      "order" : 12,
-      "visible" : false
-    }, {
-      "exerciseId" : 258,
-      "order" : 13,
-      "visible" : false
-    }, {
-      "exerciseId" : 259,
-      "order" : 14,
-      "visible" : false
-    }, {
-      "exerciseId" : 260,
-      "order" : 15,
-      "visible" : false
-    }, {
-      "exerciseId" : 261,
-      "order" : 16,
-      "visible" : false
-    }, {
-      "exerciseId" : 263,
-      "order" : 17,
-      "visible" : false
-    }, {
-      "exerciseId" : 264,
-      "order" : 18,
-      "visible" : false
-    }, {
-      "exerciseId" : 265,
-      "order" : 19,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 266,
-      "order" : 20,
-      "visible" : false
+      "order" : 8,
+      "visible" : true
+    }, {
+      "exerciseId" : 258,
+      "order" : 9,
+      "visible" : true
+    }, {
+      "exerciseId" : 257,
+      "order" : 10,
+      "visible" : true
+    }, {
+      "exerciseId" : 260,
+      "order" : 11,
+      "visible" : true
+    }, {
+      "exerciseId" : 261,
+      "order" : 12,
+      "visible" : true
+    }, {
+      "exerciseId" : 259,
+      "order" : 13,
+      "visible" : true
+    }, {
+      "exerciseId" : 263,
+      "order" : 14,
+      "visible" : true
+    }, {
+      "exerciseId" : 264,
+      "order" : 15,
+      "visible" : true
+    }, {
+      "exerciseId" : 265,
+      "order" : 16,
+      "visible" : true
     }, {
       "exerciseId" : 267,
-      "order" : 21,
-      "visible" : false
+      "order" : 17,
+      "visible" : true
+    }, {
+      "exerciseId" : 163,
+      "order" : 18,
+      "visible" : true
     }, {
       "exerciseId" : 268,
-      "order" : 22,
-      "visible" : false
+      "order" : 19,
+      "visible" : true
     }, {
       "exerciseId" : 269,
-      "order" : 23,
-      "visible" : false
+      "order" : 20,
+      "visible" : true
     }, {
       "exerciseId" : 270,
-      "order" : 24,
-      "visible" : false
+      "order" : 21,
+      "visible" : true
     }, {
       "exerciseId" : 271,
-      "order" : 25,
-      "visible" : false
+      "order" : 22,
+      "visible" : true
     }, {
       "exerciseId" : 272,
-      "order" : 26,
+      "order" : 23,
       "visible" : true
     }, {
       "exerciseId" : 282,
-      "order" : 27,
-      "visible" : false
+      "order" : 24,
+      "visible" : true
+    }, {
+      "exerciseId" : 294,
+      "order" : 25,
+      "visible" : true
     }, {
       "exerciseId" : 283,
-      "order" : 28,
-      "visible" : false
+      "order" : 26,
+      "visible" : true
     }, {
       "exerciseId" : 284,
-      "order" : 29,
-      "visible" : false
+      "order" : 27,
+      "visible" : true
     }, {
       "exerciseId" : 285,
-      "order" : 30,
+      "order" : 28,
       "visible" : true
     }, {
       "exerciseId" : 286,
+      "order" : 29,
+      "visible" : true
+    }, {
+      "exerciseId" : 194,
+      "order" : 30,
+      "visible" : true
+    }, {
+      "exerciseId" : 193,
       "order" : 31,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 287,
       "order" : 32,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 288,
       "order" : 33,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 289,
       "order" : 34,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 290,
       "order" : 35,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 291,
       "order" : 36,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 292,
       "order" : 37,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 293,
       "order" : 38,
-      "visible" : false
-    }, {
-      "exerciseId" : 294,
-      "order" : 39,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 295,
+      "order" : 39,
+      "visible" : true
+    }, {
+      "exerciseId" : 225,
       "order" : 40,
-      "visible" : false
+      "visible" : true
     } ]
   }
 }

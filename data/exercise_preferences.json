@@ -333,6 +333,14 @@
       "exerciseId" : 225,
       "order" : 40,
       "visible" : true
+    }, {
+      "exerciseId" : 296,
+      "order" : 41,
+      "visible" : true
+    }, {
+      "exerciseId" : 297,
+      "order" : 42,
+      "visible" : true
     } ]
   }
 }

@@ -4,8 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const estimatedOneRMInput = document.getElementById("estimatedOneRM");
     const rmTableContainer = document.getElementById("rmTableContainer");
 
-    // Stocke le dernier champ modifié par l'utilisateur
-    let lastManuallyEdited = null;
+
+    // Stocke les derniers champs modifiés par l'utilisateur
+    let lastTwoModified = [];
 
     // Pour éviter boucle infinie lors mise à jour automatique
     let isUpdatingProgrammatically = false;
@@ -13,76 +14,78 @@ document.addEventListener('DOMContentLoaded', () => {
     [weightInput, repsInput, estimatedOneRMInput].forEach(input => {
         input.addEventListener('input', (e) => {
             if (isUpdatingProgrammatically) return; // Ignore si mise à jour automatique
-            lastManuallyEdited = e.target.id;
-            handleInputChange();
+            const field = e.target.id;
+            lastTwoModified = [...lastTwoModified.filter(id => id !== field), field].slice(-2);
+            handleInputChange(field);
         });
     });
 
-    function handleInputChange() {
+    estimatedOneRMInput.addEventListener('input', (e) => {
+        if (isUpdatingProgrammatically) return; // Ignore si mise à jour automatique
+
+        const estimatedOneRM = parseFloat(estimatedOneRMInput.value.replace(',', '.'));
+        if (!isNaN(estimatedOneRM)) {
+            // Si 1RM est valide, mettre à jour le tableau
+            generateSuggestedWeightsFrom1RM(estimatedOneRM);
+        }
+    });
+
+    function handleInputChange(changedField) {
         const weight = parseFloat(weightInput.value.replace(',', '.'));
         const reps = parseFloat(repsInput.value.replace(',', '.'));
         const estimatedOneRM = parseFloat(estimatedOneRMInput.value.replace(',', '.'));
 
-        const isWeightValid = !isNaN(weight);
-        const isRepsValid = !isNaN(reps);
-        const isEstimatedOneRMValid = !isNaN(estimatedOneRM);
+        const isWeightValid = !isNaN(weight) && weight > 0;
+        const isRepsValid = !isNaN(reps) && reps > 0;
+        const isEstimatedOneRMValid = !isNaN(estimatedOneRM) && estimatedOneRM > 0;
 
-        if (isWeightValid && isRepsValid && isEstimatedOneRMValid) {
-            isUpdatingProgrammatically = true;
+        if (isUpdatingProgrammatically) return;
 
-            if (lastManuallyEdited === 'weight') {
-                const newReps = calculateReps(weight, estimatedOneRM);
-                repsInput.value = newReps.toFixed(1);
-                const newOneRM = estimate1RM(weight, newReps);
-                estimatedOneRMInput.value = newOneRM.toFixed(1);
-            } else if (lastManuallyEdited === 'reps') {
-                const newWeight = calculateWeight(reps, estimatedOneRM);
-                weightInput.value = newWeight.toFixed(1);
-                const newOneRM = estimate1RM(newWeight, reps);
-                estimatedOneRMInput.value = newOneRM.toFixed(1);
-            } else if (lastManuallyEdited === 'estimatedOneRM') {
-                const newWeight = calculateWeight(reps, estimatedOneRM);
-                weightInput.value = newWeight.toFixed(1);
-                const newReps = calculateReps(newWeight, estimatedOneRM);
-                repsInput.value = newReps.toFixed(1);
+        // Mise à jour de l'historique des modifications
+        lastTwoModified = [...lastTwoModified.filter(id => id !== changedField), changedField].slice(-2);
+
+        isUpdatingProgrammatically = true;
+
+        try {
+            // Cas 1: Modification conjointe de reps et 1RM (dans n'importe quel ordre)
+            if ((lastTwoModified.includes('reps') && lastTwoModified.includes('estimatedOneRM'))) {
+                if (isRepsValid && isEstimatedOneRMValid) {
+                    const newWeight = calculateWeight(reps, estimatedOneRM);
+                    weightInput.value = newWeight.toFixed(1);
+                    highlightField(weightInput);
+                    generate1RMTable(newWeight, reps);
+                    generateSuggestedWeightsFrom1RM(estimatedOneRM);
+                }
             }
-
+            // Cas 2: Modification conjointe de poids et reps
+            else if ((lastTwoModified.includes('weight') && lastTwoModified.includes('reps'))) {
+                if (isWeightValid && isRepsValid) {
+                    const newOneRM = estimate1RM(weight, reps);
+                    estimatedOneRMInput.value = newOneRM.toFixed(1);
+                    highlightField(estimatedOneRMInput);
+                    generate1RMTable(weight, reps);
+                    generateSuggestedWeightsFrom1RM(newOneRM);
+                }
+            }
+            // Cas 3: Modification conjointe de poids et 1RM
+            else if ((lastTwoModified.includes('weight') && lastTwoModified.includes('estimatedOneRM'))) {
+                if (isWeightValid && isEstimatedOneRMValid) {
+                    const newReps = calculateReps(weight, estimatedOneRM);
+                    repsInput.value = newReps.toFixed(1);
+                    highlightField(repsInput);
+                    generate1RMTable(weight, newReps);
+                    generateSuggestedWeightsFrom1RM(estimatedOneRM);
+                }
+            }
+            // Cas 4: Modification unique du 1RM
+            else if (changedField === 'estimatedOneRM' && isEstimatedOneRMValid) {
+                generateSuggestedWeightsFrom1RM(estimatedOneRM);
+            }
+        } catch (error) {
+            console.error("Erreur dans handleInputChange:", error);
+        } finally {
             isUpdatingProgrammatically = false;
-
-            generate1RMTable(parseFloat(weightInput.value), parseFloat(repsInput.value));
-            return;
         }
-
-        if (isWeightValid && isRepsValid && !isEstimatedOneRMValid) {
-            const calculatedOneRM = estimate1RM(weight, reps);
-            isUpdatingProgrammatically = true;
-            estimatedOneRMInput.value = calculatedOneRM.toFixed(1);
-            isUpdatingProgrammatically = false;
-
-            generate1RMTable(weight, reps);
-            return;
-        }
-
-        if (isEstimatedOneRMValid && isRepsValid && !isWeightValid) {
-            const calculatedWeight = calculateWeight(reps, estimatedOneRM);
-            isUpdatingProgrammatically = true;
-            weightInput.value = calculatedWeight.toFixed(1);
-            isUpdatingProgrammatically = false;
-
-            generate1RMTable(calculatedWeight, reps);
-            return;
-        }
-
-        if (isEstimatedOneRMValid && isWeightValid && !isRepsValid) {
-            const calculatedReps = calculateReps(weight, estimatedOneRM);
-            isUpdatingProgrammatically = true;
-            repsInput.value = calculatedReps.toFixed(1);
-            isUpdatingProgrammatically = false;
-
-            generate1RMTable(weight, calculatedReps);
-            return;
-        }
-
     }
 
     function estimate1RM(weight, reps) {
@@ -128,13 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Filtrer poids > 0
         const validWeightOffsets = weightOffsets.filter(offset => (nearestWeight + offset) > 0);
 
-        let html = `<h4>Estimations autour de ${nearestReps} reps & ${nearestWeight} kg :</h4>`;
-        html += `<table class="rm-table"><thead><tr><th></th>`;
+        let html = `<table class="rm-table"><thead><tr><th></th>`;
 
         // En-têtes des poids valides uniquement
         validWeightOffsets.forEach(offset => {
             const w = (nearestWeight + offset).toFixed(1);
-            html += `<th>${w} kg</th>`;
+            html += `<th>${w}</th>`;
         });
         html += `</tr></thead><tbody>`;
 
@@ -143,13 +145,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentReps = nearestReps + repOffset;
             if (currentReps <= 0) return; // Ignorer reps ≤ 0
 
-            html += `<tr><th>${currentReps} reps</th>`;
+            html += `<tr><th>${currentReps}</th>`;
 
             validWeightOffsets.forEach(weightOffset => {
                 const currentWeight = nearestWeight + weightOffset;
                 const estimated1RM = estimate1RM(currentWeight, currentReps);
                 const isTarget = (repOffset === 0 && weightOffset === 0);
-                html += `<td${isTarget ? ' class="target-cell"' : ''}>${estimated1RM.toFixed(1)} kg</td>`;
+                html += `<td${isTarget ? ' class="target-cell"' : ''}>${estimated1RM.toFixed(1)}</td>`;
             });
 
             html += `</tr>`;
@@ -159,4 +161,46 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = html;
     }
 
+    function generateSuggestedWeightsFrom1RM(oneRM) {
+        const container = document.getElementById("suggestedWeightsContainer");
+        const repsRange = Array.from({length: 14}, (_, i) => i + 2); // 2 à 15 reps
+
+        // Calcul des données
+        const weightsData = repsRange.map(reps => {
+            const weight = Math.round(calculateWeight(reps, oneRM) * 2) / 2;
+            const estRM = estimate1RM(weight, reps);
+            return { reps, weight, estRM };
+        });
+
+        // Construction du tableau inversé (colonnes ↔ lignes)
+        container.innerHTML = `
+    <h3>Poids recommandés pour 1RM = ${oneRM.toFixed(1)} kg</h3>
+    <table class="suggested-weights-table rotated">
+        <thead>
+            <tr>
+                <th>Reps</th>
+                ${weightsData.map(data => `<th>${data.reps}</th>`).join('')}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="metric-label">Poids</td>
+                ${weightsData.map(data => `<td>${data.weight.toFixed(1)}</td>`).join('')}
+            </tr>
+            <tr>
+                <td class="metric-label">1RM estimé</td>
+                ${weightsData.map(data => `<td>${data.estRM.toFixed(1)}</td>`).join('')}
+            </tr>
+        </tbody>
+    </table>
+    `;
+    }
+
+
+    function highlightField(input) {
+        input.classList.add("highlight-flash");
+        setTimeout(() => {
+            input.classList.remove("highlight-flash");
+        }, 500);
+    }
 });

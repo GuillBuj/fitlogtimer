@@ -9,24 +9,25 @@
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
-<main class="calculator-container">
 
-    <h2 class="calculator-title">Calculateur 1RM estimé</h2>
+<div class="calculator">
+    <div class="inputs">
+        <div class="input-group">
+            <label for="weight">Poids :</label>
+            <input id="weight" type="text">
+        </div>
+        <div class="input-group">
+            <label for="reps">Reps :</label>
+            <input id="reps" type="text">
+        </div>
+        <div class="input-group">
+            <label for="estimatedOneRM">1RM estimé :</label>
+            <input id="estimatedOneRM" type="text">
+        </div>
+    </div>
 
-    <form class="calculator-form" onsubmit="return false;">
-        <label for="weight">Poids (kg):</label>
-        <input type="number" id="weight"step="0.1" min="0" />
-
-        <label for="reps">Repetitions:</label>
-        <input type="number" id="reps" step="0.1" min="1" />
-
-        <label for="estimatedOneRM">1RM estimé:</label>
-        <input type="number" id="estimatedOneRM" step="0.1" min="0" />
-    </form>
-
-    <div id="rmTableContainer"></div>
-
-</main>
-
+    <div id="suggestedWeightsContainer" class="suggested-weights"></div>
+    <div id="rmTableContainer" class="rm-table"></div>
+</div>
 </body>
 </html>

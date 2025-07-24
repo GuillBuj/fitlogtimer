@@ -770,3 +770,111 @@ th.exercises-list-column{
     background-color: #def;
     font-weight: bold;
 }
+
+.calculator {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.input-group label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    margin-right: 8px;
+}
+
+.input-group input {
+    width: 80px;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.suggested-weights {
+    margin: 15px 0;
+}
+
+.suggested-row {
+    margin-bottom: 5px;
+}
+
+.suggested-row div {
+    display: inline-block;
+    padding: 3px 6px;
+    margin-right: 5px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    text-align: center;
+    min-width: 50px;
+}
+
+.rm-table {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.rm-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.rm-table td, .rm-table th {
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: center;
+}
+
+.target-cell {
+    background-color: #e6f7ff;
+    font-weight: bold;
+}
+
+/*.highlight-flash {*/
+/*    background-color: #d4edda !important;*/
+/*    animation: highlight 0.3s ease-out;*/
+/*}*/
+
+/*@keyframes highlight {*/
+/*    0% { background-color: #ff0; }*/
+/*    100% { background-color: transparent; }*/
+/*}*/
+
+.highlight-flash {
+    background-color: rgba(255, 255, 0, 0.3); !important;
+    border-color: #ffcc00;
+}
+
+@keyframes flash {
+    0% { opacity: 0.8; }
+    100% { opacity: 0; }
+}
+
+.suggested-weights-table.rotated {
+    width: auto;
+    margin: 15px 0;
+    border-collapse: collapse;
+}
+
+.suggested-weights-table.rotated th,
+.suggested-weights-table.rotated td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.suggested-weights-table.rotated th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.suggested-weights-table.rotated .metric-label {
+    font-weight: bold;
+    background-color: #f8f8f8;
+    text-align: right;
+}

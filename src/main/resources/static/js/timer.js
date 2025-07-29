@@ -11,6 +11,10 @@ function updateChronoDisplay(ms) {
     const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
     const seconds = String(totalSeconds % 60).padStart(2, '0');
     document.getElementById("chrono").textContent = `${minutes}:${seconds}`;
+
+    if (document.getElementById("nav-chrono")) {
+        document.getElementById("nav-chrono").textContent = `${minutes}:${seconds}`;
+    }
 }
 
 function startChrono() {
@@ -61,6 +65,10 @@ function updateTimerDisplay(seconds, isActivePhase = false) {
 
     timerDisplay.textContent = `${min}:${sec}`;
     timerDisplay.style.color = isActivePhase ? "#a30000" : "#1e6e1e"; // rouge/vert foncé
+
+    if (document.getElementById("nav-timer")) {
+        document.getElementById("nav-timer").textContent = `${min}:${sec}`;
+    }
 }
 
 function updateSinceEnd() {

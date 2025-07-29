@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Timer</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+
+<div class="chrono-wrapper-compact">
+  <h1>⏱ Chronomètre & Timer</h1>
+
+  <div class="chrono-block">
+    <h2>Chronomètre</h2>
+    <div id="chrono" class="chrono-time-display">00:00</div>
+    <div class="chrono-controls">
+      <button id="chrono-toggle" onclick="toggleChrono()" title="Start/Pause Chrono">
+        ▶️
+      </button>
+      <button onclick="resetChrono()" title="Reset Chrono">
+        🔄
+      </button>
+    </div>
+  </div>
+
+  <div class="chrono-block">
+    <h2>Timer</h2>
+    <label class="chrono-label">
+      Durée (sec) :
+      <input type="number" id="timer-duration" value="60" min="1" class="chrono-duration-input">
+    </label>
+    <div id="timer" class="chrono-time-display">01:00</div>
+    <div class="chrono-controls">
+      <button id="timer-button" onclick="handleTimer()" title="Start/Reset Timer">
+        ⏱
+      </button>
+    </div>
+    <div id="timer-message" class="chrono-message"></div>
+  </div>
+</div>
+
+
+<script src="/js/timer.js"></script>
+</body>
+</html>

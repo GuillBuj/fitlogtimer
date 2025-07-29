@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const newWeight = calculateWeight(reps, estimatedOneRM);
                     weightInput.value = newWeight.toFixed(1);
                     highlightField(weightInput);
-                    generate1RMTable(newWeight, reps);
+                    generate1RMTable(newWeight, reps, estimatedOneRM);
                     generateSuggestedWeightsFrom1RM(estimatedOneRM);
                 }
             }
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const newOneRM = estimate1RM(weight, reps);
                     estimatedOneRMInput.value = newOneRM.toFixed(1);
                     highlightField(estimatedOneRMInput);
-                    generate1RMTable(weight, reps);
+                    generate1RMTable(weight, reps, newOneRM);
                     generateSuggestedWeightsFrom1RM(newOneRM);
                 }
             }
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const newReps = calculateReps(weight, estimatedOneRM);
                     repsInput.value = newReps.toFixed(1);
                     highlightField(repsInput);
-                    generate1RMTable(weight, newReps);
+                    generate1RMTable(weight, newReps, estimatedOneRM);
                     generateSuggestedWeightsFrom1RM(estimatedOneRM);
                 }
             }
@@ -118,15 +118,41 @@ document.addEventListener('DOMContentLoaded', () => {
         return bestReps;
     }
 
-    function generate1RMTable(weight, reps) {
+    function generate1RMTable(weight, reps, target1RM) {
         const container = document.getElementById("rmTableContainer");
         container.innerHTML = "";
 
         const nearestReps = Math.round(reps);
         const nearestWeight = Math.round(weight * 2) / 2;
 
-        const repOffsets = [-2, -1, 0, 1, 2];
-        const weightOffsets = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
+        const repOffsets = [-3, -2, -1, 0, 1, 2, 3];
+        const weightOffsets = [-3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3];
+
+        // Fonction de coloration relative au 1RM cible
+        const getCellStyle = (estimated1RM) => {
+            if (!target1RM || target1RM <= 0) return "";
+
+            const ratio = estimated1RM / target1RM;
+            const diff = Math.abs(ratio-1);
+
+            let bgColor = '#ffffff'; // blanc par défaut
+
+            if (diff < 0.05) { // ±5% autour de la cible
+                const intensity = 1 - (diff / 0.05); // 1 = parfait, 0 = limite de 5%
+                const lightness = 94 - (18 * intensity); // de 94% à 76%
+                const saturation = 30 + (25 * intensity); // de 30% à 55%
+
+                // hsl(120) = vert. Plus on est proche de la cible, plus c’est saturé et foncé.
+                bgColor = `hsl(120, ${saturation}%, ${lightness}%)`;
+            }
+
+            const isExact = ratio >= 1.0 && ratio <= 1.006;
+
+            return `
+        background-color: ${bgColor};
+        ${isExact ? 'font-weight: 700;' : ''}
+    `;
+        };
 
         // Filtrer poids > 0
         const validWeightOffsets = weightOffsets.filter(offset => (nearestWeight + offset) > 0);
@@ -150,8 +176,12 @@ document.addEventListener('DOMContentLoaded', () => {
             validWeightOffsets.forEach(weightOffset => {
                 const currentWeight = nearestWeight + weightOffset;
                 const estimated1RM = estimate1RM(currentWeight, currentReps);
-                const isTarget = (repOffset === 0 && weightOffset === 0);
-                html += `<td${isTarget ? ' class="target-cell"' : ''}>${estimated1RM.toFixed(1)}</td>`;
+                const isTargetCell = (repOffset === 0 && weightOffset === 0);
+
+                html += `<td ${isTargetCell ? 'class="target-cell"' : ''}
+                    style="${getCellStyle(estimated1RM)}">
+                    ${estimated1RM.toFixed(1)}
+                </td>`;
             });
 
             html += `</tr>`;
@@ -175,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Construction du tableau inversé (colonnes ↔ lignes)
         container.innerHTML = `
     <h3>Poids recommandés pour 1RM = ${oneRM.toFixed(1)} kg</h3>
-    <table class="suggested-weights-table rotated">
+    <table class="suggested-weights-table rm-table rotated">
         <thead>
             <tr>
                 <th>Reps</th>

@@ -40,4 +40,11 @@ public class ImportController {
         redirectAttributes.addFlashAttribute("message", resultMessage);
         return "redirect:/import";
     }
+
+    @PostMapping("/run-partial-import")
+    public String runPartialImport(@RequestParam("sheetName") String sheetName, RedirectAttributes redirectAttributes) {
+        String resultMessage = importService.importPartialSheet(sheetName);
+        redirectAttributes.addFlashAttribute("message", resultMessage);
+        return "redirect:/import";
+    }
 }

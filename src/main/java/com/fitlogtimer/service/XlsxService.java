@@ -253,6 +253,78 @@ public class XlsxService {
         return new FromXlsxGenericDTO(name, workouts);
     }
 
+    public FromXlsxGenericDTO extractFilteredGenericSheet(String sheetName) throws IOException {
+
+        String[][] rawData = xlsxReader.readSheetData(FileConstants.EXCEL_FILE, sheetName, 0, 1);
+        log.info("rawData: {}", (Object) rawData);
+
+        int endRow = xlsxReader.findEndRow(rawData);
+        int endCol = xlsxReader.findEndColumn(rawData);
+        log.info("endRow: {}, endCol: {}", endRow, endCol);
+
+        String[][] trimmed = xlsxReader.trim(rawData, endRow, endCol);
+        log.info("trimmed: {}", (Object) trimmed);
+
+        String[][] data = xlsxReader.transposeArray(trimmed); // colonnes = workouts
+        log.info("data: {}", (Object) data);
+
+        String name = rawData[0][0]; // nom par défaut
+        log.info("name: {}", name);
+
+        List<String> shortNameList = new ArrayList<>();
+        List<String> barWeightList = new ArrayList<>();
+
+        for (int i = 2; i < endRow; i++) {
+            String shortName = rawData[i][0];
+
+            if (FileConstants.GENERIC_END_MARKERS.contains(shortName)) {
+                break;
+            }
+
+            shortNameList.add(shortName);
+            barWeightList.add(rawData[i][1]);
+        }
+
+        String[] shortNameColumn = shortNameList.toArray(new String[0]);
+        String[] barWeightColumn = barWeightList.toArray(new String[0]);
+
+        log.info("shortNameColumn(size:{}): {}", shortNameColumn.length, (Object) shortNameColumn);
+        log.info("barWeightColumn(size:{}): {}", barWeightColumn.length, (Object) barWeightColumn);
+
+        // ligne des "X"
+        String[] skipFlags = trimmed[1];
+        log.info("***** skipFlags line: {}", (Object) skipFlags);
+
+        List<FromXlsxGenericWorkoutDTO> workouts = new ArrayList<>();
+
+        for (int col = 2; col < data.length; col++) {
+            if (col < skipFlags.length && "X".equalsIgnoreCase(skipFlags[col])) {
+                log.info("Col {} ignorée (flag X)", col);
+                continue;
+            }
+
+            String[] dataColumn = Arrays.copyOf(data[col], endRow);
+            log.info("*** Next workout *** col {}", col);
+            log.info("dataColumn(size: {}): {}", dataColumn.length, dataColumn);
+
+            FromXlsxGenericWorkoutDTO workout = xlsxMapper.mapToFromXlsxGenericWorkoutDTO(
+                    dataColumn,
+                    shortNameColumn,
+                    barWeightColumn,
+                    col
+            );
+
+            log.info("workout post mapper: {}", (Object) workout);
+            if (workout.sets() != null && !workout.sets().isEmpty()) {
+                workouts.add(workout);
+            }
+        }
+
+        log.info("name: {}, workouts size: {}, workouts: {}", name, workouts.size(), workouts);
+        return new FromXlsxGenericDTO(name, workouts);
+    }
+
+
     public static boolean isEndMarker(String value) {
         return value != null && FileConstants.GENERIC_END_MARKERS.contains(value.trim());
     }

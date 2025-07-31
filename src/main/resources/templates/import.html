@@ -12,15 +12,25 @@
 
 <a th:href="@{/run-import-script}" class="btn btn-primary">Télécharger le fichier depuis Drive</a>
 
+<!--<form th:action="@{/run-import}" method="post" class="form-inline">-->
+<!--    <label for="sheetName" class="form-label">Sélectionnez un onglet :</label>-->
+<!--    <select id="sheetName" name="sheetName" class="form-select mb-3" required>-->
+<!--        <option value="" disabled selected>&#45;&#45; Choisir un onglet &#45;&#45;</option>-->
+<!--        <option th:each="sheet : ${sheets}"-->
+<!--                th:value="${sheet}"-->
+<!--                th:text="${sheet}"></option>-->
+<!--    </select>-->
+<!--    <button type="submit" class="btn btn-success">Importer</button>-->
+<!--</form>-->
+
 <form th:action="@{/run-import}" method="post" class="form-inline">
     <label for="sheetName" class="form-label">Sélectionnez un onglet :</label>
     <select id="sheetName" name="sheetName" class="form-select mb-3" required>
         <option value="" disabled selected>-- Choisir un onglet --</option>
-        <option th:each="sheet : ${sheets}"
-                th:value="${sheet}"
-                th:text="${sheet}"></option>
+        <option th:each="sheet : ${sheets}" th:value="${sheet}" th:text="${sheet}"></option>
     </select>
     <button type="submit" class="btn btn-success">Importer</button>
+    <button type="submit" class="btn btn-primary" formaction="/run-partial-import">Import Partiel</button>
 </form>
 
 <script src="/js/timer.js"></script>

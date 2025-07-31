@@ -25,4 +25,19 @@ public class ImportService {
             return "Erreur lors de l'import '" + sheetName + "' : " + e.getMessage();
         }
     }
+
+    @Transactional
+    public String importPartialSheet(String sheetName) {
+        try {
+            String tagImport = "import" + sheetName.replaceFirst("^\\.", "");
+
+            FromXlsxGenericDTO fromXlsxGenericDTO= xlsxService.extractFilteredGenericSheet(sheetName);
+            workoutService.createWorkoutsFromXlsxGenericDTO(fromXlsxGenericDTO);
+            return "Import partiel de '" + sheetName + "' réussi.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Erreur lors de l'import '" + sheetName + "' : " + e.getMessage();
+        }
+    }
+
 }

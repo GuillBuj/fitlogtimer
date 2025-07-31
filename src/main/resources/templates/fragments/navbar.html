@@ -7,11 +7,23 @@
         <a class="navbar-brand" href="/">FitLogTimer</a>
 
         <div class="navbar-tabs">
+<!--            <div id="chrono-timer-nav">-->
+<!--                <span id="nav-chrono">00:00</span>-->
+<!--                <span id="nav-timer" style="margin-left: 10px;">00:00</span>-->
+<!--                <button data-action="chrono-toggle" title="Start/Pause">⏯</button>-->
+<!--                <button data-action="chrono-stop" title="Stop">⏹</button>-->
+<!--                <button data-action="timer-toggle" title="Timer">⏱</button>-->
+<!--            </div>-->
             <div id="chrono-timer-nav">
-                <span id="nav-chrono">00:00</span>
-                <span id="nav-timer" style="margin-left: 10px;">00:00</span>
-                <button onclick="toggleChrono()">⏯</button>
-                <button onclick="handleTimer()">⏱</button>
+                <div class="nav-section">
+                    <span id="nav-chrono">00:00</span>
+                    <button data-action="chrono-toggle" title="Start/Pause">▶</button>
+                    <button data-action="chrono-stop" title="Stop">⏹</button>
+                </div>
+                <div class="nav-section">
+                    <span id="nav-timer">00:00</span>
+                    <button data-action="timer-toggle" title="Timer">⏱</button>
+                </div>
             </div>
             <a href="/timer">⏱</a>
             <a href="/workouts">Séances</a>

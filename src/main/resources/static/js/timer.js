@@ -1,72 +1,25 @@
-// ===== Chrono =====
+// ===== Chrono / Timer =====
 let chronoStartTime = null;
 let chronoInterval = null;
 let chronoElapsed = 0;
 let chronoRunning = false;
+
+let timerInterval = null;
+let timerRemaining = 0;
+let timerEndTime = null;
 let timerRunning = false;
+let sinceEndInterval = null;
 
+// === Chrono ===
 function restoreChrono() {
-    const savedStart = localStorage.getItem("chronoStartTime");
-    if (savedStart) {
-        chronoStartTime = parseInt(savedStart);
+    const savedStart = parseInt(localStorage.getItem("chronoStartTime"));
+    if (!isNaN(savedStart)) {
+        chronoStartTime = savedStart;
         chronoElapsed = Date.now() - chronoStartTime;
         chronoRunning = true;
-
-        updateChronoDisplay(chronoElapsed); // affichage immédiat
+        updateChronoDisplay(chronoElapsed);
         chronoInterval = setInterval(updateChrono, 100);
-    }
-}
-
-function restoreTimer() {
-    const timerRunningStored = localStorage.getItem("timerRunning");
-    const timerEndStored = localStorage.getItem("timerEndTime");
-    const remainingStored = localStorage.getItem("timerRemaining");
-
-    if (timerRunningStored === "true" && remainingStored !== null) {
-        timerRemaining = parseInt(remainingStored);
-        timerRunning = true;
-
-        updateTimerDisplay(timerRemaining, true);
-        chronoStartTime = parseInt(localStorage.getItem("chronoStartTime"));
-        chronoElapsed = Date.now() - chronoStartTime;
-        chronoRunning = true;
-        chronoInterval = setInterval(updateChrono, 100);
-
-        timerInterval = setInterval(() => {
-            if (timerRemaining > 0) {
-                timerRemaining--;
-                updateTimerDisplay(timerRemaining, true);
-                localStorage.setItem("timerRemaining", timerRemaining.toString());
-            } else {
-                clearInterval(timerInterval);
-                timerRunning = false;
-                timerEndTime = Date.now();
-                localStorage.setItem("timerRunning", "false");
-                localStorage.setItem("timerEndTime", timerEndTime.toString());
-
-                updateSinceEnd();
-                sinceEndInterval = setInterval(updateSinceEnd, 1000);
-            }
-        }, 1000);
-
-    } else if (timerEndStored) {
-        timerEndTime = parseInt(timerEndStored);
-        updateSinceEnd();
-        sinceEndInterval = setInterval(updateSinceEnd, 1000);
-    }
-}
-
-function updateChronoDisplay(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-    const seconds = String(totalSeconds % 60).padStart(2, '0');
-
-    if (document.getElementById("chrono")) {
-        document.getElementById("chrono").textContent = `${minutes}:${seconds}`;
-    }
-
-    if (document.getElementById("nav-chrono")) {
-        document.getElementById("nav-chrono").textContent = `${minutes}:${seconds}`;
+        setNavVisibility(true);
     }
 }
 
@@ -78,23 +31,15 @@ function startChrono() {
     chronoInterval = setInterval(updateChrono, 100);
     chronoRunning = true;
 
-    const toggleBtn = document.getElementById("chrono-toggle");
-    if (toggleBtn) toggleBtn.textContent = "⏸";
-}
-
-function updateChrono() {
-    console.log("updateChrono");
-    chronoElapsed = Date.now() - chronoStartTime;
-    updateChronoDisplay(chronoElapsed);
+    setNavVisibility(true);
+    updateChronoToggleButtons("⏸");
 }
 
 function pauseChrono() {
     clearInterval(chronoInterval);
     chronoRunning = false;
     localStorage.removeItem("chronoStartTime");
-
-    const toggleBtn = document.getElementById("chrono-toggle");
-    if (toggleBtn) toggleBtn.textContent = "▶️";
+    updateChronoToggleButtons("▶");
 }
 
 function resetChrono() {
@@ -104,67 +49,52 @@ function resetChrono() {
     chronoElapsed = 0;
     localStorage.removeItem("chronoStartTime");
     updateChronoDisplay(0);
+    resetTimer();
+    setNavVisibility(false);
 }
 
 function toggleChrono() {
-    if (chronoRunning) {
-        pauseChrono();
-    } else {
-        startChrono();
-    }
+    chronoRunning ? pauseChrono() : startChrono();
 }
 
-// ===== Timer =====
-let timerInterval = null;
-let timerRemaining = 0;
-let timerEndTime = null;
-let sinceEndInterval = null;
-
-function updateTimerDisplay(seconds, isActivePhase = false) {
-    const min = String(Math.floor(seconds / 60)).padStart(2, '0');
-    const sec = String(seconds % 60).padStart(2, '0');
-
-    const timerDisplay = document.getElementById("timer");
-    if (timerDisplay) {
-        timerDisplay.textContent = `${min}:${sec}`;
-        timerDisplay.style.color = isActivePhase ? "#a30000" : "#1e6e1e";
-    }
-
-    const navTimer = document.getElementById("nav-timer");
-    if (navTimer) {
-        navTimer.textContent = `${min}:${sec}`;
-    }
+function updateChrono() {
+    chronoElapsed = Date.now() - chronoStartTime;
+    updateChronoDisplay(chronoElapsed);
 }
 
-function updateSinceEnd() {
-    if (!timerEndTime) return;
-
-    const elapsed = Math.floor((Date.now() - timerEndTime) / 1000);
-    updateTimerDisplay(elapsed, false); // false = phase repos
+function updateChronoDisplay(ms) {
+    const totalSeconds = Math.floor((isNaN(ms) ? 0 : ms) / 1000);
+    const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+    const seconds = String(totalSeconds % 60).padStart(2, '0');
+    document.querySelectorAll("#chrono, #nav-chrono").forEach(el => el.textContent = `${minutes}:${seconds}`);
 }
 
+function updateChronoToggleButtons(symbol) {
+    document.querySelectorAll('[data-action="chrono-toggle"]').forEach(btn => btn.textContent = symbol);
+}
+
+// === Timer ===
 function startTimer() {
-    const timerDurationInput = document.getElementById("timer-duration");
-    const duration = timerDurationInput ? parseInt(timerDurationInput.value, 10) : 60;
+    const input = document.getElementById("timer-duration");
+    const duration = input ? parseInt(input.value, 10) : 60;
     if (isNaN(duration) || duration < 1) return;
 
-    startChrono();
+    if (!chronoRunning && chronoElapsed === 0) startChrono();
 
     timerRemaining = duration;
     localStorage.setItem("timerRunning", "true");
     localStorage.setItem("timerRemaining", timerRemaining.toString());
     updateTimerDisplay(timerRemaining, true);
+
     clearInterval(timerInterval);
     clearInterval(sinceEndInterval);
     timerEndTime = null;
-
     timerRunning = true;
-    document.getElementById("timer-button").textContent = "🔄";
 
     timerInterval = setInterval(() => {
-        if (timerRemaining > 0) {
-            timerRemaining--;
+        if (--timerRemaining > 0) {
             updateTimerDisplay(timerRemaining, true);
+            localStorage.setItem("timerRemaining", timerRemaining.toString());
         } else {
             clearInterval(timerInterval);
             localStorage.setItem("timerRunning", "false");
@@ -173,44 +103,124 @@ function startTimer() {
             updateSinceEnd();
             sinceEndInterval = setInterval(updateSinceEnd, 1000);
             timerRunning = false;
-            document.getElementById("timer-button").textContent = "⏱";
         }
     }, 1000);
 }
 
-
 function resetTimer() {
     clearInterval(timerInterval);
     clearInterval(sinceEndInterval);
+
     timerRunning = false;
     timerEndTime = null;
     localStorage.setItem("timerRunning", "false");
     localStorage.removeItem("timerEndTime");
+    localStorage.removeItem("timerRemaining");
 
-    const timerDurationInput = document.getElementById("timer-duration");
-    timerRemaining = timerDurationInput ? parseInt(timerDurationInput.value, 10) : 60;
-
+    const input = document.getElementById("timer-duration");
+    timerRemaining = input ? parseInt(input.value, 10) : 60;
     updateTimerDisplay(timerRemaining, true);
-
-    const timerBtn = document.getElementById("timer-button");
-    if (timerBtn) timerBtn.textContent = "⏱";
 }
 
 function handleTimer() {
-    if (timerRunning) {
-        resetTimer();
-    } else {
-        startTimer();
+    timerRunning ? resetTimer() : startTimer();
+}
+
+function updateTimerDisplay(seconds, isActivePhase = false) {
+    const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const sec = String(seconds % 60).padStart(2, '0');
+    const display = `${min}:${sec}`;
+    const color = isActivePhase ? "#a30000" : "#1e6e1e";
+
+    document.querySelectorAll("#timer, #nav-timer").forEach(el => {
+        el.textContent = display;
+        el.style.color = color;
+    });
+}
+
+function updateSinceEnd() {
+    if (!timerEndTime) return;
+    const elapsed = Math.floor((Date.now() - timerEndTime) / 1000);
+    updateTimerDisplay(elapsed, false);
+}
+
+function restoreTimer() {
+    const running = localStorage.getItem("timerRunning") === "true";
+    const end = parseInt(localStorage.getItem("timerEndTime"));
+    const remaining = parseInt(localStorage.getItem("timerRemaining"));
+
+    if (running && !isNaN(remaining)) {
+        timerRemaining = remaining;
+        timerRunning = true;
+        updateTimerDisplay(timerRemaining, true);
+
+        if (!chronoRunning) restoreChrono();
+
+        timerInterval = setInterval(() => {
+            if (--timerRemaining > 0) {
+                updateTimerDisplay(timerRemaining, true);
+                localStorage.setItem("timerRemaining", timerRemaining.toString());
+            } else {
+                clearInterval(timerInterval);
+                timerRunning = false;
+                timerEndTime = Date.now();
+                localStorage.setItem("timerRunning", "false");
+                localStorage.setItem("timerEndTime", timerEndTime.toString());
+                updateSinceEnd();
+                sinceEndInterval = setInterval(updateSinceEnd, 1000);
+            }
+        }, 1000);
+    } else if (!isNaN(end)) {
+        timerEndTime = end;
+        updateSinceEnd();
+        sinceEndInterval = setInterval(updateSinceEnd, 1000);
     }
 }
 
+// === Utilitaires ===
+function setNavVisibility(visible) {
+    const nav = document.getElementById("chrono-timer-nav");
+    if (nav) nav.classList.toggle("hidden", !visible);
+}
+
+// === DOM Ready ===
+document.addEventListener("DOMContentLoaded", () => {
+    restoreChrono();
+    restoreTimer();
+
+    const actionMap = {
+        "chrono-toggle": toggleChrono,
+        "chrono-reset": resetChrono,
+        "chrono-stop": resetChrono,
+        "timer-toggle": handleTimer,
+        "timer-reset": resetTimer,
+    };
+
+    document.querySelectorAll("[data-action]").forEach(btn => {
+        const action = btn.getAttribute("data-action");
+        if (actionMap[action]) {
+            btn.addEventListener("click", actionMap[action]);
+        }
+    });
+
+    // Inactivité de plus de 2h
+    const last = parseInt(localStorage.getItem("lastInteractionTime"));
+    if (!isNaN(last) && Date.now() - last > 2 * 60 * 60 * 1000) {
+        resetChrono();
+        resetTimer();
+        localStorage.clear();
+        localStorage.setItem("lastInteractionTime", Date.now().toString());
+    }
+
+    ["click", "keydown", "touchstart"].forEach(evt =>
+        window.addEventListener(evt, () =>
+            localStorage.setItem("lastInteractionTime", Date.now().toString())
+        )
+    );
+});
+
+// Exports
 window.toggleChrono = toggleChrono;
 window.handleTimer = handleTimer;
 window.resetChrono = resetChrono;
 window.resetTimer = resetTimer;
-
-document.addEventListener("DOMContentLoaded", () => {
-    restoreChrono();
-    restoreTimer();
-});
-

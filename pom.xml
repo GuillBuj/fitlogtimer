@@ -114,6 +114,13 @@
 <!--            <groupId>ch.qos.logback</groupId>-->
 <!--            <artifactId>logback-classic</artifactId>-->
 <!--        </dependency>-->
+
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+            <version>3.2.0</version> <!-- Vérifiez la version la plus récente -->
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://www.thymeleaf.org"
+
+      lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:replace="${title} ?: 'Fitlogtimer (default)'">Fitlogtimer</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+    <!-- ✅ Navbar une seule fois -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- ✅ Contenu injecté dynamiquement -->
+    <section layout:fragment="content">
+        <p>Changing contents</p>
+    </section>
+
+    <!-- ✅ Script général (chrono, timer, etc.) -->
+    <script src="/js/timer.js"></script>
+
+    <div layout:fragment="scripts"></div>
+</body>
+</html>
+

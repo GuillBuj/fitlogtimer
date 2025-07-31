@@ -75,34 +75,37 @@ function updateChronoToggleButtons(symbol) {
 
 // === Timer ===
 function startTimer() {
-    const input = document.getElementById("timer-duration");
-    const duration = input ? parseInt(input.value, 10) : 60;
+    const timerDurationInput = document.getElementById("timer-duration");
+    const duration = Number(timerDurationInput?.value || 60);
     if (isNaN(duration) || duration < 1) return;
 
     if (!chronoRunning && chronoElapsed === 0) startChrono();
 
     timerRemaining = duration;
+    timerRunning = true;
+    timerEndTime = null;
+
     localStorage.setItem("timerRunning", "true");
     localStorage.setItem("timerRemaining", timerRemaining.toString());
-    updateTimerDisplay(timerRemaining, true);
+    localStorage.setItem("timerInitial", duration.toString());
 
+    updateTimerDisplay(timerRemaining, true);
     clearInterval(timerInterval);
     clearInterval(sinceEndInterval);
-    timerEndTime = null;
-    timerRunning = true;
 
     timerInterval = setInterval(() => {
-        if (--timerRemaining > 0) {
+        if (timerRemaining > 0) {
+            timerRemaining--;
             updateTimerDisplay(timerRemaining, true);
             localStorage.setItem("timerRemaining", timerRemaining.toString());
         } else {
             clearInterval(timerInterval);
-            localStorage.setItem("timerRunning", "false");
-            localStorage.setItem("timerEndTime", Date.now().toString());
+            timerRunning = false;
             timerEndTime = Date.now();
+            localStorage.setItem("timerRunning", "false");
+            localStorage.setItem("timerEndTime", timerEndTime.toString());
             updateSinceEnd();
             sinceEndInterval = setInterval(updateSinceEnd, 1000);
-            timerRunning = false;
         }
     }, 1000);
 }
@@ -120,6 +123,7 @@ function resetTimer() {
     const input = document.getElementById("timer-duration");
     timerRemaining = input ? parseInt(input.value, 10) : 60;
     updateTimerDisplay(timerRemaining, true);
+    localStorage.removeItem("timerInitial");
 }
 
 function handleTimer() {
@@ -141,7 +145,8 @@ function updateTimerDisplay(seconds, isActivePhase = false) {
 function updateSinceEnd() {
     if (!timerEndTime) return;
     const elapsed = Math.floor((Date.now() - timerEndTime) / 1000);
-    updateTimerDisplay(elapsed, false);
+    const initial = Number(localStorage.getItem("timerInitial")) || 60;
+    updateTimerDisplay(initial + elapsed, false);
 }
 
 function restoreTimer() {

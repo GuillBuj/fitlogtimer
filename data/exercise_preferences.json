@@ -165,6 +165,10 @@
       "exerciseId" : 295,
       "order" : 40,
       "visible" : true
+    }, {
+      "exerciseId" : 299,
+      "order" : 43,
+      "visible" : true
     } ]
   },
   "default" : {
@@ -341,6 +345,12 @@
       "exerciseId" : 297,
       "order" : 42,
       "visible" : true
-    } ]
+    }
+    , {
+        "exerciseId" : 328,
+        "order" : 43,
+        "visible" : true
+      }
+    ]
   }
 }

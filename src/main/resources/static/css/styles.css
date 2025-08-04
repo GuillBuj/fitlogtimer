@@ -779,6 +779,12 @@ th.exercises-list-column{
     font-weight: bold;
 }
 
+.small-text {
+    font-size: 0.85em;
+    font-style: italic;
+    color: #555555;
+}
+
 /* Tableau des poids suggérés */
 .suggested-weights-table {
     width: auto;

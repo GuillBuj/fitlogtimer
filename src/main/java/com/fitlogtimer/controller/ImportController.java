@@ -24,7 +24,7 @@ public class ImportController {
     public String runScript(Model model) {
         ScriptExecutor.runPowerShellScript("scripts\\downloadFromDrive.ps1");
 
-        model.addAttribute("message", "Le script d'import xls a été exécuté.");
+        model.addAttribute("message", "L'import xls a été exécuté.");
         return "import";
     }
 

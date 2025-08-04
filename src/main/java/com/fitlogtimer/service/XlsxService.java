@@ -192,18 +192,18 @@ public class XlsxService {
     public FromXlsxGenericDTO extractGenericSheet(String sheetName) throws IOException {
 
         String[][] rawData = xlsxReader.readSheetData(FileConstants.EXCEL_FILE, sheetName, 0, 1);
-        log.info("rawData: {}", (Object) rawData);
+        //log.info("rawData: {}", (Object) rawData);
 
         int endRow = xlsxReader.findEndRow(rawData);
         int endCol = xlsxReader.findEndColumn(rawData);
-        log.info("endRow: {}, endCol: {}", endRow, endCol);
+        //log.info("endRow: {}, endCol: {}", endRow, endCol);
 
         // On tronque au bon nombre de lignes/colonnes
         String[][] trimmed = xlsxReader.trim(rawData, endRow, endCol);
-        log.info("trimmed: {}",(Object) trimmed);
+        //log.info("trimmed: {}",(Object) trimmed);
 
         String[][] data = xlsxReader.transposeArray(trimmed); // chaque colonne représente un workout
-        log.info("data: {}", (Object) data);
+        //log.info("data: {}", (Object) data);
 
         // B1 = nom de la séance
         String name = rawData[0][0];
@@ -227,8 +227,8 @@ public class XlsxService {
         String[] shortNameColumn = shortNameList.toArray(new String[0]);
         String[] barWeightColumn = barWeightList.toArray(new String[0]);
 
-        log.info("shortNameColumn(size:{}): {}", shortNameColumn.length, (Object) shortNameColumn);
-        log.info("barWeightColumn(size:{}): {}", barWeightColumn.length, (Object) barWeightColumn);
+//        log.info("shortNameColumn(size:{}): {}", shortNameColumn.length, (Object) shortNameColumn);
+//        log.info("barWeightColumn(size:{}): {}", barWeightColumn.length, (Object) barWeightColumn);
 
         List<FromXlsxGenericWorkoutDTO> workouts = new ArrayList<>();
 

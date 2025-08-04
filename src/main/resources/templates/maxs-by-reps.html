@@ -20,26 +20,21 @@
         <thead>
         <tr>
 
-            <th colspan="4">PB</th>
+            <th colspan="3">PB</th>
 
             <th class="empty-separator"></th>
 
-            <th colspan="4">SB</th>
+            <th colspan="3">SB</th>
 
             <th class="empty-separator"></th>
 
             <th th:colspan="${allYears.size()}+1">Poids</th>
-
-            <th class="empty-separator"></th>
-
-            <th th:colspan="${allYears.size()}+1">1RMest</th>
 
         </tr>
         <tr>
             <!-- PB -->
             <th>Reps</th>
             <th>Poids</th>
-            <th>1RM</th>
             <th>Date</th>
 
             <th class="empty-separator"></th>
@@ -47,7 +42,6 @@
             <!-- SB -->
             <th>Reps</th>
             <th>Poids</th>
-            <th>1RM</th>
             <th>Date</th>
 
             <th class="empty-separator"></th>
@@ -55,17 +49,20 @@
             <!-- Years -->
             <th>Reps</th>
             <th th:each="year : ${allYears}"><span th:text="${year}"></span></th>
-            <th class="empty-separator"></th>
-            <th>Reps</th>
-            <th th:each="year : ${allYears}"><span th:text="${year}"></span></th>
+
         </tr>
         </thead>
         <tbody>
         <tr th:each="entry : ${combinedMaxs}">
             <!-- PBs -->
             <td th:text="${entry.personalBest != null ? entry.nbReps : '-'}" class="bold-text"></td>
-            <td th:text="${entry.personalBest != null ? entry.personalBest.maxWeight + ' kg' : '-'}" class="bold-text"></td>
-            <td th:text="${entry.personalBest != null ? entry.personalBest.RMest + ' kg' : '-'}"></td>
+            <td>
+                <div th:if="${entry.personalBest != null}">
+                    <div class="bold-text" th:text="${entry.personalBest.maxWeight + ' kg'}"></div>
+                    <div class="small-text" th:text="${entry.personalBest.RMest + ' kg'}"></div>
+                </div>
+                <div th:unless="${entry.personalBest != null}">-</div>
+            </td>
             <td th:text="${entry.personalBest != null ? #temporals.format(entry.personalBest.date, 'dd/MM/yyyy') : '-'}"></td>
 
             <!-- Séparateur pour séparer PB et SB -->
@@ -73,24 +70,28 @@
 
             <!-- SBs pour l'année en cours -->
             <td th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? entry.nbReps : '-'}" class="bold-text"></td>
-            <td><span th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).maxWeight + ' kg' : '-'}"  class="bold-text"></span></td>
-            <td><span th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).RMest + ' kg' : '-'}"></span></td>
+            <td>
+                <div th:with="currentYear=${#dates.format(#dates.createNow(), 'yyyy')},
+                 yearlyBest=${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy'))}">
+                    <div th:if="${yearlyBest != null}">
+                        <div class="bold-text" th:text="${yearlyBest.maxWeight + ' kg'}"></div>
+                        <div class="small-text" th:text="${yearlyBest.RMest + ' kg'}"></div>
+                    </div>
+                    <div th:unless="${yearlyBest != null}">-</div>
+                </div>
+            </td>
             <td><span th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? #temporals.format(entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).date(), 'dd/MM/yyyy') : '-'}"></span></td>
 
             <!-- Séparateur pour séparer les SBs et les anciennes années -->
             <td class="empty-separator"></td>
 
-            <!-- Troisième section: Anciens records (pour chaque année) -->
             <td th:text="${entry.nbReps}" class="bold-text"></td>
             <td th:each="year : ${allYears}">
-                <span th:text="${entry.getYearlyBest(year) != null ? entry.getYearlyBest(year).maxWeight + ' kg' : '-'}"></span>
-            </td>
-
-            <td class="empty-separator"></td>
-
-            <td th:text="${entry.nbReps}" class="bold-text"></td>
-            <td th:each="year : ${allYears}">
-                <span th:text="${entry.getYearlyBest(year) != null ? entry.getYearlyBest(year).RMest + ' kg' : '-'}"></span>
+                <div th:if="${entry.getYearlyBest(year) != null}">
+                    <div class="bold-text" th:text="${entry.getYearlyBest(year).maxWeight + ' kg'}"></div>
+                    <div class="small-text" th:text="${entry.getYearlyBest(year).RMest + ' kg'}"></div>
+                </div>
+                <div th:unless="${entry.getYearlyBest(year) != null}">-</div>
             </td>
         </tr>
         </tbody>

@@ -23,7 +23,7 @@ public class PreferenceController {
     private final ExercisePreferenceService preferenceService;
 
     @GetMapping("/create")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Model model) throws IOException {
         List<ExercisePreferenceDTO> dtoList = preferenceService.getDefaultPreferenceDTOs();
         model.addAttribute("exerciseList", dtoList);
         return "preferences/preferences-create";

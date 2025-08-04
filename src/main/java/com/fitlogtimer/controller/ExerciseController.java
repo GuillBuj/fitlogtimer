@@ -32,7 +32,7 @@ public class ExerciseController {
         //log.info(SuggestedColors.COLORS.toString());
 
         //model.addAttribute("exercises", exerciseService.getAllExerciseItems());
-        model.addAttribute("exercises", exerciseService.getDefaultExerciseItems());
+        model.addAttribute("exercises", exerciseService.getAllExercisePreferenceListItems());
         model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL, ExerciseSetType.FREE_WEIGHT, ""));
         model.addAttribute("muscles", Muscle.values());
         model.addAttribute("families", Family.values());
@@ -46,7 +46,7 @@ public class ExerciseController {
     }
     
     @PostMapping("/create")
-    public String createExercise(@ModelAttribute("exercise") ExerciseCreateDTO exerciseCreateDTO, RedirectAttributes redirectAttributes){
+    public String createExercise(@ModelAttribute("exercise") ExerciseCreateDTO exerciseCreateDTO, RedirectAttributes redirectAttributes) throws IOException {
         log.info(exerciseCreateDTO.toString());
         exerciseService.createExercise(exerciseCreateDTO);
         redirectAttributes.addFlashAttribute("successMessage", "Exercice créé avec succès");

@@ -36,11 +36,11 @@ public class ExerciseService {
     private final ExercisePreferenceService exercisePreferenceService;
 
     @Transactional
-    public Exercise createExercise(ExerciseCreateDTO exerciseCreateDTO) {
+    public Exercise createExercise(ExerciseCreateDTO exerciseCreateDTO) throws IOException {
         log.info("exerciseCreateDTO: {}",exerciseCreateDTO.toString());
         Exercise exercise = exerciseRepository.save(exerciseMapper.toEntity(exerciseCreateDTO));
         log.info("Exercise created: " + exercise);
-        
+        exercisePreferenceService.updateAllExercisesList();
         return exercise;
     }
 
@@ -96,8 +96,8 @@ public class ExerciseService {
                         .collect(Collectors.toList());
     }
 
-    public List<ExerciseListItemDTO> getDefaultExerciseItems() throws IOException {
-        ExerciseListPreference defaultList = exercisePreferenceService.getListByName("default");
+    public List<ExerciseListItemDTO> getExercisePreferenceListItems(String list) throws IOException {
+        ExerciseListPreference defaultList = exercisePreferenceService.getListByName(list);
         if (defaultList == null) return List.of();
 
         // On prépare une Map des entités Exercise pour accès rapide par ID
@@ -114,6 +114,10 @@ public class ExerciseService {
                 })
                 .filter(Objects::nonNull)  // Exclure les exercices nuls
                 .collect(Collectors.toList());
+    }
+
+    public List<ExerciseListItemDTO> getAllExercisePreferenceListItems() throws IOException {
+        return getExercisePreferenceListItems("all");
     }
 
     public ExerciseListItemDTO getExerciseListItemDTO(Exercise exercise, Double personalBest, Double oneRepMaxEst, Double seasonBest, Double seasonOneRepMax) {

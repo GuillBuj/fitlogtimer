@@ -75,7 +75,7 @@ public class XlsxMapper {
         return new FromXlsxDCVarDTO(date, bodyWeight, sets);
     }
 
-    public FromXlsxGenericWorkoutDTO mapToFromXlsxGenericWorkoutDTO(String[] dataColumn, String[] shortNameColumn, String[] barWeightColumn, int workoutId) {
+    public FromXlsxGenericWorkoutDTO mapToFromXlsxGenericWorkoutDTO(String[] dataColumn, String[] shortNameColumn, String[] barWeightColumn, int workoutId, String name) {
         LocalDate date = parseDate(dataColumn[0]);
         double bodyWeight = parseDouble(dataColumn[1]);
 
@@ -137,7 +137,7 @@ public class XlsxMapper {
             } else log.debug("cell NA -> RIEN");
         }
         log.info("fin de colonne");
-        return new FromXlsxGenericWorkoutDTO(date, bodyWeight, sets);
+        return new FromXlsxGenericWorkoutDTO(date, bodyWeight, sets, name);
     }
 
     private ExercisePair determineExercises(String type) {

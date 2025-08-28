@@ -20,7 +20,7 @@ public interface WorkoutMapper {
     @Mapping(target = "type", ignore = true)
     public Workout toEntity(WorkoutCreateDTO dto);
 
-    @Mapping(target = "type", expression = "java(workoutTypeMapperHelper.map(type))")
+    @Mapping(target = "type", expression = "java(workoutTypeMapperHelper.map(dto.name()))")
     @Mapping(target = "tagImport",  expression = "java(\"import\" + type)")
     public Workout toEntity(FromXlsxGenericWorkoutDTO dto, String type);
 

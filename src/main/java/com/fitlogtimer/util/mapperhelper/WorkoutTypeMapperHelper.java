@@ -15,6 +15,11 @@ public class WorkoutTypeMapperHelper {
     }
 
     public WorkoutType map(String name) {
-        return workoutTypeRepository.findByName(name).orElseThrow(() -> new IllegalArgumentException("Invalid WorkoutType: " + name));
+        return workoutTypeRepository.findByName(name)
+                .orElseGet(() -> {
+                    WorkoutType newType = new WorkoutType();
+                    newType.setName(name);
+                    return workoutTypeRepository.save(newType);
+                });
     }
 }

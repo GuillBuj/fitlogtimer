@@ -240,7 +240,8 @@ public class XlsxService {
                         dataColumn,
                         shortNameColumn,
                         barWeightColumn,
-                        col
+                        col,
+                        name
                 );
                 log.info("workout post mapper: {}", (Object) workout);
                 if (workout.sets() != null && !workout.sets().isEmpty()) {
@@ -268,20 +269,24 @@ public class XlsxService {
         String[][] data = xlsxReader.transposeArray(trimmed); // colonnes = workouts
         log.info("data: {}", (Object) data);
 
-        String name = rawData[0][0]; // nom par défaut
-        log.info("name: {}", name);
+        // 1. Récupérer le nom par défaut
+        String defaultName = rawData[0][0];
+        log.info("Nom par defaut: {}", defaultName);
 
+        // 2. Extraire la ligne "Poids du jour" (toujours à l'index 3)
+        String[] dailyWeightColumn = Arrays.copyOfRange(rawData[3], 2, endCol); // à partir de la colonne 2
+        log.info("dailyWeightColumn(size:{}): {}", dailyWeightColumn.length, (Object) dailyWeightColumn);
+
+        // 3. Construire shortNameColumn et barWeightColumn à partir de la suite des lignes
         List<String> shortNameList = new ArrayList<>();
         List<String> barWeightList = new ArrayList<>();
 
-        for (int i = 2; i < endRow; i++) {
-            String shortName = rawData[i][0];
-
-            if (FileConstants.GENERIC_END_MARKERS.contains(shortName)) {
+        for (int i = 4; i < endRow; i++) {
+            String firstCell = rawData[i][0];
+            if (FileConstants.GENERIC_END_MARKERS.contains(firstCell)) {
                 break;
             }
-
-            shortNameList.add(shortName);
+            shortNameList.add(firstCell);
             barWeightList.add(rawData[i][1]);
         }
 
@@ -291,19 +296,28 @@ public class XlsxService {
         log.info("shortNameColumn(size:{}): {}", shortNameColumn.length, (Object) shortNameColumn);
         log.info("barWeightColumn(size:{}): {}", barWeightColumn.length, (Object) barWeightColumn);
 
-        // ligne des "X"
-        String[] skipFlags = trimmed[1];
-        log.info("***** skipFlags line: {}", (Object) skipFlags);
+        // 4. Récupérer les flags "X" (toujours ligne 0)
+        String[] skipFlags = trimmed[0];
+        log.info("skipFlags: {}", (Object) skipFlags);
 
         List<FromXlsxGenericWorkoutDTO> workouts = new ArrayList<>();
 
+        // 5. Les colonnes de workouts commencent après la colonne 2
         for (int col = 2; col < data.length; col++) {
             if (col < skipFlags.length && "X".equalsIgnoreCase(skipFlags[col])) {
                 log.info("Col {} ignorée (flag X)", col);
                 continue;
             }
 
-            String[] dataColumn = Arrays.copyOf(data[col], endRow);
+            // Nom final spécifique à la colonne
+            String altName = rawData[1][col];
+            String finalName = (altName != null && !altName.trim().isEmpty() && !"NA".equalsIgnoreCase(altName.trim()))
+                    ? altName
+                    : defaultName;
+            log.info("Nom retenu pour col {}: {}", col, finalName);
+
+            String[] dataColumn = Arrays.copyOfRange(data[col],2, endRow);
+
             log.info("*** Next workout *** col {}", col);
             log.info("dataColumn(size: {}): {}", dataColumn.length, dataColumn);
 
@@ -311,18 +325,19 @@ public class XlsxService {
                     dataColumn,
                     shortNameColumn,
                     barWeightColumn,
-                    col
+                    col,
+                    finalName
             );
 
-            log.info("workout post mapper: {}", (Object) workout);
             if (workout.sets() != null && !workout.sets().isEmpty()) {
                 workouts.add(workout);
             }
         }
 
-        log.info("name: {}, workouts size: {}, workouts: {}", name, workouts.size(), workouts);
-        return new FromXlsxGenericDTO(name, workouts);
+        log.info("Workouts added: {}, workouts: {}", workouts.size(), workouts);
+        return new FromXlsxGenericDTO(defaultName, workouts);
     }
+
 
 
     public static boolean isEndMarker(String value) {

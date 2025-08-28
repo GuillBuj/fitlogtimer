@@ -8,6 +8,7 @@ import java.util.List;
 public record FromXlsxGenericWorkoutDTO(
     LocalDate date,
     double bodyWeight,
-    List<ExerciseSetCreateDTO> sets) {
+    List<ExerciseSetCreateDTO> sets,
+    String name) {
 
 }

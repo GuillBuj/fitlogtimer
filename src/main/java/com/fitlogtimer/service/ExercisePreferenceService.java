@@ -88,23 +88,25 @@ public class ExercisePreferenceService {
         return exerciseRepository.findAll();
     }
 
-    public List<ExercisePreferenceDTO> getDefaultPreferenceDTOs() {
+    public List<ExercisePreferenceDTO> getDefaultPreferenceDTOs() throws IOException {
         log.info("* Getting default ExercisePreferenceDTOs");
 
-        List<Exercise> allExercises = exerciseRepository.findAll();
-
+        Map<String, ExerciseListPreference> lists = preferenceStorage.load();
+        List<ExercisePreference> allExercisePreference = lists.get("all").getExercises();
         List<ExercisePreferenceDTO> dtoList = new ArrayList<>();
-        for (int i = 0; i < allExercises.size(); i++) {
-            Exercise exercise = allExercises.get(i);
-            ExercisePreferenceDTO dto = new ExercisePreferenceDTO(
-                    exercise.getId(),
-                    exercise.getName(),
-                    exercise.getShortName(),
-                    exercise.getColor(),
-                    true,
-                    i
-            );
-            dtoList.add(dto);
+        for (ExercisePreference preference : allExercisePreference) {
+            Exercise exercise = exerciseRepository.findById(preference.getExerciseId()).orElse(null);
+            if (exercise != null) {
+                ExercisePreferenceDTO dto = new ExercisePreferenceDTO(
+                        exercise.getId(),
+                        exercise.getName(),
+                        exercise.getShortName(),
+                        exercise.getColor(),
+                        preference.isVisible(),
+                        preference.getOrder()
+                );
+                dtoList.add(dto);
+            }
         }
 
         return dtoList;

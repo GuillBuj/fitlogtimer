@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.fitlogtimer.dto.stats.*;
+import com.fitlogtimer.model.sets.BodyweightSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -245,6 +246,91 @@ public class StatsService {
                 .mapToDouble(MaxWeightWith1RMAndDateDTO::RMest)
                 .max()
                 .orElse(0.0);
+    }
+
+    public List<RecordHistoryItem> getMinimalRecordHistory(List<RecordHistoryItem> list) {
+        if (list.isEmpty()) return Collections.emptyList();
+
+        List<RecordHistoryItem> minimalRecordHistory = new ArrayList<>();
+        Set<Double> seenWeights = new HashSet<>();
+
+        RecordHistoryItem lastAdded = null;
+
+        for (RecordHistoryItem current : list) {
+            // garde la date la plus ancienne si meme poids
+            if (seenWeights.contains(current.weight())) {
+                continue;
+            }
+
+            // garde le plus lourd si meme date
+            if (lastAdded != null && current.date().equals(lastAdded.date())) {
+                if (current.weight() > lastAdded.weight()) {
+                    minimalRecordHistory.set(minimalRecordHistory.size() - 1, current);
+                    lastAdded = current;
+                }
+                continue;
+            }
+
+            minimalRecordHistory.add(current);
+            seenWeights.add(current.weight());
+            lastAdded = current;
+        }
+
+        return minimalRecordHistory;
+    }
+
+    public List<RecordHistoryItem> getRecordHistory(int exerciseId) {
+
+        return getRecordHistory(exerciseId, 1);
+    }
+
+    // minRepsOrWeight selon le sous-type d'ExerciseSet
+    public List<RecordHistoryItem> getRecordHistory(int exerciseId, int minRepsOrWeight) {
+        List<ExerciseSet> sets = exerciseSetRepository.findAllSetsByDateAndMinReps(exerciseId, minRepsOrWeight);
+        List<RecordHistoryItem> recordHistory = new ArrayList<>();
+
+        double currentBestWeight = 0;
+        double currentBestNbReps = 0;
+        double bestWeightBodyweight = 0;
+
+        for (ExerciseSet set : sets) {
+            // On ne prend en compte que les FreeWeightSet
+            if (set instanceof FreeWeightSet freeWeightSet && freeWeightSet.getWeight() != null) {
+                double weight = freeWeightSet.getWeight();
+
+                if (weight > currentBestWeight || (weight == currentBestWeight && set.getWorkout().getBodyWeight() < bestWeightBodyweight && set.getWorkout().getBodyWeight() != 0.0)) {
+                    currentBestWeight = weight;
+                    bestWeightBodyweight = set.getWorkout().getBodyWeight();
+
+                    recordHistory.add(new RecordHistoryItem(
+                            weight,
+                            set.getRepNumber(),
+                            set.getWorkout().getDate(),
+                            bestWeightBodyweight,
+                            set.getWorkout().getId()
+                    ));
+                }
+            } else if (set instanceof BodyweightSet bodyweightSet) {
+                int nbReps = bodyweightSet.getRepNumber();
+
+                // Nouveau record uniquement si le nombre de reps est supérieur au précédent
+                if (nbReps > currentBestNbReps) {
+                    currentBestNbReps = nbReps;
+
+                    recordHistory.add(new RecordHistoryItem(
+                            bodyweightSet.getWeight(),
+                            nbReps,
+                            set.getWorkout().getDate(),
+                            set.getWorkout().getBodyWeight(),
+                            set.getWorkout().getId()
+                    ));
+                }
+            }
+        }
+
+        Collections.reverse(recordHistory);
+
+        return recordHistory;
     }
 
     //1RMest d'après un mix de 3 formules trouvées sur le net

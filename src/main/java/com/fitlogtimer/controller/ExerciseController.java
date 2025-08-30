@@ -41,6 +41,7 @@ public class ExerciseController {
         model.addAttribute("MOVEMENT_TYPE", ExerciseSetType.MOVEMENT);
         model.addAttribute("ELASTIC_TYPE", ExerciseSetType.ELASTIC);
         model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
+        model.addAttribute("BODYWEIGHT_TYPE", ExerciseSetType.BODYWEIGHT);
 
         return "exercises-list";
     }

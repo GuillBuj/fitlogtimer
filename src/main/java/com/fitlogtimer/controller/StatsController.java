@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import com.fitlogtimer.dto.stats.CombinedMaxDTO;
-import com.fitlogtimer.dto.stats.CombinedMultiYearDTO;
+import com.fitlogtimer.constants.ExerciseSetType;
+import com.fitlogtimer.dto.stats.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.fitlogtimer.dto.stats.MaxsByRepsDTO;
-import com.fitlogtimer.dto.stats.MaxsByRepsWithNameDTO;
 import com.fitlogtimer.service.ExerciseService;
 import com.fitlogtimer.service.StatsService;
 
@@ -54,4 +52,45 @@ public class StatsController {
         log.info(model.toString());
         return "maxs-by-reps";
     }
+
+    @GetMapping("/recordHistory/{exerciseId}")
+    public String showRecordHistory(@PathVariable int exerciseId, Model model){
+
+        String exerciseName = exerciseService.getById(exerciseId).get().getName();
+        String exerciseType = exerciseService.getById(exerciseId).get().getType();
+
+        List<RecordHistoryItem> recordHistory = statsService.getMinimalRecordHistory(statsService.getRecordHistory(exerciseId));
+
+        model.addAttribute("exerciseName", exerciseName);
+        model.addAttribute("recordHistory", recordHistory);
+        model.addAttribute("exercise_id", exerciseId);
+        model.addAttribute("exercise_type", exerciseType);
+        model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
+        model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
+        model.addAttribute("BODYWEIGHT_TYPE", ExerciseSetType.BODYWEIGHT);
+
+        log.info(model.toString());
+        return "record-history";
+    }
+
+    @GetMapping("/recordHistoryPlus/{exerciseId}")
+    public String showMinimalRecordHistory(@PathVariable int exerciseId, Model model){
+
+        String exerciseName = exerciseService.getById(exerciseId).get().getName();
+        String exerciseType = exerciseService.getById(exerciseId).get().getType();
+
+        List<RecordHistoryItem> recordHistory = statsService.getRecordHistory(exerciseId);
+
+        model.addAttribute("exerciseName", exerciseName);
+        model.addAttribute("recordHistory", recordHistory);
+        model.addAttribute("exercise_id", exerciseId);
+        model.addAttribute("exercise_type", exerciseType);
+        model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
+        model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
+        model.addAttribute("BODYWEIGHT_TYPE", ExerciseSetType.BODYWEIGHT);
+
+        log.info(model.toString());
+        return "record-history";
+    }
+
 }

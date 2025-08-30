@@ -80,6 +80,16 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "WHERE fws.exercise.id = :exerciseId")
     Integer findFirstYearWithData(@Param("exerciseId") int exerciseId);
 
+    @Query("""
+           SELECT es
+           FROM ExerciseSet es
+           WHERE es.exercise.id = :exerciseId
+           AND es.repNumber >= :minReps
+           ORDER BY es.workout.date ASC
+           """)
+    List<ExerciseSet> findAllSetsByDateAndMinReps(@Param("exerciseId") int exerciseId,
+                                                  @Param("minReps") int minReps);
+
     List<ExerciseSet> findByWorkoutIdIn(List<Integer> workoutIds);
 
 }

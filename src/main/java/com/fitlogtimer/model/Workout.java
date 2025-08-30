@@ -28,10 +28,6 @@ public class Workout {
 
     private double bodyWeight;
 
-    // provisoire
-//    @Column(name = "type", insertable = false, updatable = false)
-//    private String rawType;
-
     @ManyToOne
     @JoinColumn(name = "workout_type_name") // référence au champ name
     private WorkoutType type;

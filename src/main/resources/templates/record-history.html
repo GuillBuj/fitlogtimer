@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title th:text="'Historique des records - ' + ${exerciseName}">Historique des records</title>
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+<p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+
+<div class="header-container">
+    <h1><span th:text="${exerciseName}"></span> : historique des records</h1>
+    <a th:href="@{/exercises}" class="link-back">&#x293A;</a>
+    <a th:href="@{/stats/maxsByReps/{id}(id=${exercise_id})}" class="link-back">🏆</a>
+    <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise_id})}" class="link-back">📜</a>
+    <a th:href="@{/stats/recordHistoryPlus/{id}(id=${exercise_id})}" class="link-back">🔎</a>
+</div>
+
+<table class="auto-width-table centered centered-text">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th th:if="${exercise_type==FREE_WEIGHT_TYPE}">Poids</th>
+        <th th:if="${exercise_type==BODYWEIGHT_TYPE}">Nombre</th>
+        <th>PDC</th>
+        <th th:if="${exercise_type==FREE_WEIGHT_TYPE}">Ratio</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="record : ${recordHistory}">
+        <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}"></td>
+        <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.weight()} + 'kg'"></td>
+        <td th:if="${exercise_type==BODYWEIGHT_TYPE}"  th:text="${record.nbReps}"></td>
+        <td th:text="${record.bodyWeight > 0 ? record.bodyWeight + ' kg' : '-'}"></td>
+        <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.bodyWeight > 0 ? #numbers.formatDecimal(record.weight / record.bodyWeight, 1, 3) : '-'}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<p th:if="${#lists.isEmpty(recordHistory)}">Aucun record trouvé pour cet exercice.</p>
+
+<script src="/js/timer.js"></script>
+</body>
+</html>

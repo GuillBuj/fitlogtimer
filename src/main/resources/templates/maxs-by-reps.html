@@ -13,6 +13,8 @@
     <h1><span th:text="${exerciseName}"></span> : maxs</h1>
     <a th:href="@{/exercises}" class="link-back">&#x293A;</a>
     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise_id})}" class="link-back">📜</a>
+    <a th:href="@{/stats/recordHistory/{id}(id=${exercise_id})}" class="link-back">📈</a>
+
 </div>
 
 

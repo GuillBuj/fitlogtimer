@@ -1129,3 +1129,7 @@ th.exercises-list-column{
 #chrono-timer-nav button:hover {
     background: #eee;
 }
+
+.invisible {
+    visibility: hidden;
+}

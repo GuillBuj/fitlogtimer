@@ -70,8 +70,14 @@
                 <td>
                     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
                     <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
-                    <a th:if="${exercise.type == FREE_WEIGHT_TYPE}" th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">Maxs/rép</a>
-                </td>
+                    <a th:classappend="${exercise.type == FREE_WEIGHT_TYPE ? '' : ' invisible'}"
+                       th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">
+                        Maxs/rép
+                    </a>
+                    <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE) ? '' : ' invisible'}"
+                       th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link">
+                        Histo maxs
+                    </a></td>
                 <td>
                     <button class="btnEdit"
                             th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}|}"

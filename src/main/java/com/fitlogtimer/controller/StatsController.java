@@ -1,13 +1,12 @@
 package com.fitlogtimer.controller;
 
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.dto.stats.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/stats")
 @Slf4j
+@RequiredArgsConstructor
 public class StatsController {
 
-    @Autowired
-    private StatsService statsService;
+    private final StatsService statsService;
 
-    @Autowired
-    private ExerciseService exerciseService;
+    private final ExerciseService exerciseService;
     
     @GetMapping("/maxsByReps/{exerciseId}")
     public String showMaxsByExercise(@PathVariable int exerciseId, Model model){

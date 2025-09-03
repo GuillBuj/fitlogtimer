@@ -1133,3 +1133,68 @@ th.exercises-list-column{
 .invisible {
     visibility: hidden;
 }
+
+.trend-indicator {
+    display: inline-block;
+    margin-left: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: relative;
+    font-size: 10px;
+}
+
+.trend-up {
+    background-color: #4CAF50; /* Vert */
+}
+
+.trend-up::after {
+    content: "↑";
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.trend-down {
+    background-color: #F44336; /* Rouge */
+}
+
+.trend-down::after {
+    content: "↓";
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.trend-neutral {
+    background-color: #BDBDBD; /* Gris clair */
+}
+
+.trend-neutral::after {
+    content: "−";
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.max-weight-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.values-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 7px;
+}

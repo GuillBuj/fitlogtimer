@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.fitlogtimer.dto.stats.*;
+import com.fitlogtimer.enums.Trend;
 import com.fitlogtimer.model.sets.BodyweightSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -73,30 +74,44 @@ public class StatsService {
             MaxsByRepsDTO personalBests,
             Map<Integer, MaxsByRepsDTO> bestsByYear
     ) {
-        // Union de toutes les répétitions présentes dans les PB et les années
         Set<Integer> allReps = new TreeSet<>();
         allReps.addAll(personalBests.maxsByReps().keySet());
         for (MaxsByRepsDTO yearlyDTO : bestsByYear.values()) {
             allReps.addAll(yearlyDTO.maxsByReps().keySet());
         }
 
+        Map<Integer, CombinedMultiYearDTO> allRepsData = new HashMap<>();
+
         List<CombinedMultiYearDTO> combined = new ArrayList<>();
         for (Integer reps : allReps) {
             // Collecte des meilleurs perfs pour cette rep dans chaque année
-            Map<Integer, MaxWeightWith1RMAndDateDTO> bestsForRepByYear = new TreeMap<>();
+            Map<Integer, YearlyBestWithTrendDTO> bestsForRepByYear = new TreeMap<>();
             for (Map.Entry<Integer, MaxsByRepsDTO> entry : bestsByYear.entrySet()) {
                 int year = entry.getKey();
                 MaxWeightWith1RMAndDateDTO dto = entry.getValue().maxsByReps().get(reps);
+
                 if (dto != null) {
-                    bestsForRepByYear.put(year, dto);
+
+                    Trend trend = calculateTrend(year, reps, bestsByYear);
+
+                    // Crée le YearlyBestWithTrendDTO pour chaque année avec la performance et la tendance
+                    YearlyBestWithTrendDTO yearlyBestWithTrendDTO = new YearlyBestWithTrendDTO(dto, trend);
+                    bestsForRepByYear.put(year, yearlyBestWithTrendDTO);
                 }
             }
 
-            // Ajout du résultat combiné
+            // Ajout du résultat combiné avec le Personal Best pour l'année fictive 0
+            MaxWeightWith1RMAndDateDTO personalBest = personalBests.maxsByReps().get(reps);
+            Trend personalBestTrend = calculateTrend(0, reps, bestsByYear); // Tendance calculée pour le PB
+
+            YearlyBestWithTrendDTO personalBestWithTrendDTO = new YearlyBestWithTrendDTO(personalBest, personalBestTrend);
+
+            bestsForRepByYear.put(0, personalBestWithTrendDTO); // On ajoute l'année 0 pour le PB
+
             combined.add(new CombinedMultiYearDTO(
                     reps,
-                    personalBests.maxsByReps().get(reps),
-                    bestsForRepByYear
+                    personalBest, // Le PB ici
+                    bestsForRepByYear // La map des meilleurs perfs par année
             ));
         }
 
@@ -347,5 +362,58 @@ public class StatsService {
         }
 
         return Math.round(oneRepMax * 100) / 100.0;
+    }
+
+    public Trend calculateTrend(Integer year, Integer nbReps, Map<Integer, MaxsByRepsDTO> bestsByYear) {
+        if (year == null || nbReps == null || bestsByYear == null) {
+            return Trend.NEUTRAL;
+        }
+
+        // Récupère l'entrée des meilleures performances pour l'année en cours
+        MaxsByRepsDTO currentYearData = bestsByYear.get(year);
+        if (currentYearData == null) return Trend.NEUTRAL;
+
+        // Récupère la performance pour la répétition donnée (nbReps)
+        MaxWeightWith1RMAndDateDTO current = currentYearData.maxsByReps().get(nbReps);
+        if (current == null) return Trend.NEUTRAL;
+
+        // Compare avec l'année précédente (même nbReps si possible)
+        MaxsByRepsDTO previousYearData = bestsByYear.get(year - 1);
+        if (previousYearData != null) {
+            MaxWeightWith1RMAndDateDTO previous = previousYearData.maxsByReps().get(nbReps);
+
+            // Si on trouve une performance pour la même répétition
+            if (previous != null) {
+                return compare(current.maxWeight(), previous.maxWeight());
+            } else {
+                // Si on ne trouve pas la performance pour la répétition exacte, on compare avec des répétitions plus élevées
+                return compareWithHigherReps(current, year, nbReps, bestsByYear);
+            }
+        }
+
+        return Trend.NEUTRAL;
+    }
+
+    private Trend compareWithHigherReps(MaxWeightWith1RMAndDateDTO current, Integer year, Integer nbReps, Map<Integer, MaxsByRepsDTO> bestsByYear) {
+
+        for (int higherReps = nbReps + 1; higherReps <= 30; higherReps++) {
+            MaxsByRepsDTO previousYearData = bestsByYear.get(year - 1);
+            if (previousYearData != null) {
+                MaxWeightWith1RMAndDateDTO previousHigherReps = previousYearData.maxsByReps().get(higherReps);
+                if (previousHigherReps != null) {
+                    // Si on trouve une performance plus élevée pour l'année précédente, on compare avec celle-ci
+                    return compare(current.maxWeight(), previousHigherReps.maxWeight());
+                }
+            }
+        }
+
+        return Trend.NEUTRAL;
+    }
+
+    private Trend compare(double current, double previous) {
+
+        if (current > previous) return Trend.UP;
+        if (current == previous) return Trend.NEUTRAL;
+        return Trend.DOWN;
     }
 }

@@ -5,9 +5,10 @@ import java.util.Map;
 public record CombinedMultiYearDTO(
         int nbReps,
         MaxWeightWith1RMAndDateDTO personalBest,
-        Map<Integer, MaxWeightWith1RMAndDateDTO> bestsByYear
+        Map<Integer, YearlyBestWithTrendDTO> bestsByYear
 ) {
     public MaxWeightWith1RMAndDateDTO getYearlyBest(int year) {
-        return bestsByYear.get(year);
+        YearlyBestWithTrendDTO yearlyBestWithTrend = bestsByYear.get(year);
+        return (yearlyBestWithTrend != null) ? yearlyBestWithTrend.maxWeightPlus() : null;
     }
 }

@@ -55,26 +55,26 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="entry : ${combinedMaxs}">
+    <tr th:each="combinedMax : ${combinedMaxs}">
         <!-- PBs -->
-        <td th:text="${entry.personalBest != null ? entry.nbReps : '-'}" class="bold-text"></td>
+        <td th:text="${combinedMax.personalBest != null ? combinedMax.nbReps : '-'}" class="bold-text"></td>
         <td>
-            <div th:if="${entry.personalBest != null}">
-                <div class="bold-text" th:text="${entry.personalBest.maxWeight + ' kg'}"></div>
-                <div class="small-text" th:text="${entry.personalBest.RMest + ' kg'}"></div>
+            <div th:if="${combinedMax.personalBest != null}">
+                <div class="bold-text" th:text="${combinedMax.personalBest.maxWeight + ' kg'}"></div>
+                <div class="small-text" th:text="${combinedMax.personalBest.RMest + ' kg'}"></div>
             </div>
-            <div th:unless="${entry.personalBest != null}">-</div>
+            <div th:unless="${combinedMax.personalBest != null}">-</div>
         </td>
-        <td th:text="${entry.personalBest != null ? #temporals.format(entry.personalBest.date, 'dd/MM/yyyy') : '-'}"></td>
+        <td th:text="${combinedMax.personalBest != null ? #temporals.format(combinedMax.personalBest.date, 'dd/MM/yyyy') : '-'}"></td>
 
         <!-- Séparateur pour séparer PB et SB -->
         <td class="empty-separator"></td>
 
         <!-- SBs pour l'année en cours -->
-        <td th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? entry.nbReps : '-'}" class="bold-text"></td>
+        <td th:text="${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? combinedMax.nbReps : '-'}" class="bold-text"></td>
         <td>
             <div th:with="currentYear=${#dates.format(#dates.createNow(), 'yyyy')},
-                 yearlyBest=${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy'))}">
+                 yearlyBest=${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy'))}">
                 <div th:if="${yearlyBest != null}">
                     <div class="bold-text" th:text="${yearlyBest.maxWeight + ' kg'}"></div>
                     <div class="small-text" th:text="${yearlyBest.RMest + ' kg'}"></div>
@@ -82,19 +82,27 @@
                 <div th:unless="${yearlyBest != null}">-</div>
             </div>
         </td>
-        <td><span th:text="${entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? #temporals.format(entry.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).date(), 'dd/MM/yyyy') : '-'}"></span></td>
+        <td><span th:text="${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? #temporals.format(combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).date(), 'dd/MM/yyyy') : '-'}"></span></td>
 
         <!-- Séparateur pour séparer les SBs et les anciennes années -->
         <td class="empty-separator"></td>
 
-        <td th:text="${entry.nbReps}" class="bold-text"></td>
+        <td th:text="${combinedMax.nbReps}" class="bold-text"></td>
         <td th:each="year : ${allYears}">
-            <div th:if="${entry.getYearlyBest(year) != null}">
-                <div class="bold-text" th:text="${entry.getYearlyBest(year).maxWeight + ' kg'}"></div>
-                <div class="small-text" th:text="${entry.getYearlyBest(year).RMest + ' kg'}"></div>
+            <div th:if="${combinedMax.getYearlyBest(year) != null}">
+                <div class="max-weight-container">
+                    <div class="values-container">
+                        <div class="bold-text" th:text="${combinedMax.getYearlyBest(year).maxWeight() + ' kg'}"></div>
+                        <div class="small-text" th:text="${combinedMax.getYearlyBest(year).RMest() + ' kg'}"></div>
+                    </div>
+                    <div th:if="${combinedMax.getYearlyBest(year) != null and combinedMax.bestsByYear().get(year).trend() != null}"
+                         th:class="${'trend-indicator ' + combinedMax.bestsByYear().get(year).trend().getCssClass()}">
+                    </div>
+                </div>
             </div>
-            <div th:unless="${entry.getYearlyBest(year) != null}">-</div>
+            <div th:unless="${combinedMax.getYearlyBest(year) != null}">-</div>
         </td>
+
     </tr>
     </tbody>
 </table>

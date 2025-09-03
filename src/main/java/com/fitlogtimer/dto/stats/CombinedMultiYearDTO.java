@@ -11,4 +11,8 @@ public record CombinedMultiYearDTO(
         YearlyBestWithTrendDTO yearlyBestWithTrend = bestsByYear.get(year);
         return (yearlyBestWithTrend != null) ? yearlyBestWithTrend.maxWeightPlus() : null;
     }
+
+//    public Trend getYearlyTrend(int year) {
+//        Trend trend = bestsByYear.yearlyTrend();
+//    }
 }

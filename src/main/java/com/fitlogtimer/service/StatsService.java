@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
+import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
 import com.fitlogtimer.dto.stats.*;
 import com.fitlogtimer.enums.Trend;
 import com.fitlogtimer.model.sets.BodyweightSet;
@@ -370,6 +371,59 @@ public class StatsService {
                 .sorted(Comparator.comparing(ExerciseSetWithBodyWeightAndDateDTO::workoutDate).reversed())
                 .collect(Collectors.toList());
     }
+
+    public ExerciseSetWithBodyWeightAndDateFor1RMDTO getTop1RMRatioSet(int exerciseId) {
+        List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> allSets =
+                exerciseSetRepository.findAllSetsFor1RM(exerciseId);
+
+        return allSets.stream()
+                .map(dto -> new ExerciseSetWithBodyWeightAndDateFor1RMDTO(
+                        dto.id(),
+                        dto.exercise(),
+                        dto.repNumber(),
+                        dto.weight(),
+                        dto.bodyWeight(),
+                        dto.idWorkout(),
+                        dto.workoutDate(),
+                        calculateOneRepMax(dto.repNumber(), dto.weight()),
+                        calculateOneRepMax(dto.repNumber(), dto.weight()) / dto.bodyWeight()
+                ))
+                .max(Comparator.comparingDouble(ExerciseSetWithBodyWeightAndDateFor1RMDTO::ratio))
+                .orElse(null);
+    }
+
+    public List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> getTop1RMRatioSetByYears(int exerciseId) {
+        List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> allSets =
+                exerciseSetRepository.findAllSetsFor1RM(exerciseId);
+
+        // Calcul est1RM et ratio
+        List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> computedSets = allSets.stream()
+                .map(dto -> new ExerciseSetWithBodyWeightAndDateFor1RMDTO(
+                        dto.id(),
+                        dto.exercise(),
+                        dto.repNumber(),
+                        dto.weight(),
+                        dto.bodyWeight(),
+                        dto.idWorkout(),
+                        dto.workoutDate(),
+                        calculateOneRepMax(dto.repNumber(), dto.weight()),
+                        calculateOneRepMax(dto.repNumber(), dto.weight()) / dto.bodyWeight()
+                ))
+                .toList();
+
+        // Garder le meilleur ratio par année
+        return computedSets.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.workoutDate().getYear(),
+                        Function.identity(),
+                        (existing, replacement) -> replacement.ratio() > existing.ratio() ? replacement : existing
+                ))
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(ExerciseSetWithBodyWeightAndDateFor1RMDTO::workoutDate).reversed())
+                .collect(Collectors.toList());
+    }
+
 
     //1RMest d'après un mix de 3 formules trouvées sur le net
     public static double calculateOneRepMax(int repNumber, double weight){

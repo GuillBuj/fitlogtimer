@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
+import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
 import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -129,4 +130,13 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             ") " +
             "ORDER BY w.date DESC")
     List<ExerciseSetWithBodyWeightAndDateDTO> findYearlyMaxRatioSets(@Param("exerciseId") int exerciseId);
-}
+
+    @Query("SELECT new com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO(" +
+            "fws.id, fws.exercise, fws.repNumber, fws.weight, " +
+            "w.bodyWeight, w.id, w.date, 0, 0) " +
+            "FROM FreeWeightSet fws " +
+            "JOIN fws.workout w " +
+            "WHERE fws.repNumber >= 1 " +
+            "AND fws.exercise.id = :exerciseId " +
+            "AND w.bodyWeight > 0")
+    List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> findAllSetsFor1RM(@Param("exerciseId") int exerciseId);}

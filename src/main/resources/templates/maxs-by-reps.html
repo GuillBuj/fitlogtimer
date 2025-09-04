@@ -118,12 +118,36 @@
 </div>
 
 <!-- Liste des ratios par année -->
-<div th:if="${not yearlyMaxRatioSets.empty}">
+<div th:if="${!yearlyMaxRatioSets.empty}">
     <h2>Par Année</h2>
     <ul>
         <li th:each="ratioSet : ${yearlyMaxRatioSets}">
             [[${ratioSet.ratio}]]
             ([[${ratioSet.repNumber}]]x[[${ratioSet.weight}]]kg
+            @ [[${ratioSet.bodyWeight}]]kg)
+            - [[${ratioSet.workoutDate}]]
+        </li>
+    </ul>
+</div>
+
+<div th:if="${maxRatio1RMSet != null}">
+    <h2>Max 1RM Global</h2>
+    <p>
+        [[${maxRatio1RMSet.ratio}]]
+        ([[${maxRatio1RMSet.repNumber}]]x[[${maxRatio1RMSet.weight}]]kg
+        ([[${maxRatio1RMSet.est1RM}]])
+        @ [[${maxRatio1RMSet.bodyWeight}]]kg)
+        - [[${maxRatio1RMSet.workoutDate}]]
+    </p>
+</div>
+
+<div th:if="${yearlyMaxRatio1RMSets != null and not yearlyMaxRatio1RMSets.empty}">
+    <h2>Par Année</h2>
+    <ul>
+        <li th:each="ratioSet : ${yearlyMaxRatio1RMSets}">
+            [[${ratioSet.ratio}]]
+            ([[${ratioSet.repNumber}]]x[[${ratioSet.weight}]]kg
+            (1RMest: [[${ratioSet.est1RM}]])
             @ [[${ratioSet.bodyWeight}]]kg)
             - [[${ratioSet.workoutDate}]]
         </li>

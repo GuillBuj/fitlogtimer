@@ -33,3 +33,4 @@ build/
 .vscode/
 
 /backups/
+data/fitlogtimer.lock.db

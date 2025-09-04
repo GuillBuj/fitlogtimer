@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fitlogtimer.constants.ExerciseSetType;
+import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.stats.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -38,12 +39,17 @@ public class StatsController {
 
         List<CombinedMultiYearDTO> combinedMaxs = statsService.mergeMultiYearMaxsByReps(personalBests, bestsByYear);
 
+        ExerciseSetWithBodyWeightAndDateDTO maxRatioSet = statsService.getTopMaxRatioSet(exerciseId);
+        List<ExerciseSetWithBodyWeightAndDateDTO> yearlyMaxRatioSets = statsService.getTopMaxRatioSetByYears(exerciseId);
+
         List<Integer> allYears = bestsByYear.keySet().stream().sorted(Comparator.reverseOrder()).toList();
 
         log.info("****************************************************** combinedMaxs: {} **************************************", combinedMaxs);
 
         model.addAttribute("exerciseName", exerciseName);
         model.addAttribute("combinedMaxs", combinedMaxs);
+        model.addAttribute("maxRatioSet", maxRatioSet);
+        model.addAttribute("yearlyMaxRatioSets", yearlyMaxRatioSets);
         model.addAttribute("exercise_id", exerciseId);
         model.addAttribute("allYears", allYears);
 

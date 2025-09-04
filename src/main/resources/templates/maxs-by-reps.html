@@ -106,6 +106,29 @@
     </tr>
     </tbody>
 </table>
+<!-- Ratio maximum global -->
+<div th:if="${maxRatioSet != null}">
+    <h2>Max Global</h2>
+    <p>
+        [[${maxRatioSet.ratio}]]
+        ([[${maxRatioSet.repNumber}]]x[[${maxRatioSet.weight}]]kg
+        @ [[${maxRatioSet.bodyWeight}]]kg)
+        - [[${maxRatioSet.workoutDate}]]
+    </p>
+</div>
+
+<!-- Liste des ratios par année -->
+<div th:if="${not yearlyMaxRatioSets.empty}">
+    <h2>Par Année</h2>
+    <ul>
+        <li th:each="ratioSet : ${yearlyMaxRatioSets}">
+            [[${ratioSet.ratio}]]
+            ([[${ratioSet.repNumber}]]x[[${ratioSet.weight}]]kg
+            @ [[${ratioSet.bodyWeight}]]kg)
+            - [[${ratioSet.workoutDate}]]
+        </li>
+    </ul>
+</div>
 
 <script src="/js/timer.js"></script>
 </body>

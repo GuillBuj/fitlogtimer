@@ -3,9 +3,11 @@ package com.fitlogtimer.service;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.stats.*;
 import com.fitlogtimer.enums.Trend;
 import com.fitlogtimer.model.sets.BodyweightSet;
@@ -346,6 +348,27 @@ public class StatsService {
         Collections.reverse(recordHistory);
 
         return recordHistory;
+    }
+
+    public ExerciseSetWithBodyWeightAndDateDTO getTopMaxRatioSet(int exerciseId) {
+        return exerciseSetRepository.findTopMaxRatioSet(exerciseId).orElse(null);
+    }
+
+    public List<ExerciseSetWithBodyWeightAndDateDTO> getTopMaxRatioSetByYears(int exerciseId){
+        List<ExerciseSetWithBodyWeightAndDateDTO> allSets =
+                exerciseSetRepository.findYearlyMaxRatioSets(exerciseId);
+
+        // Déduplication par année - garder seulement le premier set de chaque année
+        return allSets.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.workoutDate().getYear(),  // Clé = année
+                        Function.identity(),                 // Valeur = le DTO
+                        (existing, replacement) -> existing  // En cas de doublon, garder le premier
+                ))
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(ExerciseSetWithBodyWeightAndDateDTO::workoutDate).reversed())
+                .collect(Collectors.toList());
     }
 
     //1RMest d'après un mix de 3 formules trouvées sur le net

@@ -1,7 +1,9 @@
 package com.fitlogtimer.repository;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -92,4 +94,39 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
 
     List<ExerciseSet> findByWorkoutIdIn(List<Integer> workoutIds);
 
+    @Query("SELECT new com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO(" +
+            "fws.id, fws.exercise, fws.repNumber, fws.weight, " +
+            "w.bodyWeight, w.id, w.date, " +
+            "fws.weight / w.bodyWeight) " +
+            "FROM FreeWeightSet fws " +
+            "JOIN fws.workout w " +
+            "WHERE fws.repNumber >= 1 " +
+            "AND fws.exercise.id = :exerciseId " +
+            "AND w.bodyWeight > 0 " +
+            "ORDER BY (fws.weight / w.bodyWeight) DESC " +
+            "LIMIT 1")
+    Optional<ExerciseSetWithBodyWeightAndDateDTO> findTopMaxRatioSet(@Param("exerciseId") int exerciseId);
+
+    //liste des meilleurs ratio sur poids max groupés par année
+    //!peut retourner des doublons
+    @Query("SELECT new com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO(" +
+            "fws.id, fws.exercise, fws.repNumber, fws.weight, " +
+            "w.bodyWeight, w.id, w.date, " +
+            "fws.weight / w.bodyWeight) " +
+            "FROM FreeWeightSet fws " +
+            "JOIN fws.workout w " +
+            "WHERE fws.repNumber >= 1 " +
+            "AND fws.exercise.id = :exerciseId " +
+            "AND w.bodyWeight > 0 " +
+            "AND (fws.weight / w.bodyWeight) IN (" +
+            "    SELECT MAX(fws2.weight / w2.bodyWeight) " +
+            "    FROM FreeWeightSet fws2 " +
+            "    JOIN fws2.workout w2 " +
+            "    WHERE fws2.repNumber >= 1 " +
+            "    AND fws2.exercise.id = :exerciseId " +
+            "    AND w2.bodyWeight > 0 " +
+            "    AND FUNCTION('YEAR', w2.date) = FUNCTION('YEAR', w.date)" +
+            ") " +
+            "ORDER BY w.date DESC")
+    List<ExerciseSetWithBodyWeightAndDateDTO> findYearlyMaxRatioSets(@Param("exerciseId") int exerciseId);
 }

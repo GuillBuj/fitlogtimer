@@ -112,7 +112,7 @@
 
     <!-- Ligne pour Ratio Max -->
     <tr class="ratio-row"  th:with="currentYear=${#dates.year(#dates.createNow())},
-                              currentYearRatio=${yearlyMaxRatioSets != null ? yearlyMaxRatioSets.get(currentYear) : null}">
+                              currentYearData=${yearlyMaxRatioSets != null ? yearlyMaxRatioSets.get(currentYear) : null}">
         <td class="ratio-label bold-text">Max</td>
         <td class="ratio-global-value" th:if="${maxRatioSet != null}">
             <div class="bold-text">[[${#numbers.formatDecimal(maxRatioSet.ratio, 1, 3)}]]</div>
@@ -125,12 +125,12 @@
         <td class="empty-separator"></td>
         <td class="bold-text">Max</td>
         <td class="ratio-global-value">
-            <div th:if="${currentYearRatio != null}">
-                <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearRatio.ratio(), 1, 3)}"></div>
-                <div class="small-text" th:text="${currentYearRatio.repNumber() + 'x' + #numbers.formatDecimal(currentYearRatio.weight(), 1, 2) + 'kg'}"></div>
-                <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearRatio.bodyWeight(), 1, 1) + 'kg'}"></div>
+            <div th:if="${currentYearData.bestRatio() != null}">
+                <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearData.bestRatio().ratio(), 1, 3)}"></div>
+                <div class="small-text" th:text="${currentYearData.bestRatio().repNumber() + 'x' + #numbers.formatDecimal(currentYearData.bestRatio().weight(), 1, 2) + 'kg'}"></div>
+                <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearData.bestRatio().bodyWeight(), 1, 1) + 'kg'}"></div>
             </div>
-            <div th:unless="${currentYearRatio != null}">*</div>
+            <div th:unless="${currentYearData.bestRatio() != null}">*</div>
         </td>
 
         <!-- Deuxième colonne : Date -->
@@ -144,17 +144,25 @@
         <td class="empty-separator"></td>
         <td class="bold-text">Max</td>
         <td th:each="year : ${allYears}">
-            <div th:with="yearlyRatio=${yearlyMaxRatioSets != null ? yearlyMaxRatioSets.get(year) : null}">
-                <div th:if="${yearlyRatio != null}">
-                    <div class="bold-text">[[${#numbers.formatDecimal(yearlyRatio.ratio(), 1, 3)}]]</div>
-                    <div class="small-text">
-                        [[${yearlyRatio.repNumber()}]]x[[${#numbers.formatDecimal(yearlyRatio.weight(), 1, 1)}]]kg
-                    </div>
-                    <div class="small-text">
-                        @ [[${yearlyRatio.bodyWeight()}]]kg
+            <div th:with="yearlyData=${yearlyMaxRatioSets != null ? yearlyMaxRatioSets.get(year) : null}">
+                <div th:if="${yearlyData != null}">
+                    <div class="max-weight-container">
+                        <div class="values-container">
+                            <div class="bold-text">[[${#numbers.formatDecimal(yearlyData.bestRatio().ratio(), 1, 3)}]]</div>
+                            <div class="small-text">
+                                [[${yearlyData.bestRatio().repNumber()}]]x[[${#numbers.formatDecimal(yearlyData.bestRatio().weight(), 1, 1)}]]kg
+                            </div>
+                            <div class="small-text">
+                                @ [[${#numbers.formatDecimal(yearlyData.bestRatio().bodyWeight(), 1, 1)}]]kg
+                            </div>
+                        </div>
+                        <!-- Pastille trend -->
+                        <div th:if="${yearlyData.trend() != null}"
+                             th:classappend="${'trend-indicator ' + yearlyData.trend().getCssClass()}">
+                        </div>
                     </div>
                 </div>
-                <div th:unless="${yearlyRatio != null}">-</div>
+                <div th:unless="${yearlyData != null}">-</div>
             </div>
         </td>
     </tr>
@@ -179,35 +187,42 @@
         <td class="bold-text">Est</td>
 
         <td class="ratio-global-value">
-            <div th:if="${currentYearRatio != null}">
-                <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearRatio.ratio(), 1, 3)}"></div>
-                <div class="small-text" th:text="${currentYearRatio.repNumber() + 'x' + #numbers.formatDecimal(currentYearRatio.weight(), 1, 2) + 'kg'}"></div>
-                <div class="small-text" th:text="${'(' + #numbers.formatDecimal(currentYearRatio.est1RM(), 1, 2) + 'kg)'}"></div>
-                <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearRatio.bodyWeight(), 1, 1) + 'kg'}"></div>
+            <div th:if="${currentYearData != null}">
+                <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearData.bestRatio().ratio(), 1, 3)}"></div>
+                <div class="small-text" th:text="${currentYearData.bestRatio().repNumber() + 'x' + #numbers.formatDecimal(currentYearData.bestRatio().weight(), 1, 2) + 'kg'}"></div>
+                <div class="small-text" th:text="${'(' + #numbers.formatDecimal(currentYearData.bestRatio().est1RM(), 1, 2) + 'kg)'}"></div>
+                <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearData.bestRatio().bodyWeight(), 1, 1) + 'kg'}"></div>
             </div>
-            <div th:unless="${currentYearRatio != null}">-</div>
+            <div th:unless="${currentYearData != null}">-</div>
         </td>
 
         <!-- Deuxième colonne : Date -->
         <td class="ratio-global-value">
-            <div th:if="${currentYearRatio != null}">
-                <span th:text="${#temporals.format(currentYearRatio.workoutDate(), 'dd/MM/yyyy')}"></span>
+            <div th:if="${currentYearData != null}">
+                <span th:text="${#temporals.format(currentYearData.bestRatio().workoutDate(), 'dd/MM/yyyy')}"></span>
             </div>
-            <div th:unless="${currentYearRatio != null}">-</div>
+            <div th:unless="${currentYearData != null}">-</div>
         </td>
 
         <td class="empty-separator"></td>
         <td class="bold-text">Est</td>
         <td th:each="year : ${allYears}">
-            <div th:with="yearlyRatio=${yearlyMaxRatio1RMSets != null ? yearlyMaxRatio1RMSets.get(year) : null}">
-                <div th:if="${yearlyRatio != null}" class="ratio-value">
-                    <div class="bold-text">[[${#numbers.formatDecimal(yearlyRatio.ratio(), 1, 3)}]]</div>
-                    <div class="small-text">[[${yearlyRatio.repNumber()}]]x[[${#numbers.formatDecimal(yearlyRatio.weight(), 1, 2)}]]kg</div>
-                    <div class="small-text">([[${#numbers.formatDecimal(yearlyRatio.est1RM(), 1, 2)}]]kg)</div>
-                    <div class="small-text">@ [[${yearlyRatio.bodyWeight}]]kg</div>
-
+            <div th:with="yearlyData=${yearlyMaxRatio1RMSets != null ? yearlyMaxRatio1RMSets.get(year) : null}">
+                <div th:if="${yearlyData != null}" class="ratio-value">
+                    <div class="max-weight-container">
+                        <div class="values-container">
+                            <div class="bold-text">[[${#numbers.formatDecimal(yearlyData.bestRatio().ratio(), 1, 3)}]]</div>
+                            <div class="small-text">[[${yearlyData.bestRatio().repNumber()}]]x[[${#numbers.formatDecimal(yearlyData.bestRatio().weight(), 1, 2)}]]kg</div>
+                            <div class="small-text">([[${#numbers.formatDecimal(yearlyData.bestRatio().est1RM(), 1, 2)}]]kg)</div>
+                            <div class="small-text">@ [[${#numbers.formatDecimal(yearlyData.bestRatio().bodyWeight(), 1, 1)}]]kg</div>
+                        </div>
+                        <!-- Pastille trend -->
+                        <div th:if="${yearlyData.trend() != null}"
+                             th:classappend="${'trend-indicator ' + yearlyData.trend().getCssClass()}">
+                        </div>
+                    </div>
                 </div>
-                <div th:unless="${yearlyRatio != null}">-</div>
+                <div th:unless="${yearlyData != null}">-</div>
             </div>
         </td>
     </tr>

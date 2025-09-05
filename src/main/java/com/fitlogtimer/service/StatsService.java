@@ -9,6 +9,8 @@ import java.util.stream.IntStream;
 
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
+import com.fitlogtimer.dto.YearlyBestRatioFor1RMWithTrendDTO;
+import com.fitlogtimer.dto.YearlyBestRatioWithTrendDTO;
 import com.fitlogtimer.dto.stats.*;
 import com.fitlogtimer.enums.Trend;
 import com.fitlogtimer.model.sets.BodyweightSet;
@@ -75,8 +77,7 @@ public class StatsService {
 
     public List<CombinedMultiYearDTO> mergeMultiYearMaxsByReps(
             MaxsByRepsDTO personalBests,
-            Map<Integer, MaxsByRepsDTO> bestsByYear
-    ) {
+            Map<Integer, MaxsByRepsDTO> bestsByYear) {
         Set<Integer> allReps = new TreeSet<>();
         allReps.addAll(personalBests.maxsByReps().keySet());
         for (MaxsByRepsDTO yearlyDTO : bestsByYear.values()) {
@@ -154,8 +155,7 @@ public class StatsService {
 
     private Map<Integer, MaxWeightWith1RMAndDateDTO> filterBestPerformances(
             int exerciseId,
-            BiFunction<Integer, Integer, MaxWeightWithDateDTO> fetcher
-    ) {
+            BiFunction<Integer, Integer, MaxWeightWithDateDTO> fetcher) {
         Map<Integer, MaxWeightWith1RMAndDateDTO> bestByReps = new TreeMap<>();
 
         double currentMaxWeight = 0;
@@ -355,12 +355,12 @@ public class StatsService {
         return exerciseSetRepository.findTopMaxRatioSet(exerciseId).orElse(null);
     }
 
-    public Map<Integer, ExerciseSetWithBodyWeightAndDateDTO> getTopMaxRatioSetByYears(int exerciseId) {
+    public Map<Integer, YearlyBestRatioWithTrendDTO> getTopMaxRatioSetByYears(int exerciseId) {
         List<ExerciseSetWithBodyWeightAndDateDTO> allSets =
                 exerciseSetRepository.findYearlyMaxRatioSets(exerciseId);
 
-        // Calcul du ratio
-        List<ExerciseSetWithBodyWeightAndDateDTO> computedSets = allSets.stream()
+        // Calcul du ratio et regroupement par année
+        Map<Integer, ExerciseSetWithBodyWeightAndDateDTO> bestByYear = allSets.stream()
                 .map(dto -> new ExerciseSetWithBodyWeightAndDateDTO(
                         dto.id(),
                         dto.exercise(),
@@ -371,15 +371,36 @@ public class StatsService {
                         dto.workoutDate(),
                         dto.weight() / dto.bodyWeight()
                 ))
-                .toList();
-
-        // Retourner une Map avec l'année comme clé
-        return computedSets.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.workoutDate().getYear(),
                         Function.identity(),
                         (existing, replacement) -> replacement.ratio() > existing.ratio() ? replacement : existing
                 ));
+
+        List<Map.Entry<Integer, ExerciseSetWithBodyWeightAndDateDTO>> sortedEntries =
+                new ArrayList<>(bestByYear.entrySet());
+
+        sortedEntries.sort(Map.Entry.comparingByKey());
+
+        Map<Integer, YearlyBestRatioWithTrendDTO> result = new LinkedHashMap<>();
+
+        for (int i = 0; i < sortedEntries.size(); i++) {
+            Map.Entry<Integer, ExerciseSetWithBodyWeightAndDateDTO> entry = sortedEntries.get(i);
+            int year = entry.getKey();
+            ExerciseSetWithBodyWeightAndDateDTO current = entry.getValue();
+
+            Trend trend;
+            if (i == 0) {
+                trend = Trend.NEUTRAL; // Première année
+            } else {
+                ExerciseSetWithBodyWeightAndDateDTO previous = sortedEntries.get(i - 1).getValue();
+                trend = calculateTrendForRatio(current.ratio(), previous.ratio());
+            }
+
+            result.put(year, new YearlyBestRatioWithTrendDTO(current, trend));
+        }
+
+        return result;
     }
 
     public ExerciseSetWithBodyWeightAndDateFor1RMDTO getTop1RMRatioSet(int exerciseId) {
@@ -402,7 +423,7 @@ public class StatsService {
                 .orElse(null);
     }
 
-    public Map<Integer, ExerciseSetWithBodyWeightAndDateFor1RMDTO> getTop1RMRatioSetByYears(int exerciseId) {
+    public Map<Integer, YearlyBestRatioFor1RMWithTrendDTO> getTop1RMRatioSetByYears(int exerciseId) {
 
         List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> allSets =
                 exerciseSetRepository.findAllSetsFor1RM(exerciseId);
@@ -422,13 +443,38 @@ public class StatsService {
                 ))
                 .toList();
 
-        // Retourner une Map avec l'année comme clé
-        return computedSets.stream()
+        // Regroupement par année avec le meilleur ratio
+        Map<Integer, ExerciseSetWithBodyWeightAndDateFor1RMDTO> bestByYear = computedSets.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.workoutDate().getYear(),
                         Function.identity(),
                         (existing, replacement) -> replacement.ratio() > existing.ratio() ? replacement : existing
                 ));
+
+        // Trier les années pour calculer les trends
+        List<Map.Entry<Integer, ExerciseSetWithBodyWeightAndDateFor1RMDTO>> sortedEntries =
+                new ArrayList<>(bestByYear.entrySet());
+        sortedEntries.sort(Map.Entry.comparingByKey());
+
+        Map<Integer, YearlyBestRatioFor1RMWithTrendDTO> result = new LinkedHashMap<>();
+
+        for (int i = 0; i < sortedEntries.size(); i++) {
+            Map.Entry<Integer, ExerciseSetWithBodyWeightAndDateFor1RMDTO> entry = sortedEntries.get(i);
+            int year = entry.getKey();
+            ExerciseSetWithBodyWeightAndDateFor1RMDTO current = entry.getValue();
+
+            Trend trend;
+            if (i == 0) {
+                trend = Trend.NEUTRAL; // Première année
+            } else {
+                ExerciseSetWithBodyWeightAndDateFor1RMDTO previous = sortedEntries.get(i - 1).getValue();
+                trend = calculateTrendForRatio(current.ratio(), previous.ratio());
+            }
+
+            result.put(year, new YearlyBestRatioFor1RMWithTrendDTO(current, trend));
+        }
+
+        return result;
     }
 
 
@@ -478,6 +524,15 @@ public class StatsService {
         return Trend.NEUTRAL;
     }
 
+    public Trend calculateTrendForRatio(double ratio, double previousRatio) {
+        if (ratio > previousRatio) {
+            return Trend.UP;
+        } else if (ratio < previousRatio) {
+            return Trend.DOWN;
+        } else {
+            return Trend.NEUTRAL;
+        }
+    }
     private Trend compareWithHigherReps(MaxWeightWith1RMAndDateDTO current, Integer year, Integer nbReps, Map<Integer, MaxsByRepsDTO> bestsByYear) {
 
         for (int higherReps = nbReps + 1; higherReps <= 30; higherReps++) {

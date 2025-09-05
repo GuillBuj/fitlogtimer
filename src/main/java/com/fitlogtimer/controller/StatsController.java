@@ -7,6 +7,8 @@ import java.util.Map;
 import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
+import com.fitlogtimer.dto.YearlyBestRatioFor1RMWithTrendDTO;
+import com.fitlogtimer.dto.YearlyBestRatioWithTrendDTO;
 import com.fitlogtimer.dto.stats.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -41,10 +43,10 @@ public class StatsController {
         List<CombinedMultiYearDTO> combinedMaxs = statsService.mergeMultiYearMaxsByReps(personalBests, bestsByYear);
 
         ExerciseSetWithBodyWeightAndDateDTO maxRatioSet = statsService.getTopMaxRatioSet(exerciseId);
-        Map<Integer, ExerciseSetWithBodyWeightAndDateDTO> yearlyMaxRatioSets = statsService.getTopMaxRatioSetByYears(exerciseId);
+        Map<Integer, YearlyBestRatioWithTrendDTO> yearlyMaxRatioSets = statsService.getTopMaxRatioSetByYears(exerciseId);
 
         ExerciseSetWithBodyWeightAndDateFor1RMDTO maxRatio1RMSet = statsService.getTop1RMRatioSet(exerciseId);
-        Map<Integer, ExerciseSetWithBodyWeightAndDateFor1RMDTO> yearlyMaxRatio1RMSets = statsService.getTop1RMRatioSetByYears(exerciseId);
+        Map<Integer, YearlyBestRatioFor1RMWithTrendDTO> yearlyMaxRatio1RMSets = statsService.getTop1RMRatioSetByYears(exerciseId);
 
         List<Integer> allYears = bestsByYear.keySet().stream().sorted(Comparator.reverseOrder()).toList();
 

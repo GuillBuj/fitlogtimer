@@ -394,7 +394,7 @@ public class StatsService {
                 trend = Trend.NEUTRAL; // Première année
             } else {
                 ExerciseSetWithBodyWeightAndDateDTO previous = sortedEntries.get(i - 1).getValue();
-                trend = calculateTrendForRatio(current.ratio(), previous.ratio());
+                trend = calculateTrend(current.ratio(), previous.ratio());
             }
 
             result.put(year, new YearlyBestRatioWithTrendDTO(current, trend));
@@ -468,7 +468,7 @@ public class StatsService {
                 trend = Trend.NEUTRAL; // Première année
             } else {
                 ExerciseSetWithBodyWeightAndDateFor1RMDTO previous = sortedEntries.get(i - 1).getValue();
-                trend = calculateTrendForRatio(current.ratio(), previous.ratio());
+                trend = calculateTrend(current.ratio(), previous.ratio());
             }
 
             result.put(year, new YearlyBestRatioFor1RMWithTrendDTO(current, trend));
@@ -514,7 +514,7 @@ public class StatsService {
 
             // Si on trouve une performance pour la même répétition
             if (previous != null) {
-                return compare(current.maxWeight(), previous.maxWeight());
+                return calculateTrend(current.maxWeight(), previous.maxWeight());
             } else {
                 // Si on ne trouve pas la performance pour la répétition exacte, on compare avec des répétitions plus élevées
                 return compareWithHigherReps(current, year, nbReps, bestsByYear);
@@ -524,15 +524,6 @@ public class StatsService {
         return Trend.NEUTRAL;
     }
 
-    public Trend calculateTrendForRatio(double ratio, double previousRatio) {
-        if (ratio > previousRatio) {
-            return Trend.UP;
-        } else if (ratio < previousRatio) {
-            return Trend.DOWN;
-        } else {
-            return Trend.NEUTRAL;
-        }
-    }
     private Trend compareWithHigherReps(MaxWeightWith1RMAndDateDTO current, Integer year, Integer nbReps, Map<Integer, MaxsByRepsDTO> bestsByYear) {
 
         for (int higherReps = nbReps + 1; higherReps <= 30; higherReps++) {
@@ -541,7 +532,7 @@ public class StatsService {
                 MaxWeightWith1RMAndDateDTO previousHigherReps = previousYearData.maxsByReps().get(higherReps);
                 if (previousHigherReps != null) {
                     // Si on trouve une performance plus élevée pour l'année précédente, on compare avec celle-ci
-                    return compare(current.maxWeight(), previousHigherReps.maxWeight());
+                    return calculateTrend(current.maxWeight(), previousHigherReps.maxWeight());
                 }
             }
         }
@@ -549,10 +540,24 @@ public class StatsService {
         return Trend.NEUTRAL;
     }
 
-    private Trend compare(double current, double previous) {
+    private Trend calculateTrend(double current, double previous) {
 
-        if (current > previous) return Trend.UP;
-        if (current == previous) return Trend.NEUTRAL;
-        return Trend.DOWN;
+        if (previous == 0) {
+            return Trend.NEUTRAL;
+        }
+
+        double percentageChange = ((current - previous) / previous) * 100;
+
+        if (percentageChange >= 5.0) {
+            return Trend.UP;
+        } else if (percentageChange > 0) {
+            return Trend.SLIGHTLY_UP;
+        } else if (percentageChange == 0) {
+            return Trend.NEUTRAL;
+        } else if (percentageChange > -5.0) {
+            return Trend.SLIGHTLY_DOWN;
+        } else {
+            return Trend.DOWN;
+        }
     }
 }

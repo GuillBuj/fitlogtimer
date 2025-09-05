@@ -1194,6 +1194,34 @@ th.exercises-list-column{
     transform: translate(-50%, -50%);
 }
 
+.trend-slightly-up {
+    background-color: #8BC34A; /* Vert clair */
+}
+
+.trend-slightly-up::after {
+    content: "↖";
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.trend-slightly-down {
+    background-color: #FF9800; /* Orange */
+}
+
+.trend-slightly-down::after {
+    content: "↙";
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .max-weight-container {
     display: flex;
     align-items: center;

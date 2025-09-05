@@ -2,8 +2,12 @@ package com.fitlogtimer.enums;
 
 public enum Trend {
     UP("trend-up"),
-    DOWN("trend-down"),
-    NEUTRAL("trend-neutral");
+    SLIGHTLY_UP("trend-slightly-up"),
+    NEUTRAL("trend-neutral"),
+    SLIGHTLY_DOWN("trend-slightly-down"),
+    DOWN("trend-down");
+
+
 
     private final String cssClass;
 

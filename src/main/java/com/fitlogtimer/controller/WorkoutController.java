@@ -108,19 +108,6 @@ public class WorkoutController {
         return "redirect:/workouts";
     }
 
-    // @GetMapping
-    // public String getWorkoutsList(Model model) {
-    //     List<WorkoutListDisplayDTO> workoutList = workoutService.getAllWorkoutsDisplayDTO();
-    //     if (workoutList.size()>0){
-    //         log.info("-*-*-*-*-*-*-*-* Workouts: {}", workoutList.toString());
-    //     } else {
-    //         log.info("-*-*-*-*-*-*-*-* Workouts: VIDE");
-    //     }
-        
-    //     model.addAttribute("workoutList", workoutList);
-    //     return "workout-list";
-    // }
-
     @GetMapping
     public String getWorkoutsList(
             @RequestParam(defaultValue = "0") int page,

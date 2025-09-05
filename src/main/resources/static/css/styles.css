@@ -690,6 +690,14 @@ th.exercises-list-column{
     padding: 0;
 }
 
+.empty-separator-row {
+    border: none !important;
+    background: white !important;
+    height: 50px;
+    min-height: 50px;
+    padding: 0;
+}
+
 
 /*PREFERENCES*/
 

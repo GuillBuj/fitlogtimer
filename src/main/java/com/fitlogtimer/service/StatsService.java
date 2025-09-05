@@ -355,21 +355,31 @@ public class StatsService {
         return exerciseSetRepository.findTopMaxRatioSet(exerciseId).orElse(null);
     }
 
-    public List<ExerciseSetWithBodyWeightAndDateDTO> getTopMaxRatioSetByYears(int exerciseId){
+    public Map<Integer, ExerciseSetWithBodyWeightAndDateDTO> getTopMaxRatioSetByYears(int exerciseId) {
         List<ExerciseSetWithBodyWeightAndDateDTO> allSets =
                 exerciseSetRepository.findYearlyMaxRatioSets(exerciseId);
 
-        // Déduplication par année - garder seulement le premier set de chaque année
-        return allSets.stream()
-                .collect(Collectors.toMap(
-                        dto -> dto.workoutDate().getYear(),  // Clé = année
-                        Function.identity(),                 // Valeur = le DTO
-                        (existing, replacement) -> existing  // En cas de doublon, garder le premier
+        // Calcul du ratio
+        List<ExerciseSetWithBodyWeightAndDateDTO> computedSets = allSets.stream()
+                .map(dto -> new ExerciseSetWithBodyWeightAndDateDTO(
+                        dto.id(),
+                        dto.exercise(),
+                        dto.repNumber(),
+                        dto.weight(),
+                        dto.bodyWeight(),
+                        dto.idWorkout(),
+                        dto.workoutDate(),
+                        dto.weight() / dto.bodyWeight()
                 ))
-                .values()
-                .stream()
-                .sorted(Comparator.comparing(ExerciseSetWithBodyWeightAndDateDTO::workoutDate).reversed())
-                .collect(Collectors.toList());
+                .toList();
+
+        // Retourner une Map avec l'année comme clé
+        return computedSets.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.workoutDate().getYear(),
+                        Function.identity(),
+                        (existing, replacement) -> replacement.ratio() > existing.ratio() ? replacement : existing
+                ));
     }
 
     public ExerciseSetWithBodyWeightAndDateFor1RMDTO getTop1RMRatioSet(int exerciseId) {
@@ -392,7 +402,8 @@ public class StatsService {
                 .orElse(null);
     }
 
-    public List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> getTop1RMRatioSetByYears(int exerciseId) {
+    public Map<Integer, ExerciseSetWithBodyWeightAndDateFor1RMDTO> getTop1RMRatioSetByYears(int exerciseId) {
+
         List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> allSets =
                 exerciseSetRepository.findAllSetsFor1RM(exerciseId);
 
@@ -411,17 +422,13 @@ public class StatsService {
                 ))
                 .toList();
 
-        // Garder le meilleur ratio par année
+        // Retourner une Map avec l'année comme clé
         return computedSets.stream()
                 .collect(Collectors.toMap(
                         dto -> dto.workoutDate().getYear(),
                         Function.identity(),
                         (existing, replacement) -> replacement.ratio() > existing.ratio() ? replacement : existing
-                ))
-                .values()
-                .stream()
-                .sorted(Comparator.comparing(ExerciseSetWithBodyWeightAndDateFor1RMDTO::workoutDate).reversed())
-                .collect(Collectors.toList());
+                ));
     }
 
 

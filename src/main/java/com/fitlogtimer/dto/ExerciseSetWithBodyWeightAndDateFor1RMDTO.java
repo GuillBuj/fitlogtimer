@@ -15,4 +15,7 @@ public record ExerciseSetWithBodyWeightAndDateFor1RMDTO(
         double est1RM,
         double ratio
 ) {
+    public ExerciseSetWithBodyWeightAndDateFor1RMDTO{
+        ratio = Math.round(ratio * 1000.0) / 1000.0;
+    }
 }

@@ -14,4 +14,8 @@ public record ExerciseSetWithBodyWeightAndDateDTO(
         LocalDate workoutDate,
         double ratio
 ) {
+    public ExerciseSetWithBodyWeightAndDateDTO {
+        // Arrondir le ratio à 4 décimales si il n'est pas null
+        ratio = Math.round(ratio * 1000.0) / 1000.0;
+    }
 }

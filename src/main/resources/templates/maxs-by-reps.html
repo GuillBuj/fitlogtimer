@@ -82,7 +82,8 @@
                 <div th:unless="${yearlyBest != null}">-</div>
             </div>
         </td>
-        <td><span th:text="${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? #temporals.format(combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).date(), 'dd/MM/yyyy') : '-'}"></span></td>
+        <td><span th:text="${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ?
+        #temporals.format(combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).date(), 'dd/MM/yyyy') : '-'}"></span></td>
 
         <!-- Séparateur pour séparer les SBs et les anciennes années -->
         <td class="empty-separator"></td>
@@ -104,55 +105,115 @@
         </td>
 
     </tr>
+
+    <tr class="empty-separator-row">
+        <td th:colspan="${9 + allYears.size()}" class="empty-separator"></td>
+    </tr>
+
+    <!-- Ligne pour Ratio Max -->
+    <tr class="ratio-row"  th:with="currentYear=${#dates.year(#dates.createNow())},
+                              currentYearRatio=${yearlyMaxRatioSets != null ? yearlyMaxRatioSets.get(currentYear) : null}">
+        <td class="ratio-label bold-text">Max</td>
+        <td class="ratio-global-value" th:if="${maxRatioSet != null}">
+            <div class="bold-text">[[${#numbers.formatDecimal(maxRatioSet.ratio, 1, 3)}]]</div>
+            <div class="small-text">[[${maxRatioSet.repNumber}]]x[[${maxRatioSet.weight}]]kg</div>
+            <div class="small-text">@ [[${maxRatioSet.bodyWeight}]]kg</div>
+        </td>
+        <td class="ratio-global-value" th:if="${maxRatioSet != null}">
+            [[${#temporals.format(maxRatioSet.workoutDate, 'dd/MM/yyyy')}]]
+        </td>
+        <td class="empty-separator"></td>
+        <td class="bold-text">Max</td>
+        <td class="ratio-global-value">
+            <div th:if="${currentYearRatio != null}">
+                <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearRatio.ratio(), 1, 3)}"></div>
+                <div class="small-text" th:text="${currentYearRatio.repNumber() + 'x' + #numbers.formatDecimal(currentYearRatio.weight(), 1, 2) + 'kg'}"></div>
+                <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearRatio.bodyWeight(), 1, 1) + 'kg'}"></div>
+            </div>
+            <div th:unless="${currentYearRatio != null}">*</div>
+        </td>
+
+        <!-- Deuxième colonne : Date -->
+        <td class="ratio-global-value">
+            <div th:if="${currentYearRatio != null}">
+                <span th:text="${#temporals.format(currentYearRatio.workoutDate(), 'dd/MM/yyyy')}"></span>
+            </div>
+            <div th:unless="${currentYearRatio != null}">/</div>
+        </td>
+        <td th:unless="${maxRatioSet != null}" colspan="3">-</td>
+        <td class="empty-separator"></td>
+        <td class="bold-text">Max</td>
+        <td th:each="year : ${allYears}">
+            <div th:with="yearlyRatio=${yearlyMaxRatioSets != null ? yearlyMaxRatioSets.get(year) : null}">
+                <div th:if="${yearlyRatio != null}">
+                    <div class="bold-text">[[${#numbers.formatDecimal(yearlyRatio.ratio(), 1, 3)}]]</div>
+                    <div class="small-text">
+                        [[${yearlyRatio.repNumber()}]]x[[${#numbers.formatDecimal(yearlyRatio.weight(), 1, 1)}]]kg
+                    </div>
+                    <div class="small-text">
+                        @ [[${yearlyRatio.bodyWeight()}]]kg
+                    </div>
+                </div>
+                <div th:unless="${yearlyRatio != null}">-</div>
+            </div>
+        </td>
+    </tr>
+
+    <!-- Ligne pour Ratio 1RM -->
+    <tr class="ratio-row"  th:with="currentYear=${#dates.year(#dates.createNow())},
+                              currentYearRatio=${yearlyMaxRatio1RMSets != null ? yearlyMaxRatio1RMSets.get(currentYear) : null}">
+        <td class="ratio-label bold-text">Est</td>
+        <td class="ratio-global-value" th:if="${maxRatio1RMSet != null}">
+            <div class="bold-text">[[${#numbers.formatDecimal(maxRatio1RMSet.ratio, 1, 3)}]]</div>
+            <div class="small-text">[[${maxRatio1RMSet.repNumber}]]x[[${maxRatio1RMSet.weight}]]kg</div>
+            <div class="small-text">([[${#numbers.formatDecimal(maxRatio1RMSet.est1RM, 1, 1)}]]kg)</div>
+            <div class="small-text">@ [[${maxRatio1RMSet.bodyWeight}]]kg</div>
+        </td>
+        <td class="ratio-global-value" th:if="${maxRatio1RMSet != null}">
+            [[${#temporals.format(maxRatio1RMSet.workoutDate, 'dd/MM/yyyy')}]]
+        </td>
+        <td th:unless="${maxRatio1RMSet != null}" colspan="3">-</td>
+
+        <td class="empty-separator"></td>
+
+        <td class="bold-text">Est</td>
+
+        <td class="ratio-global-value">
+            <div th:if="${currentYearRatio != null}">
+                <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearRatio.ratio(), 1, 3)}"></div>
+                <div class="small-text" th:text="${currentYearRatio.repNumber() + 'x' + #numbers.formatDecimal(currentYearRatio.weight(), 1, 2) + 'kg'}"></div>
+                <div class="small-text" th:text="${'(' + #numbers.formatDecimal(currentYearRatio.est1RM(), 1, 2) + 'kg)'}"></div>
+                <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearRatio.bodyWeight(), 1, 1) + 'kg'}"></div>
+            </div>
+            <div th:unless="${currentYearRatio != null}">-</div>
+        </td>
+
+        <!-- Deuxième colonne : Date -->
+        <td class="ratio-global-value">
+            <div th:if="${currentYearRatio != null}">
+                <span th:text="${#temporals.format(currentYearRatio.workoutDate(), 'dd/MM/yyyy')}"></span>
+            </div>
+            <div th:unless="${currentYearRatio != null}">-</div>
+        </td>
+
+        <td class="empty-separator"></td>
+        <td class="bold-text">Est</td>
+        <td th:each="year : ${allYears}">
+            <div th:with="yearlyRatio=${yearlyMaxRatio1RMSets != null ? yearlyMaxRatio1RMSets.get(year) : null}">
+                <div th:if="${yearlyRatio != null}" class="ratio-value">
+                    <div class="bold-text">[[${#numbers.formatDecimal(yearlyRatio.ratio(), 1, 3)}]]</div>
+                    <div class="small-text">[[${yearlyRatio.repNumber()}]]x[[${#numbers.formatDecimal(yearlyRatio.weight(), 1, 2)}]]kg</div>
+                    <div class="small-text">([[${#numbers.formatDecimal(yearlyRatio.est1RM(), 1, 2)}]]kg)</div>
+                    <div class="small-text">@ [[${yearlyRatio.bodyWeight}]]kg</div>
+
+                </div>
+                <div th:unless="${yearlyRatio != null}">-</div>
+            </div>
+        </td>
+    </tr>
+
     </tbody>
 </table>
-<!-- Ratio maximum global -->
-<div th:if="${maxRatioSet != null}">
-    <h2>Max Global</h2>
-    <p>
-        [[${maxRatioSet.ratio}]]
-        ([[${maxRatioSet.repNumber}]]x[[${maxRatioSet.weight}]]kg
-        @ [[${maxRatioSet.bodyWeight}]]kg)
-        - [[${maxRatioSet.workoutDate}]]
-    </p>
-</div>
-
-<!-- Liste des ratios par année -->
-<div th:if="${!yearlyMaxRatioSets.empty}">
-    <h2>Par Année</h2>
-    <ul>
-        <li th:each="ratioSet : ${yearlyMaxRatioSets}">
-            [[${ratioSet.ratio}]]
-            ([[${ratioSet.repNumber}]]x[[${ratioSet.weight}]]kg
-            @ [[${ratioSet.bodyWeight}]]kg)
-            - [[${ratioSet.workoutDate}]]
-        </li>
-    </ul>
-</div>
-
-<div th:if="${maxRatio1RMSet != null}">
-    <h2>Max 1RM Global</h2>
-    <p>
-        [[${maxRatio1RMSet.ratio}]]
-        ([[${maxRatio1RMSet.repNumber}]]x[[${maxRatio1RMSet.weight}]]kg
-        ([[${maxRatio1RMSet.est1RM}]])
-        @ [[${maxRatio1RMSet.bodyWeight}]]kg)
-        - [[${maxRatio1RMSet.workoutDate}]]
-    </p>
-</div>
-
-<div th:if="${yearlyMaxRatio1RMSets != null and not yearlyMaxRatio1RMSets.empty}">
-    <h2>Par Année</h2>
-    <ul>
-        <li th:each="ratioSet : ${yearlyMaxRatio1RMSets}">
-            [[${ratioSet.ratio}]]
-            ([[${ratioSet.repNumber}]]x[[${ratioSet.weight}]]kg
-            (1RMest: [[${ratioSet.est1RM}]])
-            @ [[${ratioSet.bodyWeight}]]kg)
-            - [[${ratioSet.workoutDate}]]
-        </li>
-    </ul>
-</div>
 
 <script src="/js/timer.js"></script>
 </body>

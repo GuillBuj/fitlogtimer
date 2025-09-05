@@ -41,10 +41,10 @@ public class StatsController {
         List<CombinedMultiYearDTO> combinedMaxs = statsService.mergeMultiYearMaxsByReps(personalBests, bestsByYear);
 
         ExerciseSetWithBodyWeightAndDateDTO maxRatioSet = statsService.getTopMaxRatioSet(exerciseId);
-        List<ExerciseSetWithBodyWeightAndDateDTO> yearlyMaxRatioSets = statsService.getTopMaxRatioSetByYears(exerciseId);
+        Map<Integer, ExerciseSetWithBodyWeightAndDateDTO> yearlyMaxRatioSets = statsService.getTopMaxRatioSetByYears(exerciseId);
 
         ExerciseSetWithBodyWeightAndDateFor1RMDTO maxRatio1RMSet = statsService.getTop1RMRatioSet(exerciseId);
-        List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> yearlyMaxRatio1RMSets = statsService.getTop1RMRatioSetByYears(exerciseId);
+        Map<Integer, ExerciseSetWithBodyWeightAndDateFor1RMDTO> yearlyMaxRatio1RMSets = statsService.getTop1RMRatioSetByYears(exerciseId);
 
         List<Integer> allYears = bestsByYear.keySet().stream().sorted(Comparator.reverseOrder()).toList();
 

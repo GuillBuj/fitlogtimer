@@ -1,0 +1,53 @@
+package com.fitlogtimer.controller;
+
+import com.fitlogtimer.model.DriveFile;
+import com.fitlogtimer.service.JsonLocalImportService;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
+
+@Controller
+@AllArgsConstructor
+@RequestMapping("/import")
+public class JsonDriveImportController {
+
+    private final JsonLocalImportService importService;
+
+    /** Liste tous les fichiers JSON */
+    @GetMapping("/list")
+    public String listFiles(Model model) throws Exception {
+        List<DriveFile> files = importService.listJsonFiles();
+        Set<String> imported = importService.getImportedFiles();
+        model.addAttribute("files", files);
+        model.addAttribute("importedFiles", imported);
+        return "import-list";
+    }
+
+    /** Affiche le contenu d’un fichier JSON */
+    @GetMapping("/view/{fileId}")
+    public String viewFile(@PathVariable String fileId, Model model) throws IOException {
+        String content = importService.getFileContent(fileId);
+        model.addAttribute("fileId", fileId);
+        model.addAttribute("content", content);
+        return "import-view";
+    }
+
+    /** Import d’un fichier (version simple, BDD commentée) */
+    @PostMapping("/import/{fileId}")
+    public String importFile(@PathVariable String fileId) throws IOException {
+        importService.importFile(fileId);
+        return "redirect:/import/list";
+    }
+
+    /** Réinitialise un fichier pour réimport */
+    @PostMapping("/reset/{fileId}")
+    public String resetFile(@PathVariable String fileId) throws IOException {
+        importService.resetFile(fileId);
+        return "redirect:/import/list";
+    }
+}

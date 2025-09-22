@@ -638,8 +638,6 @@ public class WorkoutService {
         WorkoutType workoutType = workoutTypeService.findOrCreate(name);
         Workout workout = workoutMapper.toEntity(fromXlsxGenericWorkoutDTO, name);
 
-
-
         log.info("Workout: {}",workout);
         final int idWorkout = workoutRepository.save(workout).getId();
         log.info("Workout ID: {}",idWorkout);
@@ -652,11 +650,6 @@ public class WorkoutService {
         log.info("Exercise sets added");
         return workout;
     }
-
-
-
-
-
 
     //pas fini
 //    @Transactional

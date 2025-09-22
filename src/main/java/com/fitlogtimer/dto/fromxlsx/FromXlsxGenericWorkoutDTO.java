@@ -10,5 +10,4 @@ public record FromXlsxGenericWorkoutDTO(
     double bodyWeight,
     List<ExerciseSetCreateDTO> sets,
     String name) {
-
 }

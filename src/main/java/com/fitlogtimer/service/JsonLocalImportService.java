@@ -107,24 +107,40 @@ public class JsonLocalImportService {
         return outputStream.toString(StandardCharsets.UTF_8);
     }
 
-    /** Importe un fichier (version BDD commentée pour l’instant) */
-    public void importFile(String fileId) throws IOException {
-        Path filePath = inboxDir.resolve(fileId);
-        if (!Files.exists(filePath) || importedFiles.contains(fileId)) return;
+    public String downloadFileByName(String fileName) throws Exception {
+        String query = "name='" + fileName + "' and '" + inboxFolderId + "' in parents and trashed=false";
+        FileList result = driveService.files().list()
+                .setQ(query)
+                .setFields("files(id, name)")
+                .execute();
+        if (!result.getFiles().isEmpty()) {
+            return downloadFile(result.getFiles().get(0).getId());
+        }
+        return "";
+    }
 
-        String content = Files.readString(filePath, StandardCharsets.UTF_8);
+    /** Importe un fichier */
+    public void importFile(String fileName) throws Exception {
+        String query = "name='" + fileName + "' and '" + inboxFolderId + "' in parents and trashed=false";
+        FileList result = driveService.files().list()
+                .setQ(query)
+                .setFields("files(id, name)")
+                .execute();
+        if (!result.getFiles().isEmpty()) {
+            String fileId = result.getFiles().getFirst().getId();
+            if (!importedFiles.contains(fileName)) {
+                String content = downloadFile(fileId);
+                // TODO : parser JSON et sauvegarder en BDD
 
-        // TODO : parser JSON et transformer en Workout/ExerciseSet
-        // List<Workout> workouts = workoutMapper.fromJson(content);
-        // workoutRepository.saveAll(workouts);
+                // Archive local
+                String archiveFileName = fileName + "_" + System.currentTimeMillis() + ".json";
+                Files.writeString(archiveDir.resolve(archiveFileName), content);
 
-        // Archive local
-        String archiveFileName = fileId + "_" + System.currentTimeMillis();
-        Files.writeString(archiveDir.resolve(archiveFileName), content);
-
-        // Ajouter au tracker
-        importedFiles.add(fileId);
-        saveTracker();
+                // Ajouter au tracker
+                importedFiles.add(fileName);
+                saveTracker();
+            }
+        }
     }
 
     /** Supprime un fichier du tracker pour réimport */

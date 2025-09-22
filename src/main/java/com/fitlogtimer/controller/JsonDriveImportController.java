@@ -29,17 +29,17 @@ public class JsonDriveImportController {
     }
 
     /** Affiche le contenu d’un fichier JSON */
-    @GetMapping("/view/{fileId}")
-    public String viewFile(@PathVariable String fileId, Model model) throws IOException {
-        String content = importService.getFileContent(fileId);
-        model.addAttribute("fileId", fileId);
+    @GetMapping("/view/{fileName}")
+    public String viewFile(@PathVariable String fileName, Model model) throws Exception {
+        String content = importService.downloadFileByName(fileName);
+        model.addAttribute("fileName", fileName);
         model.addAttribute("content", content);
         return "import-view";
     }
 
-    /** Import d’un fichier (version simple, BDD commentée) */
+    /** Import d’un fichier (version simple) */
     @PostMapping("/import/{fileId}")
-    public String importFile(@PathVariable String fileId) throws IOException {
+    public String importFile(@PathVariable String fileId) throws Exception {
         importService.importFile(fileId);
         return "redirect:/import/list";
     }

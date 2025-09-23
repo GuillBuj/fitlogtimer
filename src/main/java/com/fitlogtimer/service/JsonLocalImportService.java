@@ -1,51 +1,43 @@
 package com.fitlogtimer.service;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericWorkoutDTO;
 import com.fitlogtimer.model.DriveFile;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import jakarta.annotation.PostConstruct;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j
+@Data
 @RequiredArgsConstructor
 public class JsonLocalImportService {
 
-    private final Path importTrackerFile = Paths.get("imported-files.json");
-    private final Path archiveDir = Paths.get("imported-json-archive"); // Archive local
-    private final Path inboxDir = Paths.get("INBOX"); // Dossier local simulé (si besoin)
+    private final Path importTrackerFile = Paths.get("data/imported-files.json");
+    private final Path inboxDir = Paths.get("INBOX");
 
-    private final ObjectMapper objectMapper; // Celui configuré par Spring
+    private final ObjectMapper objectMapper;
     private final WorkoutService workoutService;
     private Drive driveService;
+
     private Set<String> importedFiles = new HashSet<>();
 
     private final String inboxFolderId = "1Ukuk_217ZUkXb3A75G2Sedi4Q5t8tMKa";
@@ -53,9 +45,6 @@ public class JsonLocalImportService {
     @PostConstruct
     public void init() throws Exception {
         // Créer les dossiers locaux s'ils n'existent pas
-        if (!Files.exists(archiveDir)) {
-            Files.createDirectories(archiveDir);
-        }
         if (!Files.exists(inboxDir)) {
             Files.createDirectories(inboxDir);
         }
@@ -96,8 +85,6 @@ public class JsonLocalImportService {
                 .build();
     }
 
-
-
     /** Liste tous les fichiers JSON du dossier INBOX */
     public List<DriveFile> listJsonFiles() throws Exception {
         String query = "'" + inboxFolderId + "' in parents and mimeType='application/json' and trashed=false";
@@ -133,7 +120,7 @@ public class JsonLocalImportService {
                 .setFields("files(id, name)")
                 .execute();
         if (!result.getFiles().isEmpty()) {
-            return downloadFile(result.getFiles().get(0).getId());
+            return downloadFile(result.getFiles().getFirst().getId());
         }
         return "";
     }
@@ -149,22 +136,19 @@ public class JsonLocalImportService {
         if (!result.getFiles().isEmpty()) {
             String fileId = result.getFiles().getFirst().getId();
             if (!importedFiles.contains(fileName)) {
-                // 1. Télécharger le contenu JSON
+                // Télécharger le contenu JSON
                 String content = downloadFile(fileId);
+                log.info("*-*-* json content: {}", content);
 
-                // 2. Parser JSON vers ton DTO déjà existant
-                ObjectMapper objectMapper = new ObjectMapper();
+                // Parser JSON vers ton DTO déjà existant
                 FromXlsxGenericWorkoutDTO dto =
                         objectMapper.readValue(content, FromXlsxGenericWorkoutDTO.class);
+                log.info("*-*-* dto: {}", dto);
 
-                // 3. Créer et sauvegarder le Workout en BDD (réutilisation de ta logique XLS)
+                // Créer et sauvegarder le Workout en BDD (réutilisation de ta logique XLS)
                 workoutService.createWorkoutFromXlsxGenericWorkoutDTO(dto, dto.name());
 
-                // 4. Archiver le JSON (optionnel, tu peux enlever si tu veux éviter le double stockage)
-                String archiveFileName = fileName + "_" + System.currentTimeMillis() + ".json";
-                Files.writeString(archiveDir.resolve(archiveFileName), content);
-
-                // 5. Marquer comme importé
+                // Marquer comme importé
                 importedFiles.add(fileName);
                 saveTracker();
 
@@ -185,9 +169,5 @@ public class JsonLocalImportService {
         }
     }
 
-    /** Retourne la liste des fichiers déjà importés */
-    public Set<String> getImportedFiles() {
-        return importedFiles;
-    }
 }
 

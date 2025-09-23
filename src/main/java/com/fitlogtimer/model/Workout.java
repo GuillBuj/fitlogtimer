@@ -28,8 +28,8 @@ public class Workout {
 
     private double bodyWeight;
 
-    @ManyToOne
-    @JoinColumn(name = "workout_type_name") // référence au champ name
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "workout_type_name", nullable = true) // référence au champ name
     private WorkoutType type;
 
     private String comment;

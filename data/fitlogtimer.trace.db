@@ -707,3 +707,16 @@ Database is already closed (to disable automatic closing at VM shutdown, add ";D
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2025-09-23 09:59:25.274953+02:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "show\000d\000a [*]WORKOUT"
+Syntax error in SQL statement "show\000d\000a [*]WORKOUT"; SQL statement:
+show
+ WORKOUT [42000-232]
+2025-09-23 10:00:30.633147+02:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "[*]desc WORKOUT"; attendu "DELETE, DROP"
+Syntax error in SQL statement "[*]desc WORKOUT"; expected "DELETE, DROP"; SQL statement:
+desc WORKOUT [42001-232]
+2025-09-23 10:00:39.200034+02:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Erreur de syntaxe dans l'instruction SQL "[*]DESC WORKOUT"; attendu "DELETE, DROP"
+Syntax error in SQL statement "[*]DESC WORKOUT"; expected "DELETE, DROP"; SQL statement:
+DESC WORKOUT [42001-232]

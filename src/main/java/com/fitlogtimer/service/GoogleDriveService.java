@@ -49,14 +49,12 @@ public class GoogleDriveService {
         ).setAccessType("offline").build();
     }
 
-    // plus de paramètre ici
     public String getAuthorizationUrl() {
         return flow.newAuthorizationUrl()
                 .setRedirectUri(REDIRECT_URI)
                 .build();
     }
 
-    // plus de paramètre ici non plus
     public Drive getDriveServiceWithCode(String code) throws Exception {
         GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
                 .setRedirectUri(REDIRECT_URI)
@@ -69,9 +67,27 @@ public class GoogleDriveService {
     }
 
     public void uploadJsonToDrive(Drive driveService, String jsonContent, String fileName) throws Exception {
+        String folderId = "19LPdQQy0BvxxiDOYfBAuxX9d-ySITefw"; // ID du dossier FitlogtimerJson/FORANDROID
+
+        // 1️⃣ Cherche s’il existe déjà un fichier avec ce nom dans le dossier
+        String query = String.format("name='%s' and '%s' in parents and trashed=false", fileName, folderId);
+        var result = driveService.files().list()
+                .setQ(query)
+                .setFields("files(id, name)")
+                .execute();
+
+        // 2️⃣ Supprime le fichier existant s’il existe
+        if (!result.getFiles().isEmpty()) {
+            String existingFileId = result.getFiles().getFirst().getId();
+            driveService.files().delete(existingFileId).execute();
+            log.info("Fichier existant supprimé : {}", fileName);
+        }
+
+        // 3️⃣ Crée le nouveau fichier dans le dossier
         com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
         fileMetadata.setName(fileName);
         fileMetadata.setMimeType("application/json");
+        fileMetadata.setParents(Collections.singletonList(folderId));
 
         AbstractInputStreamContent contentStream =
                 new ByteArrayContent("application/json", jsonContent.getBytes(StandardCharsets.UTF_8));
@@ -83,6 +99,7 @@ public class GoogleDriveService {
 
         log.info("Fichier Drive créé: {} (ID: {})",uploadedFile.getName(), uploadedFile.getId());
     }
+
 }
 
 

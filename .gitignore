@@ -34,3 +34,8 @@ build/
 
 /backups/
 data/fitlogtimer.lock.db
+
+*/service-account.json
+service-account.json
+*/credentials.json
+credentials.json

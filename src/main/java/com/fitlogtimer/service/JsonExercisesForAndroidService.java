@@ -27,6 +27,7 @@ public class JsonExercisesForAndroidService {
     private final ExerciseSetService exerciseSetService;
     private final ExerciseService exerciseService;
     private final WorkoutTypeService workoutTypeService;
+    private final GoogleDriveService googleDriveService;
 
     public List<JsonExerciseForAndroidDTO> createJsonExerciseForAndroidList() throws IOException {
         List<ExercisePreferenceDTO> exercisePreferenceDTOList = exercisePreferenceService.getDefaultPreferenceDTOs();
@@ -78,13 +79,13 @@ public class JsonExercisesForAndroidService {
                 .toList();
     }
 
-    public String exportJsonForAndroid() throws IOException {
+    public String createJsonForAndroid() throws IOException {
+        AndroidExportDTO dto =
+                new AndroidExportDTO(createJsonExerciseForAndroidList(), listWorkoutTypes());
 
-        AndroidExportDTO androidExportDTO
-                = new AndroidExportDTO(createJsonExerciseForAndroidList(), listWorkoutTypes());
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        return objectMapper.writeValueAsString(androidExportDTO);
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(dto);
+        log.info("Json for Android: {}", json);
+        return json;
     }
 }

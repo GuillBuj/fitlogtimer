@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste JSON</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<h1>Exporter JSON vers Google Drive</h1>
+
+<!-- Bouton pour déclencher la connexion -->
+<button id="connectBtn">Connecter à Google Drive</button>
+
+<script>
+    document.getElementById("connectBtn").addEventListener("click", () => {
+        // Appelle backend Spring
+        fetch("http://localhost:8080/connectDrive")
+            .then(resp => resp.text())
+            .then(html => {
+                // La réponse contient déjà <a href="...">Autoriser Google Drive</a>
+                // => On l'injecte directement dans la page
+                document.body.innerHTML += html;
+            })
+            .catch(err => {
+                console.error("Erreur :", err);
+            });
+    });
+</script>
+</body>
+</html>

@@ -1,80 +1,89 @@
 package com.fitlogtimer.service;
 
-import com.fitlogtimer.config.GoogleDriveConfig;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.Permission;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
+
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class GoogleDriveService {
 
-    private final Drive drive;
-    private final GoogleDriveConfig googleDriveConfig;
+    private static final String APPLICATION_NAME = "Fitlogtimer";
+    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_FILE);
 
-    /**
-     * Upload un fichier JSON vers Drive (identique à ton code Android)
-     */
-    public String uploadFile(String fileName, String jsonContent) {
-        try {
-            log.info("📤 Début upload vers Drive: {}", fileName);
+    // ⚠️ redirect URI configuré dans la console Google Cloud
+    private static final String REDIRECT_URI = "http://localhost:8080/oauth2callback";
 
-            // FileMetadata (identique à Android)
-            File fileMetadata = new File();
-            fileMetadata.setName(fileName);
-            fileMetadata.setMimeType("application/json");
-            fileMetadata.setParents(Collections.singletonList(googleDriveConfig.getFolderId()));
+    private final GoogleAuthorizationCodeFlow flow;
 
-            // MediaContent
-            ByteArrayContent mediaContent = new ByteArrayContent(
-                    "application/json",
-                    jsonContent.getBytes(java.nio.charset.StandardCharsets.UTF_8)
-            );
-
-            log.info("📁 Création du fichier dans Drive...");
-
-            // Upload (identique à Android)
-            File file = drive.files().create(fileMetadata, mediaContent)
-                    .setFields("id, name, webViewLink")
-                    .setIgnoreDefaultVisibility(true)  // ← Même paramètre qu'Android
-                    .execute();
-
-            log.info("✅ Fichier créé ID: {}", file.getId());
-
-            // Rendre le fichier public (identique à Android)
-            Permission permission = new Permission()
-                    .setType("anyone")
-                    .setRole("reader");
-
-            drive.permissions().create(file.getId(), permission).execute();
-            log.info("🔓 Permissions publiques appliquées");
-
-            return file.getId();
-
-        } catch (Exception e) {
-            log.error("❌ Erreur lors de l'upload vers Drive", e);
-            throw new RuntimeException("Erreur upload Drive: " + e.getMessage(), e);
+    public GoogleDriveService() throws Exception {
+        var in = getClass().getClassLoader().getResourceAsStream("credentials.json");
+        if (in == null) {
+            throw new IllegalStateException("credentials.json manquant dans resources");
         }
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+
+        flow = new GoogleAuthorizationCodeFlow.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                JSON_FACTORY,
+                clientSecrets,
+                SCOPES
+        ).setAccessType("offline").build();
     }
 
-    /**
-     * Vérifie la connexion à Drive
-     */
-    public boolean testConnection() {
-        try {
-            drive.files().list().setPageSize(1).execute();
-            log.info("✅ Connexion Google Drive OK");
-            return true;
-        } catch (Exception e) {
-            log.error("❌ Erreur connexion Google Drive", e);
-            return false;
-        }
+    // plus de paramètre ici
+    public String getAuthorizationUrl() {
+        return flow.newAuthorizationUrl()
+                .setRedirectUri(REDIRECT_URI)
+                .build();
+    }
+
+    // plus de paramètre ici non plus
+    public Drive getDriveServiceWithCode(String code) throws Exception {
+        GoogleTokenResponse tokenResponse = flow.newTokenRequest(code)
+                .setRedirectUri(REDIRECT_URI)
+                .execute();
+
+        Credential credential = flow.createAndStoreCredential(tokenResponse, "user");
+        return new Drive.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credential)
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+    }
+
+    public void uploadJsonToDrive(Drive driveService, String jsonContent, String fileName) throws Exception {
+        com.google.api.services.drive.model.File fileMetadata = new com.google.api.services.drive.model.File();
+        fileMetadata.setName(fileName);
+        fileMetadata.setMimeType("application/json");
+
+        AbstractInputStreamContent contentStream =
+                new ByteArrayContent("application/json", jsonContent.getBytes(StandardCharsets.UTF_8));
+
+        com.google.api.services.drive.model.File uploadedFile = driveService.files()
+                .create(fileMetadata, contentStream)
+                .setFields("id, name")
+                .execute();
+
+        log.info("Fichier Drive créé: {} (ID: {})",uploadedFile.getName(), uploadedFile.getId());
     }
 }
+
+
+

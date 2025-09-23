@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,11 +81,25 @@ public class JsonExercisesForAndroidService {
     }
 
     public String createJsonForAndroid() throws IOException {
-        AndroidExportDTO dto =
-                new AndroidExportDTO(createJsonExerciseForAndroidList(), listWorkoutTypes());
+
+        List<JsonExerciseForAndroidDTO> exercises = createJsonExerciseForAndroidList();
+
+        List<String> workoutTypeNames = listWorkoutTypes();
+
+        List<Map<String, String>> workoutTypesFormatted = workoutTypeNames.stream()
+                .map(typeName -> {
+                    Map<String, String> typeMap = new HashMap<>();
+                    typeMap.put("name", typeName);
+                    return typeMap;
+                })
+                .collect(Collectors.toList());
+
+        Map<String, Object> androidExport = new HashMap<>();
+        androidExport.put("exercises", exercises);
+        androidExport.put("workoutTypes", workoutTypesFormatted);
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(dto);
+        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(androidExport);
         log.info("Json for Android: {}", json);
         return json;
     }

@@ -29,7 +29,7 @@ public class ExportController {
     public String oauth2callback(@RequestParam("code") String code) throws Exception {
         Drive driveService = googleDriveService.getDriveServiceWithCode(code);
         String json = jsonService.createJsonForAndroid();
-        googleDriveService.uploadJsonToDrive(driveService, json, "android_export.json");
+        googleDriveService.uploadJsonToDrive(driveService, json, "exercises.json");
         return "✅ Export JSON réussi vers Google Drive !";
     }
 }

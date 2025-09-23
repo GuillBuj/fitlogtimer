@@ -1,8 +1,9 @@
 package com.fitlogtimer.controller;
 
 import com.fitlogtimer.model.DriveFile;
-import com.fitlogtimer.service.JsonLocalImportService;
+import com.fitlogtimer.service.*;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,8 @@ import java.util.Set;
 public class JsonDriveImportController {
 
     private final JsonLocalImportService importService;
+    private final JsonExportToDriveService exportService;
+    private final GoogleDriveExportManager googleDriveExportManager;
 
     /** Liste tous les fichiers JSON */
     @GetMapping("/list")
@@ -49,5 +52,21 @@ public class JsonDriveImportController {
     public String resetFile(@PathVariable String fileId) throws IOException {
         importService.resetFile(fileId);
         return "redirect:/import/list";
+    }
+
+    @GetMapping("/initPreferences")
+    public String initPreferences() throws Exception {
+        exportService.uploadJson();
+        return "redirect:/import/list";
+    }
+
+    @GetMapping("/upload-exercises")
+    public ResponseEntity<String> uploadExercisesManually() {
+        try {
+            String fileId = googleDriveExportManager.uploadExercisesJsonManually();
+            return ResponseEntity.ok("✅ Fichier uploadé - ID: " + fileId);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("❌ Erreur upload: " + e.getMessage());
+        }
     }
 }

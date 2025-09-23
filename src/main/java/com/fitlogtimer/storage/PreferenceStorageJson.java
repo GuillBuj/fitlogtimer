@@ -19,17 +19,17 @@ import java.util.Map;
 public class PreferenceStorageJson {
 
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-    private final Path filePath = Paths.get("data/exercise_preferences.json");
+    private final Path preferencesFilePath = Paths.get("data/exercise_preferences.json");
 
     public Map<String, ExerciseListPreference> load() throws IOException {
-        if (!Files.exists(filePath)) return new HashMap<>();
-        log.info("Loading preferences from file: {}", filePath);
-        return mapper.readValue(Files.newBufferedReader(filePath), new TypeReference<>() {});
+        if (!Files.exists(preferencesFilePath)) return new HashMap<>();
+        log.info("Loading preferences from file: {}", preferencesFilePath);
+        return mapper.readValue(Files.newBufferedReader(preferencesFilePath), new TypeReference<>() {});
     }
 
     public void saveAll(Map<String, ExerciseListPreference> lists) throws IOException {
-        log.info("Saving all preferences to file: {}", filePath);
-        mapper.writeValue(filePath.toFile(), lists);
+        log.info("Saving all preferences to file: {}", preferencesFilePath);
+        mapper.writeValue(preferencesFilePath.toFile(), lists);
     }
 
     public void saveList(ExerciseListPreference list) throws IOException {

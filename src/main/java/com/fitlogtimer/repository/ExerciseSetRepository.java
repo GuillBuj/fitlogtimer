@@ -139,4 +139,17 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "WHERE fws.repNumber >= 1 " +
             "AND fws.exercise.id = :exerciseId " +
             "AND w.bodyWeight > 0")
-    List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> findAllSetsFor1RM(@Param("exerciseId") int exerciseId);}
+    List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> findAllSetsFor1RM(@Param("exerciseId") int exerciseId);
+
+    @Query("""
+       SELECT es FROM ExerciseSet es
+       WHERE es.exercise.id IN :ids
+         AND es.id IN (
+             SELECT MAX(e2.id) FROM ExerciseSet e2
+             WHERE e2.exercise.id = es.exercise.id
+         )
+       """)
+    List<ExerciseSet> findLastSetsForExerciseIds(@Param("ids") List<Integer> ids);
+
+
+}

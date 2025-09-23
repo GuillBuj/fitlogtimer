@@ -192,5 +192,9 @@ public class ExerciseSetService {
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
     }
+
+    public List<ExerciseSet> findLastSetsForExerciseIds(List<Integer> exerciseIds){
+        return exerciseSetRepository.findLastSetsForExerciseIds(exerciseIds);
+    }
     
 }

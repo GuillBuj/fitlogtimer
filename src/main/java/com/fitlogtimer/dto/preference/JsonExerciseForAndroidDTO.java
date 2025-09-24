@@ -7,6 +7,9 @@ public record JsonExerciseForAndroidDTO(
         int position,
         double defaultWeight,
         int defaultReps,
+        String defaultBands,
+        int defaultDurationS,
+        String defaultDistance,
         String type
 ) {
 }

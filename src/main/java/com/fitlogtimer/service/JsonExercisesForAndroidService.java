@@ -7,7 +7,7 @@ import com.fitlogtimer.dto.preference.ExercisePreferenceDTO;
 import com.fitlogtimer.dto.preference.JsonExerciseForAndroidDTO;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.ExerciseSet;
-import com.fitlogtimer.model.sets.FreeWeightSet;
+import com.fitlogtimer.model.sets.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,11 +52,30 @@ public class JsonExercisesForAndroidService {
 
             double defaultWeight = 0.0;
             int defaultReps = 0;
+            String defaultBands = "";
+            int defaultDurationS = 0;
+            String defaultDistance = "";
 
-            if (lastSet != null) {
+            if(lastSet != null) {
                 defaultReps = lastSet.getRepNumber();
-                if (lastSet instanceof FreeWeightSet freeWeightSet) {
+                if(lastSet instanceof FreeWeightSet freeWeightSet) {
                     defaultWeight = freeWeightSet.getWeight() != null ? freeWeightSet.getWeight() : 0.0;
+                }
+                if(lastSet instanceof ElasticSet elasticSet) {
+                    defaultBands = elasticSet.getBands() != null ? elasticSet.getBands() : "";
+                }
+                if(lastSet instanceof IsometricSet isometricSet) {
+                    defaultDurationS = isometricSet.getDurationS();
+                    defaultWeight = isometricSet.getWeight() != null ? isometricSet.getWeight() : 0.0;
+                }
+                if (lastSet instanceof BodyweightSet bodyweightSet) {
+                    defaultWeight = bodyweightSet.getWeight() != null ? bodyweightSet.getWeight() : 0.0;
+                    defaultBands = bodyweightSet.getBands() != null ? bodyweightSet.getBands() : "";
+                }
+                if (lastSet instanceof MovementSet movementSet) {
+                    defaultDistance = movementSet.getDistance() != null ? movementSet.getDistance() : "";
+                    defaultBands = movementSet.getBands() != null ? movementSet.getBands() : "";
+                    defaultWeight = movementSet.getWeight() != null ? movementSet.getWeight() : 0.0;
                 }
             }
 
@@ -67,6 +86,9 @@ public class JsonExercisesForAndroidService {
                     exercisePreferenceDTO.order(),
                     defaultWeight,
                     defaultReps,
+                    defaultBands,
+                    defaultDurationS,
+                    defaultDistance,
                     exercise.getType()
             ));
         }

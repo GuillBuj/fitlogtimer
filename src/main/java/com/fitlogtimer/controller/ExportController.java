@@ -13,7 +13,6 @@ public class ExportController {
     private final GoogleDriveService googleDriveService;
     private final JsonExercisesForAndroidService jsonService;
 
-
     @GetMapping("/export")
     public String showExportJsonToDrive() throws Exception {
         return "export";

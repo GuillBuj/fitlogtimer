@@ -13,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +26,7 @@ public class JsonExercisesForAndroidService {
     private final ExerciseService exerciseService;
     private final WorkoutTypeService workoutTypeService;
     private final GoogleDriveService googleDriveService;
+    private final WorkoutService workoutService;
 
     public List<JsonExerciseForAndroidDTO> createJsonExerciseForAndroidList() throws IOException {
         List<ExercisePreferenceDTO> exercisePreferenceDTOList = exercisePreferenceService.getDefaultPreferenceDTOs();
@@ -96,17 +94,15 @@ public class JsonExercisesForAndroidService {
         return result;
     }
 
-    public List<String> listWorkoutTypes(){
-        return workoutTypeService.getAllWorkoutTypeItems().stream()
-                .map(WorkoutTypeListItemDTO::name)
-                .toList();
+    public LinkedHashSet<String> getWorkoutTypeNamesByRecent() {
+        return new LinkedHashSet<>(workoutService.listWorkoutTypesByRecent());
     }
 
     public String createJsonForAndroid() throws IOException {
 
         List<JsonExerciseForAndroidDTO> exercises = createJsonExerciseForAndroidList();
 
-        List<String> workoutTypeNames = listWorkoutTypes();
+        LinkedHashSet<String> workoutTypeNames = getWorkoutTypeNamesByRecent();
 
         List<Map<String, String>> workoutTypesFormatted = workoutTypeNames.stream()
                 .map(typeName -> {

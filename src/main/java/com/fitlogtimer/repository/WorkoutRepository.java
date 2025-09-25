@@ -50,4 +50,6 @@ public interface WorkoutRepository extends JpaRepository<Workout, Integer> {
     void resetWorkoutId();
 
     boolean existsByType(WorkoutType workoutType);
+
+    List<Workout> findDistinctWorkoutTypesByOrderByDateDesc();
 }

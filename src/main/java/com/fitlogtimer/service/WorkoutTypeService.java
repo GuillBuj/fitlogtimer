@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -24,7 +25,6 @@ public class WorkoutTypeService {
     private final WorkoutTypeRepository workoutTypeRepository;
     private final WorkoutTypeMapper workoutTypeMapper;
     private final WorkoutRepository workoutRepository;
-    //private final WorkoutService workoutService;
 
     public boolean deleteWorkoutType(String name) {
         Optional<WorkoutType> workoutType = workoutTypeRepository.findByName(name);
@@ -70,6 +70,12 @@ public class WorkoutTypeService {
         log.info("Workout types found: {}", items.stream().map(WorkoutTypeListItemDTO::name).toList());
 
         return items;
+    }
+
+    public LinkedHashSet<String> getWorkoutTypeName() {
+        return workoutTypeRepository.findAll().stream()
+                .map(WorkoutType::getName)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public WorkoutType findOrCreate(String name){

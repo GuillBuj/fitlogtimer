@@ -456,8 +456,13 @@ public class WorkoutService {
         workoutRepository.deleteByTagImport(tagImport);
     }
 
+    public LinkedHashSet<String> listWorkoutTypesByRecent() {
+        return workoutRepository.findDistinctWorkoutTypesByOrderByDateDesc().stream()
+                .map(workout -> workout.getType().getName())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
 
-    /*
+     /*
      * CREATE FROM XLS
      */
 

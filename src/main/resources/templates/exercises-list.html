@@ -55,9 +55,9 @@
                 <td th:if="${exercise.personalBest != null and exercise.type != ELASTIC_TYPE and exercise.type != MOVEMENT_TYPE}"
                     th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
                     <td th:unless="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}">-</td>
-                <td th:if="${exercise.seasonBest != null and exercise.seasonBest>0 and exercise.type == FREE_WEIGHT_TYPE}"
+                <td th:if="${exercise.seasonBest != null and exercise.seasonBest>0 and exercise.type != ELASTIC_TYPE and exercise.type != MOVEMENT_TYPE }"
                     th:text="|${exercise.seasonBest % 1 == 0 ? exercise.seasonBest.intValue() : #numbers.formatDecimal(exercise.seasonBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
-                <td th:unless="${exercise.type == FREE_WEIGHT_TYPE and exercise.seasonBest>0}">-</td>
+                <td th:unless="${(exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE) and exercise.seasonBest>0}">-</td>
                 <td th:if="${exercise.type == FREE_WEIGHT_TYPE}"
                     th:text="|${exercise.oneRepMaxEst % 1 == 0? exercise.oneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.oneRepMaxEst, 1, 1)} kg|"></td>
                     <td th:unless="${exercise.type == FREE_WEIGHT_TYPE}">-</td>

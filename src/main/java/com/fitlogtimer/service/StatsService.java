@@ -47,13 +47,22 @@ public class StatsService {
             .orElse(new MaxWeightWithDateDTO(0.0, null));
     }
 
-    public MaxWeightWithDateDTO maxByExAndRepsForYear(int exerciseId, int repNumber, int year) {
+    public MaxWeightWithDateDTO maxWeightByExAndRepsForYear(int exerciseId, int repNumber, int year) {
         List<MaxWeightWithDateDTO> results = exerciseSetRepository
                 .findMaxWeightByExerciseIdAndRepsAndYear(exerciseId, repNumber, year);
 
         return results.isEmpty()
                 ? new MaxWeightWithDateDTO(0.0, null)
-                : results.get(0); // la plus lourde
+                : results.getFirst(); // la plus lourde
+    }
+
+    public MaxWeightWithDateDTO maxRepsByExAndReps(int exerciseId, int year) {
+        List<MaxWeightWithDateDTO> maxs = exerciseSetRepository
+                .findMaxRepsByExerciseIdAndRepsAndYear(exerciseId, year);
+
+        return maxs.isEmpty()
+                ? new MaxWeightWithDateDTO(0, null)
+                : maxs.getFirst();
     }
 
 
@@ -127,7 +136,7 @@ public class StatsService {
     }
 
     public MaxsByRepsDTO mapFilteredMaxWeightsByRepsForYear(int exerciseId, int year) {
-        return mapFilteredMaxWeightsByReps(exerciseId, (exId, reps) -> maxByExAndRepsForYear(exId, reps, year));
+        return mapFilteredMaxWeightsByReps(exerciseId, (exId, reps) -> maxWeightByExAndRepsForYear(exId, reps, year));
     }
 
     public Map<Integer, MaxsByRepsDTO> mapFilteredMaxWeightsByRepsForAllYears(int exerciseId) {
@@ -207,7 +216,7 @@ public class StatsService {
 
     public MaxsByRepsDTO mapMaxWeightsByRepsForYear(int exerciseId, List<Integer> repNumbers, int year) {
         return mapMaxWeightsByRepsGeneric(repNumbers,
-                rep -> maxByExAndRepsForYear(exerciseId, rep, year));
+                rep -> maxWeightByExAndRepsForYear(exerciseId, rep, year));
     }
 
     public double getPersonalBest(int exerciseId){
@@ -215,9 +224,14 @@ public class StatsService {
         return personalBest != null ? personalBest : 0.0;
     }
 
-    public double getSeasonBest(int exerciseId){
+    public double getSeasonBestWeight(int exerciseId){
         Double personalBest = exerciseSetRepository.findMaxWeightByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
         return personalBest != null ? personalBest : 0.0;
+    }
+
+    public double getSeasonBestReps(int exerciseId){
+        Double seasonBest = exerciseSetRepository.findMaxRepsByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
+        return seasonBest != null ? seasonBest : 0.0;
     }
 
     public double getPersonalBestDuration(int exerciseId){
@@ -225,8 +239,13 @@ public class StatsService {
         return (maxDuration != null) ? maxDuration.doubleValue() : 0.0;
     }
 
+    public double getSeasonBestDuration(int exerciseId){
+        Double seasonBest = exerciseSetRepository.findMaxDurationByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
+        return seasonBest != null ? seasonBest : 0.0;
+    }
+
     public double getPersonalBestZero(int exerciseId){
-        return Optional.ofNullable(exerciseSetRepository.findMaxByExerciseId(exerciseId))
+        return Optional.ofNullable(exerciseSetRepository.findMaxRepsByExerciseId(exerciseId))
                    .map(Integer::doubleValue)
                    .orElse(0.0);
     }

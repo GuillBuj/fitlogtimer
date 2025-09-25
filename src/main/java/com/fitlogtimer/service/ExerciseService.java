@@ -73,14 +73,16 @@ public class ExerciseService {
             case ExerciseSetType.FREE_WEIGHT:
                 personalBest = statsService.getPersonalBest(id);
                 oneRepMaxEst = statsService.getBest1RMest(id);
-                seasonBest = statsService.getSeasonBest(id);
+                seasonBest = statsService.getSeasonBestWeight(id);
                 seasonOneRepMax = statsService.getSeasonBest1RMest(id);
                 break;
             case ExerciseSetType.ISOMETRIC:
                 personalBest = statsService.getPersonalBestDuration(id);
+                seasonBest = statsService.getSeasonBestDuration(id);
                 break;
             case ExerciseSetType.BODYWEIGHT:
                 personalBest = statsService.getPersonalBestZero(id);
+                seasonBest = statsService.getSeasonBestReps(id);
                 break;
         }
          

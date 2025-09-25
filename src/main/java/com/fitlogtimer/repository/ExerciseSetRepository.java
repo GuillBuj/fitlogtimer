@@ -36,15 +36,38 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
 
     List<ExerciseSet> findByExerciseId(int exerciseId);
 
-    @Query("SELECT MAX(e.durationS) " +
-            "FROM ExerciseSet e " +
-            "WHERE e.exercise.id = :exerciseId")
+    @Query("SELECT MAX(es.durationS) " +
+            "FROM ExerciseSet es " +
+            "WHERE es.exercise.id = :exerciseId")
     Integer findMaxDurationByExerciseId(@Param("exerciseId") int exerciseId);
 
-    @Query("SELECT MAX(e.repNumber) " +
-            "FROM ExerciseSet e " +
-            "WHERE e.exercise.id = :exerciseId")
-    Integer findMaxByExerciseId(@Param("exerciseId") int exerciseId);
+    @Query("SELECT MAX(es.durationS) " +
+            "FROM ExerciseSet es " +
+            "WHERE es.exercise.id = :exerciseId " +
+            "AND FUNCTION('YEAR', es.workout.date) = :year")
+    Double findMaxDurationByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
+
+    @Query("SELECT MAX(es.repNumber) " +
+            "FROM ExerciseSet es " +
+            "WHERE es.exercise.id = :exerciseId")
+    Integer findMaxRepsByExerciseId(@Param("exerciseId") int exerciseId);
+
+    @Query("SELECT MAX(es.repNumber) " +
+            "FROM ExerciseSet es " +
+            "WHERE es.exercise.id = :exerciseId " +
+            "AND FUNCTION('YEAR', es.workout.date) = :year")
+    Double findMaxRepsByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
+
+    @Query("""
+    SELECT NEW com.fitlogtimer.dto.stats.MaxRepsWithDateDTO(es.repNumber, es.workout.date)
+    FROM ExerciseSet es
+    WHERE es.exercise.id = :exerciseId
+      AND FUNCTION('YEAR', es.workout.date) = :year
+    ORDER BY es.repNumber DESC, es.workout.date ASC
+    """)
+    List<MaxWeightWithDateDTO> findMaxRepsByExerciseIdAndRepsAndYear(
+            @Param("exerciseId") int exerciseId,
+            @Param("year") int year);
 
     @Query("SELECT exset FROM ExerciseSet exset " +
            "JOIN exset.workout s " +

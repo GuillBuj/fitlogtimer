@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
 import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
+import com.fitlogtimer.dto.stats.MaxWithDateDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -37,37 +38,59 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     List<ExerciseSet> findByExerciseId(int exerciseId);
 
     @Query("SELECT MAX(es.durationS) " +
-            "FROM ExerciseSet es " +
+            "FROM IsometricSet es " +
             "WHERE es.exercise.id = :exerciseId")
     Integer findMaxDurationByExerciseId(@Param("exerciseId") int exerciseId);
 
+    @Query("SELECT NEW com.fitlogtimer.dto.stats.MaxWithDateDTO(es.durationS, es.workout.date) " +
+            "FROM IsometricSet es " +
+            "WHERE es.exercise.id = :exerciseId " +
+            "AND es.durationS = (SELECT MAX(es2.durationS) FROM IsometricSet es2 WHERE es2.exercise.id = :exerciseId) " +
+            "ORDER BY es.workout.date ASC " +
+            "LIMIT 1")
+    Optional<MaxWithDateDTO> findMaxDurationWithDateByExerciseId(@Param("exerciseId") int exerciseId);
+
     @Query("SELECT MAX(es.durationS) " +
-            "FROM ExerciseSet es " +
+            "FROM IsometricSet es " +
             "WHERE es.exercise.id = :exerciseId " +
             "AND FUNCTION('YEAR', es.workout.date) = :year")
-    Double findMaxDurationByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
+    Integer findMaxDurationByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
 
     @Query("SELECT MAX(es.repNumber) " +
             "FROM ExerciseSet es " +
             "WHERE es.exercise.id = :exerciseId")
     Integer findMaxRepsByExerciseId(@Param("exerciseId") int exerciseId);
 
+    @Query("SELECT NEW com.fitlogtimer.dto.stats.MaxWithDateDTO(es.repNumber, es.workout.date) " +
+            "FROM ExerciseSet es " +
+            "WHERE es.exercise.id = :exerciseId " +
+            "AND es.repNumber = (SELECT MAX(es2.repNumber) FROM ExerciseSet es2 WHERE es2.exercise.id = :exerciseId) " +
+            "ORDER BY es.workout.date ASC " +
+            "LIMIT 1")
+    Optional<MaxWithDateDTO> findMaxRepsWithDateByExerciseId(@Param("exerciseId") int exerciseId);
+
     @Query("SELECT MAX(es.repNumber) " +
             "FROM ExerciseSet es " +
             "WHERE es.exercise.id = :exerciseId " +
             "AND FUNCTION('YEAR', es.workout.date) = :year")
-    Double findMaxRepsByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
+    Integer findMaxRepsByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
 
-    @Query("""
-    SELECT NEW com.fitlogtimer.dto.stats.MaxRepsWithDateDTO(es.repNumber, es.workout.date)
-    FROM ExerciseSet es
-    WHERE es.exercise.id = :exerciseId
-      AND FUNCTION('YEAR', es.workout.date) = :year
-    ORDER BY es.repNumber DESC, es.workout.date ASC
-    """)
-    List<MaxWeightWithDateDTO> findMaxRepsByExerciseIdAndRepsAndYear(
-            @Param("exerciseId") int exerciseId,
-            @Param("year") int year);
+//    @Query("SELECT MAX(es.repNumber) " +
+//            "FROM ExerciseSet es " +
+//            "WHERE es.exercise.id = :exerciseId " +
+//            "AND FUNCTION('YEAR', es.workout.date) = :year")
+//    Double findMaxRepsByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
+
+//    @Query("""
+//    SELECT NEW com.fitlogtimer.dto.stats.MaxWithDateDTO(es.repNumber, es.workout.date)
+//    FROM ExerciseSet es
+//    WHERE es.exercise.id = :exerciseId
+//      AND FUNCTION('YEAR', es.workout.date) = :year
+//    ORDER BY es.repNumber DESC, es.workout.date ASC
+//    """)
+//    List<MaxWeightWithDateDTO> findMaxRepsByExerciseIdAndRepsAndYear(
+//            @Param("exerciseId") int exerciseId,
+//            @Param("year") int year);
 
     @Query("SELECT exset FROM ExerciseSet exset " +
            "JOIN exset.workout s " +
@@ -87,6 +110,9 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "AND FUNCTION('YEAR', fws.workout.date) = :year")
     Double findMaxWeightByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
 
+
+    // MAXS BY YEAR
+
     @Query("""
     SELECT NEW com.fitlogtimer.dto.stats.MaxWeightWithDateDTO(fws.weight, fws.workout.date)
     FROM FreeWeightSet fws
@@ -100,10 +126,44 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             @Param("repNumber") int repNumber,
             @Param("year") int year);
 
-    // récupère l'année du premier set d'un exercice donné
-    @Query("SELECT MIN(FUNCTION('YEAR', fws.workout.date)) " +
-            "FROM FreeWeightSet fws " +
-            "WHERE fws.exercise.id = :exerciseId")
+//    @Query("""
+//    SELECT NEW com.fitlogtimer.dto.stats.MaxWithDateDTO(es.repNumber, es.workout.date)
+//    FROM ExerciseSet es
+//    WHERE es.exercise.id = :exerciseId
+//      AND FUNCTION('YEAR', es.workout.date) = :year
+//    ORDER BY es.repNumber DESC, es.workout.date ASC
+//    """)
+//    List<MaxWithDateDTO> findMaxRepsByExerciseIdAndYear(
+//            @Param("exerciseId") int exerciseId,
+//            @Param("year") int year);
+
+    @Query("""
+    SELECT NEW com.fitlogtimer.dto.stats.MaxWithDateDTO(es.repNumber, es.workout.date)
+    FROM ExerciseSet es
+    WHERE es.exercise.id = :exerciseId
+      AND FUNCTION('YEAR', es.workout.date) = :year
+    ORDER BY es.repNumber DESC, es.workout.date ASC
+    LIMIT 1
+    """)
+    Optional<MaxWithDateDTO> findMaxRepsWithDateByExerciseIdAndYear(
+            @Param("exerciseId") int exerciseId,
+            @Param("year") int year);
+
+    @Query("""
+    SELECT NEW com.fitlogtimer.dto.stats.MaxWithDateDTO(es.durationS, es.workout.date)
+    FROM IsometricSet es
+    WHERE es.exercise.id = :exerciseId
+      AND FUNCTION('YEAR', es.workout.date) = :year
+    ORDER BY es.durationS DESC, es.workout.date ASC
+    LIMIT 1
+    """)
+    Optional<MaxWithDateDTO> findMaxDurationWithDateByExerciseIdAndYear(
+            @Param("exerciseId") int exerciseId,
+            @Param("year") int year);
+
+    @Query("SELECT MIN(FUNCTION('YEAR', es.workout.date)) " +
+            "FROM ExerciseSet es " +
+            "WHERE es.exercise.id = :exerciseId")
     Integer findFirstYearWithData(@Param("exerciseId") int exerciseId);
 
     @Query("""

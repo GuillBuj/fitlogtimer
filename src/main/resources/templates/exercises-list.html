@@ -70,11 +70,11 @@
                 <td>
                     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
                     <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
-                    <a th:classappend="${exercise.type == FREE_WEIGHT_TYPE ? '' : ' invisible'}"
+                    <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
                        th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">
-                        Maxs/rép
+                        Records
                     </a>
-                    <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE) ? '' : ' invisible'}"
+                    <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
                        th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link">
                         Histo maxs
                     </a></td>
@@ -93,10 +93,10 @@
                 </td>
             </tr>
             <tr class="edit-form" th:if="false" th:attr="data-exercise-id=${exercise.id}">
-                <!-- Cette ligne sera remplacée par le formulaire -->
             </tr>
         </tbody>
     </table>
+
     <h1>Ajouter un nouvel exercice</h1>
 
     <form th:action="@{/exercises/create}" class="single-line-form" th:object="${exercise}" method="post">

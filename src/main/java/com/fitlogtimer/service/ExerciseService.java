@@ -81,7 +81,7 @@ public class ExerciseService {
                 seasonBest = statsService.getSeasonBestDuration(id);
                 break;
             case ExerciseSetType.BODYWEIGHT:
-                personalBest = statsService.getPersonalBestZero(id);
+                personalBest = statsService.getPersonalBestReps(id);
                 seasonBest = statsService.getSeasonBestReps(id);
                 break;
         }

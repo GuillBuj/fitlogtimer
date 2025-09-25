@@ -1,12 +1,14 @@
 package com.fitlogtimer.service;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
 import com.fitlogtimer.dto.YearlyBestRatioFor1RMWithTrendDTO;
@@ -14,6 +16,7 @@ import com.fitlogtimer.dto.YearlyBestRatioWithTrendDTO;
 import com.fitlogtimer.dto.stats.*;
 import com.fitlogtimer.enums.Trend;
 import com.fitlogtimer.model.sets.BodyweightSet;
+import com.fitlogtimer.repository.ExerciseRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,7 @@ import lombok.AllArgsConstructor;
 public class StatsService {
 
     private final ExerciseSetRepository exerciseSetRepository;
+    private final ExerciseRepository exerciseRepository;
 
     @FunctionalInterface
     private interface MaxWeightFetcher {
@@ -56,14 +60,14 @@ public class StatsService {
                 : results.getFirst(); // la plus lourde
     }
 
-    public MaxWeightWithDateDTO maxRepsByExAndReps(int exerciseId, int year) {
-        List<MaxWeightWithDateDTO> maxs = exerciseSetRepository
-                .findMaxRepsByExerciseIdAndRepsAndYear(exerciseId, year);
-
-        return maxs.isEmpty()
-                ? new MaxWeightWithDateDTO(0, null)
-                : maxs.getFirst();
-    }
+//    public MaxWeightWithDateDTO maxRepsByExAndReps(int exerciseId, int year) {
+//        List<MaxWeightWithDateDTO> maxs = exerciseSetRepository
+//                .findMaxRepsByExerciseIdAndRepsAndYear(exerciseId, year);
+//
+//        return maxs.isEmpty()
+//                ? new MaxWeightWithDateDTO(0, null)
+//                : maxs.getFirst();
+//    }
 
 
     public List<CombinedMaxDTO> mergeMaxsByReps(
@@ -82,6 +86,146 @@ public class StatsService {
         }
 
         return combined;
+    }
+
+//    public CombinedSimpleMultiYearDTO getSimpleExerciseMaxs(int exerciseId) {
+//
+//        MaxWithDateDTO personalBest = getMaxValueForExercise(exerciseId, exerciseType, null);
+//
+//        // Records par année
+//        Map<Integer, YearlyBestSimpleWithTrendDTO> bestsByYear = new HashMap<>();
+//        List<Integer> years = getExerciseYears(exerciseId);
+//
+//        for (Integer year : years) {
+//            MaxWithDateDTO yearlyBest = getMaxValueForExercise(exerciseId, exerciseType, year);
+//            String trend = calculateTrend(year, yearlyBest, bestsByYear);
+//            bestsByYear.put(year, new YearlyBestSimpleWithTrendDTO(yearlyBest, trend));
+//        }
+//
+//        return new CombinedSimpleMultiYearDTO(personalBest, bestsByYear);
+//    }
+
+//    public CombinedSimpleMultiYearDTO getExerciseMaxs(int exerciseId) {
+//        String exerciseType = exerciseRepository.findById(exerciseId).get().getType();
+//        return new CombinedSimpleMultiYearDTO(
+//                            getMaxValueForExercise(exerciseId, exerciseType),
+//                            getYearlyMaxRecords(exerciseId, exerciseType));
+//
+//    }
+
+    public CombinedSimpleMultiYearDTO mergeSimpleMultiYearMaxs(
+            Map<Integer, MaxWithDateDTO> yearlyMaxRecords) {
+
+        // Trouver le record absolu (personal best)
+        MaxWithDateDTO personalBest = yearlyMaxRecords.values().stream()
+                .max(Comparator.comparingInt(MaxWithDateDTO::maxValue))
+                .orElse(null);
+
+        // Créer la map avec les tendances
+        Map<Integer, YearlyBestSimpleWithTrendDTO> bestsByYearWithTrend = new TreeMap<>();
+
+        for (Map.Entry<Integer, MaxWithDateDTO> entry : yearlyMaxRecords.entrySet()) {
+            int year = entry.getKey();
+            MaxWithDateDTO currentYearRecord = entry.getValue();
+
+            Trend trend = calculateSimpleTrend(year, yearlyMaxRecords);
+            YearlyBestSimpleWithTrendDTO yearlyBestWithTrend =
+                    new YearlyBestSimpleWithTrendDTO(currentYearRecord, trend);
+
+            bestsByYearWithTrend.put(year, yearlyBestWithTrend);
+        }
+
+        return new CombinedSimpleMultiYearDTO(personalBest, bestsByYearWithTrend);
+    }
+
+    public Trend calculateSimpleTrend(Integer year, Map<Integer, MaxWithDateDTO> yearlyMaxRecords) {
+        if (year == null || yearlyMaxRecords == null) {
+            return Trend.NEUTRAL;
+        }
+
+        MaxWithDateDTO current = yearlyMaxRecords.get(year);
+        if (current == null) return Trend.NEUTRAL;
+
+        MaxWithDateDTO previous = yearlyMaxRecords.get(year - 1);
+        if (previous != null) {
+            return calculateTrend(current.maxValue(), previous.maxValue());
+        }
+
+        return Trend.NEUTRAL;
+    }
+
+    private Trend calculateTrend(int currentValue, int previousValue) {
+        if (previousValue == 0) {
+            return Trend.NEUTRAL;
+        }
+
+        double percentageChange = ((currentValue - previousValue) / (double) previousValue) * 100;
+
+        if (percentageChange >= 5.0) {
+            return Trend.UP;
+        } else if (percentageChange > 0) {
+            return Trend.SLIGHTLY_UP;
+        } else if (percentageChange == 0) {
+            return Trend.NEUTRAL;
+        } else if (percentageChange > -5.0) {
+            return Trend.SLIGHTLY_DOWN;
+        } else {
+            return Trend.DOWN;
+        }
+    }
+
+    public Optional<MaxWithDateDTO> getMaxValueForExercise(int exerciseId, String exerciseType){
+        return switch (exerciseType) {
+            case ExerciseSetType.BODYWEIGHT -> exerciseSetRepository.findMaxRepsWithDateByExerciseId(exerciseId);
+            case ExerciseSetType.ISOMETRIC -> exerciseSetRepository.findMaxDurationWithDateByExerciseId(exerciseId);
+            default -> Optional.empty();
+        };
+    }
+
+    public Map<Integer, MaxWithDateDTO> getYearlyMaxRecords(int exerciseId, String exerciseType) {
+        log.info("exerciseId: {}, exerciseType: {}", exerciseId, exerciseType);
+
+        Map<Integer, MaxWithDateDTO> yearlyMaxRecords = new HashMap<>();
+
+        Integer firstYear = exerciseSetRepository.findFirstYearWithData(exerciseId);
+
+        if (firstYear == null) {
+            return yearlyMaxRecords;
+        }
+
+        int currentYear = Year.now().getValue();
+
+        for (int year = firstYear; year <= currentYear; year++) {
+
+            Optional<MaxWithDateDTO> maxRecord = getMaxRecordForYear(exerciseId, exerciseType, year);
+
+            if (maxRecord.isPresent()) {
+                yearlyMaxRecords.put(year, maxRecord.get());
+            }
+        }
+
+        return yearlyMaxRecords;
+    }
+
+    private Optional<MaxWithDateDTO> getMaxRecordForYear(int exerciseId, String exerciseType, int year) {
+
+        Optional<MaxWithDateDTO> result = Optional.empty();
+
+        try {
+            if (ExerciseSetType.BODYWEIGHT.equals(exerciseType)) {
+                result = exerciseSetRepository.findMaxRepsWithDateByExerciseIdAndYear(exerciseId, year);
+                log.info("BODYWEIGHT query result: {}", result);
+            } else if (ExerciseSetType.ISOMETRIC.equals(exerciseType)) {
+                result = exerciseSetRepository.findMaxDurationWithDateByExerciseIdAndYear(exerciseId, year);
+                log.info("ISOMETRIC query result: {}", result);
+            } else {
+                log.warn("Unknown exercise type: {}", exerciseType);
+            }
+        } catch (Exception e) {
+            log.error("Error in getMaxRecordForYear", e);
+        }
+
+        return result;
     }
 
     public List<CombinedMultiYearDTO> mergeMultiYearMaxsByReps(
@@ -113,7 +257,6 @@ public class StatsService {
                 }
             }
 
-            // Ajout du résultat combiné avec le Personal Best pour l'année fictive 0
             MaxWeightWith1RMAndDateDTO personalBest = personalBests.maxsByReps().get(reps);
             Trend personalBestTrend = calculateTrend(0, reps, bestsByYear); // Tendance calculée pour le PB
 
@@ -123,8 +266,8 @@ public class StatsService {
 
             combined.add(new CombinedMultiYearDTO(
                     reps,
-                    personalBest, // Le PB ici
-                    bestsForRepByYear // La map des meilleurs perfs par année
+                    personalBest,
+                    bestsForRepByYear
             ));
         }
 
@@ -229,9 +372,13 @@ public class StatsService {
         return personalBest != null ? personalBest : 0.0;
     }
 
+    public double getPersonalBestReps(int exerciseId){
+        Integer maxReps = exerciseSetRepository.findMaxRepsByExerciseId(exerciseId);
+        return (maxReps != null) ? maxReps.doubleValue() : 0.0;
+    }
+
     public double getSeasonBestReps(int exerciseId){
-        Double seasonBest = exerciseSetRepository.findMaxRepsByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
-        return seasonBest != null ? seasonBest : 0.0;
+        return exerciseSetRepository.findMaxRepsByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
     }
 
     public double getPersonalBestDuration(int exerciseId){
@@ -240,8 +387,8 @@ public class StatsService {
     }
 
     public double getSeasonBestDuration(int exerciseId){
-        Double seasonBest = exerciseSetRepository.findMaxDurationByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
-        return seasonBest != null ? seasonBest : 0.0;
+        Integer seasonBest = exerciseSetRepository.findMaxDurationByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
+        return seasonBest != null ? seasonBest.doubleValue() : 0.0;
     }
 
     public double getPersonalBestZero(int exerciseId){

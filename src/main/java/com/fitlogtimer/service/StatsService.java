@@ -16,6 +16,7 @@ import com.fitlogtimer.dto.YearlyBestRatioWithTrendDTO;
 import com.fitlogtimer.dto.stats.*;
 import com.fitlogtimer.enums.Trend;
 import com.fitlogtimer.model.sets.BodyweightSet;
+import com.fitlogtimer.model.sets.IsometricSet;
 import com.fitlogtimer.repository.ExerciseRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -476,9 +477,9 @@ public class StatsService {
         double currentBestWeight = 0;
         double currentBestNbReps = 0;
         double bestWeightBodyweight = 0;
+        int currentBestDurationS = 0;
 
         for (ExerciseSet set : sets) {
-            // On ne prend en compte que les FreeWeightSet
             if (set instanceof FreeWeightSet freeWeightSet && freeWeightSet.getWeight() != null) {
                 double weight = freeWeightSet.getWeight();
 
@@ -489,6 +490,7 @@ public class StatsService {
                     recordHistory.add(new RecordHistoryItem(
                             weight,
                             set.getRepNumber(),
+                            0,
                             set.getWorkout().getDate(),
                             bestWeightBodyweight,
                             set.getWorkout().getId()
@@ -497,13 +499,32 @@ public class StatsService {
             } else if (set instanceof BodyweightSet bodyweightSet) {
                 int nbReps = bodyweightSet.getRepNumber();
 
-                // Nouveau record uniquement si le nombre de reps est supérieur au précédent
+                // CORRECTION : Comparer avec le record actuel
                 if (nbReps > currentBestNbReps) {
                     currentBestNbReps = nbReps;
 
                     recordHistory.add(new RecordHistoryItem(
-                            bodyweightSet.getWeight(),
+                            0.0,
                             nbReps,
+                            0,
+                            set.getWorkout().getDate(),
+                            set.getWorkout().getBodyWeight(),
+                            set.getWorkout().getId()
+                    ));
+                }
+            } else if (set instanceof IsometricSet isometricSet) {
+                int durationS = isometricSet.getDurationS();
+                log.info("durationS: {}", durationS);
+
+                // CORRECTION : Comparer avec le record actuel
+                if (durationS > currentBestDurationS) {
+                    currentBestDurationS = durationS;
+                    log.info("currentBestDurationS: {}", currentBestDurationS);
+
+                    recordHistory.add(new RecordHistoryItem(
+                            0.0,
+                            0,
+                            durationS,
                             set.getWorkout().getDate(),
                             set.getWorkout().getBodyWeight(),
                             set.getWorkout().getId()
@@ -513,7 +534,7 @@ public class StatsService {
         }
 
         Collections.reverse(recordHistory);
-
+log.info("recordHistory: {}", recordHistory);
         return recordHistory;
     }
 

@@ -23,6 +23,7 @@
         <th>Date</th>
         <th th:if="${exercise_type==FREE_WEIGHT_TYPE}">Poids</th>
         <th th:if="${exercise_type==BODYWEIGHT_TYPE}">Nombre</th>
+        <th th:if="${exercise_type==ISOMETRIC_TYPE}">Durée</th>
         <th>PDC</th>
         <th th:if="${exercise_type==FREE_WEIGHT_TYPE}">Ratio</th>
     </tr>
@@ -30,10 +31,24 @@
     <tbody>
     <tr th:each="record : ${recordHistory}">
         <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}"></td>
+
+        <!-- Freeweight -->
         <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.weight()} + 'kg'"></td>
-        <td th:if="${exercise_type==BODYWEIGHT_TYPE}"  th:text="${record.nbReps}"></td>
+
+        <!-- Bodyweight -->
+        <td th:if="${exercise_type==BODYWEIGHT_TYPE}" th:text="${record.nbReps}"></td>
+
+        <!-- Isometric -->
+        <td th:if="${exercise_type==ISOMETRIC_TYPE}">
+            <span th:text="${#numbers.formatInteger(record.durationS / 60, 1)}"></span>'
+            <span th:text="${#numbers.formatInteger(record.durationS % 60, 2)}"></span>"
+        </td>
+
         <td th:text="${record.bodyWeight > 0 ? record.bodyWeight + ' kg' : '-'}"></td>
-        <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.bodyWeight > 0 ? #numbers.formatDecimal(record.weight / record.bodyWeight, 1, 3) : '-'}"></td>
+
+        <!-- Ratio seulement pour freeweight -->
+        <td th:if="${exercise_type==FREE_WEIGHT_TYPE}"
+            th:text="${record.bodyWeight > 0 ? #numbers.formatDecimal(record.weight / record.bodyWeight, 1, 3) : '-'}"></td>
     </tr>
     </tbody>
 </table>

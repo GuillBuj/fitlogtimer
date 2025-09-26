@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <link rel="stylesheet" th:href="@{/css/progress-chart.css}">
 </head>
 <body>
 <div th:fragment="chartSection(chartData)">
@@ -10,6 +9,13 @@
         <h2>Progression 1RM</h2>
         <div class="chart-container">
             <canvas id="progressChart"></canvas>
+        </div>
+
+        <!-- Slider à 2 poignées -->
+        <div class="slider-container">
+            <input type="range" id="sliderMin" min="0" max="100" value="0">
+            <input type="range" id="sliderMax" min="0" max="100" value="100">
+            <div class="slider-track"></div>
         </div>
     </div>
 </div>

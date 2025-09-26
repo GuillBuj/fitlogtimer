@@ -1281,35 +1281,35 @@ th.exercises-list-column{
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-    .chart-section {
-        margin: 10px;
-        padding: 15px;
-    }
+/*@media (max-width: 768px) {*/
+/*    .chart-section {*/
+/*        margin: 10px;*/
+/*        padding: 15px;*/
+/*    }*/
 
-    .chart-controls {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
+/*    .chart-controls {*/
+/*        display: flex;*/
+/*        flex-direction: column;*/
+/*        gap: 10px;*/
+/*    }*/
 
-    .chart-btn {
-        margin: 0;
-        width: 100%;
-    }
+/*    .chart-btn {*/
+/*        margin: 0;*/
+/*        width: 100%;*/
+/*    }*/
 
-    .chart-container {
-        height: 300px;
-    }
-}
+/*    .chart-container {*/
+/*        height: 300px;*/
+/*    }*/
+/*}*/
 
-/* Amélioration de l'existant */
-.filter-container {
-    margin: 20px auto;
-    max-width: 1200px;
-}
+/*!* Amélioration de l'existant *!*/
+/*.filter-container {*/
+/*    margin: 20px auto;*/
+/*    max-width: 1200px;*/
+/*}*/
 
-.header-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
+/*.header-container {*/
+/*    max-width: 1200px;*/
+/*    margin: 0 auto;*/
+/*}*/

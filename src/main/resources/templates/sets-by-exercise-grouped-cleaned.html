@@ -4,15 +4,19 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
     <script th:src="@{/js/progress-chart.js}" defer></script>
-    <title>Liste des séries </title>
+    <title>Liste des séries</title>
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
+
+<!-- Messages -->
 <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
 <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
 
+<!-- Header -->
 <div class="header-container">
     <h1>Séries de <span th:text="${sets.exercise}"></span></h1>
     <a th:href="@{/exercises}" class="link-back">&#x293A;</a>
@@ -24,7 +28,7 @@
     <div th:replace="fragments/chart-section :: chartSection(${chartData})"></div>
 </div>
 
-<!-- Filtres (fixes, ne sont jamais remplacés par Ajax) -->
+<!-- Filtres -->
 <div id="filter-container">
     <form id="filterForm" class="filter-form">
         <div class="filter-buttons">
@@ -40,7 +44,7 @@
     </form>
 </div>
 
-<!-- Tableau filtré (remplacé dynamiquement par Ajax) -->
+<!-- Tableau -->
 <div id="filtered-sets">
     <div th:replace="~{fragments/sets-by-exercise-cleaned-filtered :: exerciseSets(sets=${sets})}"></div>
 </div>
@@ -51,10 +55,39 @@
     var chartData = /*[[${chartData}]]*/ [];
     console.log("Exercise ID:", exerciseId);
 
-    // Initialiser le graphique après le chargement de la page
     document.addEventListener('DOMContentLoaded', function() {
         if (chartData && chartData.length > 0) {
-            initProgressChart(chartData);
+            const chartInstance = initProgressChart(chartData);
+
+            // Slider unique
+            const allDates = chartData.map(d => new Date(d.date).getTime()).sort((a,b)=>a-b);
+            const sliderWindow = document.getElementById('sliderWindow');
+            const twoYearsMs = 2*365*24*60*60*1000;
+
+            function updateWindow() {
+                const minDate = allDates[0];
+                const maxDate = allDates[allDates.length-1];
+                const totalRange = maxDate - minDate;
+
+                const startPercent = sliderWindow.value / 100;
+                let windowStart = minDate + startPercent * (totalRange - twoYearsMs);
+                let windowEnd = windowStart + twoYearsMs;
+
+                if (windowEnd > maxDate) {
+                    windowEnd = maxDate;
+                    windowStart = maxDate - twoYearsMs;
+                }
+
+                chartInstance.chart.options.scales.x.min = windowStart;
+                chartInstance.chart.options.scales.x.max = windowEnd;
+                chartInstance.chart.update();
+            }
+
+            sliderWindow.addEventListener('input', updateWindow);
+
+            // Initialiser sur les 2 dernières années
+            sliderWindow.value = 100;
+            updateWindow();
         }
     });
     /*]]>*/

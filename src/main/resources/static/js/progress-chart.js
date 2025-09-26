@@ -25,6 +25,29 @@ class ProgressChart {
                 return isNaN(date) ? null : { x: date.getTime(), y: item.est1RM3bestAvg };
             })
             .filter(item => item && item.y != null);
+
+        // 🔹 Bodyweight : on filtre les 0 et on "casse" quand > 30 jours
+        const rawBodyweight = this.chartData
+            .map(item => {
+                const date = new Date(item.date);
+                return isNaN(date) || !item.bodyWeight || item.bodyWeight <= 0
+                    ? null
+                    : { x: date.getTime(), y: item.bodyWeight };
+            })
+            .filter(item => item);
+
+        this.bodyWeightData = [];
+        for (let i = 0; i < rawBodyweight.length; i++) {
+            this.bodyWeightData.push(rawBodyweight[i]);
+
+            if (i < rawBodyweight.length - 1) {
+                const diffDays = (rawBodyweight[i + 1].x - rawBodyweight[i].x) / (1000 * 60 * 60 * 24);
+                if (diffDays > 30) {
+                    // 🔹 ajoute un "trou" → force Chart.js à couper la ligne
+                    this.bodyWeightData.push({ x: rawBodyweight[i + 1].x, y: null });
+                }
+            }
+        }
     }
 
     createChart() {
@@ -35,18 +58,36 @@ class ProgressChart {
         }
 
         this.chart = new Chart(canvas.getContext('2d'), {
-            type: 'bar',
             data: {
                 datasets: [
                     {
+                        type: 'bar',
                         label: '1RM 3 Best Avg',
                         data: this.est1RM3BestData,
-                        backgroundColor: '#222244', // sombre
+                        backgroundColor: 'rgba(34, 34, 68, 0.7)',
+                        barPercentage: 0.7,
+                        categoryPercentage: 1
                     },
                     {
+                        type: 'bar',
                         label: '1RM Max Estimé',
                         data: this.est1RMMaxData,
-                        backgroundColor: '#6666aa', // moins sombre
+                        backgroundColor: 'rgba(102, 102, 170, 0.7)',
+                        barPercentage: 0.7,
+                        categoryPercentage: 1
+                    },
+                    {
+                        type: 'line',
+                        label: 'Poids du corps',
+                        data: this.bodyWeightData,
+                        borderColor: 'rgba(250, 128, 114, 0.9)',
+                        backgroundColor: 'transparent',
+                        borderWidth: 0.6,
+                        spanGaps: false,
+                        yAxisID: 'y',
+                        tension: 0.3,
+                        pointRadius: 0,
+                        pointHoverRadius: 1,
                     }
                 ]
             },
@@ -76,8 +117,23 @@ class ProgressChart {
                             return new Date(context[0].parsed.x).toLocaleDateString('fr-FR');
                         },
                         label: (context) => {
-                            return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} kg`;
+                            return `${context.dataset.label}: ${context.parsed.y?.toFixed(1) ?? '-'} kg`;
                         }
+                    }
+                },
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                    },
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                        },
+                        pinch: {
+                            enabled: true,
+                        },
+                        mode: 'x',
                     }
                 }
             },
@@ -92,13 +148,13 @@ class ProgressChart {
                         display: true,
                         text: 'Date'
                     },
-                    stacked: false
+                    stacked: true   // <-- clé pour forcer superposition au même abscisse
                 },
                 y: {
                     beginAtZero: false,
                     title: {
                         display: true,
-                        text: '1RM Estimé (kg)'
+                        text: 'Valeurs (kg)'
                     },
                     ticks: {
                         callback: (value) => value + ' kg'
@@ -106,15 +162,6 @@ class ProgressChart {
                 }
             }
         };
-    }
-
-    toggleDataset(index) {
-        if (!this.chart) return;
-        const meta = this.chart.getDatasetMeta(index);
-        if (!meta) return;
-
-        meta.hidden = meta.hidden === true ? false : true;
-        this.chart.update();
     }
 
     destroy() {
@@ -134,10 +181,4 @@ function initProgressChart(chartData, canvasId = 'progressChart') {
     }
     progressChartInstance = new ProgressChart(chartData, canvasId);
     return progressChartInstance;
-}
-
-function toggleDataset(index) {
-    if (progressChartInstance) {
-        progressChartInstance.toggleDataset(index);
-    }
 }

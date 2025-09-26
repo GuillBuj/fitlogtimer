@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" th:href="@{/css/progress-chart.css}">
+<title>Chart</title>
 </head>
 <body>
 <div th:fragment="chartSection(chartData)">
@@ -11,11 +11,12 @@
             <canvas id="progressChart"></canvas>
         </div>
 
-        <!-- Slider à 2 poignées -->
         <div class="slider-container">
-            <input type="range" id="sliderMin" min="0" max="100" value="0">
-            <input type="range" id="sliderMax" min="0" max="100" value="100">
-            <div class="slider-track"></div>
+            <div class="slider-wrapper">
+                <div class="slider-track"></div>
+                <input type="range" id="sliderMin" min="0" max="100" value="0" class="slider-thumb slider-thumb-min">
+                <input type="range" id="sliderMax" min="0" max="100" value="100" class="slider-thumb slider-thumb-max">
+            </div>
         </div>
     </div>
 </div>

@@ -9,6 +9,7 @@ class ProgressChart {
     init() {
         this.prepareData();
         this.createChart();
+        this.setupSlider();
     }
 
     prepareData() {
@@ -44,9 +45,34 @@ class ProgressChart {
         this.chart = new Chart(canvas.getContext('2d'), {
             data: {
                 datasets: [
-                    { type: 'bar', label: '1RM 3 Best Avg', data: this.est1RM3BestData, backgroundColor: 'rgba(34,34,68,0.7)', barPercentage: 0.8, categoryPercentage: 1 },
-                    { type: 'bar', label: '1RM Max Estimé', data: this.est1RMMaxData, backgroundColor: 'rgba(102,102,170,0.7)', barPercentage: 0.8, categoryPercentage: 1 },
-                    { type: 'line', label: 'Poids du corps', data: this.bodyWeightData, borderColor: 'rgba(250,128,114,0.9)', backgroundColor: 'transparent', borderWidth: 1, spanGaps: false, tension: 0.3, pointRadius: 0, pointHoverRadius: 1 }
+                    {
+                        type: 'bar',
+                        label: '1RM 3 Best Avg',
+                        data: this.est1RM3BestData,
+                        backgroundColor: 'rgba(10,10,50,0.7)',
+                        barPercentage: 0.8,
+                        categoryPercentage: 1
+                    },
+                    {
+                        type: 'bar',
+                        label: '1RM Max Estimé',
+                        data: this.est1RMMaxData,
+                        backgroundColor: 'rgba(60,60,250,0.9)',
+                        barPercentage: 0.8,
+                        categoryPercentage: 1
+                    },
+                    {
+                        type: 'line',
+                        label: 'Poids du corps',
+                        data: this.bodyWeightData,
+                        borderColor: 'rgba(250,128,114,0.9)',
+                        backgroundColor: 'transparent',
+                        borderWidth: 1,
+                        spanGaps: false,
+                        tension: 0.3,
+                        pointRadius: 0,
+                        pointHoverRadius: 1
+                    }
                 ]
             },
             options: {
@@ -63,8 +89,17 @@ class ProgressChart {
                     }
                 },
                 scales: {
-                    x: { type: 'time', stacked: true, time: { unit: 'month', tooltipFormat: 'dd/MM/yyyy' }, title: { display: true, text: 'Date' } },
-                    y: { beginAtZero: false, title: { display: true, text: 'Valeurs (kg)' }, ticks: { callback: v => v + ' kg' } }
+                    x: {
+                        type: 'time',
+                        stacked: true,
+                        time: { unit: 'month', tooltipFormat: 'dd/MM/yyyy' },
+                        title: { display: true, text: 'Date' }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        title: { display: true, text: 'Valeurs (kg)' },
+                        ticks: { callback: v => v + ' kg' }
+                    }
                 }
             }
         });
@@ -72,59 +107,92 @@ class ProgressChart {
         return this.chart;
     }
 
-    destroy() { if (this.chart) { this.chart.destroy(); this.chart = null; } }
+    setupSlider() {
+        if (this.chartData.length === 0) return;
+
+        const sliderMin = document.getElementById('sliderMin');
+        const sliderMax = document.getElementById('sliderMax');
+        const track = document.querySelector('.slider-track');
+
+        const allDates = this.chartData.map(d => new Date(d.date).getTime()).sort((a, b) => a - b);
+        const totalRange = allDates[allDates.length - 1] - allDates[0];
+
+        // Minimum 2 mois en millisecondes
+        const minWindowMs = 2 * 30 * 24 * 60 * 60 * 1000;
+
+        function updateTrack() {
+            const minVal = parseInt(sliderMin.value);
+            const maxVal = parseInt(sliderMax.value);
+
+            track.style.setProperty('--track-start', minVal + '%');
+            track.style.setProperty('--track-width', (maxVal - minVal) + '%');
+        }
+
+        function updateChart() {
+            let minPercent = parseInt(sliderMin.value) / 100;
+            let maxPercent = parseInt(sliderMax.value) / 100;
+
+            let windowStart = allDates[0] + minPercent * totalRange;
+            let windowEnd = allDates[0] + maxPercent * totalRange;
+
+            // Empêcher le chevauchement en respectant 2 mois minimum
+            if (windowEnd - windowStart < minWindowMs) {
+                if (this.eventTarget === sliderMin) {
+                    // L’utilisateur déplace le min
+                    windowStart = windowEnd - minWindowMs;
+                    minPercent = (windowStart - allDates[0]) / totalRange;
+                    sliderMin.value = Math.round(minPercent * 100);
+                } else {
+                    // L’utilisateur déplace le max
+                    windowEnd = windowStart + minWindowMs;
+                    maxPercent = (windowEnd - allDates[0]) / totalRange;
+                    sliderMax.value = Math.round(maxPercent * 100);
+                }
+            }
+
+            if (this.chart) {
+                this.chart.options.scales.x.min = windowStart;
+                this.chart.options.scales.x.max = windowEnd;
+                this.chart.update('none');
+            }
+        }
+
+        // Lier les événements
+        sliderMin.addEventListener('input', (e) => {
+            updateTrack();
+            updateChart.call({ chart: this.chart, eventTarget: sliderMin });
+        });
+
+        sliderMax.addEventListener('input', (e) => {
+            updateTrack();
+            updateChart.call({ chart: this.chart, eventTarget: sliderMax });
+        });
+
+        // Initialiser sur 2 dernières années
+        const twoYearsMs = 2 * 365 * 24 * 60 * 60 * 1000;
+        const maxDate = allDates[allDates.length - 1];
+        const minDate = Math.max(allDates[0], maxDate - twoYearsMs);
+
+        sliderMin.value = Math.round(((minDate - allDates[0]) / totalRange) * 100);
+        sliderMax.value = 100;
+
+        updateTrack();
+        updateChart.call({ chart: this.chart, eventTarget: sliderMax });
+    }
+
+
+    destroy() {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
 }
 
 let progressChartInstance = null;
+
 function initProgressChart(chartData, canvasId = 'progressChart') {
     if (progressChartInstance) progressChartInstance.destroy();
     progressChartInstance = new ProgressChart(chartData, canvasId);
     return progressChartInstance;
 }
-
-// Slider double poignée
-document.addEventListener('DOMContentLoaded', function() {
-    if (!chartData || chartData.length === 0) return;
-
-    const chartInstance = progressChartInstance;
-    const allDates = chartData.map(d => new Date(d.date).getTime()).sort((a,b)=>a-b);
-    const twoYearsMs = 2*365*24*60*60*1000;
-
-    const sliderMin = document.getElementById('sliderMin');
-    const sliderMax = document.getElementById('sliderMax');
-    const track = document.querySelector('.slider-track');
-
-    function updateTrack() {
-        const minVal = parseFloat(sliderMin.value);
-        const maxVal = parseFloat(sliderMax.value);
-        track.style.left = minVal + '%';
-        track.style.width = (maxVal - minVal) + '%';
-    }
-
-    function updateWindow() {
-        let minPercent = parseFloat(sliderMin.value)/100;
-        let maxPercent = parseFloat(sliderMax.value)/100;
-
-        if (minPercent > maxPercent - 0.01) minPercent = maxPercent - 0.01;
-        if (maxPercent < minPercent + 0.01) maxPercent = minPercent + 0.01;
-
-        const totalRange = allDates[allDates.length-1] - allDates[0];
-        const windowStart = allDates[0] + minPercent * totalRange;
-        const windowEnd = allDates[0] + maxPercent * totalRange;
-
-        chartInstance.chart.options.scales.x.min = windowStart;
-        chartInstance.chart.options.scales.x.max = windowEnd;
-        chartInstance.chart.update();
-        updateTrack();
-    }
-
-    sliderMin.addEventListener('input', updateWindow);
-    sliderMax.addEventListener('input', updateWindow);
-
-    // Initialiser sur les 2 dernières années
-    const maxDate = allDates[allDates.length-1];
-    const minDate = Math.max(allDates[0], maxDate - twoYearsMs);
-    sliderMin.value = ((minDate - allDates[0]) / (allDates[allDates.length-1]-allDates[0]) * 100).toFixed(2);
-    sliderMax.value = 100;
-    updateWindow();
-});

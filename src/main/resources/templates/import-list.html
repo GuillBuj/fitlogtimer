@@ -7,10 +7,11 @@
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
+<p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+<p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 <div class="header-container">
-    <h1>Fichiers JSON dans INBOX</h1>
+    <h1>Fichiers JSON dans INBOX</h1><a href="/drive-json/export" class="btn-new">Exporter exercices vers Drive</a>
 </div>
-
 <table class="auto-width-table centered">
     <tr>
         <th>Nom du fichier</th>
@@ -21,11 +22,13 @@
         <td th:text="${file.id}"></td>
         <td th:text="${importedFiles.contains(file.id) ? 'Importé' : 'Non importé'}"></td>
         <td>
-            <a th:href="@{'/import/view/' + ${file.id}}" th:class="btn-edit">Voir</a>
-            <form th:action="@{'/import/import/' + ${file.id}}" method="post" style="display:inline;">
+            <a th:href="@{'/drive-json/view/' + ${file.id}}" class="btn-edit">Voir</a>
+
+            <form th:action="@{'/drive-json/import/' + ${file.id}}" method="post" style="display:inline;">
                 <button type="submit" class="btnValid">Importer</button>
             </form>
-            <form th:action="@{'/import/reset/' + ${file.id}}" method="post" style="display:inline;">
+
+            <form th:action="@{'/drive-json/reset/' + ${file.id}}" method="post" style="display:inline;">
                 <button type="submit" class="btnEdit">Réinitialiser</button>
             </form>
         </td>

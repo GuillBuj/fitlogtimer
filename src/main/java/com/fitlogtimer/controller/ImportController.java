@@ -28,7 +28,7 @@ public class ImportController {
         return "import";
     }
 
-    @GetMapping("/import")
+    @GetMapping("/drive-xls")
     public String showImportPage(Model model) throws IOException {
         model.addAttribute("sheets", xlsxService.listImportableSheetNames());
         return "import";

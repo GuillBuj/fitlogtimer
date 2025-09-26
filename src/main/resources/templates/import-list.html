@@ -7,8 +7,11 @@
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
-<h2>Fichiers JSON dans INBOX</h2>
-<table border="1" cellpadding="5">
+<div class="header-container">
+    <h1>Fichiers JSON dans INBOX</h1>
+</div>
+
+<table class="auto-width-table centered">
     <tr>
         <th>Nom du fichier</th>
         <th>Statut</th>
@@ -18,16 +21,15 @@
         <td th:text="${file.id}"></td>
         <td th:text="${importedFiles.contains(file.id) ? 'Importé' : 'Non importé'}"></td>
         <td>
-            <a th:href="@{'/import/view/' + ${file.id}}">Voir</a>
+            <a th:href="@{'/import/view/' + ${file.id}}" th:class="btn-edit">Voir</a>
             <form th:action="@{'/import/import/' + ${file.id}}" method="post" style="display:inline;">
-                <button type="submit">Importer</button>
+                <button type="submit" class="btnValid">Importer</button>
             </form>
             <form th:action="@{'/import/reset/' + ${file.id}}" method="post" style="display:inline;">
-                <button type="submit">Réinitialiser</button>
+                <button type="submit" class="btnEdit">Réinitialiser</button>
             </form>
         </td>
     </tr>
-    <a href="/import/initPreferences">export json to drive</a>
 </table>
 </body>
 </html>

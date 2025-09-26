@@ -5,13 +5,6 @@
 <div th:fragment="chartSection(chartData)">
     <div th:if="${chartData != null and !chartData.isEmpty()}" class="chart-section">
         <h2>Progression 1RM</h2>
-
-        <div class="chart-controls">
-            <button onclick="toggleDataset(0)" class="filter-button">1RM Max</button>
-            <button onclick="toggleDataset(1)" class="filter-button">1RM 3 Best Avg</button>
-            <button onclick="toggleGaps()" class="chart-btn toggle-gaps-btn">Lignes cassées</button>
-        </div>
-
         <div class="chart-container">
             <canvas id="progressChart"></canvas>
         </div>

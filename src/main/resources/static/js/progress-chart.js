@@ -1,11 +1,8 @@
-// progress-chart.js
 class ProgressChart {
     constructor(chartData, canvasId = 'progressChart') {
         this.chartData = Array.isArray(chartData) ? chartData : [];
         this.canvasId = canvasId;
         this.chart = null;
-        this.spanGapsEnabled = false;
-        this.maxGapDays = 30;
         this.init();
     }
 
@@ -38,28 +35,18 @@ class ProgressChart {
         }
 
         this.chart = new Chart(canvas.getContext('2d'), {
-            type: 'line',
+            type: 'bar',
             data: {
                 datasets: [
                     {
-                        label: '1RM Max Estimé',
-                        data: this.est1RMMaxData,
-                        borderColor: '#ff4444',
-                        backgroundColor: 'rgba(255, 68, 68, 0.1)',
-                        tension: 0.3,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        spanGaps: this.spanGapsEnabled,
-                    },
-                    {
                         label: '1RM 3 Best Avg',
                         data: this.est1RM3BestData,
-                        borderColor: '#4444ff',
-                        backgroundColor: 'rgba(68, 68, 255, 0.1)',
-                        tension: 0.3,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        spanGaps: this.spanGapsEnabled,
+                        backgroundColor: '#222244', // sombre
+                    },
+                    {
+                        label: '1RM Max Estimé',
+                        data: this.est1RMMaxData,
+                        backgroundColor: '#6666aa', // moins sombre
                     }
                 ]
             },
@@ -104,7 +91,8 @@ class ProgressChart {
                     title: {
                         display: true,
                         text: 'Date'
-                    }
+                    },
+                    stacked: false
                 },
                 y: {
                     beginAtZero: false,
@@ -129,21 +117,6 @@ class ProgressChart {
         this.chart.update();
     }
 
-    toggleGaps() {
-        if (!this.chart) return;
-        this.spanGapsEnabled = !this.spanGapsEnabled;
-        this.chart.data.datasets.forEach(dataset => {
-            dataset.spanGaps = this.spanGapsEnabled;
-        });
-        this.chart.update();
-
-        // Mettre à jour le texte du bouton
-        const button = document.querySelector('.toggle-gaps-btn');
-        if (button) {
-            button.textContent = this.spanGapsEnabled ? 'Lignes continues' : 'Lignes cassées';
-        }
-    }
-
     destroy() {
         if (this.chart) {
             this.chart.destroy();
@@ -166,11 +139,5 @@ function initProgressChart(chartData, canvasId = 'progressChart') {
 function toggleDataset(index) {
     if (progressChartInstance) {
         progressChartInstance.toggleDataset(index);
-    }
-}
-
-function toggleGaps() {
-    if (progressChartInstance) {
-        progressChartInstance.toggleGaps();
     }
 }

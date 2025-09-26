@@ -1233,3 +1233,83 @@ th.exercises-list-column{
     justify-content: center;
     margin-right: 7px;
 }
+
+/* === STYLES POUR LA SECTION GRAPHIQUE === */
+
+.chart-section {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 1200px;
+    background: var(--bg-color, #ffffff);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chart-section h2 {
+    text-align: center;
+    color: var(--text-color, #333);
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.chart-controls {
+    text-align: center;
+    margin: 15px 0;
+}
+
+.chart-btn {
+    margin: 0 5px;
+    padding: 8px 16px;
+    background: var(--primary-color, #007bff);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+
+.chart-btn:hover {
+    background: var(--primary-dark, #0056b3);
+    transform: translateY(-1px);
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .chart-section {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .chart-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .chart-btn {
+        margin: 0;
+        width: 100%;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+}
+
+/* Amélioration de l'existant */
+.filter-container {
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}

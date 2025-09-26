@@ -13,8 +13,8 @@ public record SetGroupCleanExerciseListItemDTO(
     @Nullable Double est1RMavg,
     @Nullable Double est1RM3bestAvg
     ) {
-    @Override
-    public final String toString() {
-        return (date + " : " + sets);
-    }
+//    @Override
+//    public final String toString() {
+//        return (date + " : " + sets);
+//    }
 }

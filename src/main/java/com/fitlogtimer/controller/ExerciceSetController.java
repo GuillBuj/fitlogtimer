@@ -3,6 +3,9 @@ package com.fitlogtimer.controller;
 import java.util.List;
 import java.util.Set;
 
+import com.fitlogtimer.dto.chart.ChartDataPoint;
+import com.fitlogtimer.service.ChartService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,10 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/exerciseSets")
+@RequiredArgsConstructor
 @Slf4j
 public class ExerciceSetController {
-    @Autowired
-    private ExerciseSetService exerciseSetService;
+
+    private final ExerciseSetService exerciseSetService;
+
+    private final ChartService chartService;
 
     @PostMapping("/add")
     public String addExerciseSet(@ModelAttribute ExerciseSetCreateDTO exerciseSetDTO, RedirectAttributes redirectAttributes) {
@@ -62,17 +68,19 @@ public class ExerciceSetController {
     }
 
     @GetMapping("/byExercise/{exerciseId}/groupedByDateClean")
-    public String showSetsByExerciseGroupedCleanedByDate(@PathVariable int exerciseId, 
-                                @RequestParam(required = false) Set<String> selectedTypes,
-                                Model model){
+    public String showSetsByExerciseGroupedCleanedByDate(@PathVariable int exerciseId,
+                                                         @RequestParam(required = false) Set<String> selectedTypes,
+                                                         Model model){
 
         ExerciseDetailsGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedByWorkout(exerciseId, selectedTypes);
         Set<String> allTypes = exerciseSetService.extractTypes(groupedSets);
-        log.info("Types sélectionnés : {}", selectedTypes);
+        List<ChartDataPoint> chartData = chartService.getProgressChartData(groupedSets);
+
         model.addAttribute("sets", groupedSets);
         model.addAttribute("types", allTypes);
         model.addAttribute("exercise_id", exerciseId);
-        //log.info(model.toString());
+        model.addAttribute("chartData", chartData);
+        log.info(chartData.toString());
         return "sets-by-exercise-grouped-cleaned";
     }
 

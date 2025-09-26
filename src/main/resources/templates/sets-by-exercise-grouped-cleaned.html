@@ -2,47 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script th:src="@{/js/progress-chart.js}" defer></script>
     <title>Liste des séries </title>
 </head>
 <body>
-    <div th:insert="~{fragments/navbar :: navbar}"></div>
-    <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
-    <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
-    <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
-        
-    <div class="header-container">
-        <h1>Séries de <span th:text="${sets.exercise}"></span></h1>
-        <a th:href="@{/exercises}" class="link-back">&#x293A;</a>
-        <a th:href="@{/stats/maxsByReps/{id}(id=${exercise_id})}" class="link-back">🏆</a>
-    </div>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+<p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+<p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
 
-    <div class="filter-container">
-        <form id="filterForm" class="filter-form">
-            <div class="filter-buttons">
-                <div th:each="type : ${types}">
-                    <button type="button"
-                            th:id="'filterButton_' + ${type}"
-                            class="filter-button inactive"
-                            th:text="${type}">
-                    </button>
-                </div>
-                <button type="button" id="clearFilters" class="filter-button clear">Clear</button>
+<div class="header-container">
+    <h1>Séries de <span th:text="${sets.exercise}"></span></h1>
+    <a th:href="@{/exercises}" class="link-back">&#x293A;</a>
+    <a th:href="@{/stats/maxsByReps/{id}(id=${exercise_id})}" class="link-back">🏆</a>
+</div>
+
+<!-- Graphique -->
+<div id="chart-section">
+    <div th:replace="fragments/chart-section :: chartSection(${chartData})"></div>
+</div>
+
+<!-- Filtres (fixes, ne sont jamais remplacés par Ajax) -->
+<div id="filter-container">
+    <form id="filterForm" class="filter-form">
+        <div class="filter-buttons">
+            <div th:each="type : ${types}">
+                <button type="button"
+                        th:id="'filterButton_' + ${type}"
+                        class="filter-button inactive"
+                        th:text="${type}">
+                </button>
             </div>
-        </form>
-    </div>
-    
-    
-    <div id="filtered-sets">
-        <div th:replace="fragments/sets-by-exercise-cleaned-filtered :: exerciseSets(sets=${sets})"></div>
-    </div>
+            <button type="button" id="clearFilters" class="filter-button clear">Clear</button>
+        </div>
+    </form>
+</div>
 
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        var exerciseId = /*[[${sets?.id}]]*/ 0;
-        console.log("Exercise ID:", exerciseId);
-        /*]]>*/
-    </script>
-    <script th:src="@{/js/filter-sets-by-types.js}"></script>
-    <script src="/js/timer.js"></script>
+<!-- Tableau filtré (remplacé dynamiquement par Ajax) -->
+<div id="filtered-sets">
+    <div th:replace="~{fragments/sets-by-exercise-cleaned-filtered :: exerciseSets(sets=${sets})}"></div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var exerciseId = /*[[${sets?.id}]]*/ 0;
+    var chartData = /*[[${chartData}]]*/ [];
+    console.log("Exercise ID:", exerciseId);
+
+    // Initialiser le graphique après le chargement de la page
+    document.addEventListener('DOMContentLoaded', function() {
+        if (chartData && chartData.length > 0) {
+            initProgressChart(chartData);
+        }
+    });
+    /*]]>*/
+</script>
+<script th:src="@{/js/filter-sets-by-types.js}"></script>
+<script src="/js/timer.js"></script>
 </body>
 </html>

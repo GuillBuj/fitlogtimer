@@ -3,10 +3,9 @@ package com.fitlogtimer.controller;
 import java.util.List;
 import java.util.Set;
 
-import com.fitlogtimer.dto.chart.ChartDataPoint;
+import com.fitlogtimer.dto.chart.ChartDataPointDTO;
 import com.fitlogtimer.service.ChartService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -74,7 +73,7 @@ public class ExerciceSetController {
 
         ExerciseDetailsGroupedDTO groupedSets = exerciseSetService.getSetsGroupedCleanedByWorkout(exerciseId, selectedTypes);
         Set<String> allTypes = exerciseSetService.extractTypes(groupedSets);
-        List<ChartDataPoint> chartData = chartService.getProgressChartData(groupedSets);
+        List<ChartDataPointDTO> chartData = chartService.getProgressChartData(groupedSets);
 
         model.addAttribute("sets", groupedSets);
         model.addAttribute("types", allTypes);

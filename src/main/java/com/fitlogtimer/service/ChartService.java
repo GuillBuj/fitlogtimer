@@ -1,6 +1,6 @@
 package com.fitlogtimer.service;
 
-import com.fitlogtimer.dto.chart.ChartDataPoint;
+import com.fitlogtimer.dto.chart.ChartDataPointDTO;
 import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
 import com.fitlogtimer.mapper.ChartDataMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ public class ChartService {
 
     private final ChartDataMapper chartDataMapper;
 
-    public List<ChartDataPoint> getProgressChartData(ExerciseDetailsGroupedDTO exerciseDetails) {
+    public List<ChartDataPointDTO> getProgressChartData(ExerciseDetailsGroupedDTO exerciseDetails) {
         if (exerciseDetails == null || exerciseDetails.exerciseSets() == null) {
             return Collections.emptyList();
         }

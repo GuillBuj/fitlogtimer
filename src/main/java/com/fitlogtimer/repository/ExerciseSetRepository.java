@@ -111,6 +111,18 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     Double findMaxWeightByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
 
 
+    @Query("SELECT MAX(fws.weight) " +
+            "FROM FreeWeightSet fws " +
+            "WHERE fws.exercise.id = :exerciseId " +
+            "AND fws.repNumber >= 1 " +
+            "AND FUNCTION('YEAR', fws.workout.date) = :year " +
+            "AND FUNCTION('MONTH', fws.workout.date) = :month")
+    Double findMaxWeightByExerciseIdAndMonth(
+            @Param("exerciseId") int exerciseId,
+            @Param("year") int year,
+            @Param("month") int month);
+
+
     // MAXS BY YEAR
 
     @Query("""
@@ -235,4 +247,6 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     List<ExerciseSet> findLastSetsForExerciseIds(@Param("ids") List<Integer> ids);
 
 
+    @Query("SELECT e.id FROM Exercise e WHERE e.shortName IN :shortNames")
+    List<Integer> findIdsByShortNames(@Param("shortNames") List<String> shortNames);
 }

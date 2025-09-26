@@ -1419,3 +1419,14 @@ th.exercises-list-column{
     transition: all 0.2s ease;
 }
 
+#monthlyChartContainer {
+    width: 70%;
+    height: 70vh;
+    margin: 0 auto;
+}
+
+#monthlyChartContainer canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}

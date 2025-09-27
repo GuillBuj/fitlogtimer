@@ -1420,9 +1420,16 @@ th.exercises-list-column{
 }
 
 #periodChartContainer {
-    width: 70%;
-    height: 70vh;
+    position: relative;
+    width: 100%;
+    height: 750px;
+    max-width: 1500px;
     margin: 0 auto;
+}
+
+#periodChart {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 #periodChartContainer canvas {

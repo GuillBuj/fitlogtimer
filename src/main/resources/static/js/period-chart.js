@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false, // Désactive le ratio automatique -> css
             interaction: {
                 mode: 'nearest',
                 axis: 'x',

@@ -122,23 +122,6 @@ public class WorkoutService {
         ));
     }
 
-
-    //TODO
-//    public Page<WorkoutListDisplayDTO> getPaginatedWorkoutsDisplayDTO(int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-//        Page<Workout> workoutPage = workoutRepository.findAllByOrderByDateDesc(pageable);
-//
-//        Map<Integer, List<ExerciseDisplayDTO>> exercisesByWorkout =
-//                getExerciseDTOsForWorkouts(workoutPage.getContent());
-//
-//        return workoutPage.map(workout ->
-//                workoutMapper.toWorkoutDisplayDTO(
-//                        workout,
-//                        exercisesByWorkout.getOrDefault(workout.getId(), List.of())
-//                )
-//        );
-//    }
-
     public CalendarDTO getCalendar(){
         List<Workout> workouts = workoutRepository.findAll();
         Map<Integer, List<String>> exercisesByWorkout = getExerciseNamesForWorkouts(workouts);

@@ -12,7 +12,7 @@
     <div class="header-container">
         <h1>Liste des séances </h1>
     </div>
-
+    <br>
     <table class="auto-width-table centered centered-text">
         <thead>
             <tr>
@@ -57,6 +57,7 @@
             th:href="@{/workouts(page=${workoutPage.number + 1}, size=${workoutPage.size})}"
             class="page-btn">&gt;</a>
     </div>
+    <br>
     <div class="centered-text">
         <a href="/workouts/create" class="btn-new">Nouvelle séance</a>
     </div>

@@ -69,7 +69,7 @@
                 <td th:text="${@exerciseUtil.getDisplayName(exercise.type)}"></td>
                 <td>
                     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
-                    <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>
+<!--                    <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>-->
                     <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
                        th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">
                         Records

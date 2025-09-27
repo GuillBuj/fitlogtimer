@@ -5,7 +5,9 @@
 body {
     text-align: center;
     margin: 0;
-    padding-bottom: 35px;
+    padding-top: 80px;
+    padding-bottom: 50px;
+    overflow-x: hidden; /*desactive scroll x navigateur*/
 }
 
 
@@ -302,7 +304,13 @@ form {
 
 /* Style de base pour la navbar */
 .navbar {
-    background-color: #333; /* Fond sombre */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 99%;
+    z-index: 1000;
+    background: linear-gradient(135deg, #000000 0%, #661111 100%);
+    color: papayawhip;
     padding: 10px 20px; /* Espacement interne */
     display: flex;
     justify-content: space-between;
@@ -311,7 +319,7 @@ form {
 
 /* Style du nom de l'application */
 .navbar-brand {
-    color: #fff; /* Texte blanc */
+    color: papayawhip; /* Texte blanc */
     font-size: 1.5em;
     font-weight: bold;
     text-decoration: none;
@@ -325,7 +333,7 @@ form {
 }
 
 .navbar-tabs a {
-    color: #fff; /* Texte blanc */
+    color: papayawhip;
     text-decoration: none;
     font-size: 1.1em;
     padding: 5px 10px;
@@ -333,9 +341,15 @@ form {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.navbar-tabs a:hover {
-    background-color: #555; /* Fond plus clair au survol */
-    /* transform: scale(1.05); */
+.navbar a {
+    transition: transform 0.2s ease, background 0.3s ease;
+}
+
+
+.navbar a:hover {
+    background: linear-gradient(135deg, #661111 0%, #8b0000 100%);
+    color: navajowhite;
+    border-radius: 4px; /* Optionnel pour adoucir */
 }
 
 /* Conteneur principal pour les 3 éléments */
@@ -1118,7 +1132,8 @@ th.exercises-list-column{
     bottom: 0;
     left: 0;
     right: 0;
-    background: #f8f8f8;
+    background: linear-gradient(135deg, #000000 0%, #661111 100%);
+    color: papayawhip;
     border-top: 1px solid #ccc;
     padding: 4px 8px;
     font-size: 18px;
@@ -1144,8 +1159,9 @@ th.exercises-list-column{
 }
 
 #chrono-timer-nav button {
-    background: #fff;
-    border: 1px solid #ccc;
+    color: papayawhip;
+    background: black;
+    /*border: 1px solid #ccc;*/
     border-radius: 8px;
     padding: 6px 10px;
     font-size: 18px;

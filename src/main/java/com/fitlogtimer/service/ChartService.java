@@ -3,6 +3,7 @@ package com.fitlogtimer.service;
 import com.fitlogtimer.dto.chart.ChartDataPointDTO;
 import com.fitlogtimer.dto.chart.ChartPeriodDataPointDTO;
 import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
+import com.fitlogtimer.enums.PeriodType;
 import com.fitlogtimer.mapper.ChartDataMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.repository.ExerciseRepository;
@@ -32,7 +33,7 @@ public class ChartService {
         return chartDataMapper.toChartDataPoints(exerciseDetails.exerciseSets());
     }
 
-    public List<ChartPeriodDataPointDTO> getMainLiftsChartDataMonthly() {
+    private List<ChartPeriodDataPointDTO> getMainLiftsChartData(PeriodType periodType) {
         List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ");
 
         List<Integer> exerciseIds = exerciseSetRepository.findIdsByShortNames(mainShortNames);
@@ -44,28 +45,51 @@ public class ChartService {
                     .orElse("Exercice " + exerciseId);
 
             Integer firstYear = exerciseSetRepository.findFirstYearWithData(exerciseId);
-            if (firstYear == null) continue;
+            Integer lastYear = exerciseSetRepository.findLastYearWithData(exerciseId);
+            if (firstYear == null || lastYear == null) continue;
 
-            int currentYear = Year.now().getValue();
-            for (int year = firstYear; year <= currentYear; year++) {
-                for (int month = 1; month <= 12; month++) {
-                    Double max = exerciseSetRepository.findMaxWeightByExerciseIdAndMonth(exerciseId, year, month);
-                    if (max == null || max <= 0) continue;
+            for (int year = firstYear; year <= lastYear; year++) {
+                int maxPeriods = switch (periodType) {
+                    case MONTH -> 12;
+                    case WEEK -> Year.of(year).length() == 366 ? 53 : 52;
+                };
+
+                for (int p = 1; p <= maxPeriods; p++) {
+                    Double max = switch (periodType) {
+                        case MONTH -> exerciseSetRepository.findMaxWeightByExerciseIdAndMonth(exerciseId, year, p);
+                        case WEEK -> exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, year, p);
+                    };
+
+                    //if (max == null || max <= 0) continue;
+
+                    String periodLabel = switch (periodType) {
+                        case MONTH -> String.format("%d-%02d", year, p);
+                        case WEEK -> String.format("%d-W%02d", year, p);
+                    };
 
                     result.add(new ChartPeriodDataPointDTO(
-                            String.format("%d-%02d", year, month),
+                            periodLabel,
                             exerciseName,
                             max,
-                            0.0  // 1RM estimé temporairement à 0
+                            0.0 // 1RM estimé temporairement à 0
                     ));
                 }
             }
         }
+
         return result.stream()
                 .sorted(Comparator
                         .comparing(ChartPeriodDataPointDTO::period)
                         .thenComparing(ChartPeriodDataPointDTO::exerciseName))
                 .toList();
+    }
+
+    public List<ChartPeriodDataPointDTO> getMainLiftsChartDataMonthly() {
+        return getMainLiftsChartData(PeriodType.MONTH);
+    }
+
+    public List<ChartPeriodDataPointDTO> getMainLiftsChartDataWeekly() {
+        return getMainLiftsChartData(PeriodType.WEEK);
     }
 
 }

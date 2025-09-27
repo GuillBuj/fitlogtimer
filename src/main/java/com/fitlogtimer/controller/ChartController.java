@@ -24,6 +24,15 @@ public class ChartController {
         List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataMonthly();
 
         model.addAttribute("chartData", data);
-        return "monthly-chart";
+        return "period-chart";
+    }
+
+    @GetMapping("/weekly-main-exercises")
+    public String showWeeklyChart(Model model) {
+
+        List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataWeekly();
+
+        model.addAttribute("chartData", data);
+        return "period-chart";
     }
 }

@@ -1430,3 +1430,56 @@ th.exercises-list-column{
     width: 100% !important;
     height: 100% !important;
 }
+
+.slider-container-period {
+    display: flex;
+    justify-content: center; /* centre horizontalement */
+    align-items: center;     /* centre verticalement si hauteur définie */
+    height: 60px;            /* optionnel : hauteur de la zone */
+}
+
+#zoomSlider {
+    width: 300px;
+    appearance: none;
+    height: 6px;              /* épaisseur de la barre */
+    border-radius: 3px;
+    outline: none;
+    background: lightgray;    /* couleur de base, remplacée dynamiquement en JS */
+    display: flex;
+    align-items: center;
+}
+
+/* Track Chrome / Edge */
+#zoomSlider::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+}
+
+/* Thumb Chrome / Edge */
+#zoomSlider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #333;
+    cursor: pointer;
+    margin-top: -5px; /* ajustement vertical (la moitié du thumb - la moitié du track) */
+}
+
+/* Track Firefox */
+#zoomSlider::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    background: lightgray;
+}
+
+/* Thumb Firefox */
+#zoomSlider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #333;
+    cursor: pointer;
+}

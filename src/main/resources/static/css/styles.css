@@ -3,8 +3,11 @@
 }
 
 body {
+    text-align: center;
+    margin: 0;
     padding-bottom: 35px;
 }
+
 
 table {
     width: 100%;
@@ -152,14 +155,16 @@ form {
 
 /* Style général du formulaire en une seule ligne */
 .single-line-form {
-    display: flex; /* Affiche les éléments en ligne */
-    align-items: center; /* Alignement vertical des éléments */
-    gap: 16px; /* Espacement entre les groupes de champs */
-    flex-wrap: nowrap; /* Empêche le passage à la ligne */
-    max-width: none;
-    margin: 10px 0;
-    padding: 0 10px; /*Supprime les paddings par défaut */
-    justify-content: flex-start; /* Aligne les éléments à gauche */
+    display: inline-flex; /* Prend seulement la largeur du contenu */
+    align-items: center;
+    gap: 16px;
+    flex-wrap: nowrap;
+    margin: 10px auto;
+    padding: 12px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    justify-content: center;
 }
 
 /* Style pour chaque groupe de champs */
@@ -209,7 +214,7 @@ form {
 }
 
 .single-line-form .commentInput{
-    width: 500px;
+    width: 200px;
     padding: 8px; /* Ajoute un peu de padding pour améliorer l'apparence */
     box-sizing: border-box; /* Inclut le padding dans la largeur totale */
 }
@@ -331,6 +336,21 @@ form {
 .navbar-tabs a:hover {
     background-color: #555; /* Fond plus clair au survol */
     /* transform: scale(1.05); */
+}
+
+/* Conteneur principal pour les 3 éléments */
+.workout-details-container {
+    max-width: 1150px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* Appliquer aux éléments enfants */
+.workout-details-container > * {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .shortInput{
@@ -1489,4 +1509,9 @@ th.exercises-list-column{
     background: white;
     border: 2px solid #333;
     cursor: pointer;
+}
+
+body.calendar-page { /* Ajoutez une classe au body */
+    padding: 0 !important;
+    margin: 0 !important;
 }

@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
     <div th:fragment="exerciseSetForm(exerciseSetDTO, workoutData, exercises, lastSet)">
-        <h2>Ajouter un exercice à cette séance</h2>
         <form th:action="@{/exerciseSets/add}" method="post" th:object="${exerciseSetDTO}" class="single-line-form">
             <input type="hidden" th:field="*{workout_id}" th:value="${workoutData.id}" />
         

@@ -6,20 +6,24 @@
 </head>
 <body>
 <div th:fragment="workout-display(workoutData)" class="workout-display workout-infos">
-    <h1>Séance du <span th:text="${workoutData.date}"></span></h1>
+    <h1>Séance du <span th:text="${workoutData.date}"></span><a th:href="@{/workouts}" class="link-back">&#x293A;</a></h1>
 
     <div class="div-simple workout-infos">
-    <a th:href="@{/workouts/{id}/brut(id=${workoutData.id})}"  class="btn-link">Set par set</a>
-    <a th:href="@{/workouts/{id}/edit-infos(id=${workoutData.id})}"
-       th:attr="hx-get=@{/workouts/{id}/edit-infos(id=${workoutData.id})}"
-       hx-target="#infos-section"
-       hx-swap="innerHTML"
-       class="btn btn-edit">
-        Modifier
-    </a>
-    <p>Poids : <span th:text="${workoutData.bodyWeight}"></span> kg</p>
-    <p>Commentaires : <span th:text="${workoutData.comment}"></span></p>
-    <p>Type : <span th:text="${workoutData.type}"></span></p>
+        <p>Poids : <span th:text="${workoutData.bodyWeight}"></span> kg</p>
+        <p>Commentaires : <span th:text="${workoutData.comment}"></span></p>
+        <p>Type : <span th:text="${workoutData.type}"></span></p>
+        <a th:href="@{/workouts/{id}/brut(id=${workoutData.id})}"  class="btn-link">Set par set</a>
+        <a th:href="@{/workouts/{id}/edit-infos(id=${workoutData.id})}"
+           th:attr="hx-get=@{/workouts/{id}/edit-infos(id=${workoutData.id})}"
+           hx-target="#infos-section"
+           hx-swap="innerHTML"
+           class="btn btn-edit">
+            Modifier
+        </a>
+        <form th:action="@{/workouts/{id}(id=${workoutData.id})}" class="deleteForm"  method="post">
+            <input type="hidden" name="_method" value="delete" />
+            <button type="submit" class="btnDelete"  onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">Supprimer</button>
+        </form>
     </div>
 </div>
 </body>

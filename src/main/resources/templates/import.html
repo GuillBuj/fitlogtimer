@@ -10,28 +10,30 @@
 
 <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
-<a th:href="@{/run-import-script}" class="btn btn-primary">Télécharger le fichier depuis Drive</a>
+<div class="header-actions">
+    <a th:href="@{/run-import-script}" class="btn-new">Télécharger le fichier depuis Drive</a>
+</div>
 
-<!--<form th:action="@{/run-import}" method="post" class="form-inline">-->
-<!--    <label for="sheetName" class="form-label">Sélectionnez un onglet :</label>-->
-<!--    <select id="sheetName" name="sheetName" class="form-select mb-3" required>-->
-<!--        <option value="" disabled selected>&#45;&#45; Choisir un onglet &#45;&#45;</option>-->
-<!--        <option th:each="sheet : ${sheets}"-->
-<!--                th:value="${sheet}"-->
-<!--                th:text="${sheet}"></option>-->
-<!--    </select>-->
-<!--    <button type="submit" class="btn btn-success">Importer</button>-->
-<!--</form>-->
+<table class="auto-width-table centered">
+    <tr>
+        <th>Nom de l'onglet</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="sheet : ${sheets}">
+        <td th:text="${sheet}"></td>
+        <td>
+            <form th:action="@{/run-import}" method="post" style="display:inline;">
+                <input type="hidden" name="sheetName" th:value="${sheet}">
+                <button type="submit" class="btnValid">Import Complet</button>
+            </form>
 
-<form th:action="@{/run-import}" method="post" class="form-inline">
-    <label for="sheetName" class="form-label">Sélectionnez un onglet :</label>
-    <select id="sheetName" name="sheetName" class="form-select mb-3" required>
-        <option value="" disabled selected>-- Choisir un onglet --</option>
-        <option th:each="sheet : ${sheets}" th:value="${sheet}" th:text="${sheet}"></option>
-    </select>
-    <button type="submit" class="btn btn-success">Importer</button>
-    <button type="submit" class="btn btn-primary" formaction="/run-partial-import">Import Partiel</button>
-</form>
+            <form th:action="@{/run-partial-import}" method="post" style="display:inline;">
+                <input type="hidden" name="sheetName" th:value="${sheet}">
+                <button type="submit" class="btnEdit">Import Partiel</button>
+            </form>
+        </td>
+    </tr>
+</table>
 
 <script src="/js/timer.js"></script>
 </body>

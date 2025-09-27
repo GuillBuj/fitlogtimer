@@ -10,26 +10,20 @@
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
     <p th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-error"></p>
 
-    <div id="infos-section">
-        <div th:replace="~{fragments/workout-display :: workout-display(workoutData=${workoutData})}"></div>
-    </div>
+    <div class="workout-details-container">
+        <div id="infos-section">
+            <div th:replace="~{fragments/workout-display :: workout-display(workoutData=${workoutData})}"></div>
+        </div>
 
-    <h2>Séries</h2>
-    <table th:if="${workoutData.exerciseSets}">
-        <tr th:each="set : ${workoutData.exerciseSets}">
-            <td th:text="${set.exerciseNameShort}"></td>
-            <td th:text="${set.sets}"></td>
-        </tr>
-    </table>
-    <p th:unless="${workoutData.exerciseSets}">Aucun exercice enregistré pour cette workout.</p>
+        <table th:if="${workoutData.exerciseSets}">
+            <tr th:each="set : ${workoutData.exerciseSets}">
+                <td th:text="${set.exerciseNameShort}"></td>
+                <td th:text="${set.sets}"></td>
+            </tr>
+        </table>
+        <p th:unless="${workoutData.exerciseSets}">Aucun exercice enregistré pour cette workout.</p>
 
-    <div th:replace="~{fragments/exercise-set-form :: exerciseSetForm(${exerciseSetDTO}, ${workoutData}, ${exercises}, ${lastSet})}"></div>
-    <div class="btn-group">
-    <form th:action="@{/workouts/{id}(id=${workoutData.id})}" class="deleteForm"  method="post">
-        <input type="hidden" name="_method" value="delete" />
-        <button type="submit" class="btnDelete"  onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">Supprimer</button>
-    </form>
-    <a href="/workouts" class="btn-link">Retour à la liste</a>
+        <div th:replace="~{fragments/exercise-set-form :: exerciseSetForm(${exerciseSetDTO}, ${workoutData}, ${exercises}, ${lastSet})}"></div>
     </div>
 
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>

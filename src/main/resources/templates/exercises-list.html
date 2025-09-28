@@ -69,7 +69,6 @@
                 <td th:text="${@exerciseUtil.getDisplayName(exercise.type)}"></td>
                 <td>
                     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
-<!--                    <a th:href="@{/exerciseSets/byExercise/{id}(id=${exercise.id})}" class="btn-link">All</a>-->
                     <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
                        th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">
                         Records
@@ -77,7 +76,8 @@
                     <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
                        th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link">
                         Histo maxs
-                    </a></td>
+                    </a>
+                </td>
                 <td>
                     <button class="btnEdit"
                             th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}|}"

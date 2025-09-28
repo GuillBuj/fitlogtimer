@@ -90,6 +90,8 @@ function startTimer() {
     localStorage.setItem("timerInitial", duration.toString());
 
     updateTimerDisplay(timerRemaining, true);
+    updateNavbarColor("active");
+
     clearInterval(timerInterval);
     clearInterval(sinceEndInterval);
 
@@ -104,6 +106,7 @@ function startTimer() {
             timerEndTime = Date.now();
             localStorage.setItem("timerRunning", "false");
             localStorage.setItem("timerEndTime", timerEndTime.toString());
+            updateNavbarColor("ended");
             updateSinceEnd();
             sinceEndInterval = setInterval(updateSinceEnd, 1000);
         }
@@ -123,6 +126,7 @@ function resetTimer() {
     const input = document.getElementById("timer-duration");
     timerRemaining = input ? parseInt(input.value, 10) : 60;
     updateTimerDisplay(timerRemaining, true);
+    updateNavbarColor("ended");
     localStorage.removeItem("timerInitial");
 }
 
@@ -138,6 +142,8 @@ function updateTimerDisplay(seconds, isActivePhase = false) {
 
     document.querySelectorAll("#timer, #nav-timer").forEach(el => {
         el.textContent = display;
+    });
+    document.querySelectorAll("#timer").forEach(el => {
         el.style.color = color;
     });
 }
@@ -158,6 +164,7 @@ function restoreTimer() {
         timerRemaining = remaining;
         timerRunning = true;
         updateTimerDisplay(timerRemaining, true);
+        updateNavbarColor("active");
 
         if (!chronoRunning) restoreChrono();
 
@@ -171,14 +178,30 @@ function restoreTimer() {
                 timerEndTime = Date.now();
                 localStorage.setItem("timerRunning", "false");
                 localStorage.setItem("timerEndTime", timerEndTime.toString());
+                updateNavbarColor("ended");
                 updateSinceEnd();
                 sinceEndInterval = setInterval(updateSinceEnd, 1000);
             }
         }, 1000);
     } else if (!isNaN(end)) {
         timerEndTime = end;
+        updateNavbarColor("ended");
         updateSinceEnd();
         sinceEndInterval = setInterval(updateSinceEnd, 1000);
+    }
+}
+
+
+function updateNavbarColor(state) {
+    const nav = document.getElementById("chrono-timer-nav");
+    if (!nav) return;
+
+    nav.classList.remove("timer-active", "timer-ended");
+
+    if (state === "active") {
+        nav.classList.add("timer-active");
+    } else if (state === "ended") {
+        nav.classList.add("timer-ended");
     }
 }
 

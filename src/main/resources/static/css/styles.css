@@ -347,9 +347,20 @@ form {
 
 
 .navbar a:hover {
-    background: linear-gradient(135deg, #661111 0%, #8b0000 100%);
-    color: navajowhite;
-    border-radius: 4px; /* Optionnel pour adoucir */
+    /*background: linear-gradient(135deg, #661111 0%, #8b0000 100%);*/
+    /*color: navajowhite;*/
+
+    color: #661111;
+    background: navajowhite;
+    border-radius: 4px;
+}
+
+.navbar h1{
+    color: papayawhip;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+    margin: 0;
 }
 
 /* Conteneur principal pour les 3 éléments */
@@ -1136,14 +1147,28 @@ th.exercises-list-column{
     color: papayawhip;
     border-top: 1px solid #ccc;
     padding: 4px 8px;
-    font-size: 18px;
-    font-family: sans-serif;
+    font-size: 21px;
+    font-family: 'Cascadia Code', 'SF Mono', Monaco, 'Courier New', monospace;
+    font-variant-numeric: tabular-nums;
     box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+#chrono-timer-nav.timer-active {
+    background: linear-gradient(135deg, #000000 0%, #AA1111 100%);
+    color: papayawhip;
+    font-family: 'Cascadia Code', 'SF Mono', Monaco, 'Courier New', monospace;
+    font-variant-numeric: tabular-nums;
+}
+
+#chrono-timer-nav.timer-ended {
+    background: linear-gradient(135deg, #000000 0%, #337733 100%);
+    color: papayawhip;
+    font-family: 'Cascadia Code', 'SF Mono', Monaco, 'Courier New', monospace;
+    font-variant-numeric: tabular-nums;
 }
 
 #chrono-timer-nav .nav-section {
@@ -1170,8 +1195,11 @@ th.exercises-list-column{
 }
 
 #chrono-timer-nav button:hover {
-    background: #eee;
+    background: papayawhip;
+    color: black;
 }
+
+
 
 .invisible {
     visibility: hidden;

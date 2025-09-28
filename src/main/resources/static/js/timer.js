@@ -194,7 +194,6 @@ function restoreTimer() {
     }
 }
 
-
 function updateNavbarColor(state) {
     const nav = document.getElementById("chrono-timer-nav");
     if (!nav) return;
@@ -204,10 +203,10 @@ function updateNavbarColor(state) {
     let color;
     if (state === "active") {
         nav.classList.add("timer-active");
-        color = "#ff0000"; // Rouge vif
+        color = "#cc2222";
     } else if (state === "ended") {
         nav.classList.add("timer-ended");
-        color = "#00aa00";
+        color = "#22aa22";
     } else {
         color = "#888888";
     }

@@ -113,6 +113,7 @@ class ProgressChart {
         const sliderMin = document.getElementById('sliderMin');
         const sliderMax = document.getElementById('sliderMax');
         const track = document.querySelector('.slider-track');
+        const chart = this.chart; // ← Stocker la référence
 
         const allDates = this.chartData.map(d => new Date(d.date).getTime()).sort((a, b) => a - b);
         const totalRange = allDates[allDates.length - 1] - allDates[0];
@@ -128,7 +129,7 @@ class ProgressChart {
             track.style.setProperty('--track-width', (maxVal - minVal) + '%');
         }
 
-        function updateChart() {
+        const updateChart = (eventTarget = null) => {
             let minPercent = parseInt(sliderMin.value) / 100;
             let maxPercent = parseInt(sliderMax.value) / 100;
 
@@ -137,7 +138,7 @@ class ProgressChart {
 
             // Empêcher le chevauchement en respectant 2 mois minimum
             if (windowEnd - windowStart < minWindowMs) {
-                if (this.eventTarget === sliderMin) {
+                if (eventTarget === sliderMin) {
                     // L’utilisateur déplace le min
                     windowStart = windowEnd - minWindowMs;
                     minPercent = (windowStart - allDates[0]) / totalRange;
@@ -150,22 +151,22 @@ class ProgressChart {
                 }
             }
 
-            if (this.chart) {
-                this.chart.options.scales.x.min = windowStart;
-                this.chart.options.scales.x.max = windowEnd;
-                this.chart.update('none');
+            if (chart) {
+                chart.options.scales.x.min = windowStart;
+                chart.options.scales.x.max = windowEnd;
+                chart.update('none');
             }
-        }
+        };
 
         // Lier les événements
         sliderMin.addEventListener('input', (e) => {
             updateTrack();
-            updateChart.call({ chart: this.chart, eventTarget: sliderMin });
+            updateChart(sliderMin);
         });
 
         sliderMax.addEventListener('input', (e) => {
             updateTrack();
-            updateChart.call({ chart: this.chart, eventTarget: sliderMax });
+            updateChart(sliderMax);
         });
 
         // Initialiser sur 2 dernières années
@@ -177,7 +178,15 @@ class ProgressChart {
         sliderMax.value = 100;
 
         updateTrack();
-        updateChart.call({ chart: this.chart, eventTarget: sliderMax });
+
+        // ⚡Appliquer directement la fenêtre avant premier rendu
+        if (chart) {
+            chart.options.scales.x.min = minDate;
+            chart.options.scales.x.max = maxDate;
+            chart.update();
+        }
+
+        updateChart();
     }
 
 

@@ -50,6 +50,7 @@ function resetChrono() {
     localStorage.removeItem("chronoStartTime");
     updateChronoDisplay(0);
     resetTimer();
+    updateNavbarColor("inactive");
     setNavVisibility(false);
 }
 
@@ -126,7 +127,7 @@ function resetTimer() {
     const input = document.getElementById("timer-duration");
     timerRemaining = input ? parseInt(input.value, 10) : 60;
     updateTimerDisplay(timerRemaining, true);
-    updateNavbarColor("ended");
+    updateNavbarColor("inactive");
     localStorage.removeItem("timerInitial");
 }
 
@@ -188,6 +189,8 @@ function restoreTimer() {
         updateNavbarColor("ended");
         updateSinceEnd();
         sinceEndInterval = setInterval(updateSinceEnd, 1000);
+    } else {
+        updateNavbarColor("inactive"); // État inactif ajouté
     }
 }
 
@@ -198,20 +201,24 @@ function updateNavbarColor(state) {
 
     nav.classList.remove("timer-active", "timer-ended");
 
+    let color;
     if (state === "active") {
         nav.classList.add("timer-active");
+        color = "#ff0000"; // Rouge vif
     } else if (state === "ended") {
         nav.classList.add("timer-ended");
+        color = "#00aa00";
+    } else {
+        color = "#888888";
     }
+    updateFavicon(color);
 }
 
-// === Utilitaires ===
 function setNavVisibility(visible) {
     const nav = document.getElementById("chrono-timer-nav");
     if (nav) nav.classList.toggle("hidden", !visible);
 }
 
-// === DOM Ready ===
 document.addEventListener("DOMContentLoaded", () => {
     restoreChrono();
     restoreTimer();
@@ -246,6 +253,54 @@ document.addEventListener("DOMContentLoaded", () => {
         )
     );
 });
+
+function updateFavicon(color) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+
+    // Charger l'icone originale
+    const img = new Image();
+    img.src = '/favicon.ico';
+
+    img.onload = function() {
+        // Dessiner une pastille colorée derrière (plus grosse)
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(16, 16, 18, 0, 2 * Math.PI); // Pastille plus grande au centre
+        ctx.fill();
+
+        // Dessiner l'icone originale par-dessus
+        ctx.drawImage(img, 0, 0, 32, 32);
+
+        // Mettre à jour le favicon
+        updateFaviconHref(canvas);
+    };
+
+    // Si le chargement échoue, utiliser la version simple avec pastille devant
+    img.onerror = function() {
+        // Fond blanc
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, 32, 32);
+
+        // Pastille colorée bien visible
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(16, 16, 12, 0, 2 * Math.PI);
+        ctx.fill();
+
+        updateFaviconHref(canvas);
+    };
+}
+
+function updateFaviconHref(canvas) {
+    const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = canvas.toDataURL();
+    document.head.appendChild(link);
+}
 
 // Exports
 window.toggleChrono = toggleChrono;

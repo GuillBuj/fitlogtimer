@@ -92,7 +92,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 x: { type: 'time', time: { unit: 'month' }, title: { display: true, text: 'Période' }, grid: { display: true } },
                 y: { beginAtZero: false, title: { display: true, text: 'Poids (kg)' }, grid: { display: true } }
             },
-            plugins: { legend: { display: true, position: 'bottom', labels: { usePointStyle: true } } },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: { usePointStyle: true }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const y = context.raw?.y;
+                            if (y == null) return '';
+                            return `${context.dataset.label}: ${y} kg`;
+                        },
+                        title: function(context) {
+                            const date = context[0].parsed.x; // date en ms
+                            const d = new Date(date);
+                            const month = d.getUTCMonth() + 1;
+                            const day = d.getUTCDate();
+                            const year = d.getUTCFullYear();
+                            return `${day.toString().padStart(2,'0')}/${month.toString().padStart(2,'0')}/${year}`;
+                        }
+                    }
+                }
+
+            },
             elements: {
                 point: {
                     radius: 3,
@@ -115,15 +139,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                 ctx.save();
                                 ctx.beginPath();
                                 ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
-                                ctx.fillStyle = 'rgba(255, 200, 0, 0.7)';
+                                ctx.fillStyle = 'rgba(255, 180, 0, 0.7)';
                                 ctx.fill();
                                 ctx.restore();
                             }
                             if (dp.recordType === 'SB') {
                                 ctx.save();
                                 ctx.beginPath();
-                                ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
-                                ctx.fillStyle = 'rgba(200, 100, 50, 0.5)';
+                                ctx.arc(point.x, point.y, 5.5, 0, 2 * Math.PI);
+                                ctx.fillStyle = 'rgba(200, 165, 0, 0.5)';
                                 ctx.fill();
                                 ctx.restore();
                             }

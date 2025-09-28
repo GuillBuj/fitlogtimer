@@ -183,26 +183,4 @@ public class XlsxReader {
         }
         return trimmed;
     }
-
-    public static void main(String[] args) {
-        // String excelFilePath = FileConstants.EXCEL_FILE;
-        // String sheetName = FileConstants.HEAVY_WORKOUT_SHEET;
-        // int startRow = 0;
-        // int startColumn = 1;
-        // int endRow = 14;
-        // int endColumn = 43;
-        // XlsxMapper xlsxMapper = new XlsxMapper();
-        // try {
-        //     String[][] data = readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
-
-        //     printFormattedData(data);
-        //     String[][] transposedData = transposeArray(data);
-            
-        //     printSpecificData(transposedData, 1);
-        //     System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
-        //    // System.out.println(data);
-        // } catch (IOException e) {
-        //     System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
-        // }
-    }
 }

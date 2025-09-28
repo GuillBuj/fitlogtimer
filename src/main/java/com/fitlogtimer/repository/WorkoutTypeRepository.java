@@ -9,6 +9,4 @@ public interface WorkoutTypeRepository extends JpaRepository<WorkoutType, String
 
     Optional<WorkoutType> findByName(String name);
     boolean existsByName(String name);
-
-    //void deleteByName(String name);
 }

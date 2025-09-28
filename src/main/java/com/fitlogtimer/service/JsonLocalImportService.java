@@ -161,13 +161,11 @@ public class JsonLocalImportService {
         }
     }
 
-
     /** Supprime un fichier du tracker pour réimport */
     public void resetFile(String fileId) throws IOException {
         if (importedFiles.remove(fileId)) {
             saveTracker();
         }
     }
-
 }
 

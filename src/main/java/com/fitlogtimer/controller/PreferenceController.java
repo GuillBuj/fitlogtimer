@@ -38,7 +38,4 @@ public class PreferenceController {
         preferenceService.createNewList(listName, exerciseIds, visibleIds);
         return "redirect:/exercises";
     }
-
-
-
 }

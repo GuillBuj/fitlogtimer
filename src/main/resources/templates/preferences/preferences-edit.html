@@ -35,6 +35,7 @@
   </style>
 </head>
 <body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
 <h2 th:text="'Liste : ' + ${listName}"></h2>
 
 <form method="post" action="/preferences/save">

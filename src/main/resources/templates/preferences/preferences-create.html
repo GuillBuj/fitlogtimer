@@ -5,12 +5,13 @@
     <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-<h1>Créer une liste d'exercices</h1>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<h1>Ordre et visibilité</h1>
 
-<form th:action="@{/preferences/create}" method="post">
+<form th:action="@{/preferences/create}" method="post"  class="preferences-form">
     <label for="listName">Nom de la liste :</label>
-    <input type="text" id="listName" name="listName" required />
-
+    <input type="text" id="listName" name="listName" value="all" required readonly />
+    <button type="submit" class="btnValid">Sauvegarder</button>
     <ul id="exercise-list" class="sortable-list">
         <li th:each="ex : ${exerciseList}"
             th:attr="data-id=${ex.exerciseId}">
@@ -31,7 +32,7 @@
         </li>
     </ul>
 
-    <button type="submit">Sauvegarder</button>
+
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>

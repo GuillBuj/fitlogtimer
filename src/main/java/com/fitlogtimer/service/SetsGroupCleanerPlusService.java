@@ -86,7 +86,6 @@ public class SetsGroupCleanerPlusService {
         );
     }
 
-
     private SetGroupCleanWorkoutListItemDTO cleanSetsGroupForSetBasicWith1RM(SetsGroupedWithNameDTO sets) {
     List<SetBasicWith1RMDTO> sets1RM = sets.sets().stream()
             .map(s -> (SetBasicWith1RMDTO) s)
@@ -148,22 +147,6 @@ public class SetsGroupCleanerPlusService {
         }
         return true;
     }
-
-    // private double estimate1RM(Object sets, String type) {
-    //     if (sets instanceof List<?> list) {
-    //         return switch (type) {
-    //             case ExerciseSetType.FREE_WEIGHT, ExerciseSetType.BODYWEIGHT -> list.stream()
-    //                     .filter(SetBasicDTO.class::isInstance)
-    //                     .map(SetBasicDTO.class::cast)
-    //                     .mapToDouble(set -> StatsService.calculateOneRepMax(set.repNumber(), set.weight()))
-    //                     .max()
-    //                     .orElse(0);
-
-    //             default -> 0;
-    //         };
-    //     }
-    //     return 0;
-    // }
 
     private double returnMax1RMest(SetsGroupedWithNameDTO setsGrouped){
         return setsGrouped.sets().stream()

@@ -29,7 +29,7 @@ public class GoogleDriveService {
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE_FILE);
 
-    // ⚠️ redirect URI configuré dans la console Google Cloud
+    // redirect URI configuré dans la console Google Cloud
     private static final String REDIRECT_URI = "http://localhost:8080/oauth2callback";
 
     private final GoogleAuthorizationCodeFlow flow;
@@ -99,7 +99,6 @@ public class GoogleDriveService {
 
         log.info("Fichier Drive créé: {} (ID: {})",uploadedFile.getName(), uploadedFile.getId());
     }
-
 }
 
 

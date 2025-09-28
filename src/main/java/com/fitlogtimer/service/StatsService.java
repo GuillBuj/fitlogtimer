@@ -499,7 +499,7 @@ public class StatsService {
         }
 
         Collections.reverse(recordHistory);
-log.info("recordHistory: {}", recordHistory);
+        log.info("recordHistory: {}", recordHistory);
         return recordHistory;
     }
 

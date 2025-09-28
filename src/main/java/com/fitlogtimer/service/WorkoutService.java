@@ -277,8 +277,6 @@ public class WorkoutService {
                 .collect(Collectors.toList());
     }
 
-    
-
     public LastSetDTO getLastSetDTO(int id){
 
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
@@ -457,6 +455,29 @@ public class WorkoutService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    Workout createWorkoutFromXlsxGenericWorkoutDTO(FromXlsxGenericWorkoutDTO fromXlsxGenericWorkoutDTO, String name){
+        log.info("Create workout from DTO {}",fromXlsxGenericWorkoutDTO);
+
+        WorkoutType workoutType = workoutTypeService.findOrCreate(name);
+        Workout workout = workoutMapper.toEntity(fromXlsxGenericWorkoutDTO, name);
+
+        log.info("Workout: {}",workout);
+        final int idWorkout = workoutRepository.save(workout).getId();
+        log.info("Workout ID: {}",idWorkout);
+
+        fromXlsxGenericWorkoutDTO.sets()
+                .forEach(exerciseSetCreateDTO -> {
+                    addExerciseSet(exerciseSetCreateDTO.withWorkoutId(idWorkout));
+                });
+
+        log.info("Exercise sets added");
+        return workout;
+    }
+
+
+    /*  Utile en début pour importer les xls historiques*/
+
     //  @Transactional
     //  public List<Workout> createWorkoutsFromXlsxDCHeavyDTOList(List<FromXlsxDCHeavyDTO> dtoList) {
     //      log.info("*** Import from Heavy Sheet ***");
@@ -618,45 +639,6 @@ public class WorkoutService {
     //      return workout;
     //  }
 
-
-    @Transactional
-    Workout createWorkoutFromXlsxGenericWorkoutDTO(FromXlsxGenericWorkoutDTO fromXlsxGenericWorkoutDTO, String name){
-        log.info("Create workout from DTO {}",fromXlsxGenericWorkoutDTO);
-
-        WorkoutType workoutType = workoutTypeService.findOrCreate(name);
-        Workout workout = workoutMapper.toEntity(fromXlsxGenericWorkoutDTO, name);
-
-        log.info("Workout: {}",workout);
-        final int idWorkout = workoutRepository.save(workout).getId();
-        log.info("Workout ID: {}",idWorkout);
-
-        fromXlsxGenericWorkoutDTO.sets()
-                .forEach(exerciseSetCreateDTO -> {
-                    addExerciseSet(exerciseSetCreateDTO.withWorkoutId(idWorkout));
-                });
-
-        log.info("Exercise sets added");
-        return workout;
-    }
-
-    //pas fini
-//    @Transactional
-//    public List<Workout> createWorkoutsFromGenericSheet() throws IOException {
-//        String[][] data = xlsxService.extractGenericSheet();
-//        List<Workout> createdWorkouts = new ArrayList<>();
-//
-//        for (int col = 1; col < data[0].length; col++) {
-//            String workoutType = data[0][col];
-//
-//            Workout workout = new Workout();
-//
-//            List<ExerciseSetCreateDTO> sets = genericStrengthWorkoutParser.parseColumn(data, col, workout.getId());
-//            sets.forEach(exerciseSetService::addExerciseSet);
-//
-//            createdWorkouts.add(workout);
-//        }
-//        return createdWorkouts;
-//    }
 
 
 }

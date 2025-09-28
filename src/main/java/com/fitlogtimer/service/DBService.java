@@ -22,5 +22,4 @@ public class DBService {
         workoutRepository.resetWorkoutId();
         exerciseSetRepository.resetExerciseSetId();
     }    
-
 }

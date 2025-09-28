@@ -101,7 +101,6 @@ public class ChartService {
                 .toList();
     }
 
-
     public List<ChartPeriodDataPointDTO> getMainLiftsChartDataMonthly() {
         return getMainLiftsChartData(PeriodType.MONTH);
     }
@@ -109,5 +108,4 @@ public class ChartService {
     public List<ChartPeriodDataPointDTO> getMainLiftsChartDataWeekly() {
         return getMainLiftsChartData(PeriodType.WEEK);
     }
-
 }

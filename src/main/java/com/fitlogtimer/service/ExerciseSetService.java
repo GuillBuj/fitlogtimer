@@ -137,7 +137,6 @@ public class ExerciseSetService {
                 String bands = movementSet.getBands();
                 currentGroup.add(new SetBasicMovementDTO(repNumber, distance, bands, weight));
             }
-
         }
     
         if (!currentGroup.isEmpty()) {
@@ -184,8 +183,6 @@ public class ExerciseSetService {
         return new ExerciseDetailsGroupedDTO(id, exercise.getName(), exercise.getType(), finalGroupedSets);
     }
 
-    
-    
     public Set<String> extractTypes(ExerciseDetailsGroupedDTO exerciseDetailsGroupedDTO){
         return exerciseDetailsGroupedDTO.exerciseSets().stream()
             .map(SetGroupCleanExerciseListItemDTO::type)
@@ -196,5 +193,4 @@ public class ExerciseSetService {
     public List<ExerciseSet> findLastSetsForExerciseIds(List<Integer> exerciseIds){
         return exerciseSetRepository.findLastSetsForExerciseIds(exerciseIds);
     }
-    
 }

@@ -44,18 +44,10 @@ public class XlsxService {
     private final XlsxMapper xlsxMapper;
     private final XlsxReader xlsxReader;
 
-    //private final GenericStrengthWorkoutParser genericStrengthWorkoutParser;
-
-    //private final ExerciseRepository exerciseRepository;
-
     public XlsxService(ExerciseRepository exerciseRepository) {
         this.xlsxMapper = new XlsxMapper(exerciseRepository);
         this.xlsxReader = new XlsxReader();
-        //this.workoutService = workoutService;
-        //this.genericStrengthWorkoutParser = new GenericStrengthWorkoutParser(exerciseRepository);
-       // this.exerciseRepository = exerciseRepository;
     }
-
 
     public List<String> listImportableSheetNames() throws IOException {
         List<String> allSheets = new ArrayList<>();
@@ -94,94 +86,6 @@ public class XlsxService {
             //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
             //workouts.forEach(workout -> log.info("Workout: {}", workout));
             //log.info("{} DTOs", workouts.size());
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
-        }
-        
-        return workouts;
-    }
-
-    public List<FromXlsxDCLightDTO> extractDTOsLightSheet(){
-        String excelFilePath = FileConstants.EXCEL_FILE;
-        String sheetName = FileConstants.LIGHT_WORKOUT_SHEET;
-        int startRow = 1;
-        int startColumn = 2;
-        int endRow = 12;
-        int endColumn = 151;
-
-        List<FromXlsxDCLightDTO> workouts = new ArrayList<>();
-        try {
-            String[][] data = xlsxReader.readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
-
-            //xlsxReader.printFormattedData(data);
-            String[][] transposedData = xlsxReader.transposeArray(data);
-
-            for (String[] column : transposedData) {
-                if (!column[0].equals("NA")) {
-                   workouts.add(xlsxMapper.mapToFromXlsxDCLightDTO(column));  
-                }
-            }
-            //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
-            //workouts.forEach(workout -> log.info("Workout: {}", workout));
-            // log.info("{} DTOs", workouts.size());
-            // log.info("DTOs: {}", workouts);
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
-        }
-        
-        return workouts;
-    }
-
-    public List<FromXlsxDCVarDTO> extractDTOsVarSheet(){
-        String excelFilePath = FileConstants.EXCEL_FILE;
-        String sheetName = FileConstants.VAR_WORKOUT_SHEET;
-        int startRow = 1;
-        int startColumn = 3;
-        int endRow = 14;
-        int endColumn = 29;
-
-        List<FromXlsxDCVarDTO> workouts = new ArrayList<>();
-        try {
-            String[][] data = xlsxReader.readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
-
-            //xlsxReader.printFormattedData(data);
-            String[][] transposedData = xlsxReader.transposeArray(data);
-
-            for (String[] column : transposedData) {
-                if (!column[0].equals("NA")) {
-                   workouts.add(xlsxMapper.mapToFromXlsxDCVarDTO(column));  
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
-        }
-        
-        return workouts;
-    }
-
-
-    public List<FromXlsxDeadliftDTO> extractDTOsDeadliftSheet(){
-        String excelFilePath = FileConstants.EXCEL_FILE;
-        String sheetName = FileConstants.DEADLIFT_SHEET;
-        int startRow = 3;
-        int startColumn = 1;
-        int endRow = 5;
-        int endColumn = 20;
-
-        List<FromXlsxDeadliftDTO> workouts = new ArrayList<>();
-        try {
-            String[][] data = xlsxReader.readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
-
-            //xlsxReader.printFormattedData(data);
-            String[][] transposedData = xlsxReader.transposeArray(data);
-            
-            for (String[] column : transposedData) {
-                workouts.add(xlsxMapper.mapToFromXlsxDeadliftDTO(column));  
-            }
-
-            //workouts.forEach(workout -> log.info("Workout: {}", workout));
-            //log.info("{} DTOs", workouts.size());
-            //log.info("DTOs: {}", workouts);
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
         }
@@ -233,21 +137,21 @@ public class XlsxService {
         List<FromXlsxGenericWorkoutDTO> workouts = new ArrayList<>();
 
         for (int col = 2; col < data.length; col++) {
-                log.info("*** Next workout *** col {}", col);
-                String[] dataColumn = Arrays.copyOf(data[col], endRow);
-                log.info("dataColumn(size: {}): {}", dataColumn.length, dataColumn);
-                FromXlsxGenericWorkoutDTO workout = xlsxMapper.mapToFromXlsxGenericWorkoutDTO(
-                        dataColumn,
-                        shortNameColumn,
-                        barWeightColumn,
-                        col,
-                        name
-                );
-                log.info("workout post mapper: {}", (Object) workout);
-                if (workout.sets() != null && !workout.sets().isEmpty()) {
-                    workouts.add(workout);
-                }
-                log.info("workouts: {}", (Object) workouts);
+            log.info("*** Next workout *** col {}", col);
+            String[] dataColumn = Arrays.copyOf(data[col], endRow);
+            log.info("dataColumn(size: {}): {}", dataColumn.length, dataColumn);
+            FromXlsxGenericWorkoutDTO workout = xlsxMapper.mapToFromXlsxGenericWorkoutDTO(
+                    dataColumn,
+                    shortNameColumn,
+                    barWeightColumn,
+                    col,
+                    name
+            );
+            log.info("workout post mapper: {}", (Object) workout);
+            if (workout.sets() != null && !workout.sets().isEmpty()) {
+                workouts.add(workout);
+            }
+            log.info("workouts: {}", (Object) workouts);
         }
 
         log.info("name: {}, workouts size: {}, workouts: {}", name, workouts.size(), workouts);
@@ -269,15 +173,15 @@ public class XlsxService {
         String[][] data = xlsxReader.transposeArray(trimmed); // colonnes = workouts
         log.info("data: {}", (Object) data);
 
-        // 1. Récupérer le nom par défaut
+        // Récupérer le nom par défaut
         String defaultName = rawData[0][0];
         log.info("Nom par defaut: {}", defaultName);
 
-        // 2. Extraire la ligne "Poids du jour" (toujours à l'index 3)
+        // Extraire la ligne "Poids du jour" (toujours à l'index 3)
         String[] dailyWeightColumn = Arrays.copyOfRange(rawData[3], 2, endCol); // à partir de la colonne 2
         log.info("dailyWeightColumn(size:{}): {}", dailyWeightColumn.length, (Object) dailyWeightColumn);
 
-        // 3. Construire shortNameColumn et barWeightColumn à partir de la suite des lignes
+        // Construire shortNameColumn et barWeightColumn à partir de la suite des lignes
         List<String> shortNameList = new ArrayList<>();
         List<String> barWeightList = new ArrayList<>();
 
@@ -296,13 +200,13 @@ public class XlsxService {
         log.info("shortNameColumn(size:{}): {}", shortNameColumn.length, (Object) shortNameColumn);
         log.info("barWeightColumn(size:{}): {}", barWeightColumn.length, (Object) barWeightColumn);
 
-        // 4. Récupérer les flags "X" (toujours ligne 0)
+        // Récupérer les flags "X" (toujours ligne 0)
         String[] skipFlags = trimmed[0];
         log.info("skipFlags: {}", (Object) skipFlags);
 
         List<FromXlsxGenericWorkoutDTO> workouts = new ArrayList<>();
 
-        // 5. Les colonnes de workouts commencent après la colonne 2
+        // Les colonnes de workouts commencent après la colonne 2
         for (int col = 2; col < data.length; col++) {
             if (col < skipFlags.length && "X".equalsIgnoreCase(skipFlags[col])) {
                 log.info("Col {} ignorée (flag X)", col);
@@ -338,18 +242,97 @@ public class XlsxService {
         return new FromXlsxGenericDTO(defaultName, workouts);
     }
 
-
-
     public static boolean isEndMarker(String value) {
         return value != null && FileConstants.GENERIC_END_MARKERS.contains(value.trim());
     }
 
+    //Utile au début pour importer les xls historiques
 
-//    public static void main(String[] args) throws IOException {
-//        ApplicationContext context = SpringApplication.run(FitlogtimerApplication.class, args);
-//        ExerciseRepository exerciseRepository = context.getBean(ExerciseRepository.class);
+//    public List<FromXlsxDCLightDTO> extractDTOsLightSheet(){
+//        String excelFilePath = FileConstants.EXCEL_FILE;
+//        String sheetName = FileConstants.LIGHT_WORKOUT_SHEET;
+//        int startRow = 1;
+//        int startColumn = 2;
+//        int endRow = 12;
+//        int endColumn = 151;
 //
-//        XlsxService xlsxService= new XlsxService(exerciseRepository);
-//        xlsxService.extractGenericSheet("Muscu46 comp");
+//        List<FromXlsxDCLightDTO> workouts = new ArrayList<>();
+//        try {
+//            String[][] data = xlsxReader.readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
+//
+//            //xlsxReader.printFormattedData(data);
+//            String[][] transposedData = xlsxReader.transposeArray(data);
+//
+//            for (String[] column : transposedData) {
+//                if (!column[0].equals("NA")) {
+//                   workouts.add(xlsxMapper.mapToFromXlsxDCLightDTO(column));
+//                }
+//            }
+//            //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
+//            //workouts.forEach(workout -> log.info("Workout: {}", workout));
+//            // log.info("{} DTOs", workouts.size());
+//            // log.info("DTOs: {}", workouts);
+//        } catch (IOException e) {
+//            System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
+//        }
+//
+//        return workouts;
+//    }
+//
+//    public List<FromXlsxDCVarDTO> extractDTOsVarSheet(){
+//        String excelFilePath = FileConstants.EXCEL_FILE;
+//        String sheetName = FileConstants.VAR_WORKOUT_SHEET;
+//        int startRow = 1;
+//        int startColumn = 3;
+//        int endRow = 14;
+//        int endColumn = 29;
+//
+//        List<FromXlsxDCVarDTO> workouts = new ArrayList<>();
+//        try {
+//            String[][] data = xlsxReader.readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
+//
+//            //xlsxReader.printFormattedData(data);
+//            String[][] transposedData = xlsxReader.transposeArray(data);
+//
+//            for (String[] column : transposedData) {
+//                if (!column[0].equals("NA")) {
+//                   workouts.add(xlsxMapper.mapToFromXlsxDCVarDTO(column));
+//                }
+//            }
+//        } catch (IOException e) {
+//            System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
+//        }
+//
+//        return workouts;
+//    }
+//
+//
+//    public List<FromXlsxDeadliftDTO> extractDTOsDeadliftSheet(){
+//        String excelFilePath = FileConstants.EXCEL_FILE;
+//        String sheetName = FileConstants.DEADLIFT_SHEET;
+//        int startRow = 3;
+//        int startColumn = 1;
+//        int endRow = 5;
+//        int endColumn = 20;
+//
+//        List<FromXlsxDeadliftDTO> workouts = new ArrayList<>();
+//        try {
+//            String[][] data = xlsxReader.readSheetData(excelFilePath, sheetName, startRow, startColumn, endRow, endColumn);
+//
+//            //xlsxReader.printFormattedData(data);
+//            String[][] transposedData = xlsxReader.transposeArray(data);
+//
+//            for (String[] column : transposedData) {
+//                workouts.add(xlsxMapper.mapToFromXlsxDeadliftDTO(column));
+//            }
+//
+//            //workouts.forEach(workout -> log.info("Workout: {}", workout));
+//            //log.info("{} DTOs", workouts.size());
+//            //log.info("DTOs: {}", workouts);
+//        } catch (IOException e) {
+//            System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
+//        }
+//
+//        return workouts;
 //    }
 }

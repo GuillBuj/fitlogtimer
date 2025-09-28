@@ -753,15 +753,38 @@ th.exercises-list-column{
     border-radius: 12px;
     font-weight: bold;
 }
+
+.preferences-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
 .sortable-list {
     list-style: none;
     padding: 0;
+    margin: 20px 0;
 }
+
 .sortable-list li {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
     margin-bottom: 8px;
+    padding: 5px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    cursor: grab; /* Main ouverte */
+}
+
+.sortable-list li:active {
+    cursor: grabbing; /* Main fermée pendant le drag */
+}
+
+.sortable-list li:hover {
+    background: #e9ecef;
 }
 
 /*CALCULATOR*/

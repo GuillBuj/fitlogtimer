@@ -61,16 +61,6 @@ public class StatsService {
                 : results.getFirst(); // la plus lourde
     }
 
-//    public MaxWeightWithDateDTO maxRepsByExAndReps(int exerciseId, int year) {
-//        List<MaxWeightWithDateDTO> maxs = exerciseSetRepository
-//                .findMaxRepsByExerciseIdAndRepsAndYear(exerciseId, year);
-//
-//        return maxs.isEmpty()
-//                ? new MaxWeightWithDateDTO(0, null)
-//                : maxs.getFirst();
-//    }
-
-
     public List<CombinedMaxDTO> mergeMaxsByReps(
             Map<Integer, MaxWeightWith1RMAndDateDTO> personalBests,
             Map<Integer, MaxWeightWith1RMAndDateDTO> seasonBests
@@ -88,31 +78,6 @@ public class StatsService {
 
         return combined;
     }
-
-//    public CombinedSimpleMultiYearDTO getSimpleExerciseMaxs(int exerciseId) {
-//
-//        MaxWithDateDTO personalBest = getMaxValueForExercise(exerciseId, exerciseType, null);
-//
-//        // Records par année
-//        Map<Integer, YearlyBestSimpleWithTrendDTO> bestsByYear = new HashMap<>();
-//        List<Integer> years = getExerciseYears(exerciseId);
-//
-//        for (Integer year : years) {
-//            MaxWithDateDTO yearlyBest = getMaxValueForExercise(exerciseId, exerciseType, year);
-//            String trend = calculateTrend(year, yearlyBest, bestsByYear);
-//            bestsByYear.put(year, new YearlyBestSimpleWithTrendDTO(yearlyBest, trend));
-//        }
-//
-//        return new CombinedSimpleMultiYearDTO(personalBest, bestsByYear);
-//    }
-
-//    public CombinedSimpleMultiYearDTO getExerciseMaxs(int exerciseId) {
-//        String exerciseType = exerciseRepository.findById(exerciseId).get().getType();
-//        return new CombinedSimpleMultiYearDTO(
-//                            getMaxValueForExercise(exerciseId, exerciseType),
-//                            getYearlyMaxRecords(exerciseId, exerciseType));
-//
-//    }
 
     public CombinedSimpleMultiYearDTO mergeSimpleMultiYearMaxs(
             Map<Integer, MaxWithDateDTO> yearlyMaxRecords) {

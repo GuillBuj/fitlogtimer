@@ -4,6 +4,7 @@ import com.fitlogtimer.dto.chart.ChartDataPointDTO;
 import com.fitlogtimer.dto.chart.ChartPeriodDataPointDTO;
 import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
 import com.fitlogtimer.enums.PeriodType;
+import com.fitlogtimer.enums.RecordType;
 import com.fitlogtimer.mapper.ChartDataMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.repository.ExerciseRepository;
@@ -48,7 +49,10 @@ public class ChartService {
             Integer lastYear = exerciseSetRepository.findLastYearWithData(exerciseId);
             if (firstYear == null || lastYear == null) continue;
 
+            double allTimeMax = 0.0;
+
             for (int year = firstYear; year <= lastYear; year++) {
+                double yearMax = 0.0;
                 int maxPeriods = switch (periodType) {
                     case MONTH -> 12;
                     case WEEK -> Year.of(year).length() == 366 ? 53 : 52;
@@ -60,7 +64,20 @@ public class ChartService {
                         case WEEK -> exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, year, p);
                     };
 
-                    //if (max == null || max <= 0) continue;
+                    if (max == null || max <= 0) continue;
+
+                    // Détection des records
+                    RecordType recordType = RecordType.NONE;
+
+                    if (max > allTimeMax) {
+                        allTimeMax = max;
+                        recordType = RecordType.PR;
+                    } else if (max > yearMax) {
+                        recordType = RecordType.SB;
+                    }
+
+                    // update du meilleur annuel
+                    yearMax = Math.max(yearMax, max);
 
                     String periodLabel = switch (periodType) {
                         case MONTH -> String.format("%d-%02d", year, p);
@@ -71,7 +88,7 @@ public class ChartService {
                             periodLabel,
                             exerciseName,
                             max,
-                            0.0 // 1RM estimé temporairement à 0
+                            recordType
                     ));
                 }
             }
@@ -83,6 +100,7 @@ public class ChartService {
                         .thenComparing(ChartPeriodDataPointDTO::exerciseName))
                 .toList();
     }
+
 
     public List<ChartPeriodDataPointDTO> getMainLiftsChartDataMonthly() {
         return getMainLiftsChartData(PeriodType.MONTH);

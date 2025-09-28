@@ -33,12 +33,45 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Couleurs par exercice ---
+    const colors1 = [
+
+        'rgba(54, 162, 235, 0.7)',    // Bleu
+         'rgba(153, 102, 255, 0.7)',   // Violet
+         'rgba(52, 73, 94, 0.7)',      // Bleu acier
+         'rgba(255, 206, 86, 0.7)',    // Jaune
+         'rgba(46, 204, 113, 0.7)',    // Émeraude
+         'rgba(75, 192, 192, 0.7)',    // Turquoise
+         'rgba(231, 76, 60, 0.7)',     // Rouge tomate
+         'rgba(255, 99, 132, 0.7)',    // Rouge
+         'rgba(255, 159, 64, 0.7)',    // Orange
+         'rgba(201, 203, 207, 0.7)',   // Gris
+         'rgba(102, 204, 102, 0.7)',   // Vert
+         'rgba(220, 100, 220, 0.7)',   // Rose
+         'rgba(255, 102, 102, 0.7)',   // Rouge clair
+         'rgba(155, 89, 182, 0.7)',    // Violet foncé
+         'rgba(241, 196, 15, 0.7)',    // Or
+         'rgba(230, 126, 34, 0.7)',    // Carotte
+         'rgba(149, 165, 166, 0.7)',   // Gris béton
+         'rgba(26, 188, 156, 0.7)',    // Turquoise
+         'rgba(142, 68, 173, 0.7)'     // Violet intense
+     ];
     const colors = [
-        'rgba(54, 162, 235, 0.7)',
-        'rgba(153, 102, 255, 0.7)',
-        'rgba(255, 206, 86, 0.7)',
-        'rgba(75, 192, 192, 0.7)',
-        'rgba(255, 99, 132, 0.7)'
+        'rgba(28, 81, 117, 0.7)',     // Bleu foncé (au lieu de 54,162,235)
+        'rgba(61, 122, 61, 0.7)',     // Vert forêt
+        'rgba(93, 53, 109, 0.7)',     // Aubergine
+        'rgba(173, 57, 45, 0.7)',     // Rouge rouille
+        'rgba(120, 121, 124, 0.7)',   // Gris anthracite
+        'rgba(191, 119, 48, 0.7)',    // Orange foncé
+        'rgba(191, 74, 99, 0.7)',     // Rouge bordeaux (au lieu de 255,99,132)
+        'rgba(37, 96, 96, 0.7)',      // Turquoise foncé (au lieu de 75,192,192)
+        'rgba(191, 154, 64, 0.7)',    // Jaune doré foncé (au lieu de 255,206,86)
+        'rgba(76, 51, 127, 0.7)',     // Violet foncé (au lieu de 153,102,255)
+        'rgba(191, 76, 76, 0.7)',     // Rouge foncé
+        'rgba(31, 91, 131, 0.7)',     // Bleu marine
+        'rgba(165, 75, 165, 0.7)',    // Violet prune
+        'rgba(180, 147, 11, 0.7)',    // Or vieilli
+        'rgba(23, 102, 56, 0.7)',     // Vert sapin
+
     ];
 
     // --- Périodes globales pour gérer les gaps ---
@@ -92,6 +125,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 x: { type: 'time', time: { unit: 'month' }, title: { display: true, text: 'Période' }, grid: { display: true } },
                 y: { beginAtZero: false, title: { display: true, text: 'Poids (kg)' }, grid: { display: true } }
             },
+            transitions: {
+                active: {
+                    animation: {
+                        duration: 0
+                    }
+                },
+                hide: {
+                    animation: {
+                        duration: 0 // Désactive l'animation de masquage
+                    }
+                }
+            },
             plugins: {
                 legend: {
                     display: true,
@@ -133,8 +178,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     const { ctx } = chart;
                     chart.data.datasets.forEach((dataset, datasetIndex) => {
                         const meta = chart.getDatasetMeta(datasetIndex);
+
+                        if (!meta.visible) return;
+
                         meta.data.forEach((point, index) => {
                             const dp = dataset.data[index];
+                            if (!dp || isNaN(dp.y)) return;
+
                             if (dp.recordType === 'PR') {
                                 ctx.save();
                                 ctx.beginPath();

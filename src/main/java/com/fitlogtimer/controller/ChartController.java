@@ -26,6 +26,7 @@ public class ChartController {
         List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataMonthly();
 
         model.addAttribute("chartData", data);
+        model.addAttribute("period", "MONTHLY");
         return "period-chart";
     }
 
@@ -33,8 +34,9 @@ public class ChartController {
     public String showWeeklyChart(Model model) {
 
         List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataWeekly();
-        log.info(data.toString());
+
         model.addAttribute("chartData", data);
+        model.addAttribute("period", "WEEKLY");
         return "period-chart";
     }
 }

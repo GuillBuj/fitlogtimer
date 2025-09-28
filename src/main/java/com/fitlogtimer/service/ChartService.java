@@ -35,7 +35,7 @@ public class ChartService {
     }
 
     private List<ChartPeriodDataPointDTO> getMainLiftsChartData(PeriodType periodType) {
-        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ");
+        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM");
 
         List<Integer> exerciseIds = exerciseSetRepository.findIdsByShortNames(mainShortNames);
         List<ChartPeriodDataPointDTO> result = new ArrayList<>();

@@ -80,26 +80,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Regrouper les données par exercice ---
     const exercises = [...new Set(chartData.map(d => d.exerciseName))];
 
-    const datasets = exercises.map((exercise, idx) => {
-        const exerciseData = periods.map(p => {
-            const dp = chartData.find(d => d.exerciseName === exercise && d.period === p);
+    const datasets = exercises
+        .filter(exercise => exercise !== "_GHOST_") // on ignore carrément les ghost
+        .map((exercise, idx) => {
+            const exerciseData = periods.map(p => {
+                const dp = chartData.find(d => d.exerciseName === exercise && d.period === p);
+                return {
+                    x: parsePeriod(p),
+                    y: dp ? dp.max : null,   // ⚡ null au lieu de NaN
+                    recordType: dp ? dp.recordType : null
+                };
+            });
+
             return {
-                x: parsePeriod(p),
-                y: dp ? dp.max : NaN,  // <-- Utiliser NaN au lieu de null
-                recordType: dp ? dp.recordType : null
+                label: exercise,
+                data: exerciseData,
+                borderColor: colors[idx % colors.length],
+                backgroundColor: colors[idx % colors.length],
+                tension: 0.3,
+                fill: false,
+                spanGaps: false,   // ⚡ garde les trous quand c’est null
             };
         });
 
-        return {
-            label: exercise,
-            data: exerciseData,
-            borderColor: colors[idx % colors.length],
-            backgroundColor: colors[idx % colors.length],
-            tension: 0.3,
-            fill: false,
-            spanGaps: false
-        };
-    });
 
 
     // --- min/max pour slider ---
@@ -141,7 +144,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 legend: {
                     display: true,
                     position: 'bottom',
-                    labels: { usePointStyle: true }
+                    labels: {
+                        usePointStyle: true
+                    }
                 },
                 tooltip: {
                     callbacks: {
@@ -164,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             elements: {
                 point: {
-                    radius: 3,
+                    radius: (ctx) => ctx.dataset.label === "_GHOST_" ? 0 : 3,
                     backgroundColor: (ctx) => ctx.raw?.recordType === 'SB' ? '#1E90FF' : ctx.dataset.borderColor,
                     borderWidth: 1,
                     borderColor: '#fff'

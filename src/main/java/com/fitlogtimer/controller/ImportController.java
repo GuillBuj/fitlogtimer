@@ -38,13 +38,13 @@ public class ImportController {
     public String runImport(@RequestParam("sheetName") String sheetName, RedirectAttributes redirectAttributes) {
         String resultMessage = importService.importSheet(sheetName);
         redirectAttributes.addFlashAttribute("message", resultMessage);
-        return "redirect:/import";
+        return "redirect:/drive-xls";
     }
 
     @PostMapping("/run-partial-import")
     public String runPartialImport(@RequestParam("sheetName") String sheetName, RedirectAttributes redirectAttributes) {
         String resultMessage = importService.importPartialSheet(sheetName);
         redirectAttributes.addFlashAttribute("message", resultMessage);
-        return "redirect:/import";
+        return "redirect:/drive-xls";
     }
 }

@@ -24,7 +24,7 @@ public class OAuth2CallbackController {
 
         if (error != null || code == null) {
             redirectAttributes.addFlashAttribute("successRedMessage", "Erreur d'autorisation Google Drive");
-            return "redirect:/import/list";
+            return "redirect:/drive-json/files";
         }
 
         try {
@@ -36,6 +36,6 @@ public class OAuth2CallbackController {
             redirectAttributes.addFlashAttribute("successRedMessage", "Erreur lors de l'export: " + e.getMessage());
         }
 
-        return "redirect:/import/list";
+        return "redirect:/drive-json/files";
     }
 }

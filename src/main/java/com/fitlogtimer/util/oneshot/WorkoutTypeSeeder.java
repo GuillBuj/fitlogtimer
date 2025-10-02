@@ -23,7 +23,7 @@
 //    @Override
 //    public void run(String... args) {
 //        workoutRepository.findAll().stream()
-//                .map(Workout::getRawType) // getName sécurisée
+//                .map(Workout::getRawType) // getName sécurisé
 //                .peek(type -> log.info("WorkoutType: {}", type))
 //                .filter(Objects::nonNull)
 //                .distinct()

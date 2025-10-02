@@ -2,37 +2,19 @@ package com.fitlogtimer.service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
-import com.fitlogtimer.FitlogtimerApplication;
-import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.fromxlsx.*;
-import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.repository.ExerciseRepository;
-import com.fitlogtimer.util.helper.XlsxHelper;
-import com.fitlogtimer.util.parser.GenericStrengthWorkoutParser;
-import org.apache.catalina.core.ApplicationContext;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.constants.FileConstants;
 import com.fitlogtimer.mapper.XlsxMapper;
-import com.fitlogtimer.parser.XlsxReader;
+import com.fitlogtimer.util.XlsxReader;
 
 import lombok.extern.slf4j.Slf4j;
 

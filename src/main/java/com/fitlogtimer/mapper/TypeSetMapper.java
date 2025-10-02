@@ -5,7 +5,7 @@ import org.mapstruct.Named;
 
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.Workout;
-import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
+import com.fitlogtimer.util.ExerciseSetMappingHelper;
 
 public interface TypeSetMapper {
     @Named("resolveExercise")

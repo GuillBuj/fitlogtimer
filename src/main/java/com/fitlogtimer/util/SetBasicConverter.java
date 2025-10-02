@@ -1,4 +1,4 @@
-package com.fitlogtimer.util.helper;
+package com.fitlogtimer.util;
 
 import java.util.List;
 

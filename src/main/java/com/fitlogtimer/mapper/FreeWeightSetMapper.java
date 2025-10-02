@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.create.FreeWeightSetCreateDTO;
 import com.fitlogtimer.model.sets.FreeWeightSet;
-import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
+import com.fitlogtimer.util.ExerciseSetMappingHelper;
 
 @Mapper(componentModel = "spring")
 public interface FreeWeightSetMapper extends TypeSetMapper{

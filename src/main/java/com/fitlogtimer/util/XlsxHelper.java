@@ -1,4 +1,4 @@
-package com.fitlogtimer.util.helper;
+package com.fitlogtimer.util;
 
 import lombok.extern.slf4j.Slf4j;
 

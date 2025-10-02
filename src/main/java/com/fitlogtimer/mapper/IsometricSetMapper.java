@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.model.sets.IsometricSet;
-import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
+import com.fitlogtimer.util.ExerciseSetMappingHelper;
 
 @Mapper(componentModel = "spring")
 public interface IsometricSetMapper extends TypeSetMapper{

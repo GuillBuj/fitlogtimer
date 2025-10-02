@@ -17,7 +17,7 @@ import com.fitlogtimer.model.sets.ElasticSet;
 import com.fitlogtimer.model.sets.FreeWeightSet;
 import com.fitlogtimer.model.sets.IsometricSet;
 import com.fitlogtimer.model.sets.MovementSet;
-import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
+import com.fitlogtimer.util.ExerciseSetMappingHelper;
 
 @Mapper(componentModel = "spring", uses = ExerciseSetMappingHelper.class)
 public abstract class ExerciseSetMapper {

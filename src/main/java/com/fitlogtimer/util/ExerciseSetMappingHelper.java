@@ -1,4 +1,4 @@
-package com.fitlogtimer.util.mapperhelper;
+package com.fitlogtimer.util;
 
 import org.mapstruct.Named;
 import org.springframework.stereotype.Service;

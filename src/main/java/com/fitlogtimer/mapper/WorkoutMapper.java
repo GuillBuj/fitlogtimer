@@ -4,12 +4,10 @@ import java.util.List;
 
 import com.fitlogtimer.dto.fromxlsx.*;
 import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
-import com.fitlogtimer.util.mapperhelper.WorkoutTypeMapperHelper;
+import com.fitlogtimer.util.WorkoutTypeMapperHelper;
 import org.mapstruct.*;
 
-import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
-import com.fitlogtimer.dto.display.ExerciseDisplayDTO;
 import com.fitlogtimer.dto.display.WorkoutListDisplayDTO;
 import com.fitlogtimer.dto.listitem.WorkoutListItemDTO;
 import com.fitlogtimer.model.Workout;

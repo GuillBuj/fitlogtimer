@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.model.ExerciseSet;
-import com.fitlogtimer.util.mapperhelper.ExerciseSetMappingHelper;
+import com.fitlogtimer.util.ExerciseSetMappingHelper;
 
 import lombok.AllArgsConstructor;
 

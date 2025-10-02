@@ -1,4 +1,4 @@
-package com.fitlogtimer.util.mapperhelper;
+package com.fitlogtimer.util;
 
 import com.fitlogtimer.model.WorkoutType;
 import com.fitlogtimer.repository.WorkoutTypeRepository;

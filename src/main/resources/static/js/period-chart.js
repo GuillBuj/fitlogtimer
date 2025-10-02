@@ -103,8 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
             };
         });
 
-
-
     // --- min/max pour slider ---
     const allDates = datasets.flatMap(ds => ds.data.map(p => p.x)).sort((a,b) => a-b);
     const minDateOverall = allDates[0];
@@ -136,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 hide: {
                     animation: {
-                        duration: 0 // Désactive l'animation de masquage
+                        duration: 0 // Désactive l'animation de masquage problematique pour les records
                     }
                 }
             },

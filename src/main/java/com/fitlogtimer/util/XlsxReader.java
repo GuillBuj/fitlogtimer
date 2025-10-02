@@ -1,4 +1,4 @@
-package com.fitlogtimer.parser;
+package com.fitlogtimer.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;

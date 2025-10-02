@@ -1,6 +1,5 @@
 package com.fitlogtimer.service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.fitlogtimer.constants.FileConstants;
 import com.fitlogtimer.dto.display.ExerciseDisplayDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericWorkoutDTO;
@@ -17,21 +15,13 @@ import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
 import com.fitlogtimer.mapper.ExerciseMapper;
 import com.fitlogtimer.mapper.ExerciseSetFacadeMapper;
 import com.fitlogtimer.model.WorkoutType;
-import com.fitlogtimer.parser.XlsxReader;
-import com.fitlogtimer.util.parser.GenericStrengthWorkoutParser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.HEAVY;
-import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.LIGHT_50;
-import static com.fitlogtimer.constants.ExerciseSetConstants.SetTypes.MEDIUM_55;
-
-import com.fitlogtimer.constants.ExerciseColorConstants;
 import com.fitlogtimer.constants.ExerciseSetType;
-import com.fitlogtimer.constants.WorkoutColorConstants;
 import com.fitlogtimer.dto.base.SetBasicDTO;
 import com.fitlogtimer.dto.base.SetBasicElasticDTO;
 import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
@@ -92,7 +82,6 @@ public class WorkoutService {
 
     private final ExerciseService exerciseService;
 
-    private final GenericStrengthWorkoutParser genericStrengthWorkoutParser;
 
     private final XlsxService xlsxService;
     private final ExerciseSetFacadeMapper exerciseSetFacadeMapper;

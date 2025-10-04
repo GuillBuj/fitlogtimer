@@ -170,9 +170,9 @@ public class WorkoutService {
     public WorkoutDetailsGroupedDTO getWorkoutGrouped(int id){
         Workout workout = workoutRepository.findById(id)
             .orElseThrow(()->new NotFoundException("Workout not found: " + id));
-
+        log.info("*** Etape 1 : Workout : Workout: {}", workout);
         List<SetsGroupedDTO> groupedSets = groupConsecutiveSetsByExercise(getSetsDTO(workout));
-
+        log.info("*** Etape 2 : Grouped sets : List<SetsGroupedDTO>: {}", groupedSets);
         List<SetsGroupedWithNameDTO> groupedSetsWithName = groupedSets.stream()
                 .map(this::groupedSetToGroupedSetWithName)
                 .toList();
@@ -180,9 +180,16 @@ public class WorkoutService {
         List<SetGroupCleanWorkoutListItemDTO> finalGroupedSets = groupedSetsWithName.stream()
                 .map(setsGroupCleanerService::cleanSetsGroup)
                 .toList();
-        
-        WorkoutDetailsGroupedDTO workoutGroupedDTO = new WorkoutDetailsGroupedDTO(id, workout.getDate(), workout.getBodyWeight(), workout.getComment(), workout.getTypeName(), finalGroupedSets);
-        System.out.println(workoutGroupedDTO);
+        log.info("*** Etape 3 : Cleaned sets : List<SetGroupCleanWorkoutListItemDTO>: {}", finalGroupedSets);
+        WorkoutDetailsGroupedDTO workoutGroupedDTO =
+                new WorkoutDetailsGroupedDTO(
+                        id,
+                        workout.getDate(),
+                        workout.getBodyWeight(),
+                        workout.getComment(),
+                        workout.getTypeName(),
+                        finalGroupedSets);
+        log.info("*** Etape 4 : WorkoutGroupedDTO: WorkoutDetailsGroupedDTO: {}", workoutGroupedDTO);
         return workoutGroupedDTO;
     }
     

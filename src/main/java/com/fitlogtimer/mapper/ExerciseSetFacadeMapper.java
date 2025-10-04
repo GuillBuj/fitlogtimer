@@ -36,7 +36,6 @@ public class ExerciseSetFacadeMapper {
 
             case ExerciseSetType.MOVEMENT ->
                 movementSetMapper.toMovementSet(dto, mappingHelper);
-            // mappings (à ajouter au fur et à mesure)
             
             default -> throw new IllegalArgumentException("Unsupported type: " + dto.type());
         };

@@ -28,10 +28,7 @@ public class ExerciseController {
 
     @GetMapping
     public String showExercisesList(Model model) throws IOException {
-
-        //log.info(SuggestedColors.COLORS.toString());
-
-        //model.addAttribute("exercises", exerciseService.getAllExerciseItems());
+        
         model.addAttribute("exercises", exerciseService.getAllExercisePreferenceListItems());
         model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL, ExerciseSetType.FREE_WEIGHT, ""));
         model.addAttribute("muscles", Muscle.values());

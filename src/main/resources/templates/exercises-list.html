@@ -80,7 +80,7 @@
                 </td>
                 <td>
                     <button class="btnEdit"
-                            th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}|}"
+                            th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}&sb=${exercise.seasonBest}&sorm=${exercise.seasonOneRepMaxEst}|}"
                             hx-target="closest tr"
                             hx-swap="outerHTML">
                         Modifier

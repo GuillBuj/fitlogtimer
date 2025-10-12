@@ -63,7 +63,6 @@ public class SetsGroupCleanerPlusService {
 
         if (!filteredSetsGrouped.sets().isEmpty() && filteredSetsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
             est1RMmax = returnMax1RMest(filteredSetsGrouped);
-            est1RMavg = calculateAvg1RMest(filteredSetsGrouped);
             est1RMbest3Avg = calculateBest3Avg1RMest(filteredSetsGrouped);
             max = returnMax(filteredSetsGrouped);
 
@@ -83,7 +82,6 @@ public class SetsGroupCleanerPlusService {
                 type,
                 cleanedSets,
                 est1RMmax,
-                est1RMavg,
                 est1RMbest3Avg,
                 max
         );
@@ -167,17 +165,6 @@ public class SetsGroupCleanerPlusService {
             .mapToDouble(SetBasicWith1RMDTO::oneRepMax)
             .max()
             .orElse(0.0);
-    }
-
-    private double calculateAvg1RMest(SetsGroupedWithNameDTO setsGrouped){
-        double est1RMavg = setsGrouped.sets().stream()
-        .filter(set -> set instanceof SetBasicWith1RMDTO)
-        .map(set -> (SetBasicWith1RMDTO) set)
-        .mapToDouble(SetBasicWith1RMDTO::oneRepMax)
-        .average()
-        .orElse(0.0);
-        
-        return Math.round(est1RMavg * 100.0) / 100.0;
     }
 
     private Double calculateBest3Avg1RMest(SetsGroupedWithNameDTO setsGrouped) {

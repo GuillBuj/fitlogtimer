@@ -13,37 +13,112 @@ class ProgressChart {
     }
 
     prepareData() {
-        this.est1RMMaxData = this.chartData.map(d => {
+        // D'abord, on prépare tous les datasets sans filtrer
+        const allData = this.chartData.map(d => {
             const date = new Date(d.date);
-            return isNaN(date) ? null : { x: date.getTime(), y: d.est1RMmax };
-        }).filter(d => d && d.y != null);
+            return isNaN(date) ? null : {
+                x: date.getTime(),
+                est1RMmax: d.est1RMmax,
+                est1RM3bestAvg: d.est1RM3bestAvg,
+                maxWeight: d.maxWeight,
+                bodyWeight: d.bodyWeight
+            };
+        }).filter(d => d != null);
 
-        this.est1RM3BestData = this.chartData.map(d => {
-            const date = new Date(d.date);
-            return isNaN(date) ? null : { x: date.getTime(), y: d.est1RM3bestAvg };
-        }).filter(d => d && d.y != null);
+        // On utilise les mêmes dates pour tous les datasets
+        const commonDates = allData.map(d => d.x);
 
-        const rawBodyweight = this.chartData.map(d => {
-            const date = new Date(d.date);
-            return isNaN(date) || !d.bodyWeight || d.bodyWeight <= 0 ? null : { x: date.getTime(), y: d.bodyWeight };
-        }).filter(d => d);
+        this.est1RMMaxData = allData
+            .filter(d => d.est1RMmax != null)
+            .map(d => ({ x: d.x, y: d.est1RMmax }));
+
+        this.est1RM3BestData = allData
+            .filter(d => d.est1RM3bestAvg != null)
+            .map(d => ({ x: d.x, y: d.est1RM3bestAvg }));
+
+        this.maxWeight = allData
+            .filter(d => d.maxWeight != null)
+            .map(d => ({ x: d.x, y: d.maxWeight }));
+
+        // BodyWeight avec la logique des gaps
+        const rawBodyweight = allData
+            .filter(d => d.bodyWeight != null && d.bodyWeight > 0)
+            .map(d => ({ x: d.x, y: d.bodyWeight }));
 
         this.bodyWeightData = [];
         for (let i = 0; i < rawBodyweight.length; i++) {
             this.bodyWeightData.push(rawBodyweight[i]);
             if (i < rawBodyweight.length - 1) {
-                const diffDays = (rawBodyweight[i + 1].x - rawBodyweight[i].x)/(1000*60*60*24);
+                const diffDays = (rawBodyweight[i + 1].x - rawBodyweight[i].x) / (1000 * 60 * 60 * 24);
                 if (diffDays > 30) this.bodyWeightData.push({ x: rawBodyweight[i + 1].x, y: null });
             }
         }
+
+        // Les labels doivent être les dates communes à tous les datasets principaux
+        this.labels = commonDates;
     }
+
 
     createChart() {
         const canvas = document.getElementById(this.canvasId);
         if (!canvas) { console.error('Canvas not found'); return; }
 
+        const horizontalLinePlugin = {
+            id: 'horizontalLinePlugin',
+            afterDatasetsDraw(chart) {
+                const ctx = chart.ctx;
+                const meta = chart.getDatasetMeta(3); // Dataset "Max"
+
+                if (!meta || !meta.data || meta.data.length === 0) return;
+
+                ctx.save();
+
+                // Récupère les barres du dataset est1RMMaxData (toujours présent)
+                const barMeta = chart.getDatasetMeta(1); // est1RMMaxData
+
+                meta.data.forEach((point) => {
+                    const value = point.getProps(['y'], true).y;
+                    if (value === null || value === undefined) return;
+
+                    const {x, y} = point.getProps(['x', 'y'], true);
+                    const color = chart.data.datasets[3].borderColor || 'rgba(250,0,250,0.9)';
+
+                    // Trouve la barre qui a la même position X dans est1RMMaxData
+                    let barWidth = 10;
+
+                    if (barMeta && barMeta.data) {
+                        for (const bar of barMeta.data) {
+                            const barX = bar.getProps(['x'], true).x;
+                            if (Math.abs(barX - x) < 0.1) {
+                                barWidth = bar.width;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Dessine la ligne horizontale
+                    ctx.beginPath();
+                    ctx.moveTo(x - barWidth / 2, y);
+                    ctx.lineTo(x + barWidth / 2, y);
+                    ctx.lineWidth = 4;
+                    ctx.strokeStyle = color;
+                    ctx.stroke();
+                });
+
+                ctx.restore();
+            }
+        };
+
+        console.log('Dataset lengths:', {
+            est1RMMaxData: this.est1RMMaxData.length,
+            est1RM3BestData: this.est1RM3BestData.length,
+            maxWeight: this.maxWeight.length,
+            bodyWeightData: this.bodyWeightData.length
+        });
         this.chart = new Chart(canvas.getContext('2d'), {
+            plugins: [horizontalLinePlugin],
             data: {
+                labels: this.labels,
                 datasets: [
                     {
                         type: 'bar',
@@ -57,7 +132,7 @@ class ProgressChart {
                         type: 'bar',
                         label: '1RM Max Estimé',
                         data: this.est1RMMaxData,
-                        backgroundColor: 'rgba(60,60,250,0.9)',
+                        backgroundColor: 'rgba(60,60,250,0.7)',
                         barPercentage: 0.8,
                         categoryPercentage: 1
                     },
@@ -72,6 +147,17 @@ class ProgressChart {
                         tension: 0.3,
                         pointRadius: 0,
                         pointHoverRadius: 1
+                    },
+                    {
+                        type: 'line',
+                        label: 'Max',
+                        data: this.maxWeight,
+                        showLine: false,
+                        pointRadius: 0,
+                        borderColor: 'rgba(250,200,100,0.7)',
+                        borderWidth: 1,
+                        backgroundColor: 'transparent',
+                        order: 9999
                     }
                 ]
             },

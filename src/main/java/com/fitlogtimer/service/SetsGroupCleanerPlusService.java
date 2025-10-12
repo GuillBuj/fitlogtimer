@@ -44,6 +44,7 @@ public class SetsGroupCleanerPlusService {
         double est1RMmax = 0.0;
         double est1RMavg = 0.0;
         Double est1RMbest3Avg = 0.0;
+        Double max = 0.0;
 
         // si 'types' vide, tout inclure
         List<SetBasicInterfaceDTO> filteredSets;
@@ -64,6 +65,7 @@ public class SetsGroupCleanerPlusService {
             est1RMmax = returnMax1RMest(filteredSetsGrouped);
             est1RMavg = calculateAvg1RMest(filteredSetsGrouped);
             est1RMbest3Avg = calculateBest3Avg1RMest(filteredSetsGrouped);
+            max = returnMax(filteredSetsGrouped);
 
             cleaned = cleanSetsGroupForSetBasicWith1RM(filteredSetsGrouped);
         } else if (!filteredSetsGrouped.sets().isEmpty()) {
@@ -76,13 +78,14 @@ public class SetsGroupCleanerPlusService {
         Object cleanedSets = cleaned==null? null: cleaned.sets();
 
         return new SetGroupCleanExerciseListItemDTO(
-            date,
-            bodyWeight,
-            type,
-            cleanedSets,
-            est1RMmax,
-            est1RMavg,
-            est1RMbest3Avg
+                date,
+                bodyWeight,
+                type,
+                cleanedSets,
+                est1RMmax,
+                est1RMavg,
+                est1RMbest3Avg,
+                max
         );
     }
 
@@ -146,6 +149,15 @@ public class SetsGroupCleanerPlusService {
             }
         }
         return true;
+    }
+
+    private Double returnMax(SetsGroupedWithNameDTO setsGrouped) {
+        return setsGrouped.sets().stream()
+                .filter(set -> set instanceof SetBasicWith1RMDTO)
+                .map(set -> (SetBasicWith1RMDTO) set)
+                .mapToDouble(SetBasicWith1RMDTO::weight)
+                .max()
+                .orElse(0.0);
     }
 
     private double returnMax1RMest(SetsGroupedWithNameDTO setsGrouped){

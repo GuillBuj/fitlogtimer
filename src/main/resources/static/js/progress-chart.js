@@ -68,38 +68,29 @@ class ProgressChart {
             afterDatasetsDraw(chart) {
                 const ctx = chart.ctx;
                 const meta = chart.getDatasetMeta(3); // Dataset "Max"
-
                 if (!meta || !meta.data || meta.data.length === 0) return;
 
+                const color = chart.data.datasets[3].borderColor || 'rgba(220,50,50,0.9)';
                 ctx.save();
 
-                // Récupère les barres du dataset est1RMMaxData (toujours présent)
-                const barMeta = chart.getDatasetMeta(1); // est1RMMaxData
+                // Récupère l’échelle X du premier dataset bar (ou par défaut)
+                const xScale = chart.scales[Object.keys(chart.scales).find(k => chart.scales[k].axis === 'x')];
+                let categoryWidth = 12;
 
+                if (xScale && chart.data.labels.length > 1) {
+                    const x0 = xScale.getPixelForTick(0);
+                    const x1 = xScale.getPixelForTick(1);
+                    categoryWidth = (x1 - x0) * 0.055; // proportion
+                }
+
+                // Dessine les segments horizontaux
                 meta.data.forEach((point) => {
-                    const value = point.getProps(['y'], true).y;
-                    if (value === null || value === undefined) return;
+                    const { x, y } = point.getProps(['x', 'y'], true);
+                    if (x == null || y == null) return;
 
-                    const {x, y} = point.getProps(['x', 'y'], true);
-                    const color = chart.data.datasets[3].borderColor || 'rgba(250,0,250,0.9)';
-
-                    // Trouve la barre qui a la même position X dans est1RMMaxData
-                    let barWidth = 10;
-
-                    if (barMeta && barMeta.data) {
-                        for (const bar of barMeta.data) {
-                            const barX = bar.getProps(['x'], true).x;
-                            if (Math.abs(barX - x) < 0.1) {
-                                barWidth = bar.width;
-                                break;
-                            }
-                        }
-                    }
-
-                    // Dessine la ligne horizontale
                     ctx.beginPath();
-                    ctx.moveTo(x - barWidth / 2, y);
-                    ctx.lineTo(x + barWidth / 2, y);
+                    ctx.moveTo(x - categoryWidth / 2, y);
+                    ctx.lineTo(x + categoryWidth / 2, y);
                     ctx.lineWidth = 4;
                     ctx.strokeStyle = color;
                     ctx.stroke();
@@ -109,12 +100,6 @@ class ProgressChart {
             }
         };
 
-        console.log('Dataset lengths:', {
-            est1RMMaxData: this.est1RMMaxData.length,
-            est1RM3BestData: this.est1RM3BestData.length,
-            maxWeight: this.maxWeight.length,
-            bodyWeightData: this.bodyWeightData.length
-        });
         this.chart = new Chart(canvas.getContext('2d'), {
             plugins: [horizontalLinePlugin],
             data: {

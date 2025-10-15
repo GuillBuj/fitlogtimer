@@ -139,7 +139,7 @@ class ProgressChart {
                         data: this.maxWeight,
                         showLine: false,
                         pointRadius: 0,
-                        borderColor: 'rgba(250,200,100,0.7)',
+                        borderColor: 'rgba(250,200,100,0.9)',
                         borderWidth: 1,
                         backgroundColor: 'transparent',
                         order: 9999

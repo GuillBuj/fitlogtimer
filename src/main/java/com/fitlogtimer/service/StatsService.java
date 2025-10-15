@@ -344,7 +344,8 @@ public class StatsService {
     }
 
     public double getSeasonBestReps(int exerciseId){
-        return exerciseSetRepository.findMaxRepsByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
+        Integer maxReps = exerciseSetRepository.findMaxRepsByExerciseIdAndYear(exerciseId, LocalDate.now().getYear());
+        return maxReps != null ? maxReps.doubleValue() : 0.0;
     }
 
     public double getPersonalBestDuration(int exerciseId){

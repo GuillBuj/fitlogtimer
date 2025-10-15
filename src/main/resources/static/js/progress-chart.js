@@ -25,6 +25,25 @@ class ProgressChart {
             };
         }).filter(d => d != null);
 
+        // Calcul ratio pr affichage
+        const max1RM = Math.max(...allData.map(d => d.maxWeight || 0));
+
+        const maxBodyWeight = Math.max(...allData.map(d => d.bodyWeight || 0));
+
+        this.bodyWeightScale = 1; // Échelle par défaut
+
+        if (max1RM > 0 && maxBodyWeight > 0) {
+            const ratio = max1RM / maxBodyWeight;
+
+            if (ratio < 0.15) {
+                this.bodyWeightScale = 0.1;
+            } else if (ratio < 0.3) {
+                this.bodyWeightScale = 0.25;
+            } else if (ratio < 0.6) {
+                this.bodyWeightScale = 0.5;
+            }
+        }
+
         // On utilise les mêmes dates pour tous les datasets
         const commonDates = allData.map(d => d.x);
 
@@ -43,7 +62,7 @@ class ProgressChart {
         // BodyWeight avec la logique des gaps
         const rawBodyweight = allData
             .filter(d => d.bodyWeight != null && d.bodyWeight > 0)
-            .map(d => ({ x: d.x, y: d.bodyWeight }));
+            .map(d => ({ x: d.x,  y: d.bodyWeight * this.bodyWeightScale }));
 
         this.bodyWeightData = [];
         for (let i = 0; i < rawBodyweight.length; i++) {
@@ -123,7 +142,9 @@ class ProgressChart {
                     },
                     {
                         type: 'line',
-                        label: 'Poids du corps',
+                        label: this.bodyWeightScale !== 1 ?
+                            `Poids du corps × ${this.bodyWeightScale}` :
+                            'Poids du corps',
                         data: this.bodyWeightData,
                         borderColor: 'rgba(250,128,114,0.9)',
                         backgroundColor: 'transparent',
@@ -155,7 +176,13 @@ class ProgressChart {
                     tooltip: {
                         callbacks: {
                             title: ctx => ctx[0] ? new Date(ctx[0].parsed.x).toLocaleDateString('fr-FR') : '',
-                            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(1) ?? '-'} kg`
+                            label: ctx => {
+                                if (ctx.dataset.label.includes('Poids du corps') && progressChartInstance.bodyWeightScale !== 1) {
+                                    const realValue = ctx.parsed.y / progressChartInstance.bodyWeightScale;
+                                    return `Poids du corps: ${realValue.toFixed(1)} kg`;
+                                }
+                                return `${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(1) ?? '-'} kg`;
+                            }
                         }
                     }
                 },

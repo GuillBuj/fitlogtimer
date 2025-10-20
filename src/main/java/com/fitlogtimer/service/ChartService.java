@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Year;
-import java.time.YearMonth;
 import java.time.temporal.WeekFields;
 import java.util.*;
 
@@ -36,9 +35,9 @@ public class ChartService {
         return chartDataMapper.toChartDataPoints(exerciseDetails.exerciseSets());
     }
 
-    private List<ChartPeriodDataPointDTO> getMainLiftsChartData(PeriodType periodType) {
-        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP");
-        List<Integer> exerciseIds = exerciseSetRepository.findIdsByShortNames(mainShortNames);
+    private List<ChartPeriodDataPointDTO> getExercisesChartData(List<String> exerciseShortNames, PeriodType periodType) {
+
+        List<Integer> exerciseIds = exerciseSetRepository.findIdsByShortNames(exerciseShortNames);
 
         List<ChartPeriodDataPointDTO> result = new ArrayList<>();
 
@@ -160,10 +159,23 @@ public class ChartService {
 
 
     public List<ChartPeriodDataPointDTO> getMainLiftsChartDataMonthly() {
-        return getMainLiftsChartData(PeriodType.MONTH);
+        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP", "DCM");
+        return getExercisesChartData(mainShortNames, PeriodType.MONTH);
     }
 
     public List<ChartPeriodDataPointDTO> getMainLiftsChartDataWeekly() {
-        return getMainLiftsChartData(PeriodType.WEEK);
+        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP", "DCM");
+        return getExercisesChartData(mainShortNames, PeriodType.WEEK);
     }
+
+    public List<ChartPeriodDataPointDTO> getBenchLiftsChartDataMonthly() {
+        List<String> exerciseShortNames = List.of("DC", "DC30", "DCS", "DCP", "DCM", "DCX");
+        return getExercisesChartData(exerciseShortNames, PeriodType.MONTH);
+    }
+
+    public List<ChartPeriodDataPointDTO> getBenchLiftsChartDataWeekly() {
+        List<String> exerciseShortNames = List.of("DC", "DC30", "DCS", "DCP", "DCM", "DCX");
+        return getExercisesChartData(exerciseShortNames, PeriodType.WEEK);
+    }
+
 }

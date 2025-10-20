@@ -1543,13 +1543,11 @@ th.exercises-list-column{
     align-items: center;
 }
 
-/* Track Chrome / Edge */
 #zoomSlider::-webkit-slider-runnable-track {
     height: 6px;
     border-radius: 3px;
 }
 
-/* Thumb Chrome / Edge */
 #zoomSlider::-webkit-slider-thumb {
     appearance: none;
     width: 16px;
@@ -1561,14 +1559,12 @@ th.exercises-list-column{
     margin-top: -5px; /* ajustement vertical (la moitié du thumb - la moitié du track) */
 }
 
-/* Track Firefox */
 #zoomSlider::-moz-range-track {
     height: 6px;
     border-radius: 3px;
     background: lightgray;
 }
 
-/* Thumb Firefox */
 #zoomSlider::-moz-range-thumb {
     width: 16px;
     height: 16px;
@@ -1581,4 +1577,71 @@ th.exercises-list-column{
 body.calendar-page { /* Ajoutez une classe au body */
     padding: 0 !important;
     margin: 0 !important;
+}
+
+
+/* === Menu déroulant pour la navbar === */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 8px;
+    color: papayawhip;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.dropdown-icon:hover {
+    color: #661111;
+    background: navajowhite;
+}
+
+.dropdown-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    transition: opacity 0.4s ease, transform 0.3s ease, visibility 0.4s;
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background-color: #1a0000;
+    border: 1px solid #661111;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    min-width: 150px;
+    z-index: 2000;
+    display: block; /* nécessaire pour permettre l’animation */
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 8px 12px;
+    color: papayawhip;
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+    background: navajowhite;
+    color: #661111;
+}
+
+/* Apparition immédiate */
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+/* Disparition retardée */
+.dropdown:not(:hover) .dropdown-menu {
+    transition-delay: 0.1s;
 }

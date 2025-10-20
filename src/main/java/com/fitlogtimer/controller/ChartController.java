@@ -21,7 +21,7 @@ public class ChartController {
     private final ChartService chartService;
 
     @GetMapping("/monthly-main-exercises")
-    public String showMonthlyChart(Model model) {
+    public String showMonthlyMainExercisesChart(Model model) {
 
         List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataMonthly();
 
@@ -31,9 +31,29 @@ public class ChartController {
     }
 
     @GetMapping("/weekly-main-exercises")
-    public String showWeeklyChart(Model model) {
+    public String showWeeklyMainExercisesChart(Model model) {
 
         List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataWeekly();
+
+        model.addAttribute("chartData", data);
+        model.addAttribute("period", "WEEKLY");
+        return "period-chart";
+    }
+
+    @GetMapping("/monthly-bench-exercises")
+    public String showMonthlyBenchExercisesChart(Model model) {
+
+        List<ChartPeriodDataPointDTO> data = chartService.getBenchLiftsChartDataMonthly();
+
+        model.addAttribute("chartData", data);
+        model.addAttribute("period", "MONTHLY");
+        return "period-chart";
+    }
+
+    @GetMapping("/weekly-bench-exercises")
+    public String showWeeklyBenchExercisesChart(Model model) {
+
+        List<ChartPeriodDataPointDTO> data = chartService.getBenchLiftsChartDataWeekly();
 
         model.addAttribute("chartData", data);
         model.addAttribute("period", "WEEKLY");

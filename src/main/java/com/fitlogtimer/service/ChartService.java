@@ -159,13 +159,15 @@ public class ChartService {
 
 
     public List<ChartPeriodDataPointDTO> getMainLiftsChartDataMonthly() {
-        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP", "DCM");
-        return getExercisesChartData(mainShortNames, PeriodType.MONTH);
+        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP", "DCM", "DCX");
+        List<ChartPeriodDataPointDTO> data = getExercisesChartData(mainShortNames, PeriodType.MONTH);
+        return mergeBenchPressVariants(data);
     }
 
     public List<ChartPeriodDataPointDTO> getMainLiftsChartDataWeekly() {
-        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP", "DCM");
-        return getExercisesChartData(mainShortNames, PeriodType.WEEK);
+        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP", "DCM", "DCX");
+        List<ChartPeriodDataPointDTO> data = getExercisesChartData(mainShortNames, PeriodType.WEEK);
+        return mergeBenchPressVariants(data);
     }
 
     public List<ChartPeriodDataPointDTO> getBenchLiftsChartDataMonthly() {
@@ -176,6 +178,43 @@ public class ChartService {
     public List<ChartPeriodDataPointDTO> getBenchLiftsChartDataWeekly() {
         List<String> exerciseShortNames = List.of("DC", "DC30", "DCS", "DCP", "DCM", "DCX");
         return getExercisesChartData(exerciseShortNames, PeriodType.WEEK);
+    }
+
+    private List<ChartPeriodDataPointDTO> mergeBenchPressVariants(List<ChartPeriodDataPointDTO> dataPoints) {
+        Set<String> benchVariants = Set.of(
+                "Bench Press",
+                "Paused Bench Press",
+                "Mid Grip Bench Press",
+                "Bench Press Speed"
+        );
+
+        Map<String, List<ChartPeriodDataPointDTO>> groupedByPeriod = new LinkedHashMap<>();
+
+        for (ChartPeriodDataPointDTO dp : dataPoints) {
+            String period = dp.period();
+            String groupName = benchVariants.contains(dp.exerciseName()) ? "Bench Press(+)" : dp.exerciseName();
+            groupedByPeriod.computeIfAbsent(period + "_" + groupName, k -> new ArrayList<>()).add(dp);
+        }
+
+        List<ChartPeriodDataPointDTO> merged = new ArrayList<>();
+
+        for (List<ChartPeriodDataPointDTO> group : groupedByPeriod.values()) {
+            if (group.isEmpty()) continue;
+
+            ChartPeriodDataPointDTO first = group.getFirst();
+            String period = first.period();
+            String groupName = benchVariants.contains(first.exerciseName()) ? "Bench Press(+)" : first.exerciseName();
+
+            double max = group.stream().mapToDouble(ChartPeriodDataPointDTO::max).max().orElse(0.0);
+            RecordType recordType = group.stream()
+                    .map(ChartPeriodDataPointDTO::recordType)
+                    .max(Comparator.comparing(Enum::ordinal))
+                    .orElse(RecordType.NONE);
+
+            merged.add(new ChartPeriodDataPointDTO(period, groupName, max, recordType));
+        }
+
+        return merged;
     }
 
 }

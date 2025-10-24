@@ -26,7 +26,8 @@ public class ChartController {
         List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataMonthly();
 
         model.addAttribute("chartData", data);
-        model.addAttribute("period", "MONTHLY");
+        model.addAttribute("chartType", "main");
+        model.addAttribute("chartPeriod", "MONTHLY");
         return "period-chart";
     }
 
@@ -36,7 +37,8 @@ public class ChartController {
         List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataWeekly();
 
         model.addAttribute("chartData", data);
-        model.addAttribute("period", "WEEKLY");
+        model.addAttribute("chartType", "main");
+        model.addAttribute("chartPeriod", "WEEKLY");
         return "period-chart";
     }
 
@@ -46,7 +48,8 @@ public class ChartController {
         List<ChartPeriodDataPointDTO> data = chartService.getBenchLiftsChartDataMonthly();
 
         model.addAttribute("chartData", data);
-        model.addAttribute("period", "MONTHLY");
+        model.addAttribute("chartType", "bench");
+        model.addAttribute("chartPeriod", "MONTHLY");
         return "period-chart";
     }
 
@@ -56,7 +59,8 @@ public class ChartController {
         List<ChartPeriodDataPointDTO> data = chartService.getBenchLiftsChartDataWeekly();
 
         model.addAttribute("chartData", data);
-        model.addAttribute("period", "WEEKLY");
+        model.addAttribute("chartType", "bench");
+        model.addAttribute("chartPeriod", "WEEKLY");
         return "period-chart";
     }
 }

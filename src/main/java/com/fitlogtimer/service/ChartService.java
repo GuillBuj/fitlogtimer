@@ -206,10 +206,21 @@ public class ChartService {
             String groupName = benchVariants.contains(first.exerciseName()) ? "Bench Press(+)" : first.exerciseName();
 
             double max = group.stream().mapToDouble(ChartPeriodDataPointDTO::max).max().orElse(0.0);
-            RecordType recordType = group.stream()
-                    .map(ChartPeriodDataPointDTO::recordType)
-                    .max(Comparator.comparing(Enum::ordinal))
-                    .orElse(RecordType.NONE);
+            RecordType recordType;
+
+            if ("Bench Press(+)".equals(groupName)) {
+                recordType = group.stream()
+                        .filter(dp -> "Bench Press".equals(dp.exerciseName()))
+                        .map(ChartPeriodDataPointDTO::recordType)
+                        .max(Comparator.comparing(Enum::ordinal))
+                        .orElse(RecordType.NONE);
+            } else {
+                // pour les autres(non mergés)
+                recordType = group.stream()
+                        .map(ChartPeriodDataPointDTO::recordType)
+                        .max(Comparator.comparing(Enum::ordinal))
+                        .orElse(RecordType.NONE);
+            }
 
             merged.add(new ChartPeriodDataPointDTO(period, groupName, max, recordType));
         }

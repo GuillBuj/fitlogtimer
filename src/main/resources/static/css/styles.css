@@ -1671,3 +1671,15 @@ body.calendar-page { /* Ajoutez une classe au body */
 .yearly-maxs-table td {
     transition: background-color 0.3s ease;
 }
+
+.soft-link {
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.soft-link:hover {
+    transform: scale(1.01);
+    text-decoration: none;
+    color: inherit;
+}

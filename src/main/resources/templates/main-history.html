@@ -9,7 +9,7 @@
 <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
 <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 
-<h1>Historique des Maxs Annuels</h1>
+<h1>Maxs Annuels</h1>
 
 <div th:if="${table.isEmpty()}">
     <p>Aucune donnée disponible.</p>
@@ -27,13 +27,21 @@
         <tbody>
         <!-- Boucle sur chaque exercice -->
         <tr th:each="exerciseData : ${table}">
-            <td>[[${exerciseData.exerciseName}]]</td>
+            <td>
+                <a th:href="@{/stats/maxsByReps/{id}(id=${exerciseData.exerciseId})}" class="soft-link">
+                    [[${exerciseData.exerciseName}]]
+                </a>
+            </td>
 
             <td th:each="year : ${allYears}"
                 th:with="data=${exerciseData.yearlyData.get(year)}"
                 th:style="${data != null ? data.color : ''}">
                 <th:block th:if="${data}">
-                    <div>[[${data.maxValue}]] kg</div>
+                    <div  class="bold-text">
+                        <a th:href="@{/workouts/{id}(id=${data.workoutId()})}" class="soft-link">
+                            [[${data.maxValue}]] kg
+                        </a>
+                    </div>
                     <small th:if="${data.bodyweight() != null && data.bodyweight() > 0.0}">
                         @[[${#numbers.formatDecimal(data.bodyweight, 1, 1)}]]kg
                     </small>

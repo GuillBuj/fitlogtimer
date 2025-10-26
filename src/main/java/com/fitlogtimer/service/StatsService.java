@@ -731,7 +731,6 @@ public class StatsService {
                             yearlyData
                     );
                 })
-                .sorted(Comparator.comparing(ExerciseYearlyMaxTableDTO::exerciseName))
                 .collect(Collectors.toList());
     }
 
@@ -773,9 +772,9 @@ public class StatsService {
     private String computeTrendColor(Double trendRatio) {
         if (trendRatio == null) return "";
 
-        // Cas spécial pour -1 (données manquantes) en gris clair
+        // Cas spécial pour -1 (données manquantes)
         if (trendRatio == -1.0) {
-            return "background-color: #f6f6f6;"; // gris clair
+            return "background-color: #f6f6d6;";
         }
 
         boolean isPositive = trendRatio >= 1;
@@ -806,12 +805,10 @@ public class StatsService {
     }
 
     private Double calculateTrendRatio(List<PeriodMaxDTO> maxes, int currentIndex) {
-        log.info("maxes: {}, currentIndex: {}", maxes, currentIndex);
         PeriodMaxDTO current = maxes.get(currentIndex);
 
         for (int i = currentIndex - 1; i >= 0; i--) {
             PeriodMaxDTO previous = maxes.get(i);
-            log.info("previous: {} - current: {}", previous, current);
             if (previous.maxValue() != null && previous.maxValue() > 0) {
                 double ratio = current.maxValue() / previous.maxValue();
                 return Math.round(ratio * 1000.0) / 1000.0;

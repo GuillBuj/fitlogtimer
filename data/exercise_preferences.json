@@ -570,11 +570,11 @@
       "order" : 3,
       "visible" : true
     }, {
-      "exerciseId" : 3,
+      "exerciseId" : 33,
       "order" : 4,
       "visible" : true
     }, {
-      "exerciseId" : 33,
+      "exerciseId" : 3,
       "order" : 5,
       "visible" : true
     }, {

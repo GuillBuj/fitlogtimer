@@ -4,7 +4,7 @@ import java.util.Map;
 
 public record ExerciseYearlyMaxTableDTO(
         String exerciseName,
-        Integer exerciseId,
+        int exerciseId,
         Map<Integer, PeriodMaxWithTrendDTO> yearlyData
 ) {
 }

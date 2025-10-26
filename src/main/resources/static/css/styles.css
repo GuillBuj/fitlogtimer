@@ -1645,3 +1645,29 @@ body.calendar-page { /* Ajoutez une classe au body */
 .dropdown:not(:hover) .dropdown-menu {
     transition-delay: 0.1s;
 }
+
+/* Main history */
+.yearly-maxs-table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+.yearly-maxs-table th,
+.yearly-maxs-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.yearly-maxs-table th {
+    background-color: #f4f4f4;
+}
+
+.no-data {
+    color: #bbb;
+}
+
+.yearly-maxs-table td {
+    transition: background-color 0.3s ease;
+}

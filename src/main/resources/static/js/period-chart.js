@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 ctx.save();
                                 ctx.beginPath();
                                 ctx.arc(point.x, point.y, 5.5, 0, 2 * Math.PI);
-                                ctx.fillStyle = 'rgba(200, 165, 0, 0.5)';
+                                ctx.fillStyle = 'rgba(200, 165, 0, 0.7)';
                                 ctx.fill();
                                 ctx.restore();
                             }

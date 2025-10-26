@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Poids max par nombre de réps</title>
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+<p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+
+<h1>Historique des Maxs Annuels</h1>
+
+<div th:if="${table.isEmpty()}">
+    <p>Aucune donnée disponible.</p>
+</div>
+
+<div th:unless="${table.isEmpty()}">
+    <table class="yearly-maxs-table auto-width-table centered centered-text">
+        <thead>
+        <tr>
+            <th>Exercice</th>
+            <th th:each="year : ${allYears}">[[${year}]]</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- Boucle sur chaque exercice -->
+        <tr th:each="exerciseData : ${table}">
+            <td>[[${exerciseData.exerciseName}]]</td>
+
+            <td th:each="year : ${allYears}"
+                th:with="data=${exerciseData.yearlyData.get(year)}"
+                th:style="${data != null ? data.color : ''}">
+                <th:block th:if="${data}">
+                    <div>[[${data.maxValue}]] kg</div>
+                    <small th:if="${data.bodyweight() != null && data.bodyweight() > 0.0}">
+                        @[[${#numbers.formatDecimal(data.bodyweight, 1, 1)}]]kg
+                    </small>
+                </th:block>
+
+                <th:block th:unless="${data}">
+                    <span class="no-data">-</span>
+                </th:block>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="/js/timer.js"></script>
+</body>
+</html>

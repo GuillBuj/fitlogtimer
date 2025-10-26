@@ -39,7 +39,7 @@ class ProgressChart {
                 this.bodyWeightScale = 0.1;
             } else if (ratio < 0.3) {
                 this.bodyWeightScale = 0.25;
-            } else if (ratio < 0.6) {
+            } else if (ratio < 0.7) {
                 this.bodyWeightScale = 0.5;
             }
         }

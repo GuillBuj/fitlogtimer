@@ -10,7 +10,7 @@
 
 <form th:action="@{/preferences/create}" method="post"  class="preferences-form">
     <label for="listName">Nom de la liste :</label>
-    <input type="text" id="listName" name="listName" value="all" required readonly />
+    <input type="text" id="listName" name="listName" value="all" required />
     <button type="submit" class="btnValid">Sauvegarder</button>
     <ul id="exercise-list" class="sortable-list">
         <li th:each="ex : ${exerciseList}"

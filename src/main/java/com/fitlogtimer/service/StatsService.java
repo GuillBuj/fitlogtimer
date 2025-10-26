@@ -1,5 +1,6 @@
 package com.fitlogtimer.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
@@ -15,6 +16,8 @@ import com.fitlogtimer.dto.YearlyBestRatioFor1RMWithTrendDTO;
 import com.fitlogtimer.dto.YearlyBestRatioWithTrendDTO;
 import com.fitlogtimer.dto.stats.*;
 import com.fitlogtimer.enums.Trend;
+import com.fitlogtimer.mapper.ExerciseSetMapper;
+import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.sets.BodyweightSet;
 import com.fitlogtimer.model.sets.IsometricSet;
 import com.fitlogtimer.repository.ExerciseRepository;
@@ -34,6 +37,7 @@ public class StatsService {
 
     private final ExerciseSetRepository exerciseSetRepository;
     private final ExerciseRepository exerciseRepository;
+    private final ExercisePreferenceService exercisePreferenceService;
 
     @FunctionalInterface
     private interface MaxWeightFetcher {
@@ -712,5 +716,123 @@ public class StatsService {
         } else {
             return Trend.DOWN;
         }
+    }
+
+    //Pour tableau récap des gros exs
+    public List<ExerciseYearlyMaxTableDTO> getPeriodMaxTableForAllVisible() throws IOException {
+        List<Exercise> visibleExercises = exercisePreferenceService.getVisibleExercises("main");
+
+        return visibleExercises.stream()
+                .map(exercise -> {
+                    Map<Integer, PeriodMaxWithTrendDTO> yearlyData = getPeriodMaxWithTrend(exercise.getId());
+                    return new ExerciseYearlyMaxTableDTO(
+                            exercise.getName(),
+                            exercise.getId(),
+                            yearlyData
+                    );
+                })
+                .sorted(Comparator.comparing(ExerciseYearlyMaxTableDTO::exerciseName))
+                .collect(Collectors.toList());
+    }
+
+    public Map<Integer, PeriodMaxWithTrendDTO> getPeriodMaxWithTrend(int exerciseId) {
+        List<PeriodMaxDTO> yearlyMax = exerciseSetRepository.findYearlyMaxList(exerciseId);
+
+        // filtrage des doublons
+        List<PeriodMaxDTO> filteredMax = yearlyMax.stream()
+                .collect(Collectors.toMap(
+                        PeriodMaxDTO::year,
+                        dto -> dto,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(PeriodMaxDTO::year))
+                .collect(Collectors.toList());
+
+        Map<Integer, PeriodMaxWithTrendDTO> result = new LinkedHashMap<>();
+
+        for (int i = 0; i < filteredMax.size(); i++) {
+            PeriodMaxDTO current = filteredMax.get(i);
+            Double trendRatio = calculateTrendRatio(filteredMax, i);
+            String color = computeTrendColor(trendRatio);
+
+            result.put(current.year(), new PeriodMaxWithTrendDTO(
+                    current.maxValue(),
+                    current.bodyweight(),
+                    current.workoutId(),
+                    current.year(),
+                    trendRatio,
+                    color
+            ));
+        }
+
+        return sortByYearDesc(result);
+    }
+
+    private String computeTrendColor(Double trendRatio) {
+        if (trendRatio == null) return "";
+
+        // Cas spécial pour -1 (données manquantes) en gris clair
+        if (trendRatio == -1.0) {
+            return "background-color: #f6f6f6;"; // gris clair
+        }
+
+        boolean isPositive = trendRatio >= 1;
+        double hue = isPositive ? 130 : 0;
+
+        // Écart à 1 - courbe logarithmique pour plus de sensibilité sur petites variations
+        double diff = Math.abs(trendRatio - 1);
+
+        // Utilisation d'une courbe pour amplifier les petites différences
+        double intensity;
+        if (diff < 0.05) {
+            // Amplification forte pour les très petites variations
+            intensity = diff * 150;
+        } else if (diff < 0.2) {
+            // Amplification moyenne
+            intensity = 7.5 + (diff - 0.05) * 80;
+        } else {
+            // Limitation pour éviter le flashy
+            intensity = 19.5 + (diff - 0.2) * 10;
+        }
+
+        intensity = Math.min(intensity, 35); // Plafond bas pour éviter le flashy
+
+        double saturation = 45 + intensity;  // 45% à 80%
+        double lightness = 96 - (intensity * 1.4); // 96% à 47% - grande plage
+
+        return String.format("background-color: hsl(%.0f, %.0f%%, %.0f%%);", hue, saturation, lightness);
+    }
+
+    private Double calculateTrendRatio(List<PeriodMaxDTO> maxes, int currentIndex) {
+        log.info("maxes: {}, currentIndex: {}", maxes, currentIndex);
+        PeriodMaxDTO current = maxes.get(currentIndex);
+
+        for (int i = currentIndex - 1; i >= 0; i--) {
+            PeriodMaxDTO previous = maxes.get(i);
+            log.info("previous: {} - current: {}", previous, current);
+            if (previous.maxValue() != null && previous.maxValue() > 0) {
+                double ratio = current.maxValue() / previous.maxValue();
+                return Math.round(ratio * 1000.0) / 1000.0;
+            }
+        }
+
+        return -1.0;
+    }
+
+    private Map<Integer, PeriodMaxWithTrendDTO> sortByYearDesc(Map<Integer, PeriodMaxWithTrendDTO> map) {
+        return map.entrySet().stream()
+                .sorted(Map.Entry.<Integer, PeriodMaxWithTrendDTO>comparingByKey().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
+    }
+
+    public List<PeriodMaxDTO> getPeriodMaxList(int exerciseId){
+        return exerciseSetRepository.findYearlyMaxList(exerciseId);
     }
 }

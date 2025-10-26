@@ -1,9 +1,8 @@
 package com.fitlogtimer.controller;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
@@ -111,6 +110,21 @@ public class StatsController {
 
         log.info(model.toString());
         return "record-history";
+    }
+
+    @GetMapping("/mainHistory")
+    public String getMainHistory(Model model) throws IOException {
+        List<ExerciseYearlyMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible();
+
+        Set<Integer> allYears = table.stream()
+                .flatMap(dto -> dto.yearlyData().keySet().stream())
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        model.addAttribute("table", table);
+        model.addAttribute("allYears", allYears);
+
+        return "main-history";
     }
 
 }

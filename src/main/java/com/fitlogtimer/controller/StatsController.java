@@ -115,13 +115,15 @@ public class StatsController {
     @GetMapping("/mainHistory")
     public String getMainHistory(Model model) throws IOException {
         List<ExerciseYearlyMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible();
-
+        List<ExerciseYearlyMaxRatioTableDTO> ratioTable = statsService.getPeriodMaxRatioTableForAllVisible();
+        log.info("*** ratioTable: {}", ratioTable);
         Set<Integer> allYears = table.stream()
                 .flatMap(dto -> dto.yearlyData().keySet().stream())
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         model.addAttribute("table", table);
+        model.addAttribute("ratioTable", ratioTable);
         model.addAttribute("allYears", allYears);
 
         return "main-history";

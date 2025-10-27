@@ -8,6 +8,7 @@ import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
 import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
 import com.fitlogtimer.dto.stats.MaxWithDateDTO;
 import com.fitlogtimer.dto.stats.PeriodMaxDTO;
+import com.fitlogtimer.dto.stats.PeriodMaxRatioDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -231,6 +232,39 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     ORDER BY FUNCTION('YEAR', fws.workout.date) DESC
     """)
     List<PeriodMaxDTO> findYearlyMaxList(@Param("exerciseId") int exerciseId);
+
+    @Query("""
+    SELECT NEW com.fitlogtimer.dto.stats.PeriodMaxRatioDTO(
+        fws.weight,
+        w.bodyWeight,
+        fws.weight / w.bodyWeight,
+        CAST(w.id AS int),
+        CAST(FUNCTION('YEAR', fws.workout.date) AS int)
+    )
+    FROM FreeWeightSet fws
+    JOIN fws.workout w
+    WHERE fws.exercise.id = :exerciseId
+      AND w.bodyWeight > 0
+      AND (fws.weight / w.bodyWeight) = (
+          SELECT MAX(fws2.weight / w2.bodyWeight)
+          FROM FreeWeightSet fws2
+          JOIN fws2.workout w2
+          WHERE fws2.exercise.id = :exerciseId
+            AND FUNCTION('YEAR', fws2.workout.date) = FUNCTION('YEAR', fws.workout.date)
+            AND w2.bodyWeight > 0
+      )
+      AND fws.workout.date = (
+          SELECT MIN(fws3.workout.date)
+          FROM FreeWeightSet fws3
+          JOIN fws3.workout w3
+          WHERE fws3.exercise.id = :exerciseId
+            AND FUNCTION('YEAR', fws3.workout.date) = FUNCTION('YEAR', fws.workout.date)
+            AND (fws3.weight / w3.bodyWeight) = (fws.weight / w.bodyWeight)
+            AND w3.bodyWeight > 0
+      )
+    ORDER BY FUNCTION('YEAR', fws.workout.date) DESC
+    """)
+    List<PeriodMaxRatioDTO> findYearlyMaxRatioList(@Param("exerciseId") int exerciseId);
 
     //liste des meilleurs ratio sur poids max groupés par année
     //!peut retourner des doublons

@@ -753,12 +753,64 @@ public class StatsService {
 
         for (int i = 0; i < filteredMax.size(); i++) {
             PeriodMaxDTO current = filteredMax.get(i);
-            Double trendRatio = calculateTrendRatio(filteredMax, i);
+            Double trendRatio = calculateTrendRatioGeneric(filteredMax, i, PeriodMaxDTO::maxValue);
             String color = computeTrendColor(trendRatio);
 
             result.put(current.year(), new PeriodMaxWithTrendDTO(
                     current.maxValue(),
                     current.bodyweight(),
+                    current.workoutId(),
+                    current.year(),
+                    trendRatio,
+                    color
+            ));
+        }
+
+        return sortByYearDesc(result);
+    }
+
+    public List<ExerciseYearlyMaxRatioTableDTO> getPeriodMaxRatioTableForAllVisible() throws IOException {
+        List<Exercise> visibleExercises = exercisePreferenceService.getVisibleExercises("main");
+
+        return visibleExercises.stream()
+                .map(exercise -> {
+                    Map<Integer, PeriodMaxRatioWithTrendDTO> yearlyData = getPeriodMaxRatioWithTrend(exercise.getId());
+                    return new ExerciseYearlyMaxRatioTableDTO(
+                            exercise.getName(),
+                            exercise.getId(),
+                            yearlyData
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    public Map<Integer, PeriodMaxRatioWithTrendDTO> getPeriodMaxRatioWithTrend(int exerciseId) {
+        // On réutilise la requête que tu as modifiée précédemment :
+        List<PeriodMaxRatioDTO> yearlyRatios = exerciseSetRepository.findYearlyMaxRatioList(exerciseId);
+
+        // même logique que pour les max
+        List<PeriodMaxRatioDTO> filteredMaxRatios = yearlyRatios.stream()
+                .collect(Collectors.toMap(
+                        PeriodMaxRatioDTO::year,
+                        dto -> dto,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(PeriodMaxRatioDTO::year))
+                .collect(Collectors.toList());
+
+        Map<Integer, PeriodMaxRatioWithTrendDTO> result = new LinkedHashMap<>();
+
+        for (int i = 0; i < filteredMaxRatios.size(); i++) {
+            PeriodMaxRatioDTO current = filteredMaxRatios.get(i);
+            Double trendRatio = calculateTrendRatioGeneric(filteredMaxRatios, i, PeriodMaxRatioDTO::ratio);
+            String color = computeTrendColor(trendRatio);
+
+            result.put(current.year(), new PeriodMaxRatioWithTrendDTO(
+                    current.maxValue(),
+                    current.bodyweight(),
+                    Math.round(current.ratio() * 1000) / 1000.0,
                     current.workoutId(),
                     current.year(),
                     trendRatio,
@@ -804,13 +856,16 @@ public class StatsService {
         return String.format("background-color: hsl(%.0f, %.0f%%, %.0f%%);", hue, saturation, lightness);
     }
 
-    private Double calculateTrendRatio(List<PeriodMaxDTO> maxes, int currentIndex) {
-        PeriodMaxDTO current = maxes.get(currentIndex);
+    private <T> Double calculateTrendRatioGeneric(List<T> data, int currentIndex, Function<T, Double> valueExtractor) {
+        T current = data.get(currentIndex);
+        Double currentValue = valueExtractor.apply(current);
 
         for (int i = currentIndex - 1; i >= 0; i--) {
-            PeriodMaxDTO previous = maxes.get(i);
-            if (previous.maxValue() != null && previous.maxValue() > 0) {
-                double ratio = current.maxValue() / previous.maxValue();
+            T previous = data.get(i);
+            Double prevValue = valueExtractor.apply(previous);
+
+            if (prevValue != null && prevValue > 0) {
+                double ratio = currentValue / prevValue;
                 return Math.round(ratio * 1000.0) / 1000.0;
             }
         }
@@ -818,18 +873,14 @@ public class StatsService {
         return -1.0;
     }
 
-    private Map<Integer, PeriodMaxWithTrendDTO> sortByYearDesc(Map<Integer, PeriodMaxWithTrendDTO> map) {
+    private <T> Map<Integer, T> sortByYearDesc(Map<Integer, T> map) {
         return map.entrySet().stream()
-                .sorted(Map.Entry.<Integer, PeriodMaxWithTrendDTO>comparingByKey().reversed())
+                .sorted(Map.Entry.<Integer, T>comparingByKey().reversed())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (a, b) -> a,
                         LinkedHashMap::new
                 ));
-    }
-
-    public List<PeriodMaxDTO> getPeriodMaxList(int exerciseId){
-        return exerciseSetRepository.findYearlyMaxList(exerciseId);
     }
 }

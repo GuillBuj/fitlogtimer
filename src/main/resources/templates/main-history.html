@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <title>Poids max par nombre de réps</title>
+    <title>Recap Exercices Principaux</title>
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
@@ -44,6 +44,53 @@
                     </div>
                     <small th:if="${data.bodyweight() != null && data.bodyweight() > 0.0}">
                         @[[${#numbers.formatDecimal(data.bodyweight, 1, 1)}]]kg
+                    </small>
+                </th:block>
+
+                <th:block th:unless="${data}">
+                    <span class="no-data">-</span>
+                </th:block>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h1>Ratios Max Annuels</h1>
+
+<div th:if="${ratioTable.isEmpty()}">
+    <p>Aucune donnée disponible.</p>
+</div>
+
+<div th:unless="${ratioTable.isEmpty()}">
+    <table class="yearly-maxs-table auto-width-table centered centered-text">
+        <thead>
+        <tr>
+            <th>Exercice</th>
+            <th th:each="year : ${allYears}">[[${year}]]</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- Boucle sur chaque exercice -->
+        <tr th:each="exerciseData : ${ratioTable}">
+            <td>
+                <a th:href="@{/stats/maxsByReps/{id}(id=${exerciseData.exerciseId})}" class="soft-link">
+                    [[${exerciseData.exerciseName}]]
+                </a>
+            </td>
+
+            <td th:each="year : ${allYears}"
+                th:with="data=${exerciseData.yearlyData.get(year)}"
+                th:style="${data != null ? data.color : ''}">
+                <th:block th:if="${data}">
+                    <div class="bold-text">
+                        <a th:href="@{/workouts/{id}(id=${data.workoutId()})}" class="soft-link">
+                            [[${#numbers.formatDecimal(data.ratio, 1, 3)}]]
+                        </a>
+                    </div>
+                    <small th:if="${data.maxValue() != null && data.bodyweight() != null && data.bodyweight() > 0.0}">
+                        [[${#numbers.formatDecimal(data.maxValue, 1, 1)}]]@[[${#numbers.formatDecimal(data.bodyweight, 1, 1)}]]kg
                     </small>
                 </th:block>
 

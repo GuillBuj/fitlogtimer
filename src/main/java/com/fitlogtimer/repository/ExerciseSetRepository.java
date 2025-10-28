@@ -3,6 +3,7 @@ package com.fitlogtimer.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.fitlogtimer.dto.ExerciseSetFor1RMCalcDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
 import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
@@ -27,10 +28,6 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     @Query("DELETE FROM ExerciseSet")
     void deleteAllExerciseSets();
 
-    //@Query(value = "ALTER TABLE exerciseSet AUTO_INCREMENT = 1", nativeQuery = true)  PASSAGE SUR MYSQL
-    
-    // @Query("SELECT e FROM ExerciseSet e WHERE e.workoutId = :workoutId ORDER BY e.id DESC")
-    // Optional<ExerciseSet> findTopByWorkoutIdOrderByIdDesc(@Param("workoutId") int workoutId);
     
     @Modifying
     @Transactional
@@ -133,19 +130,6 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             @Param("exerciseId") int exerciseId,
             @Param("repNumber") int repNumber,
             @Param("year") int year);
-
-//    @Query("""
-//    SELECT NEW com.fitlogtimer.dto.stats.PeriodMaxDTO(fws.weight, w.bodyWeight, w.id)
-//    FROM FreeWeightSet fws
-//        JOIN Workout w
-//    WHERE fws.exercise.id = :exerciseId
-//      AND FUNCTION('YEAR', fws.workout.date) = :year
-//    ORDER BY fws.weight DESC, fws.workout.date ASC
-//        LIMIT 1
-//    """)
-//    Optional<PeriodMaxDTO> findYearlyMax(
-//            @Param("exerciseId") int exerciseId,
-//            @Param("year") int year);
 
     @Query("""
     SELECT NEW com.fitlogtimer.dto.stats.MaxWithDateDTO(es.repNumber, es.workout.date)
@@ -288,6 +272,22 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             ") " +
             "ORDER BY w.date DESC")
     List<ExerciseSetWithBodyWeightAndDateDTO> findYearlyMaxRatioSets(@Param("exerciseId") int exerciseId);
+
+    @Query("""
+    SELECT NEW com.fitlogtimer.dto.ExerciseSetFor1RMCalcDTO(
+        fws.weight,
+        fws.repNumber,
+        w.bodyWeight,
+        w.id,
+        w.date
+    )
+    FROM FreeWeightSet fws
+    JOIN fws.workout w
+    WHERE fws.exercise.id = :exerciseId
+      AND fws.repNumber >= 1
+      AND w.bodyWeight > 0
+    """)
+    List<ExerciseSetFor1RMCalcDTO> findAllSetsFor1RMCalc(@Param("exerciseId") int exerciseId);
 
     @Query("SELECT new com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO(" +
             "fws.id, fws.exercise, fws.repNumber, fws.weight, " +

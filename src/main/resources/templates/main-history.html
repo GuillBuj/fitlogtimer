@@ -103,6 +103,53 @@
     </table>
 </div>
 
+<h1>Ratios Max Annuels</h1>
+
+<div th:if="${est1RMTable.isEmpty()}">
+    <p>Aucune donnée disponible.</p>
+</div>
+
+<div th:unless="${est1RMTable.isEmpty()}">
+    <table class="yearly-maxs-table auto-width-table centered centered-text">
+        <thead>
+        <tr>
+            <th>Exercice</th>
+            <th th:each="year : ${allYears}">[[${year}]]</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <!-- Boucle sur chaque exercice -->
+        <tr th:each="exerciseData : ${est1RMTable}">
+            <td>
+                <a th:href="@{/stats/maxsByReps/{id}(id=${exerciseData.exerciseId})}" class="soft-link">
+                    [[${exerciseData.exerciseName}]]
+                </a>
+            </td>
+
+            <td th:each="year : ${allYears}"
+                th:with="data=${exerciseData.yearlyData.get(year)}"
+                th:style="${data != null ? data.color : ''}">
+                <th:block th:if="${data}">
+                    <div class="bold-text">
+                        <a th:href="@{/workouts/{id}(id=${data.workoutId()})}" class="soft-link">
+                            [[${#numbers.formatDecimal(data.estimated1RM, 1, 2)}]] kg
+                        </a>
+                    </div>
+                    <small th:if="${data.nbReps() != null && data.maxValue() != null && data.bodyweight() != null && data.bodyweight() > 0.0}">
+                        [[${data.nbReps}]]*[[${#numbers.formatDecimal(data.maxValue, 1, 1)}]]kg<br>@[[${#numbers.formatDecimal(data.bodyweight, 1, 1)}]]kg
+                    </small>
+                </th:block>
+
+                <th:block th:unless="${data}">
+                    <span class="no-data">-</span>
+                </th:block>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 <script src="/js/timer.js"></script>
 </body>
 </html>

@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.fitlogtimer.constants.ExerciseSetType;
+import com.fitlogtimer.dto.ExerciseSetFor1RMCalcDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
-import com.fitlogtimer.dto.YearlyBestRatioFor1RMWithTrendDTO;
-import com.fitlogtimer.dto.YearlyBestRatioWithTrendDTO;
+import com.fitlogtimer.dto.stats.YearlyBestRatioFor1RMWithTrendDTO;
+import com.fitlogtimer.dto.stats.YearlyBestRatioWithTrendDTO;
 import com.fitlogtimer.dto.stats.*;
 import com.fitlogtimer.enums.Trend;
-import com.fitlogtimer.mapper.ExerciseSetMapper;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.model.sets.BodyweightSet;
 import com.fitlogtimer.model.sets.IsometricSet;
@@ -634,7 +634,6 @@ public class StatsService {
         return result;
     }
 
-
     //1RMest d'après un mix de 3 formules trouvées sur le net
     public static double calculateOneRepMax(int repNumber, double weight){
         
@@ -785,10 +784,9 @@ public class StatsService {
     }
 
     public Map<Integer, PeriodMaxRatioWithTrendDTO> getPeriodMaxRatioWithTrend(int exerciseId) {
-        // On réutilise la requête que tu as modifiée précédemment :
+
         List<PeriodMaxRatioDTO> yearlyRatios = exerciseSetRepository.findYearlyMaxRatioList(exerciseId);
 
-        // même logique que pour les max
         List<PeriodMaxRatioDTO> filteredMaxRatios = yearlyRatios.stream()
                 .collect(Collectors.toMap(
                         PeriodMaxRatioDTO::year,
@@ -821,12 +819,79 @@ public class StatsService {
         return sortByYearDesc(result);
     }
 
+        public List<ExerciseYearlyMax1RMEstTableDTO> getPeriodMax1RMEstTableForAllVisible() throws IOException {
+        List<Exercise> visibleExercises = exercisePreferenceService.getVisibleExercises("main");
+
+        return visibleExercises.stream()
+                .map(exercise -> {
+                    Map<Integer, PeriodMax1RMEstWithTrendDTO> yearlyData = getPeriodMax1RMEstWithTrend(exercise.getId());
+                    return new ExerciseYearlyMax1RMEstTableDTO(
+                            exercise.getName(),
+                            exercise.getId(),
+                            yearlyData
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+    public Map<Integer, PeriodMax1RMEstWithTrendDTO> getPeriodMax1RMEstWithTrend(int exerciseId) {
+        List<ExerciseSetFor1RMCalcDTO> allSets = exerciseSetRepository.findAllSetsFor1RMCalc(exerciseId);
+
+        // Regrouper par année et trouver le max du 1RM estimé
+        Map<Integer, ExerciseSetFor1RMCalcDTO> bestPerYear = allSets.stream()
+                .collect(Collectors.groupingBy(
+                        set -> set.date().getYear(),
+                        Collectors.collectingAndThen(
+                                Collectors.maxBy(Comparator.comparingDouble(s -> calculateOneRepMax(s.reps(),s.weight()))),
+                                Optional::get
+                        )
+                ));
+
+        List<PeriodMax1RMEstDTO> yearlyMax = bestPerYear.entrySet().stream()
+                .map(entry -> {
+                    ExerciseSetFor1RMCalcDTO set = entry.getValue();
+                    double est1RM = calculateOneRepMax(set.reps(), set.weight());
+                    return new PeriodMax1RMEstDTO(
+                            set.weight(),
+                            set.reps(),
+                            set.bodyWeight(),
+                            est1RM,
+                            set.workoutId(),
+                            entry.getKey()
+                    );
+                })
+                .sorted(Comparator.comparing(PeriodMax1RMEstDTO::year))
+                .collect(Collectors.toList());
+
+        Map<Integer, PeriodMax1RMEstWithTrendDTO> result = new LinkedHashMap<>();
+        for (int i = 0; i < yearlyMax.size(); i++) {
+            PeriodMax1RMEstDTO current = yearlyMax.get(i);
+            Double trendRatio = calculateTrendRatioGeneric(yearlyMax, i, PeriodMax1RMEstDTO::estimated1RM);
+            String color = computeTrendColor(trendRatio);
+
+            result.put(current.year(), new PeriodMax1RMEstWithTrendDTO(
+                    current.maxValue(),
+                    current.nbReps(),
+                    current.bodyweight(),
+                    Math.round(current.estimated1RM() * 1000) / 1000.0,
+                    current.workoutId(),
+                    current.year(),
+                    trendRatio,
+                    color
+            ));
+        }
+
+        return sortByYearDesc(result);
+    }
+
+
+
     private String computeTrendColor(Double trendRatio) {
         if (trendRatio == null) return "";
 
         // Cas spécial pour -1 (données manquantes)
         if (trendRatio == -1.0) {
-            return "background-color: #f6f6d6;";
+            return "background-color: #e6f6f6;";
         }
 
         boolean isPositive = trendRatio >= 1;

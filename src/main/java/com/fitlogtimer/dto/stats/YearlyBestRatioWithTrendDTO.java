@@ -1,6 +1,6 @@
-package com.fitlogtimer.dto;
+package com.fitlogtimer.dto.stats;
 
-import com.fitlogtimer.dto.stats.MaxWeightWith1RMAndDateDTO;
+import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.enums.Trend;
 
 public record YearlyBestRatioWithTrendDTO(

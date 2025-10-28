@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
-import com.fitlogtimer.dto.YearlyBestRatioFor1RMWithTrendDTO;
-import com.fitlogtimer.dto.YearlyBestRatioWithTrendDTO;
+import com.fitlogtimer.dto.stats.YearlyBestRatioFor1RMWithTrendDTO;
+import com.fitlogtimer.dto.stats.YearlyBestRatioWithTrendDTO;
 import com.fitlogtimer.dto.stats.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -116,7 +116,9 @@ public class StatsController {
     public String getMainHistory(Model model) throws IOException {
         List<ExerciseYearlyMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible();
         List<ExerciseYearlyMaxRatioTableDTO> ratioTable = statsService.getPeriodMaxRatioTableForAllVisible();
-        log.info("*** ratioTable: {}", ratioTable);
+        List<ExerciseYearlyMax1RMEstTableDTO> est1RMTable = statsService.getPeriodMax1RMEstTableForAllVisible();
+        log.info("*** est1RMtable: {}", est1RMTable);
+
         Set<Integer> allYears = table.stream()
                 .flatMap(dto -> dto.yearlyData().keySet().stream())
                 .sorted(Comparator.reverseOrder())
@@ -124,6 +126,7 @@ public class StatsController {
 
         model.addAttribute("table", table);
         model.addAttribute("ratioTable", ratioTable);
+        model.addAttribute("est1RMTable", est1RMTable);
         model.addAttribute("allYears", allYears);
 
         return "main-history";

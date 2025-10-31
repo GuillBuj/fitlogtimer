@@ -895,28 +895,43 @@ public class StatsService {
         }
 
         boolean isPositive = trendRatio >= 1;
-        double hue = isPositive ? 130 : 0;
-
-        // Écart à 1 - courbe logarithmique pour plus de sensibilité sur petites variations
+        double hue = isPositive ? 130 : 0; // vert clair / rouge
         double diff = Math.abs(trendRatio - 1);
 
-        // Utilisation d'une courbe pour amplifier les petites différences
+        // ---- Calcul de l’intensité (0 → 1.2 environ) ----
         double intensity;
-        if (diff < 0.05) {
-            // Amplification forte pour les très petites variations
-            intensity = diff * 150;
-        } else if (diff < 0.2) {
-            // Amplification moyenne
-            intensity = 7.5 + (diff - 0.05) * 80;
+        if (diff < 0.01) {
+            intensity = diff * 20;            // 0 → 0.2
+        } else if (diff < 0.1) {
+            intensity = 0.2 + (diff - 0.01) * (0.8 / 0.09); // ≈ 0.2 → 1.0
         } else {
-            // Limitation pour éviter le flashy
-            intensity = 19.5 + (diff - 0.2) * 10;
+            intensity = 1.0 + (diff - 0.1) * 0.2; // monte légèrement au-dessus
+        }
+        intensity = Math.min(intensity, 1.2);
+
+        double saturation;
+        double lightness;
+
+        if (isPositive) {
+            // Vert : jusqu’à 10% = clair / vivant, puis tire vers "sapin"
+            if (diff <= 0.1) {
+                hue = 130; // vert équilibré
+                saturation = 35 + intensity * 40;  // 35% → 75%
+                lightness = 95 - intensity * 40;   // 95% → 55%
+            } else {
+                // au-dessus de 10% → fonce légèrement, teinte sapin
+                hue = 125 - Math.min((diff - 0.1) * 50, 5); // 125° → 120°
+                saturation = 60 - Math.min((diff - 0.1) * 50, 10); // baisse douce
+                lightness = 55 - Math.min((diff - 0.1) * 30, 10);  // plus sombre
+            }
+        } else {
+            hue = Math.max(0, 0 - (diff * 5)); // reste rouge pur
+            saturation = 35 + intensity * 30;  // 35% → 70%
+            lightness = 95 - intensity * 35;   // 95% → 60%
         }
 
-        intensity = Math.min(intensity, 35); // Plafond bas pour éviter le flashy
-
-        double saturation = 45 + intensity;  // 45% à 80%
-        double lightness = 96 - (intensity * 1.4); // 96% à 47% - grande plage
+        saturation = Math.max(25, Math.min(saturation, 85));
+        lightness  = Math.max(45, Math.min(lightness, 96));
 
         return String.format("background-color: hsl(%.0f, %.0f%%, %.0f%%);", hue, saturation, lightness);
     }

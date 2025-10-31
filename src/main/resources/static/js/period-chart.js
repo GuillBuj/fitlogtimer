@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 backgroundColor: colors[idx % colors.length],
                 tension: 0.3,
                 fill: false,
-                spanGaps: false,   // ⚡ garde les trous quand c’est null
+                spanGaps: false
             };
         });
 

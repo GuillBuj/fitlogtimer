@@ -9,7 +9,9 @@
 <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
 <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 
-<h1>Maxs Annuels</h1>
+<div th:if="${period=='YEAR'}">
+    <h1>Max Annuels</h1>
+</div>
 
 <div th:if="${table.isEmpty()}">
     <p>Aucune donnée disponible.</p>
@@ -34,7 +36,7 @@
             </td>
 
             <td th:each="year : ${allYears}"
-                th:with="data=${exerciseData.yearlyData.get(year)}"
+                th:with="data=${exerciseData.periodData.get(year)}"
                 th:style="${data != null ? data.color : ''}">
                 <th:block th:if="${data}">
                     <div  class="bold-text">
@@ -56,7 +58,9 @@
     </table>
 </div>
 
-<h1>Ratios des Max Annuels</h1>
+<div th:if="${period=='YEAR'}">
+    <h1>Ratios Max Annuels</h1>
+</div>
 
 <div th:if="${ratioTable.isEmpty()}">
     <p>Aucune donnée disponible.</p>
@@ -81,7 +85,7 @@
             </td>
 
             <td th:each="year : ${allYears}"
-                th:with="data=${exerciseData.yearlyData.get(year)}"
+                th:with="data=${exerciseData.periodData.get(year)}"
                 th:style="${data != null ? data.color : ''}">
                 <th:block th:if="${data}">
                     <div class="bold-text">
@@ -103,7 +107,9 @@
     </table>
 </div>
 
-<h1>1RM estimés Max Annuels</h1>
+<div th:if="${period=='YEAR'}">
+    <h1>1RM estimés Max Annuels</h1>
+</div>
 
 <div th:if="${est1RMTable.isEmpty()}">
     <p>Aucune donnée disponible.</p>
@@ -128,7 +134,7 @@
             </td>
 
             <td th:each="year : ${allYears}"
-                th:with="data=${exerciseData.yearlyData.get(year)}"
+                th:with="data=${exerciseData.periodData.get(year)}"
                 th:style="${data != null ? data.color : ''}">
                 <th:block th:if="${data}">
                     <div class="bold-text">

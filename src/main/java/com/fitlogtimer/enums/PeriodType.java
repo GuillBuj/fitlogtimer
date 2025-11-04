@@ -1,5 +1,5 @@
 package com.fitlogtimer.enums;
 
 public enum PeriodType {
-    MONTH, WEEK
+    YEAR, SEMESTER, QUARTER, MONTH, WEEK
 }

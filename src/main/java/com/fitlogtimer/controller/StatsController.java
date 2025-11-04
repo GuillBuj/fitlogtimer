@@ -10,6 +10,7 @@ import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
 import com.fitlogtimer.dto.stats.YearlyBestRatioFor1RMWithTrendDTO;
 import com.fitlogtimer.dto.stats.YearlyBestRatioWithTrendDTO;
 import com.fitlogtimer.dto.stats.*;
+import com.fitlogtimer.enums.PeriodType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -114,19 +115,35 @@ public class StatsController {
 
     @GetMapping("/mainHistory")
     public String getMainHistory(Model model) throws IOException {
-        List<ExerciseYearlyMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible();
+        List<ExercisePeriodMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible(PeriodType.YEAR);
         List<ExerciseYearlyMaxRatioTableDTO> ratioTable = statsService.getPeriodMaxRatioTableForAllVisible();
         List<ExerciseYearlyMax1RMEstTableDTO> est1RMTable = statsService.getPeriodMax1RMEstTableForAllVisible();
         log.info("*** est1RMtable: {}", est1RMTable);
 
-        Set<Integer> allYears = table.stream()
-                .flatMap(dto -> dto.yearlyData().keySet().stream())
+        Set<String> allYears = table.stream()
+                .flatMap(dto -> dto.periodData().keySet().stream())
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         model.addAttribute("table", table);
         model.addAttribute("ratioTable", ratioTable);
         model.addAttribute("est1RMTable", est1RMTable);
+        model.addAttribute("allYears", allYears);
+        model.addAttribute("period", PeriodType.YEAR);
+
+        return "main-history";
+    }
+
+    @GetMapping("/mainHistory/{period}")
+    public String getMainHistoryPeriod(@PathVariable String period, Model model) throws IOException {
+        List<ExercisePeriodMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible(PeriodType.valueOf(period.toUpperCase()));
+
+        Set<String> allYears = table.stream()
+                .flatMap(dto -> dto.periodData().keySet().stream())
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        model.addAttribute("table", table);
         model.addAttribute("allYears", allYears);
 
         return "main-history";

@@ -52,11 +52,13 @@ public class ChartService {
                 int maxPeriods = switch (periodType) {
                     case MONTH -> 12;
                     case WEEK -> Year.of(year).length() == 366 ? 53 : 52;
+                    case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
                 };
                 for (int p = 1; p <= maxPeriods; p++) {
                     String periodLabel = switch (periodType) {
                         case MONTH -> String.format("%d-%02d", year, p);
                         case WEEK -> String.format("%d-W%02d", year, p);
+                        case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
                     };
                     allPeriods.add(periodLabel);
                 }
@@ -82,17 +84,20 @@ public class ChartService {
                 int maxPeriods = switch (periodType) {
                     case MONTH -> 12;
                     case WEEK -> Year.of(year).length() == 366 ? 53 : 52;
+                    case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
                 };
 
                 for (int p = 1; p <= maxPeriods; p++) {
                     String periodLabel = switch (periodType) {
                         case MONTH -> String.format("%d-%02d", year, p);
                         case WEEK -> String.format("%d-W%02d", year, p);
+                        case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
                     };
 
                     Double max = switch (periodType) {
                         case MONTH -> exerciseSetRepository.findMaxWeightByExerciseIdAndMonth(exerciseId, year, p);
                         case WEEK -> exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, year, p);
+                        case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
                     };
 
                     if (max != null && max > 0) {
@@ -141,6 +146,7 @@ public class ChartService {
                     int week = Integer.parseInt(parts[1]);
                     yield (year > currentYear) || (year == currentYear && week > currentWeek);
                 }
+                case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
             };
 
             if (!isFuture) {

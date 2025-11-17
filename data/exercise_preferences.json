@@ -553,6 +553,30 @@
       "exerciseId" : 365,
       "order" : 49,
       "visible" : true
+    }, {
+      "exerciseId" : 366,
+      "order" : 50,
+      "visible" : true
+    }, {
+      "exerciseId" : 367,
+      "order" : 51,
+      "visible" : true
+    }, {
+      "exerciseId" : 368,
+      "order" : 52,
+      "visible" : true
+    }, {
+      "exerciseId" : 369,
+      "order" : 53,
+      "visible" : true
+    }, {
+      "exerciseId" : 370,
+      "order" : 54,
+      "visible" : true
+    }, {
+      "exerciseId" : 371,
+      "order" : 55,
+      "visible" : true
     } ]
   },
   "main" : {

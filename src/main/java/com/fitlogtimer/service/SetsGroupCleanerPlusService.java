@@ -45,6 +45,7 @@ public class SetsGroupCleanerPlusService {
         double est1RMavg = 0.0;
         Double est1RMbest3Avg = 0.0;
         Double max = 0.0;
+        Double volume = 0.0;
 
         // si 'types' vide, tout inclure
         List<SetBasicInterfaceDTO> filteredSets;
@@ -65,6 +66,7 @@ public class SetsGroupCleanerPlusService {
             est1RMmax = returnMax1RMest(filteredSetsGrouped);
             est1RMbest3Avg = calculateBest3Avg1RMest(filteredSetsGrouped);
             max = returnMax(filteredSetsGrouped);
+            volume = calculateVolume(filteredSetsGrouped);
 
             cleaned = cleanSetsGroupForSetBasicWith1RM(filteredSetsGrouped);
         } else if (!filteredSetsGrouped.sets().isEmpty()) {
@@ -83,7 +85,8 @@ public class SetsGroupCleanerPlusService {
                 cleanedSets,
                 est1RMmax,
                 est1RMbest3Avg,
-                max
+                max,
+                volume
         );
     }
 
@@ -186,5 +189,13 @@ public class SetsGroupCleanerPlusService {
                 .orElse(0.0);
 
         return Math.round(avg * 100.0) / 100.0;
+    }
+
+    private double calculateVolume(SetsGroupedWithNameDTO setsGrouped) {
+        return setsGrouped.sets().stream()
+            .filter(set -> set instanceof SetBasicWith1RMDTO)
+            .map(set -> (SetBasicWith1RMDTO) set)
+            .mapToDouble(set -> set.weight() * set.repNumber())
+            .sum();
     }
 }

@@ -11,7 +11,8 @@ public record SetGroupCleanExerciseListItemDTO(
     Object sets,
     @Nullable Double est1RMmax,
     @Nullable Double est1RM3bestAvg,
-    @Nullable Double maxWeight
+    @Nullable Double maxWeight,
+    @Nullable Double volume
     ) {
 //    @Override
 //    public final String toString() {

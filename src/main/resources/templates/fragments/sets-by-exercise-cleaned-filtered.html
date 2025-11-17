@@ -12,6 +12,7 @@
             <th th:if="${sets.type == 'FREE_WEIGHT'}">1RMest max</th>
             <th th:if="${sets.type == 'FREE_WEIGHT'}">3best avg</th>
             <th th:if="${sets.type == 'FREE_WEIGHT'}">Max réél</th>
+            <th th:if="${sets.type == 'FREE_WEIGHT'}">Volume</th>
             <th>PDC</th>
             <th th:if="${sets.type == 'FREE_WEIGHT'}">Ratio</th>
             <th>Type séance</th>
@@ -23,6 +24,7 @@
             <td th:text="${(sets.type == 'FREE_WEIGHT' and set.est1RM3bestAvg != null) ?
               (#numbers.formatDecimal(set.est1RM3bestAvg, 1, 2) + ' kg') : '-'}"></td>
             <td th:if="${sets.type == 'FREE_WEIGHT'}" th:text="${set.maxWeight} + ' kg'"></td>
+            <td th:if="${sets.type == 'FREE_WEIGHT'}" th:text="${set.volume} + ' kg'"></td>
             <td th:text="${set.bodyWeight} + ' kg'"></td>
             <td th:if="${sets.type == 'FREE_WEIGHT'}"
                 th:text="${set.bodyWeight != 0 ? #numbers.formatDecimal(set.est1RMmax / set.bodyWeight, 1, 3) : '-'}">

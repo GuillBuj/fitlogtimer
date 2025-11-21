@@ -192,10 +192,10 @@ public class SetsGroupCleanerPlusService {
     }
 
     private double calculateVolume(SetsGroupedWithNameDTO setsGrouped) {
-        return setsGrouped.sets().stream()
+        return Math.floor(setsGrouped.sets().stream()
             .filter(set -> set instanceof SetBasicWith1RMDTO)
             .map(set -> (SetBasicWith1RMDTO) set)
             .mapToDouble(set -> set.weight() * set.repNumber())
-            .sum();
+            .sum());
     }
 }

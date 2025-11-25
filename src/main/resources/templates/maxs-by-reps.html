@@ -46,13 +46,23 @@
         <!-- PBs -->
         <td th:text="${combinedMax.personalBest != null ? combinedMax.nbReps : '-'}" class="bold-text"></td>
         <td>
+            <a th:if="${combinedMax.personalBest != null}" th:href="@{/workouts/{id}(id=${combinedMax.personalBest.workoutId})}" class="soft-link">
             <div th:if="${combinedMax.personalBest != null}">
-                <div class="bold-text" th:text="${combinedMax.personalBest.maxWeight + ' kg'}"></div>
+                <div class="bold-text">
+                        [[${combinedMax.personalBest.maxWeight}]] kg
+                </div>
                 <div class="small-text" th:text="${combinedMax.personalBest.RMest + ' kg'}"></div>
             </div>
+            </a>
             <div th:unless="${combinedMax.personalBest != null}">-</div>
         </td>
-        <td th:text="${combinedMax.personalBest != null ? #temporals.format(combinedMax.personalBest.date, 'dd/MM/yyyy') : '-'}"></td>
+        <td>
+            <a th:if="${combinedMax.personalBest != null}" th:href="@{/workouts/{id}(id=${combinedMax.personalBest.workoutId})}" class="soft-link">
+                <div th:if="${combinedMax.personalBest != null}"
+                     th:text="${combinedMax.personalBest != null ? #temporals.format(combinedMax.personalBest.date, 'dd/MM/yyyy') : '-'}">
+                </div>
+            </a>
+        </td>
 
         <!-- Séparateur pour séparer PB et SB -->
         <td class="empty-separator"></td>
@@ -62,15 +72,24 @@
         <td>
             <div th:with="currentYear=${#dates.format(#dates.createNow(), 'yyyy')},
                  yearlyBest=${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy'))}">
+                <a th:if="${yearlyBest != null}" th:href="@{/workouts/{id}(id=${yearlyBest.workoutId})}" class="soft-link">
                 <div th:if="${yearlyBest != null}">
                     <div class="bold-text" th:text="${yearlyBest.maxWeight + ' kg'}"></div>
                     <div class="small-text" th:text="${yearlyBest.RMest + ' kg'}"></div>
                 </div>
                 <div th:unless="${yearlyBest != null}">-</div>
+                </a>
             </div>
         </td>
-        <td><span th:text="${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ?
-        #temporals.format(combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).date(), 'dd/MM/yyyy') : '-'}"></span></td>
+        <td>
+            <a th:if="${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null}"
+               th:href="@{/workouts/{id}(id=${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).workoutId})}"
+               class="soft-link">
+            <span th:text="${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ?
+        #temporals.format(combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')).date(), 'dd/MM/yyyy') : '-'}">
+            </span>
+            </a>
+        </td>
 
         <!-- Séparateur pour séparer les SBs et les anciennes années -->
         <td class="empty-separator"></td>
@@ -78,6 +97,7 @@
         <td th:text="${combinedMax.nbReps}" class="bold-text"></td>
         <td th:each="year : ${allYears}">
             <div th:if="${combinedMax.getYearlyBest(year) != null}">
+                <a th:if="${combinedMax.getYearlyBest(year) != null}" th:href="@{/workouts/{id}(id=${combinedMax.getYearlyBest(year).workoutId})}" class="soft-link">
                 <div class="max-weight-container">
                     <div class="values-container">
                         <div class="bold-text" th:text="${combinedMax.getYearlyBest(year).maxWeight() + ' kg'}"></div>
@@ -87,6 +107,7 @@
                          th:class="${'trend-indicator ' + combinedMax.bestsByYear().get(year).trend().getCssClass()}">
                     </div>
                 </div>
+                </a>
             </div>
             <div th:unless="${combinedMax.getYearlyBest(year) != null}">-</div>
         </td>
@@ -101,26 +122,36 @@
                               currentYearData=${yearlyMaxRatioSets != null ? yearlyMaxRatioSets.get(currentYear) : null}">
         <td class="ratio-label bold-text">Max</td>
         <td class="ratio-global-value" th:if="${maxRatioSet != null}">
-            <div class="bold-text">[[${#numbers.formatDecimal(maxRatioSet.ratio, 1, 3)}]]</div>
-            <div class="small-text">[[${maxRatioSet.repNumber}]]x[[${maxRatioSet.weight}]]kg</div>
-            <div class="small-text">@ [[${maxRatioSet.bodyWeight}]]kg</div>
+            <a th:if="${maxRatioSet != null}" th:href="@{/workouts/{id}(id=${maxRatioSet.idWorkout})}" class="soft-link">
+                <div class="bold-text">[[${#numbers.formatDecimal(maxRatioSet.ratio, 1, 3)}]]</div>
+                <div class="small-text">[[${maxRatioSet.repNumber}]]x[[${maxRatioSet.weight}]]kg</div>
+                <div class="small-text">@ [[${maxRatioSet.bodyWeight}]]kg</div>
+            </a>
         </td>
         <td class="ratio-global-value" th:if="${maxRatioSet != null}">
+            <a th:if="${maxRatioSet != null}" th:href="@{/workouts/{id}(id=${maxRatioSet.idWorkout})}" class="soft-link">
             [[${#temporals.format(maxRatioSet.workoutDate, 'dd/MM/yyyy')}]]
+            </a>
         </td>
+
         <td class="empty-separator"></td>
+
         <td class="bold-text">Max</td>
         <td class="ratio-global-value">
             <div th:if="${currentYearData.bestRatio() != null}">
+                <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
                 <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearData.bestRatio().ratio(), 1, 3)}"></div>
                 <div class="small-text" th:text="${currentYearData.bestRatio().repNumber() + 'x' + #numbers.formatDecimal(currentYearData.bestRatio().weight(), 1, 2) + 'kg'}"></div>
                 <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearData.bestRatio().bodyWeight(), 1, 1) + 'kg'}"></div>
+                </a>
             </div>
             <div th:unless="${currentYearData.bestRatio() != null}">*</div>
         </td>
         <td class="ratio-global-value">
             <div th:if="${currentYearData.bestRatio().workoutDate() != null}">
-                <span th:text="${#temporals.format(currentYearData.bestRatio().workoutDate(), 'dd/MM/yyyy')}"></span>
+                <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
+                [[${#temporals.format(currentYearData.bestRatio().workoutDate(), 'dd/MM/yyyy')}]]
+                </a>
             </div>
             <div th:unless="${currentYearData.bestRatio().workoutDate() != null}">/</div>
         </td>
@@ -132,6 +163,7 @@
         <td th:each="year : ${allYears}">
             <div th:with="yearlyData=${yearlyMaxRatioSets != null ? yearlyMaxRatioSets.get(year) : null}">
                 <div th:if="${yearlyData != null}">
+                    <a th:if="${yearlyData != null}" th:href="@{/workouts/{id}(id=${yearlyData.bestRatio().idWorkout})}" class="soft-link">
                     <div class="max-weight-container">
                         <div class="values-container">
                             <div class="bold-text">[[${#numbers.formatDecimal(yearlyData.bestRatio().ratio(), 1, 3)}]]</div>
@@ -147,6 +179,7 @@
                              th:classappend="${'trend-indicator ' + yearlyData.trend().getCssClass()}">
                         </div>
                     </div>
+                    </a>
                 </div>
                 <div th:unless="${yearlyData != null}">-</div>
             </div>
@@ -158,14 +191,18 @@
                               currentYearData=${yearlyMaxRatio1RMSets != null ? yearlyMaxRatio1RMSets.get(currentYear) : null}">
         <td class="ratio-label bold-text">Est</td>
         <td class="ratio-global-value" th:if="${maxRatio1RMSet != null}">
+            <a th:if="${maxRatio1RMSet != null}" th:href="@{/workouts/{id}(id=${maxRatio1RMSet.idWorkout})}" class="soft-link">
             <div class="bold-text">[[${#numbers.formatDecimal(maxRatio1RMSet.ratio, 1, 3)}]]</div>
             <div class="small-text">[[${maxRatio1RMSet.repNumber}]]x[[${maxRatio1RMSet.weight}]]kg</div>
             <div class="small-text">([[${#numbers.formatDecimal(maxRatio1RMSet.est1RM, 1, 1)}]]kg)</div>
             <div class="small-text">@ [[${maxRatio1RMSet.bodyWeight}]]kg</div>
+            </a>
         </td>
         <td th:unless="${maxRatio1RMSet != null}">-</td>
         <td class="ratio-global-value" th:if="${maxRatio1RMSet != null}">
+            <a th:if="${maxRatio1RMSet != null}" th:href="@{/workouts/{id}(id=${maxRatio1RMSet.idWorkout})}" class="soft-link">
             [[${#temporals.format(maxRatio1RMSet.workoutDate, 'dd/MM/yyyy')}]]
+            </a>
         </td>
         <td th:unless="${maxRatio1RMSet != null}" colspan="3">-</td>
 
@@ -174,37 +211,43 @@
         <td class="bold-text">Est</td>
         <td class="ratio-global-value">
             <div th:if="${currentYearData.bestRatio() != null}">
+                <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
                 <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearData.bestRatio().ratio(), 1, 3)}"></div>
                 <div class="small-text" th:text="${currentYearData.bestRatio().repNumber() + 'x' + #numbers.formatDecimal(currentYearData.bestRatio().weight(), 1, 2) + 'kg'}"></div>
                 <div class="small-text" th:text="${'(' + #numbers.formatDecimal(currentYearData.bestRatio().est1RM(), 1, 2) + 'kg)'}"></div>
                 <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearData.bestRatio().bodyWeight(), 1, 1) + 'kg'}"></div>
+                </a>
             </div>
             <div th:unless="${currentYearData.bestRatio() != null}">-</div>
         </td>
         <td class="ratio-global-value">
             <div th:if="${currentYearData.bestRatio() != null}">
-                <span th:text="${#temporals.format(currentYearData.bestRatio().workoutDate(), 'dd/MM/yyyy')}"></span>
+                <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
+                [[${#temporals.format(currentYearData.bestRatio().workoutDate(), 'dd/MM/yyyy')}]]
+                </a>
             </div>
             <div th:unless="${currentYearData.bestRatio() != null}">-</div>
         </td>
 
         <td class="empty-separator"></td>
+
         <td class="bold-text">Est</td>
         <td th:each="year : ${allYears}">
             <div th:with="yearlyData=${yearlyMaxRatio1RMSets != null ? yearlyMaxRatio1RMSets.get(year) : null}">
                 <div th:if="${yearlyData != null}" class="ratio-value">
+                    <a th:if="${yearlyData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${yearlyData.bestRatio().idWorkout})}" class="soft-link">
                     <div class="max-weight-container">
                         <div class="values-container">
                             <div class="bold-text">[[${#numbers.formatDecimal(yearlyData.bestRatio().ratio(), 1, 3)}]]</div>
                             <div class="small-text">[[${yearlyData.bestRatio().repNumber()}]]x[[${#numbers.formatDecimal(yearlyData.bestRatio().weight(), 1, 2)}]]kg</div>
                             <div class="small-text">([[${#numbers.formatDecimal(yearlyData.bestRatio().est1RM(), 1, 2)}]]kg)</div>
-                            <div class="small-text">@ [[${#numbers.formatDecimal(yearlyData.bestRatio().bodyWeight(), 1, 1)}]]kg</div>
                         </div>
                         <!-- Pastille trend -->
                         <div th:if="${yearlyData.trend() != null}"
                              th:classappend="${'trend-indicator ' + yearlyData.trend().getCssClass()}">
                         </div>
                     </div>
+                    </a>
                 </div>
                 <div th:unless="${yearlyData != null}">-</div>
             </div>

@@ -119,7 +119,7 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     // MAXS BY YEAR
 
     @Query("""
-    SELECT NEW com.fitlogtimer.dto.stats.MaxWeightWithDateDTO(fws.weight, fws.workout.date)
+    SELECT NEW com.fitlogtimer.dto.stats.MaxWeightWithDateDTO(fws.weight, fws.workout.date, fws.workout.id)
     FROM FreeWeightSet fws
     WHERE fws.exercise.id = :exerciseId
       AND fws.repNumber = :repNumber

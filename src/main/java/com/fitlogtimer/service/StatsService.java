@@ -53,8 +53,8 @@ public class StatsService {
             .map(set -> (FreeWeightSet) set)
             .filter(set -> set.getRepNumber() >= nbReps)
             .max(Comparator.comparingDouble(FreeWeightSet::getWeight))
-            .map(set -> new MaxWeightWithDateDTO(set.getWeight(), set.getWorkout().getDate()))
-            .orElse(new MaxWeightWithDateDTO(0.0, null));
+            .map(set -> new MaxWeightWithDateDTO(set.getWeight(), set.getWorkout().getDate(), set.getWorkout().getId()))
+            .orElse(new MaxWeightWithDateDTO(0.0, null, null));
     }
 
     public MaxWeightWithDateDTO maxWeightByExAndRepsForYear(int exerciseId, int repNumber, int year) {
@@ -62,7 +62,7 @@ public class StatsService {
                 .findMaxWeightByExerciseIdAndRepsAndYear(exerciseId, repNumber, year);
 
         return results.isEmpty()
-                ? new MaxWeightWithDateDTO(0.0, null)
+                ? new MaxWeightWithDateDTO(0.0, null, null)
                 : results.getFirst(); // la plus lourde
     }
 
@@ -296,7 +296,8 @@ public class StatsService {
                 bestByReps.put(nbReps, new MaxWeightWith1RMAndDateDTO(
                         weight,
                         calculateOneRepMax(nbReps, weight),
-                        dto.date()
+                        dto.date(),
+                        dto.workoutId()
                 ));
             }
         }
@@ -315,7 +316,8 @@ public class StatsService {
             MaxWeightWith1RMAndDateDTO with1RM = new MaxWeightWith1RMAndDateDTO(
                     weight,
                     calculateOneRepMax(nbReps, weight),
-                    maxDTO.date()
+                    maxDTO.date(),
+                    maxDTO.workoutId()
             );
             result.put(nbReps, with1RM);
         }

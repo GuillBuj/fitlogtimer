@@ -19,6 +19,7 @@
         <th>Exercice</th>
         <th>Séries</th>
         <th>Répétitions</th>
+        <th th:if="${type == 'WEIGHT'}">Poids total</th>
     </tr>
     </thead>
     <tbody>
@@ -26,6 +27,9 @@
         <td th:text="${counts.exerciseName}"></td>
         <td th:text="${counts.setsCount}"></td>
         <td th:text="${counts.repsCount}"></td>
+        <td th:if="${type == 'WEIGHT'}">
+            <span th:text="${counts.formattedWeight}"></span>
+        </td>
     </tr>
     </tbody>
 </table>

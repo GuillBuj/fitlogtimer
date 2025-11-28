@@ -1101,4 +1101,20 @@ public class StatsService {
                 .sorted(Comparator.comparing(dto -> exerciseOrder.get(dto.exerciseId())))
                 .collect(Collectors.toList());
     }
+
+    public List<ExerciseStatCountWeightDTO> getBasicCountsForWeightExercises() throws IOException {
+        List<ExerciseStatCountWeightDTO> allStats = exerciseSetRepository.getBasicCountsForWeightExercises();
+        List<ExercisePreferenceDTO> preferences = exercisePreferenceService.getDefaultPreferenceDTOs();
+
+        Map<Integer, Integer> exerciseOrder = preferences.stream()
+                .collect(Collectors.toMap(
+                        ExercisePreferenceDTO::exerciseId,
+                        ExercisePreferenceDTO::order
+                ));
+
+        return allStats.stream()
+                .filter(dto -> exerciseOrder.containsKey(dto.exerciseId()))
+                .sorted(Comparator.comparing(dto -> exerciseOrder.get(dto.exerciseId())))
+                .collect(Collectors.toList());
+    }
 }

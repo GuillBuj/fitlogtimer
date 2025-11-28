@@ -401,4 +401,15 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "GROUP BY es.exercise.id, es.exercise.name")
     List<ExerciseStatCountBasicDTO> getBasicCountsForAllExercises();
 
+    @Query("SELECT new com.fitlogtimer.dto.stats.ExerciseStatCountWeightDTO(" +
+            "fws.exercise.id, " +
+            "fws.exercise.name, " +
+            "COUNT(fws), " +
+            "SUM(fws.repNumber), " +
+            "CAST(SUM(fws.repNumber * fws.weight) AS double)) " +
+            "FROM FreeWeightSet fws " +
+            "WHERE fws.repNumber >= 1 " +
+            "GROUP BY fws.exercise.id, fws.exercise.name")
+    List<ExerciseStatCountWeightDTO> getBasicCountsForWeightExercises();
+
 }

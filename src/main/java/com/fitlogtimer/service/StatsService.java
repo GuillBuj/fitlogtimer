@@ -13,6 +13,7 @@ import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.dto.ExerciseSetFor1RMCalcDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
+import com.fitlogtimer.dto.preference.ExercisePreferenceDTO;
 import com.fitlogtimer.dto.stats.YearlyBestRatioFor1RMWithTrendDTO;
 import com.fitlogtimer.dto.stats.YearlyBestRatioWithTrendDTO;
 import com.fitlogtimer.dto.stats.*;
@@ -1082,5 +1083,22 @@ public class StatsService {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    /* STATS VOLUME */
+    public List<ExerciseStatCountBasicDTO> getBasicCountsForAllExercises() throws IOException {
+        List<ExerciseStatCountBasicDTO> allStats = exerciseSetRepository.getBasicCountsForAllExercises();
+        List<ExercisePreferenceDTO> preferences = exercisePreferenceService.getDefaultPreferenceDTOs();
+
+        Map<Integer, Integer> exerciseOrder = preferences.stream()
+                .collect(Collectors.toMap(
+                        ExercisePreferenceDTO::exerciseId,
+                        ExercisePreferenceDTO::order
+                ));
+
+        return allStats.stream()
+                .filter(dto -> exerciseOrder.containsKey(dto.exerciseId()))
+                .sorted(Comparator.comparing(dto -> exerciseOrder.get(dto.exerciseId())))
+                .collect(Collectors.toList());
     }
 }

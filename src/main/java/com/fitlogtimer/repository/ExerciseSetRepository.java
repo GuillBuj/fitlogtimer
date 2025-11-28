@@ -6,10 +6,7 @@ import java.util.Optional;
 import com.fitlogtimer.dto.ExerciseSetFor1RMCalcDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
-import com.fitlogtimer.dto.stats.MaxWeightWithDateDTO;
-import com.fitlogtimer.dto.stats.MaxWithDateDTO;
-import com.fitlogtimer.dto.stats.PeriodMaxDTO;
-import com.fitlogtimer.dto.stats.PeriodMaxRatioDTO;
+import com.fitlogtimer.dto.stats.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -390,7 +387,18 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
        """)
     List<ExerciseSet> findLastSetsForExerciseIds(@Param("ids") List<Integer> ids);
 
-
     @Query("SELECT e.id FROM Exercise e WHERE e.shortName IN :shortNames")
     List<Integer> findIdsByShortNames(@Param("shortNames") List<String> shortNames);
+
+    /* STATS VOLUME */
+    @Query("SELECT new com.fitlogtimer.dto.stats.ExerciseStatCountBasicDTO(" +
+            "es.exercise.id, " +
+            "es.exercise.name, " +
+            "COUNT(es), " +
+            "SUM(es.repNumber)) " +
+            "FROM ExerciseSet es " +
+            "WHERE es.repNumber >= 1 " +
+            "GROUP BY es.exercise.id, es.exercise.name")
+    List<ExerciseStatCountBasicDTO> getBasicCountsForAllExercises();
+
 }

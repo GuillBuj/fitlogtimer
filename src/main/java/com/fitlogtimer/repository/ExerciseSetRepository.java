@@ -395,7 +395,7 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "es.exercise.id, " +
             "es.exercise.name, " +
             "COUNT(es), " +
-            "SUM(es.repNumber)) " +
+            "SUM(es.repNumber))" +
             "FROM ExerciseSet es " +
             "WHERE es.repNumber >= 1 " +
             "GROUP BY es.exercise.id, es.exercise.name")
@@ -406,10 +406,22 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "fws.exercise.name, " +
             "COUNT(fws), " +
             "SUM(fws.repNumber), " +
-            "CAST(SUM(fws.repNumber * fws.weight) AS double)) " +
+            "CAST(SUM(fws.repNumber * fws.weight) AS double))" +
             "FROM FreeWeightSet fws " +
             "WHERE fws.repNumber >= 1 " +
             "GROUP BY fws.exercise.id, fws.exercise.name")
     List<ExerciseStatCountWeightDTO> getBasicCountsForWeightExercises();
+
+    @Query("SELECT new com.fitlogtimer.dto.stats.ExerciseStatCountWeightDTO(" +
+            "fws.exercise.id, " +
+            "fws.exercise.name, " +
+            "COUNT(fws), " +
+            "SUM(fws.repNumber), " +
+            "CAST(SUM(fws.repNumber * fws.weight) AS double)," +
+            "YEAR(fws.workout.date))" +
+            "FROM FreeWeightSet fws " +
+            "WHERE fws.repNumber >= 1 " +
+            "GROUP BY fws.exercise.id, fws.exercise.name, YEAR(fws.workout.date)")
+    List<ExerciseStatCountWeightDTO> getYearlyBasicCountsForWeightExercises();
 
 }

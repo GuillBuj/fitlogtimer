@@ -10,7 +10,7 @@
 <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 
 <div class="header-container">
-    <h1>Liste des séances </h1>
+    <h1>Stats par exercice </h1>
 </div>
 <br>
 <table class="auto-width-table centered centered-text">
@@ -28,7 +28,7 @@
         <td th:text="${counts.exerciseName}"></td>
         <td th:text="${counts.setsCount}"></td>
         <td th:text="${counts.repsCount}"></td>
-        <td th:if="${type == 'WEIGHT'}">
+        <td class="bold-text" th:if="${type == 'WEIGHT'}">
             <span th:text="${counts.formattedWeight}"></span>
         </td>
         <td th:if="${type == 'WEIGHT'}">

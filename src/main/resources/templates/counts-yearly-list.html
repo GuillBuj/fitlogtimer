@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Comptes</title>
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
+<p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
+
+<div class="header-container">
+    <h1>Stats par exercice</h1>
+</div>
+<br>
+<table class="auto-width-table centered centered-text">
+    <thead>
+    <tr>
+        <th>Exercice</th>
+        <th th:each="year : ${years}"
+            th:text="${year}"
+            class="text-center"
+            style="min-width: 120px;">
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr th:each="stat : ${stats}">
+            <td th:text="${stat.exerciseName}"
+                style="min-width: 200px;"></td>
+
+            <td th:each="year : ${years}"
+                class="text-center">
+                <div th:if="${stat.statsByYear.containsKey(year)}"
+                     th:with="yearStat=${stat.statsByYear.get(year)}">
+
+                    <div class="bold-text"><span th:text="${#strings.substring(yearStat.formattedWeight, 0, #strings.indexOf(yearStat.formattedWeight, ' '))+ ' kg'}">                            </span>
+                    </div>
+
+                    <div class="small-text"><span th:text="${yearStat.formattedAvgRepsPerSet}+'@'+${yearStat.formattedAvgWeightPerRep}"></span>
+                    </div>
+                </div>
+
+                <div th:unless="${stat.statsByYear.containsKey(year)}">-</div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<script src="/js/timer.js"></script>
+</body>
+</html>

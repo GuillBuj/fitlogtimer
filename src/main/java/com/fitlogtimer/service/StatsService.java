@@ -1117,4 +1117,39 @@ public class StatsService {
                 .sorted(Comparator.comparing(dto -> exerciseOrder.get(dto.exerciseId())))
                 .collect(Collectors.toList());
     }
+
+    public List<ExerciseStatCountWeightYearlyDTO> getYearlyBasicCountsForWeightExercises() throws IOException {
+        List<ExerciseStatCountWeightDTO> yearlyStats = exerciseSetRepository.getYearlyBasicCountsForWeightExercises();
+
+        Map<Integer, String> exerciseNames = new HashMap<>();
+        Map<Integer, Map<Integer, YearlyStatCount>> exerciseYearlyMap = new HashMap<>();
+
+        for (ExerciseStatCountWeightDTO dto : yearlyStats) {
+            exerciseNames.put(dto.exerciseId(), dto.exerciseName());
+            exerciseYearlyMap
+                    .computeIfAbsent(dto.exerciseId(), k -> new HashMap<>())
+                    .put(dto.year(), new YearlyStatCount(
+                            dto.setsCount(),
+                            dto.repsCount(),
+                            dto.weightTotal()
+                    ));
+        }
+
+        List<ExercisePreferenceDTO> preferences = exercisePreferenceService.getDefaultPreferenceDTOs();
+        Map<Integer, Integer> exerciseOrder = preferences.stream()
+                .collect(Collectors.toMap(
+                        ExercisePreferenceDTO::exerciseId,
+                        ExercisePreferenceDTO::order
+                ));
+
+        return preferences.stream()
+                .filter(pref -> exerciseYearlyMap.containsKey(pref.exerciseId()))
+                .sorted(Comparator.comparingInt(ExercisePreferenceDTO::order))
+                .map(pref -> new ExerciseStatCountWeightYearlyDTO(
+                        pref.exerciseId(),
+                        exerciseNames.get(pref.exerciseId()),
+                        exerciseYearlyMap.get(pref.exerciseId())
+                ))
+                .collect(Collectors.toList());
+    }
 }

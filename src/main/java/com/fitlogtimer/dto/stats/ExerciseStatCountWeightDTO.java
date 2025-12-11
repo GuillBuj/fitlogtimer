@@ -5,8 +5,19 @@ public record ExerciseStatCountWeightDTO(
         String exerciseName,
         Long setsCount,
         Long repsCount,
-        Double weightTotal
+        Double weightTotal,
+        Integer year //si null, all-time
 ) {
+    //Constructeur pour stats all-time
+    public ExerciseStatCountWeightDTO(
+            int exerciseId,
+            String exerciseName,
+            Long setsCount,
+            Long repsCount,
+            Double weightTotal) {
+        this(exerciseId, exerciseName, setsCount, repsCount, weightTotal, null);
+    }
+
     public String getFormattedWeight() {
         if (weightTotal == null) return "0 kg";
 

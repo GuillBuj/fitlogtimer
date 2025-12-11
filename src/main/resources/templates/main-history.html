@@ -18,10 +18,10 @@
 </div>
 
 <div th:unless="${table.isEmpty()}">
-    <table class="yearly-maxs-table auto-width-table centered centered-text">
+    <table class="auto-width-table centered centered-text">
         <thead>
         <tr>
-            <th>Exercice</th>
+            <th>MAX REEL</th>
             <th th:each="year : ${allYears}">[[${year}]]</th>
         </tr>
         </thead>
@@ -67,10 +67,10 @@
 </div>
 
 <div th:unless="${ratioTable.isEmpty()}">
-    <table class="yearly-maxs-table auto-width-table centered centered-text">
+    <table class="auto-width-table centered centered-text">
         <thead>
         <tr>
-            <th>Exercice</th>
+            <th>RATIO MAX/PDC</th>
             <th th:each="year : ${allYears}">[[${year}]]</th>
         </tr>
         </thead>
@@ -116,10 +116,10 @@
 </div>
 
 <div th:unless="${est1RMTable.isEmpty()}">
-    <table class="yearly-maxs-table auto-width-table centered centered-text">
+    <table class="auto-width-table centered centered-text">
         <thead>
         <tr>
-            <th>Exercice</th>
+            <th>MAX 1RMEST</th>
             <th th:each="year : ${allYears}">[[${year}]]</th>
         </tr>
         </thead>

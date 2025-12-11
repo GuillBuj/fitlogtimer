@@ -17,25 +17,71 @@ table {
     margin: 20px 0;
 }
 
+thead tr {
+    background: linear-gradient(135deg, #000000 0%, #661111 100%) !important;
+    color: papayawhip !important;
+    font-weight: bold;
+    border-radius: 10px 0 0 10px;
+}
+
+thead tr th {
+    padding: 15px 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+thead tr th:first-child {
+    border-top-left-radius: 15px;
+}
+
+thead tr th:last-child {
+    border-bottom-right-radius: 15px;
+}
+
 td {
     padding: 8px;
-    border: 1px solid #ddd;
 }
 
 td.align-right {
     text-align: right;
 }
 
-td:first-child {
-    font-weight: bold;
-}
-
 tbody tr:nth-child(odd) {
-    background-color: #f8f8f8; /* Couleur de fond pour les lignes impaires */
+    background-color: #f0f0f0;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #ffffff; /* Couleur de fond pour les lignes paires */
+    background-color: #fcfcfc;
+}
+
+tbody tr:hover {
+    background-color: #dddddd !important;
+    transition: background-color 0.3s ease;
+}
+
+tbody tr:nth-child(odd) td:first-child {
+    background-color: #2a2a2a !important;
+}
+
+tbody tr:nth-child(even) td:first-child {
+    background-color: #3f3f3f !important;
+}
+
+tbody tr td:first-child {
+    font-weight: bold;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    color: papayawhip
+}
+
+tbody tr td:last-child {
+    border-bottom-right-radius: 15px;
+}
+
+tbody tr:hover td:first-child {
+    background-color: #4a0000 !important;
+    transition: background-color 0.3s ease;
 }
 
 form {

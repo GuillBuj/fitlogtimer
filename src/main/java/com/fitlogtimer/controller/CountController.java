@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -49,21 +50,14 @@ public class CountController {
     }
 
     @GetMapping("/yearly")
-    public String showYearlyWeightStats(Model model) throws IOException {
+    public String showWeightExercisesStats(Model model) throws IOException {
         List<ExerciseStatCountWeightYearlyDTO> stats = statsService.getYearlyBasicCountsForWeightExercises();
 
-        Set<Integer> yearSet = stats.stream()
-                .flatMap(dto -> dto.statsByYear().keySet().stream())
-                .collect(Collectors.toSet());
-
-        List<Integer> years = yearSet.isEmpty()
-                ? List.of(LocalDate.now().getYear())
-                : IntStream.rangeClosed(
-                        yearSet.stream().min(Integer::compare).orElse(LocalDate.now().getYear()),
-                        LocalDate.now().getYear())
-                .boxed()
-                .sorted(Comparator.reverseOrder())
-                .collect(Collectors.toList());
+        List<String> years = stats.stream()
+                .filter(dto -> !dto.statsByYear().isEmpty())
+                .findFirst()
+                .map(dto -> new ArrayList<>(dto.statsByYear().keySet()))
+                .orElse(new ArrayList<>());
 
         model.addAttribute("stats", stats);
         model.addAttribute("years", years);

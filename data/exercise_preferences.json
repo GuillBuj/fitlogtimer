@@ -577,6 +577,10 @@
       "exerciseId" : 370,
       "order" : 55,
       "visible" : true
+    }, {
+      "exerciseId" : 372,
+      "order" : 56,
+      "visible" : true
     } ]
   },
   "main" : {

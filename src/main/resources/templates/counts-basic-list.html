@@ -20,8 +20,7 @@
         <th>Séries</th>
         <th>Répétitions</th>
         <th th:if="${type == 'WEIGHT'}">Poids total</th>
-        <th th:if="${type == 'WEIGHT'}">Reps moyennes</th>
-        <th th:if="${type == 'WEIGHT'}">Poids moyen</th>
+        <th th:if="${type == 'WEIGHT'}">Série moyenne</th>
     </tr>
     </thead>
     <tbody>
@@ -33,10 +32,7 @@
             <span th:text="${counts.formattedWeight}"></span>
         </td>
         <td th:if="${type == 'WEIGHT'}">
-            <span th:text="${counts.formattedAvgRepsPerSet}"></span>
-        </td>
-        <td th:if="${type == 'WEIGHT'}">
-            <span th:text="${counts.formattedAvgWeightPerRep}"></span>
+            <span th:text="${counts.formattedAvgRepsPerSet} + ' @ ' + ${counts.formattedAvgWeightPerRep}"></span>
         </td>
         </tr>
     </tbody>

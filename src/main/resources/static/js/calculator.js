@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const nearestWeight = Math.round(weight * 2) / 2;
 
         const repOffsets = [-3, -2, -1, 0, 1, 2, 3];
-        const weightOffsets = [-3, -2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3];
+        const weightOffsets = [-5,-4, -3, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 3, 4, 5];
 
         // Fonction de coloration relative au 1RM cible
         const getCellStyle = (estimated1RM) => {
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentReps = nearestReps + repOffset;
             if (currentReps <= 0) return; // Ignorer reps ≤ 0
 
-            html += `<tr><th>${currentReps}</th>`;
+            html += `<tr><th class="column-sticky">${currentReps}</th>`;
 
             validWeightOffsets.forEach(weightOffset => {
                 const currentWeight = nearestWeight + weightOffset;
@@ -214,11 +214,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </thead>
         <tbody>
             <tr>
-                <td class="metric-label">Poids</td>
-                ${weightsData.map(data => `<td>${data.weight.toFixed(1)}</td>`).join('')}
+                <td class="column-sticky">Poids</td>
+                ${weightsData.map(data => `<td class="bold-text">${data.weight.toFixed(1)}</td>`).join('')}
             </tr>
             <tr>
-                <td class="metric-label">1RM estimé</td>
+                <td class="column-sticky">1RM estimé</td>
                 ${weightsData.map(data => `<td>${data.estRM.toFixed(1)}</td>`).join('')}
             </tr>
         </tbody>

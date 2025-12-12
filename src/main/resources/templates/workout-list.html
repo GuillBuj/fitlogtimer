@@ -17,8 +17,8 @@
         <thead>
             <tr>
                 <th>Date</th>
-                <th>Poids</th>
                 <th class="exercises-list-column">Exs</th>
+                <th>Poids</th>
                 <th></th>                
                 <th>Type</th>
                 <th>Commentaires</th>
@@ -27,7 +27,6 @@
         <tbody>
             <tr th:each="workoutData : ${workoutList}">
                 <td th:text="${workoutData.date}"></td>
-                <td th:text="${#numbers.formatDecimal(workoutData.bodyWeight, 1, 1)} + ' kg'"></td>
                 <td>
                     <span th:each="exercise : ${workoutData.exercises}"
                           th:style="|background-color: ${@exerciseColorUtil.getDisplayColor(exercise)}|"
@@ -35,6 +34,7 @@
                     <span th:text="${exercise}"></span>
                     </span>
                 </td>
+                <td th:text="${#numbers.formatDecimal(workoutData.bodyWeight, 1, 1)} + ' kg'"></td>
                 <td>
                     <a th:href="@{/workouts/{id}(id=${workoutData.id})}" class="btn-link">Détails</a>
                     <a th:href="@{/workouts/{id}/brut(id=${workoutData.id})}" class="btn-link">Set par set</a>

@@ -137,6 +137,16 @@ tbody tr:hover .column-sticky {
     transition: background-color 0.3s ease;
 }
 
+tbody tr:nth-child(odd) td.important-column {
+    background: linear-gradient(to bottom, #e0e0d6 0%, #fffbdc 100%) !important;
+    color: #4a0000;
+}
+
+tbody tr:nth-child(even) td.important-column {
+    background: linear-gradient(to bottom, #e6e0d6 0%, #fff7db 100%) !important;
+    color: #4a0000;
+}
+
 form {
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -735,6 +745,13 @@ select {
     cursor: pointer;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+.select-dark {
+    background-color: black;
+    color: papayawhip;
+    border-color: #440606;
+    text-align: center;
+    font-weight: bold;
+}
 
 select:focus {
     outline: none;
@@ -742,11 +759,21 @@ select:focus {
     box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
 }
 
+.select-dark:focus {
+    border-color: #661111;
+    box-shadow: none;
+}
+
 select option {
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
     background-color: #ffffff;
     color: #1f2937;
+}
+
+.select-dark option {
+    background-color: black;
+    color: papayawhip;
 }
 
 .color-swatch {
@@ -973,18 +1000,15 @@ th.exercises-list-column{
 .suggested-weights-table th,
 .suggested-weights-table td {
     padding: 8px 12px;
-    border: 1px solid #ddd;
     text-align: center;
 }
 
 .suggested-weights-table th {
-    background-color: #f2f2f2;
     font-weight: bold;
 }
 
 .suggested-weights-table .metric-label {
     font-weight: bold;
-    background-color: #f8f8f8;
     text-align: center;
 }
 
@@ -1080,7 +1104,7 @@ th.exercises-list-column{
 .target-cell {
     position: relative;
     font-weight: bold;
-    border: 2px solid #1890ff !important;
+    border: 3px solid darkred !important;
 }
 
 .rm-table {
@@ -1094,7 +1118,6 @@ th.exercises-list-column{
     text-align: center;
     border: 1px solid #eeeeee;
     font-size: 0.95em;
-    color: #333;
     transition: background-color 0.15s ease;
 }
 

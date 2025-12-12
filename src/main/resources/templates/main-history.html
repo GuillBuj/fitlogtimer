@@ -29,7 +29,7 @@
         <tbody>
         <!-- Boucle sur chaque exercice -->
         <tr th:each="exerciseData : ${table}">
-            <td>
+            <td class="column-sticky">
                 <a th:href="@{/stats/maxsByReps/{id}(id=${exerciseData.exerciseId})}" class="soft-link">
                     [[${exerciseData.exerciseName}]]
                 </a>
@@ -78,7 +78,7 @@
         <tbody>
         <!-- Boucle sur chaque exercice -->
         <tr th:each="exerciseData : ${ratioTable}">
-            <td>
+            <td class="column-sticky">
                 <a th:href="@{/stats/maxsByReps/{id}(id=${exerciseData.exerciseId})}" class="soft-link">
                     [[${exerciseData.exerciseName}]]
                 </a>
@@ -127,7 +127,7 @@
         <tbody>
         <!-- Boucle sur chaque exercice -->
         <tr th:each="exerciseData : ${est1RMTable}">
-            <td>
+            <td class="column-sticky">
                 <a th:href="@{/stats/maxsByReps/{id}(id=${exerciseData.exerciseId})}" class="soft-link">
                     [[${exerciseData.exerciseName}]]
                 </a>

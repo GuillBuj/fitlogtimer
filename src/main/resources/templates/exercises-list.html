@@ -21,26 +21,26 @@
                 <th>SB<span th:text="${#dates.format(#dates.createNow(), 'yy')}"></span></th>
                 <th>1RMest</th>
                 <th>1RMest<span th:text="${#dates.format(#dates.createNow(), 'yy')}"></span></th>
-                <th>Muscles<br>
-                    <select id="muscleFilter">
-                        <option value="all">Tous</option>
+                <th>
+                    <select id="muscleFilter" class="select-dark">
+                        <option value="all">Muscles</option>
                         <option th:each="muscle : ${muscles}" th:value="${muscle}" th:text="${muscle}"></option>
                     </select>
                 </th>
-                <th>Famille<br>
-                    <select id="familyFilter">
-                        <option value="all">Toutes</option>
+                <th>
+                    <select id="familyFilter" class="select-dark">
+                        <option value="all">Famille</option>
                         <option th:each="family : ${families}" th:value="${family}" th:text="${family}"></option>
                     </select>
                 </th>
-                <th>Type<br>
-                    <select id="typeFilter">
-                        <option value="all">Tous</option>
+                <th>
+                    <select id="typeFilter" class="select-dark">
+                        <option value="all">Type</option>
                         <option th:each="entry : ${setTypes}" th:value="${entry.key}" th:text="${entry.value}"></option>
                     </select>
                 </th>
-                <th>+</th>
-                <th>Action</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -51,16 +51,18 @@
                          th:style="|background-color: ${@exerciseColorUtil.getDisplayColor(exercise.color, exercise.shortName)}|">
                     </div>
                 </td>
-                <td th:text="${exercise.name}"></td>
+                <td th:text="${exercise.name}" class="bold-text"></td>
                 <td th:if="${exercise.personalBest != null and exercise.type != ELASTIC_TYPE and exercise.type != MOVEMENT_TYPE}"
-                    th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
-                    <td th:unless="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}">-</td>
+                    th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|"
+                    class="personalBest important-column"></td>
+                    <td th:unless="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}" class="personalBest important-column">-</td>
                 <td th:if="${exercise.seasonBest != null and exercise.seasonBest>0 and exercise.type != ELASTIC_TYPE and exercise.type != MOVEMENT_TYPE }"
                     th:text="|${exercise.seasonBest % 1 == 0 ? exercise.seasonBest.intValue() : #numbers.formatDecimal(exercise.seasonBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
                 <td th:unless="${(exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE) and exercise.seasonBest>0}">-</td>
                 <td th:if="${exercise.type == FREE_WEIGHT_TYPE}"
-                    th:text="|${exercise.oneRepMaxEst % 1 == 0? exercise.oneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.oneRepMaxEst, 1, 1)} kg|"></td>
-                    <td th:unless="${exercise.type == FREE_WEIGHT_TYPE}">-</td>
+                    th:text="|${exercise.oneRepMaxEst % 1 == 0? exercise.oneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.oneRepMaxEst, 1, 1)} kg|"
+                    class="important-column"></td>
+                    <td th:unless="${exercise.type == FREE_WEIGHT_TYPE}" class="personalBest important-column">-</td>
                 <td th:if="${exercise.seasonOneRepMaxEst != null and exercise.seasonOneRepMaxEst>0 and exercise.type == FREE_WEIGHT_TYPE}"
                     th:text="|${exercise.seasonOneRepMaxEst % 1 == 0? exercise.seasonOneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.seasonOneRepMaxEst, 1, 1)} kg|"></td>
                 <td th:unless="${exercise.type == FREE_WEIGHT_TYPE and exercise.seasonOneRepMaxEst>0}">-</td>

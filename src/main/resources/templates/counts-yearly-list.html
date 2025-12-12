@@ -29,7 +29,8 @@
             <td th:text="${stat.exerciseName}"
                 style="min-width: 200px;"></td>
 
-            <td th:each="year : ${years}">
+            <td th:each="year : ${years}"
+                th:classappend="${year == 'TOTAL'} ? 'important-column' : ''">
                 <div th:if="${stat.statsByYear.containsKey(year)}"
                      th:with="yearStat=${stat.statsByYear.get(year)}">
                     <div class="bold-text"><span th:text="${#strings.substring(yearStat.formattedWeight, 0, #strings.indexOf(yearStat.formattedWeight, ' '))+ ' kg'}">                            </span>

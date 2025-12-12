@@ -72,7 +72,7 @@ tbody tr:hover {
     transition: background-color 0.3s ease;
 }
 
-tbody tr:not(.empty-separator-row):nth-child(odd) td:first-child {
+body > table tbody tr:not(.empty-separator-row):nth-child(odd) td:first-child {
     /*background-color: #2a2a2a !important;*/
     background: linear-gradient(
             to bottom,
@@ -81,7 +81,7 @@ tbody tr:not(.empty-separator-row):nth-child(odd) td:first-child {
     );
 }
 
-tbody tr:not(.empty-separator-row):nth-child(even) td:first-child {
+body > table tbody tr:not(.empty-separator-row):nth-child(even) td:first-child {
     /*background-color: #3f3f3f !important;*/
     background: linear-gradient(
             to bottom,
@@ -90,7 +90,7 @@ tbody tr:not(.empty-separator-row):nth-child(even) td:first-child {
     );
 }
 
-tbody tr:not(.empty-separator-row) td:first-child {
+body > table tbody tr:not(.empty-separator-row) td:first-child {
     font-weight: bold;
     position: sticky;
     left: 0;
@@ -102,7 +102,7 @@ tbody tr:not(.empty-separator-row) td:last-child {
     /*border-bottom-right-radius: 15px;*/
 }
 
-tbody tr:not(.empty-separator-row):hover td:first-child {
+body > table tbody tr:not(.empty-separator-row):hover td:first-child {
     background-color: #4a0000 !important;
     transition: background-color 0.3s ease;
 }
@@ -1677,7 +1677,6 @@ body.calendar-page { /* Ajoutez une classe au body */
     padding: 0 !important;
     margin: 0 !important;
 }
-
 
 /* === Menu déroulant pour la navbar === */
 .dropdown {

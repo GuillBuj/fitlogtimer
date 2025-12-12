@@ -16,16 +16,16 @@
     <a th:href="@{/stats/recordHistory/{id}(id=${exercise_id})}" class="link-back">📈</a>
 </div>
 
-<table th:if="${exercise_type == 'FREE_WEIGHT'}" class="auto-width-table centered centered-text">
+<table th:if="${exercise_type == 'FREE_WEIGHT'}" id="max-by-reps" class="auto-width-table centered centered-text">
     <thead>
     <tr>
         <th colspan="3">Records</th>
         <th class="empty-separator"></th>
-        <th colspan="3">Records sur l'année</th>
+        <th class="th-sticky" colspan="3">Records sur l'année</th>
         <th class="empty-separator"></th>
-        <th th:colspan="${allYears.size()}+1">Poids</th>
+        <th th:colspan="${allYears.size()}+1" class="th-sticky">Poids</th>
     </tr>
-    <tr>
+    <tr class="tr-not-first">
         <!-- PB -->
         <th>Reps</th>
         <th>Poids</th>
@@ -68,7 +68,7 @@
         <td class="empty-separator"></td>
 
         <!-- SBs pour l'année en cours -->
-        <td th:text="${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? combinedMax.nbReps : '-'}" class="bold-text"></td>
+        <td th:text="${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy')) != null ? combinedMax.nbReps : '-'}" class="column-sticky"></td>
         <td>
             <div th:with="currentYear=${#dates.format(#dates.createNow(), 'yyyy')},
                  yearlyBest=${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy'))}">
@@ -94,7 +94,7 @@
         <!-- Séparateur pour séparer les SBs et les anciennes années -->
         <td class="empty-separator"></td>
 
-        <td th:text="${combinedMax.nbReps}" class="bold-text"></td>
+        <td th:text="${combinedMax.nbReps}" class="column-sticky"></td>
         <td th:each="year : ${allYears}">
             <div th:if="${combinedMax.getYearlyBest(year) != null}">
                 <a th:if="${combinedMax.getYearlyBest(year) != null}" th:href="@{/workouts/{id}(id=${combinedMax.getYearlyBest(year).workoutId})}" class="soft-link">
@@ -136,7 +136,7 @@
 
         <td class="empty-separator"></td>
 
-        <td class="bold-text">Max</td>
+        <td class="column-sticky">Max</td>
         <td class="ratio-global-value">
             <div th:if="${currentYearData.bestRatio() != null}">
                 <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
@@ -159,7 +159,7 @@
 
         <td class="empty-separator"></td>
 
-        <td class="bold-text">Max</td>
+        <td class="column-sticky">Max</td>
         <td th:each="year : ${allYears}">
             <div th:with="yearlyData=${yearlyMaxRatioSets != null ? yearlyMaxRatioSets.get(year) : null}">
                 <div th:if="${yearlyData != null}">
@@ -208,7 +208,7 @@
 
         <td class="empty-separator"></td>
 
-        <td class="bold-text">Est</td>
+        <td class="column-sticky">Est</td>
         <td class="ratio-global-value">
             <div th:if="${currentYearData.bestRatio() != null}">
                 <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
@@ -231,7 +231,7 @@
 
         <td class="empty-separator"></td>
 
-        <td class="bold-text">Est</td>
+        <td class="column-sticky">Est</td>
         <td th:each="year : ${allYears}">
             <div th:with="yearlyData=${yearlyMaxRatio1RMSets != null ? yearlyMaxRatio1RMSets.get(year) : null}">
                 <div th:if="${yearlyData != null}" class="ratio-value">

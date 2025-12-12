@@ -17,7 +17,7 @@
 
         <table th:if="${workoutData.exerciseSets}">
             <tr th:each="set : ${workoutData.exerciseSets}">
-                <td th:text="${set.exerciseNameShort}"></td>
+                <td th:text="${set.exerciseNameShort}" class="column-sticky"></td>
                 <td th:text="${set.sets}"></td>
             </tr>
         </table>

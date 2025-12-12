@@ -37,7 +37,7 @@
                     </div>
                     <div class="small-text"><span th:text="${yearStat.formattedAvgRepsPerSet}+'@'+${yearStat.formattedAvgWeightPerRep}"></span>
                     </div>
-                    <div><span th:text="${yearStat.setsCount} + ' sets'"></span>                    </div>
+                    <div class="bold-text"><span th:text="${yearStat.setsCount} + ' sets'"></span>                    </div>
                 </div>
 
                 <div th:unless="${stat.statsByYear.containsKey(year)}">-</div>

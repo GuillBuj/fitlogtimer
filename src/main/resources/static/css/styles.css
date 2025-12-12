@@ -1037,27 +1037,6 @@ th.exercises-list-column{
     border-radius: 3px;
 }
 
-/* Éléments de poids suggérés */
-/*.suggested-weights {*/
-/*    width: auto;*/
-/*    margin: 15px auto;*/
-/*}*/
-
-/*.suggested-row {*/
-/*    margin-bottom: 5px;*/
-/*}*/
-
-/*.suggested-row div {*/
-/*    display: inline-block;*/
-/*    padding: 3px 6px;*/
-/*    margin-right: 5px;*/
-/*    background: #f5f5f5;*/
-/*    border: 1px solid #ddd;*/
-/*    border-radius: 3px;*/
-/*    text-align: center;*/
-/*    min-width: 50px;*/
-/*}*/
-
 /* Animations */
 .highlight-flash {
     background-color: rgba(255, 255, 0, 0.3) !important;

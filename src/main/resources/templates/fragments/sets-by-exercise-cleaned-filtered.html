@@ -21,12 +21,12 @@
         </thead>
         <tbody>
             <tr th:each="set : ${sets.exerciseSets}">
-                <td th:text="${set.date}"></td>
+                <td th:text="${set.date}" class="column-sticky"></td>
                 <td th:text="${set.sets}"></td>
-                <td th:if="${sets.type == 'FREE_WEIGHT'}" th:text="${set.est1RMmax} + ' kg'"></td>
+                <td th:if="${sets.type == 'FREE_WEIGHT'}" th:text="${set.est1RMmax} + ' kg'" class="important-column"></td>
                 <td th:text="${(sets.type == 'FREE_WEIGHT' and set.est1RM3bestAvg != null) ?
                   (#numbers.formatDecimal(set.est1RM3bestAvg, 1, 2) + ' kg') : '-'}"></td>
-                <td th:if="${sets.type == 'FREE_WEIGHT'}" th:text="${set.maxWeight} + ' kg'"></td>
+                <td th:if="${sets.type == 'FREE_WEIGHT'}" th:text="${set.maxWeight} + ' kg'" class="important-column"></td>
                 <td th:if="${sets.type == 'FREE_WEIGHT'}" th:text="${#numbers.formatDecimal(set.volume, 1,0)} + ' kg'"></td>
                 <td th:text="${set.bodyWeight} + ' kg'"></td>
                 <td th:if="${sets.type == 'FREE_WEIGHT'}"

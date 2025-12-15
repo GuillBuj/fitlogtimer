@@ -757,7 +757,7 @@ public class StatsService {
         for (int i = 0; i < filteredMax.size(); i++) {
             PeriodMaxDTO current = filteredMax.get(i);
             Double trendRatio = calculateTrendRatioGeneric(filteredMax, i, PeriodMaxDTO::maxValue);
-            String color = computeTrendColor(trendRatio);
+            String color = generateTrendStyle(computeTrendColor(trendRatio), true);
 
             String periodKey = getPeriodKey(current, periodType);
 
@@ -881,7 +881,7 @@ public class StatsService {
         for (int i = 0; i < filteredMaxRatios.size(); i++) {
             PeriodMaxRatioDTO current = filteredMaxRatios.get(i);
             Double trendRatio = calculateTrendRatioGeneric(filteredMaxRatios, i, PeriodMaxRatioDTO::ratio);
-            String color = computeTrendColor(trendRatio);
+            String color = generateTrendStyle(computeTrendColor(trendRatio), true);
 
             result.put(String.valueOf(current.year()), new PeriodMaxRatioWithTrendDTO(
                     current.maxValue(),
@@ -945,7 +945,7 @@ public class StatsService {
         for (int i = 0; i < yearlyMax.size(); i++) {
             PeriodMax1RMEstDTO current = yearlyMax.get(i);
             Double trendRatio = calculateTrendRatioGeneric(yearlyMax, i, PeriodMax1RMEstDTO::estimated1RM);
-            String color = computeTrendColor(trendRatio);
+            String color = generateTrendStyle(computeTrendColor(trendRatio),true);
 
             result.put(String.valueOf(current.year()), new PeriodMax1RMEstWithTrendDTO(
                     current.maxValue(),
@@ -969,7 +969,11 @@ public class StatsService {
 
         // Cas spécial pour -1 (données manquantes)
         if (trendRatio == -1.0) {
-            return "background-color: #e6f6f6;";
+            return "hsl(55, 70%, 91%)"; //jaune pâle
+        }
+
+        if (trendRatio == 1.0) {
+            return "hsl(60, 50%, 85%)"; // jaune doux
         }
 
         boolean isPositive = trendRatio >= 1;
@@ -991,27 +995,66 @@ public class StatsService {
         double lightness;
 
         if (isPositive) {
-            // Vert : jusqu’à 10% = clair / vivant, puis tire vers "sapin"
-            if (diff <= 0.1) {
-                hue = 130; // vert équilibré
-                saturation = 35 + intensity * 40;  // 35% → 75%
-                lightness = 95 - intensity * 40;   // 95% → 55%
-            } else {
-                // au-dessus de 10% → fonce légèrement, teinte sapin
-                hue = 125 - Math.min((diff - 0.1) * 50, 5); // 125° → 120°
-                saturation = 60 - Math.min((diff - 0.1) * 50, 10); // baisse douce
-                lightness = 55 - Math.min((diff - 0.1) * 30, 10);  // plus sombre
+            double minSaturation = 70;
+            double maxLightness = 80;
+
+            if (diff <= 0.02) {
+                hue = 110; //vert jaune
+                saturation = Math.max(minSaturation, 65 + intensity * 20);
+                lightness = Math.min(maxLightness, 85 - intensity * 10);
+            }
+            else if (diff <= 0.1) {
+                hue = 130; //vert
+                saturation = Math.max(35, Math.min(45 + intensity * 30, 85));
+                lightness = Math.max(55, Math.min(95 - intensity * 40, 96));
+            }
+            else {
+                hue = 125 - Math.min((diff - 0.1) * 50, 5); //vert sapin
+                saturation = Math.max(25, Math.min(60 - Math.min((diff - 0.1) * 50, 10), 85));
+                lightness = Math.max(45, Math.min(55 - Math.min((diff - 0.1) * 30, 10), 96));
             }
         } else {
-            hue = Math.max(0, 0 - (diff * 5)); // reste rouge pur
-            saturation = 35 + intensity * 30;  // 35% → 70%
-            lightness = 95 - intensity * 35;   // 95% → 60%
+            if (diff <= 0.1) {
+                hue = 15; //orange rouge
+                saturation = Math.max(50, Math.min(50 + intensity * 30, 85));
+                lightness = Math.max(60, Math.min(85 - intensity * 25, 96));
+            } else {
+                hue = Math.max(0, 0 - (diff * 5)); //rouge
+                saturation = Math.max(35, Math.min(35 + intensity * 30, 85));
+                lightness = Math.max(45, Math.min(95 - intensity * 35, 96));
+            }
         }
 
-        saturation = Math.max(25, Math.min(saturation, 85));
-        lightness  = Math.max(45, Math.min(lightness, 96));
+        return String.format("hsl(%.0f, %.0f%%, %.0f%%)", hue, saturation, lightness);
+    }
 
-        return String.format("background-color: hsl(%.0f, %.0f%%, %.0f%%);", hue, saturation, lightness);
+    private String generateTrendStyle(String baseColor, boolean withGradient) {
+        if (baseColor == null || baseColor.isEmpty()) return "";
+
+        if (!withGradient) {
+            return String.format("background-color: %s;", baseColor);
+        }
+
+        String[] parts = baseColor.replace("hsl(", "").replace(")", "").split(",");
+        double hue = Double.parseDouble(parts[0].trim());
+        double saturation = Double.parseDouble(parts[1].replace("%", "").trim());
+        double lightness = Double.parseDouble(parts[2].replace("%", "").trim());
+
+        double lighterLightness;
+        if (lightness < 40) {
+            lighterLightness = Math.min(lightness + 40, 90); // +40% pour les sombres
+        } else if (lightness < 70) {
+            lighterLightness = Math.min(lightness + 35, 95); // +35% pour les moyens
+        } else {
+            lighterLightness = Math.min(lightness + 25, 98); // +25% pour les clairs
+        }
+        double lighterSaturation = Math.max(saturation * 0.8, 20);
+
+        String lighterColor = String.format("hsl(%.0f, %.0f%%, %.0f%%)",
+                hue, lighterSaturation, lighterLightness);
+
+        return String.format("background: linear-gradient(to bottom, %s 0%%, %s 100%%);",
+                baseColor, lighterColor);
     }
 
     private <T> Double calculateTrendRatioGeneric(List<T> data, int currentIndex, Function<T, Double> valueExtractor) {

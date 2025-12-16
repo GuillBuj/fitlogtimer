@@ -1,6 +1,7 @@
 package com.fitlogtimer.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -119,14 +120,55 @@ public class SetsGroupCleanerPlusService {
             new SetsSameRepsDTO(sets1RM.get(0).repNumber(), weights)
         );
     } else {
-        // Transforme en DTO "simplifié" si nécessaire
-        List<SetBasicDTO> converted = sets1RM.stream().map(SetBasicDTO::new).toList();
         return new SetGroupCleanWorkoutListItemDTO(
-            sets.exerciseNameShort(),
-            new SetsAllDifferentDTO(converted)
+                sets.exerciseNameShort(),
+                buildSetsAllDifferent(sets1RM)
         );
     }
 }
+
+    private SetsAllDifferentDTO buildSetsAllDifferent(
+            List<SetBasicWith1RMDTO> sets
+    ) {
+        List<Object> result = new ArrayList<>();
+
+        int i = 0;
+        while (i < sets.size()) {
+            SetBasicWith1RMDTO first = sets.get(i);
+            int reps = first.repNumber();
+
+            List<SetBasicWith1RMDTO> block = new ArrayList<>();
+            block.add(first);
+
+            int j = i + 1;
+            while (j < sets.size() && sets.get(j).repNumber() == reps) {
+                block.add(sets.get(j));
+                j++;
+            }
+
+            boolean sameWeight = block.stream()
+                    .map(SetBasicWith1RMDTO::weight)
+                    .distinct()
+                    .count() == 1;
+
+            if (sameWeight) {
+                result.add(new SetsSameWeightAndRepsDTO(
+                        block.size(),
+                        reps,
+                        block.get(0).weight()
+                ));
+            } else {
+                result.add(new SetsSameRepsDTO(
+                        reps,
+                        block.stream().map(SetBasicWith1RMDTO::weight).toList()
+                ));
+            }
+
+            i = j;
+        }
+
+        return new SetsAllDifferentDTO(result);
+    }
 
     public boolean hasSameWeight(List<SetBasicWith1RMDTO> sets) {
         if (sets.isEmpty()) return true;

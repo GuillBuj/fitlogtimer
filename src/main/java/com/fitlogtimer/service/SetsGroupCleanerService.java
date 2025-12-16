@@ -1,14 +1,11 @@
 package com.fitlogtimer.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.fitlogtimer.dto.base.*;
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.base.SetBasicDTO;
-import com.fitlogtimer.dto.base.SetBasicElasticDTO;
-import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
-import com.fitlogtimer.dto.base.SetBasicIsometricDTO;
-import com.fitlogtimer.dto.base.SetBasicMovementDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanWorkoutListItemDTO;
 import com.fitlogtimer.dto.postgroup.SetsAllDifferentElasticDTO;
 import com.fitlogtimer.dto.postgroup.SetsAllDifferentIsometricDTO;
@@ -200,12 +197,55 @@ public class SetsGroupCleanerService {
             );
         } else {
             return new SetGroupCleanWorkoutListItemDTO(
-                sets.exerciseNameShort(),
-                new SetsAllDifferentDTO(classicSets)
+                    sets.exerciseNameShort(),
+                    buildSetsAllDifferent(classicSets)
             );
         }
     }
-    
+
+    private SetsAllDifferentDTO buildSetsAllDifferent(
+            List<SetBasicDTO> sets
+    ) {
+        List<Object> result = new ArrayList<>();
+
+        int i = 0;
+        while (i < sets.size()) {
+            SetBasicDTO first = sets.get(i);
+            int reps = first.repNumber();
+
+            List<SetBasicDTO> block = new ArrayList<>();
+            block.add(first);
+
+            int j = i + 1;
+            while (j < sets.size() && sets.get(j).repNumber() == reps) {
+                block.add(sets.get(j));
+                j++;
+            }
+
+            boolean sameWeight = block.stream()
+                    .map(SetBasicDTO::weight)
+                    .distinct()
+                    .count() == 1;
+
+            if (sameWeight) {
+                result.add(new SetsSameWeightAndRepsDTO(
+                        block.size(),
+                        reps,
+                        block.get(0).weight()
+                ));
+            } else {
+                result.add(new SetsSameRepsDTO(
+                        reps,
+                        block.stream().map(SetBasicDTO::weight).toList()
+                ));
+            }
+
+            i = j;
+        }
+
+        return new SetsAllDifferentDTO(result);
+    }
+
     public boolean hasSameWeight(SetsGroupedWithNameDTO sets) {
         if (sets.sets().isEmpty()) return true;
 

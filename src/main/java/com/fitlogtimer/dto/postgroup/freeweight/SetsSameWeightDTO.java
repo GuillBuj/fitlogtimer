@@ -1,5 +1,7 @@
 package com.fitlogtimer.dto.postgroup.freeweight;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
 public record SetsSameWeightDTO(
@@ -8,6 +10,12 @@ public record SetsSameWeightDTO(
 ) {
     @Override
     public final String toString() {
-        return (weight!=0 ? reps + " @ " + weight + "kg" : reps.toString());
+
+        String weightStr = String.valueOf(weight);
+        if (weightStr.endsWith(".0")) {
+            weightStr = weightStr.substring(0, weightStr.length() - 2);
+        }
+
+        return weight!=0 ? reps + " @ " + weightStr + "kg" : reps.toString();
     }
 }

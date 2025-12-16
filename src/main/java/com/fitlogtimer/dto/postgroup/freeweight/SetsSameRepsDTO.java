@@ -8,6 +8,10 @@ public record SetsSameRepsDTO(
 ) {
     @Override
     public final String toString() {
-        return (reps + " @ " + weight + "kg");
+        List<String> formattedWeights = weight.stream()
+                .map(w -> String.valueOf(w).replaceAll("\\.0$", ""))
+                .toList();
+
+        return reps + " @ " + formattedWeights + "kg";
     }
 }

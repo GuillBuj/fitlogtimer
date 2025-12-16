@@ -1803,5 +1803,5 @@ body.calendar-page { /* Ajoutez une classe au body */
 }
 
 .table-sets-by-ex td:nth-child(2){
-    min-width: 570px;
+    min-width: 515px;
 }

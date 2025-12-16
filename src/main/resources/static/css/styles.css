@@ -1783,3 +1783,15 @@ body.calendar-page { /* Ajoutez une classe au body */
     text-decoration: none;
     color: inherit;
 }
+
+.table-recap {
+        table-layout: fixed;
+}
+
+.table-recap td {
+    width: 85px;
+}
+
+.table-recap td:nth-child(1) {
+    width: auto;
+}

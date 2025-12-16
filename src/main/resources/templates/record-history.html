@@ -33,7 +33,7 @@
         <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}"></td>
 
         <!-- Freeweight -->
-        <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.weight()} + 'kg'"></td>
+        <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.weight()} + 'kg'"  class="important-column bold-text"></td>
 
         <!-- Bodyweight -->
         <td th:if="${exercise_type==BODYWEIGHT_TYPE}" th:text="${record.nbReps}"></td>
@@ -44,7 +44,7 @@
             <span th:text="${#numbers.formatInteger(record.durationS % 60, 2)}"></span>"
         </td>
 
-        <td th:text="${record.bodyWeight > 0 ? record.bodyWeight + ' kg' : '-'}"></td>
+        <td th:text="${record.bodyWeight > 0 ? '@'+ record.bodyWeight + ' kg' : '-'}"></td>
 
         <!-- Ratio seulement pour freeweight -->
         <td th:if="${exercise_type==FREE_WEIGHT_TYPE}"

@@ -595,16 +595,23 @@ form {
 }
 
 .header-container {
-    display: flex;               /* Utiliser Flexbox pour aligner les éléments en ligne */
-    align-items: center;         /* Centrer verticalement les éléments */
-    justify-content: center; /* Espacer les éléments à gauche et à droite */
-    width: 100%;                 /* Assurez-vous que le conteneur a une largeur complète */
-    gap: 10px;                   /* Espacer les éléments */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    gap: 10px;
     margin: 10px;
+    background: linear-gradient(135deg, #000000 0%, #661111 100%);
+    color: papayawhip;
 }
 
 .header-container h1 {
     margin: 0; /* Enlève la marge par défaut du h1 */
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: normal;
 }
 
 h1 span {
@@ -617,16 +624,15 @@ h1 span {
 }
 
 .link-back {
-    font-size: 1.5rem;
-    color: #495057;
+    font-size: 1.4rem;
+    color: papayawhip;
     text-decoration: none;
-    margin-right: 0.5rem;
+    margin-left: 0.8rem;
     vertical-align: middle;
     transition: color 0.3s;
 }
 
 .link-back:hover {
-    color: #212529;
     cursor: pointer;
     transform: scale(1.1);
 }

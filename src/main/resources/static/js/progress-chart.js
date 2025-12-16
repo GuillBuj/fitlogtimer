@@ -128,7 +128,7 @@ class ProgressChart {
                         type: 'bar',
                         label: '1RM 3 Best Avg',
                         data: this.est1RM3BestData,
-                        backgroundColor: 'rgba(10,10,50,0.7)',
+                        backgroundColor: 'black',
                         barPercentage: 0.8,
                         categoryPercentage: 1
                     },
@@ -136,7 +136,7 @@ class ProgressChart {
                         type: 'bar',
                         label: '1RM Max Estimé',
                         data: this.est1RMMaxData,
-                        backgroundColor: 'rgba(60,60,250,0.7)',
+                        backgroundColor: 'darkred',
                         barPercentage: 0.8,
                         categoryPercentage: 1
                     },
@@ -160,7 +160,7 @@ class ProgressChart {
                         data: this.maxWeight,
                         showLine: false,
                         pointRadius: 0,
-                        borderColor: 'rgba(250,200,100,0.9)',
+                        borderColor: 'rgba(250,200,100,0.8)',
                         borderWidth: 1,
                         backgroundColor: 'transparent',
                         order: 9999
@@ -191,11 +191,10 @@ class ProgressChart {
                         type: 'time',
                         stacked: true,
                         time: { unit: 'month', tooltipFormat: 'dd/MM/yyyy' },
-                        title: { display: true, text: 'Date' }
+                        title: { display: false, text: 'Date' }
                     },
                     y: {
                         beginAtZero: false,
-                        title: { display: true, text: 'Valeurs (kg)' },
                         ticks: { callback: v => v + ' kg' }
                     }
                 }

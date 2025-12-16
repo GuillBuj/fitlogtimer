@@ -544,41 +544,41 @@ form {
     border-radius: 15px;
     cursor: pointer;
     font-weight: bold;
-    background-color: #ccc;
-    color: #555;
+    background-color: papayawhip;
+    color: black;
     transition: background-color 0.3s;
 }
 
 .filter-button.active {
-    background-color: darkgreen;
+    background-color: #661111;
     transform: scale(1.02);
-    color: #fff;
+    color: papayawhip;
 }
 
 .filter-button.inactive {
-    background-color: #e0e0e0;
+    background-color: #f3e4e6;
     transform: scale(0.98);
-    color: #333;
+    color: #222222;
 }
 
 .filter-button.active:hover {
-    background-color: #93b7a1;
+    background-color: #BB8888;
     transform: scale(0.98);
 }
 
 .filter-button.inactive:hover {
-    background-color: #a8d5ba;
-    color: #333;
+    background-color: #BB8888;
+    color: #222222;
     transform: scale(1.02);
 }
 
 .filter-button.clear {
-    background-color: #555;
-    color: white;
+    background-color: black;
+    color: papayawhip;
 }
 
 .filter-button.clear:hover {
-    background-color: #777;
+    background-color: #BB8888;
     transform: scale(1.02);
 }
 
@@ -1794,4 +1794,8 @@ body.calendar-page { /* Ajoutez une classe au body */
 
 .table-recap td:nth-child(1) {
     width: auto;
+}
+
+.table-sets-by-ex td:nth-child(2){
+    min-width: 570px;
 }

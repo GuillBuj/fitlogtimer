@@ -22,7 +22,7 @@
     </a>
     <form th:action="@{/workouts/{id}(id=${workoutData.id})}" class="deleteForm"  method="post">
         <input type="hidden" name="_method" value="delete" />
-        <button type="submit" class="btnDelete"  onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">Supprimer</button>
+        <button type="submit" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">Supprimer</button>
     </form>
 
     </div>

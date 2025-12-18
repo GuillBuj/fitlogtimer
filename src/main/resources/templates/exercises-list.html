@@ -81,7 +81,7 @@
                     </a>
                 </td>
                 <td>
-                    <button class="btnEdit"
+                    <button class="btn-edit"
                             th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}&sb=${exercise.seasonBest}&sorm=${exercise.seasonOneRepMaxEst}|}"
                             hx-target="closest tr"
                             hx-swap="outerHTML">
@@ -90,7 +90,7 @@
                     <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post"
                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
                         <input type="hidden" name="_method" value="delete" />
-                        <button type="submit" class="btnDelete">Supprimer</button>
+                        <button type="submit" class="btn-delete">Supprimer</button>
                     </form>
                 </td>
             </tr>
@@ -147,7 +147,7 @@
             </select>
         </div>
         <div>
-            <button type="submit" class="btnValid">Ajouter l'exercice</button>
+            <button type="submit" class="btn-valid">Ajouter l'exercice</button>
         </div>
         <script src="/js/timer.js"></script>
         <script src="/js/exercise-filters.js"></script>

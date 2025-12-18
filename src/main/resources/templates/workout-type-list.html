@@ -29,10 +29,10 @@
       </td>
       <td th:text="${type.description}"></td>
       <td>
-        <a th:href="@{/workout-types/{name}/edit(name=${type.name})}" class="btnEdit">Modifier</a>
+        <a th:href="@{/workout-types/{name}/edit(name=${type.name})}" class="btn-edit">Modifier</a>
         <form th:action="@{/workout-types/{name}(name=${type.name()})}" class="deleteForm" method="post">
           <input type="hidden" name="_method" value="delete" />
-          <button type="submit" class="btnDelete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">Supprimer</button>
+          <button type="submit" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">Supprimer</button>
         </form>
       </td>
     </tr>

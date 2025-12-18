@@ -20,12 +20,12 @@
         <td>
             <form th:action="@{/run-import}" method="post" style="display:inline;">
                 <input type="hidden" name="sheetName" th:value="${sheet}">
-                <button type="submit" class="btnValid">Import Complet</button>
+                <button type="submit" class="btn-valid">Import Complet</button>
             </form>
 
             <form th:action="@{/run-partial-import}" method="post" style="display:inline;">
                 <input type="hidden" name="sheetName" th:value="${sheet}">
-                <button type="submit" class="btnEdit">Import Partiel</button>
+                <button type="submit" class="btn-edit">Import Partiel</button>
             </form>
         </td>
     </tr>

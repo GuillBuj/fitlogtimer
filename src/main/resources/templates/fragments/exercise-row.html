@@ -40,7 +40,7 @@
             Histo maxs
         </a>
     <td>
-        <button class="btnEdit"
+        <button class="btn-edit"
                 th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}|}"
                   hx-target="closest tr"
                   hx-swap="outerHTML">
@@ -48,7 +48,7 @@
         </button>
         <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
             <input type="hidden" name="_method" value="delete" />
-            <button type="submit" class="btnDelete">Supprimer</button>
+            <button type="submit" class="btn-delete">Supprimer</button>
         </form> </td>
 </tr>
 </body>

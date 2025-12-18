@@ -17,13 +17,13 @@
             hx-swap="innerHTML"
     >
         <div class="btn-group">
-            <button type="submit" class="btnValid">Enregistrer</button>
+            <button type="submit" class="btn-valid">Enregistrer</button>
 
             <button type="button"
                     th:attr="hx-get=@{/workouts/{id}/infos(id=${workoutUpdateDTO.id})}"
                     hx-target="#infos-section"
                     hx-swap="innerHTML"
-                    class="btnDelete">
+                    class="btn-delete">
                 Annuler
             </button>
         </div>

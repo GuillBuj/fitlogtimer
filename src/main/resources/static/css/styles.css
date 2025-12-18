@@ -180,44 +180,100 @@ form {
     box-sizing: border-box;
 }
 
-.btnValid {
-    padding: 10px;
-    background-color: #2E8B57;
-    color: #fff;
-    border: none;
+/* BOUTONS */
+
+.btn-valid, .btn-edit, .btn-delete, .btn-link, .btn-new {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    margin: 3px 5px;
+    color: papayawhip;
+    text-decoration: none;
     border-radius: 4px;
-    font-size: 16px;
+    transition: all 0.3s ease;
     font-weight: 500;
+    white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border: 1px solid;
+    font-size: 0.9rem;
+    font-family: inherit;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
 }
 
-.btnValid:hover {
-    background-color: #26734A;
+.btn-valid {
+    background-color: #116633;
+    border-color: #228855;
 }
 
-.btnValid:active {
-    background-color: #1F5C3D;
+.btn-valid:hover {
+    background-color: #228855;
+    box-shadow: 0 2px 8px rgba(34, 136, 85, 0.3);
 }
 
-.btnEdit {
-    padding: 10px;
-    background-color: #1E4B8B;  /* Bleu marine foncé */
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.btn-valid:active {
+    background-color: #0a5522;
+    border-color: #116633;
 }
 
-.btnEdit:hover {
-    background-color: #173A6B;  /* Bleu légèrement plus foncé au survol */
+.btn-edit {
+    background-color: #664411;
+    border-color: #885522;
 }
 
-.btnEdit:active {
-    background-color: #0F294A;  /* Bleu très foncé au clic */
+.btn-edit:hover {
+    background-color: #885522;
+    box-shadow: 0 2px 8px rgba(136, 85, 34, 0.3);
+}
+
+.btn-edit:active {
+    background-color: #553300;
+    border-color: #664411;
+}
+
+.btn-delete {
+    background-color: #661111;
+    border-color: #882222;
+}
+
+.btn-delete:hover {
+    background-color: #882222;
+    box-shadow: 0 2px 8px rgba(136, 34, 34, 0.3);
+}
+
+.btn-delete:active {
+    background-color: #550000;
+    border-color: #661111;
+}
+
+.btn-link {
+    background-color: #113366;
+    border-color: #225588;
+}
+
+.btn-link:hover {
+    background-color: #225588;
+    box-shadow: 0 2px 8px rgba(34, 85, 136, 0.3);
+}
+
+.btn-link:active {
+    background-color: #0a2244;
+    border-color: #113366;
+}
+
+.btn-new {
+    background-color: #116633;
+    border-color: #228855;
+}
+
+.btn-new:hover {
+    background-color: #228855;
+    box-shadow: 0 2px 8px rgba(34, 136, 85, 0.3);
+}
+
+.btn-new:active {
+    background-color: #0a5522;
+    border-color: #116633;
 }
 
 .alert {
@@ -240,29 +296,10 @@ form {
     display: inline;
     margin: 0;
     padding: 0;
-}
-
-.btnDelete {
-    padding: 10px;
-    background-color: #E74C3C;
-    color: white;
     border: none;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-weight: 500;
+    background: none;
+    box-shadow: none;
 }
-
-.btnDelete:hover {
-    background-color: #C0392B;
-    transform: scale(1.01);
-}
-
-.btnDelete:active {
-    background-color: #A93226;
-}
-
 
 /* Style général du formulaire en une seule ligne */
 .single-line-form {
@@ -330,85 +367,9 @@ form {
     box-sizing: border-box; /* Inclut le padding dans la largeur totale */
 }
 
-.single-line-form .form-group .btnValid {
+.single-line-form .form-group .btn-valid {
     width: auto; /* Largeur automatique pour le bouton */
     margin: 5px 0;
-}
-
-/* .btn-link {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 3px 0;
-    background-color: #495057;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    font-weight: 500;
-} */
-
-.btn-link {
-    display: inline-flex; /* Utiliser inline-flex pour s'assurer que le bouton est en ligne */
-    align-items: center;  /* Centrer verticalement le contenu dans le bouton */
-    padding: 10px 20px;
-    margin: 0 5px; /* Ajuste les marges si nécessaire */
-    background-color: #495057; /* Gris foncé */
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    font-weight: 500;
-    white-space: nowrap; /* Empêcher la coupure du texte */
-}
-
-.btn-link:hover {
-    background-color: #343a40; /* Gris plus foncé au survol */
-}
-
-.btn-link:active {
-    background-color: #212529; /* Gris encore plus foncé au clic */
-}
-
-.btn-edit{
-    display: inline-flex; /* Utiliser inline-flex pour s'assurer que le bouton est en ligne */
-    align-items: center;  /* Centrer verticalement le contenu dans le bouton */
-    padding: 10px 20px;
-    margin: 0 5px; /* Ajuste les marges si nécessaire */
-    background-color: #495057; /* Gris foncé */
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    font-weight: 500;
-    white-space: nowrap; /* Empêcher la coupure du texte */
-}
-
-.btn-edit:hover {
-    background-color: #343a40; /* Gris plus foncé au survol */
-}
-
-.btn-edit:active {
-    background-color: #212529; /* Gris encore plus foncé au clic */
-}
-
-.btn-new {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 3px 0;
-    background-color: #2E8B57;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    font-weight: bold;
-}
-
-.btn-new:hover {
-    background-color: #26734A; /* Gris plus foncé au survol */
-}
-
-.btn-new:active {
-    background-color: #1F5C3D; /* Gris encore plus foncé au clic */
 }
 
 /* Style de base pour la navbar */

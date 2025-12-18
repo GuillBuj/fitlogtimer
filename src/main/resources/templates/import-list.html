@@ -25,11 +25,11 @@
             <a th:href="@{'/drive-json/view/' + ${file.id}}" class="btn-edit">Voir</a>
 
             <form th:action="@{'/drive-json/import/' + ${file.id}}" method="post" style="display:inline;">
-                <button type="submit" class="btnValid">Importer</button>
+                <button type="submit" class="btn-valid">Importer</button>
             </form>
 
             <form th:action="@{'/drive-json/reset/' + ${file.id}}" method="post" style="display:inline;">
-                <button type="submit" class="btnEdit">Réinitialiser</button>
+                <button type="submit" class="btn-edit">Réinitialiser</button>
             </form>
         </td>
     </tr>

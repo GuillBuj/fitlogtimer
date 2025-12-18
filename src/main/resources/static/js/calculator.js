@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const estimatedOneRMInput = document.getElementById("estimatedOneRM");
     const rmTableContainer = document.getElementById("rmTableContainer");
 
-
     // Stocke les derniers champs modifiés par l'utilisateur
     let lastTwoModified = [];
 
@@ -125,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const nearestReps = Math.round(reps);
         const nearestWeight = Math.round(weight * 2) / 2;
 
-        const repOffsets = [-3, -2, -1, 0, 1, 2, 3];
+        const repOffsets = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
         const weightOffsets = [-5,-4, -3, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 3, 4, 5];
 
         // Fonction de coloration relative au 1RM cible
@@ -171,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentReps = nearestReps + repOffset;
             if (currentReps <= 0) return; // Ignorer reps ≤ 0
 
-            html += `<tr><th class="column-sticky">${currentReps}</th>`;
+            html += `<tr><th class="column-sticky fixed-columns">${currentReps}</th>`;
 
             validWeightOffsets.forEach(weightOffset => {
                 const currentWeight = nearestWeight + weightOffset;
@@ -193,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function generateSuggestedWeightsFrom1RM(oneRM) {
         const container = document.getElementById("suggestedWeightsContainer");
-        const repsRange = Array.from({length: 14}, (_, i) => i + 2); // 2 à 15 reps
+        const repsRange = [...Array.from({length: 14}, (_, i) => i + 2), 20]; // 2 à 15 reps + 20
 
         // Calcul des données
         const weightsData = repsRange.map(reps => {
@@ -226,11 +225,25 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     }
 
-
     function highlightField(input) {
         input.classList.add("highlight-flash");
         setTimeout(() => {
             input.classList.remove("highlight-flash");
         }, 500);
     }
+
+    // ===== INITIALISATION =====
+    function initializeCalculator() {
+        const initialReps = parseFloat(repsInput.value) || 10;
+        const initialOneRM = parseFloat(estimatedOneRMInput.value) || 74;
+
+        const calculatedWeight = calculateWeight(initialReps, initialOneRM);
+        weightInput.value = calculatedWeight.toFixed(1);
+
+        generate1RMTable(calculatedWeight, initialReps, initialOneRM);
+        generateSuggestedWeightsFrom1RM(initialOneRM);
+    }
+
+    // Lance l'initialisation
+    initializeCalculator();
 });

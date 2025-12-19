@@ -127,28 +127,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const repOffsets = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
         const weightOffsets = [-5,-4, -3, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 3, 4, 5];
 
-        // Fonction de coloration relative au 1RM cible
-        const getCellStyle = (estimated1RM) => {
-            if (!target1RM || target1RM <= 0) return "";
+        // Fonction de coloration relative au 1RM cible avec dégradés et alternance des LIGNES
+        const getCellStyle = (estimated1RM, rowIndex) => {
+            if (!target1RM || target1RM <= 0) {
+                // Alternance pour les lignes sans couleur spéciale
+                return rowIndex % 2 === 0
+                    ? "background: linear-gradient(to bottom, #e0e0d6 0%, #f6f6f6 100%);"
+                    : "background: linear-gradient(to bottom, #e6e0d6 0%, #fdfdfd 100%);";
+            }
 
             const ratio = estimated1RM / target1RM;
-            const diff = Math.abs(ratio-1);
+            const diff = Math.abs(ratio - 1);
 
-            let bgColor = '#ffffff'; // blanc par défaut
+            let baseGradient = rowIndex % 2 === 0
+                ? "linear-gradient(to bottom, #e0e0d6 0%, #f6f6f6 100%)"
+                : "linear-gradient(to bottom, #e6e0d6 0%, #fdfdfd 100%)";
+
+            let bgGradient = baseGradient;
 
             if (diff < 0.05) { // ±5% autour de la cible
                 const intensity = 1 - (diff / 0.05); // 1 = parfait, 0 = limite de 5%
                 const lightness = 94 - (18 * intensity); // de 94% à 76%
                 const saturation = 30 + (25 * intensity); // de 30% à 55%
 
-                // hsl(120) = vert. Plus on est proche de la cible, plus c’est saturé et foncé.
-                bgColor = `hsl(120, ${saturation}%, ${lightness}%)`;
+                const downColor = `hsl(120, ${saturation}%, ${lightness}%)`;
+                const upColor = `hsl(120, ${Math.min(saturation + 10, 70)}%, ${Math.max(lightness - 8, 68)}%)`;
+
+                bgGradient = `linear-gradient(to bottom, ${upColor} 0%, ${downColor} 100%)`;
             }
 
             const isExact = ratio >= 1.0 && ratio <= 1.006;
 
             return `
-        background-color: ${bgColor};
+        background: ${bgGradient};
         ${isExact ? 'font-weight: 700;' : ''}
     `;
         };
@@ -165,10 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         html += `</tr></thead><tbody>`;
 
-        // Corps du tableau, lignes reps > 0 uniquement
-        repOffsets.forEach(repOffset => {
+        repOffsets.forEach((repOffset, rowIndex) => {
             const currentReps = nearestReps + repOffset;
-            if (currentReps <= 0) return; // Ignorer reps ≤ 0
+            if (currentReps <= 0) return;
 
             html += `<tr><th class="column-sticky fixed-columns">${currentReps}</th>`;
 
@@ -178,9 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const isTargetCell = (repOffset === 0 && weightOffset === 0);
 
                 html += `<td ${isTargetCell ? 'class="target-cell"' : ''}
-                    style="${getCellStyle(estimated1RM)}">
-                    ${estimated1RM.toFixed(1)}
-                </td>`;
+            style="${getCellStyle(estimated1RM, rowIndex)}">
+            ${estimated1RM.toFixed(1)}
+        </td>`;
             });
 
             html += `</tr>`;

@@ -59,6 +59,9 @@
 - **Application Web** : Import via fichier json transmis par Drive
 - **Fichier Excel Drive** : Import via Apache POI
 - **Application Android** : Saisie basique avec synchro via Drive
+
+  👉 [Voir le dépôt GitHub](https://github.com/GuillBuj/fitlogtimer-mobile)
+  *(Application minimaliste permettant de saisir en tout lieu)*
 - **Synchronisation bidirectionnelle**
 
 ## 🏗️ Architecture

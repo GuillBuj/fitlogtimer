@@ -37,13 +37,13 @@ public class ChartService {
     }
 
     private List<ChartPeriodDataPointDTO> getExercisesChartData(List<String> exerciseShortNames, PeriodType periodType) {
-
         List<Integer> exerciseIds = exerciseSetRepository.findIdsByShortNames(exerciseShortNames);
         List<ChartPeriodDataPointDTO> result = new ArrayList<>();
+        Set<String> filledPeriods = new HashSet<>();
 
+        // Détermine la première et dernière année globale
         int globalFirstYear = Integer.MAX_VALUE;
         int globalLastYear = Integer.MIN_VALUE;
-
         for (Integer exerciseId : exerciseIds) {
             Integer firstYear = exerciseSetRepository.findFirstYearWithData(exerciseId);
             Integer lastYear = exerciseSetRepository.findLastYearWithData(exerciseId);
@@ -52,19 +52,53 @@ public class ChartService {
             globalFirstYear = Math.min(globalFirstYear, firstYear);
             globalLastYear = Math.max(globalLastYear, lastYear);
         }
+        if (globalFirstYear == Integer.MAX_VALUE) return result; // Aucune donnée
 
-        if (globalFirstYear == Integer.MAX_VALUE) {
-            return result; // Aucune donnée
-        }
-
-        // Ajoute aussi l'année en cours si plus récente
         LocalDate today = LocalDate.now();
         int currentYear = today.getYear();
         globalLastYear = Math.max(globalLastYear, currentYear);
 
-        // Construit la liste des périodes globales
+        Set<String> allPeriods = generateAllPeriods(globalFirstYear, globalLastYear, periodType);
+
+        for (Integer exerciseId : exerciseIds) {
+            String exerciseName = exerciseRepository.findById(exerciseId)
+                    .map(Exercise::getName)
+                    .orElse("Exercice " + exerciseId);
+
+            double allTimeMax = 0.0;
+
+            for (String period : allPeriods) {
+                Double max = getMaxForPeriod(exerciseId, period, periodType);
+
+                if (max != null && max > 0) {
+                    RecordType recordType = RecordType.NONE;
+                    if (max > allTimeMax) {
+                        allTimeMax = max;
+                        recordType = RecordType.PR;
+                    } else {
+                        recordType = RecordType.SB;
+                    }
+
+                    result.add(new ChartPeriodDataPointDTO(
+                            period,
+                            exerciseName,
+                            max,
+                            recordType
+                    ));
+                    filledPeriods.add(period);
+                }
+            }
+        }
+
+        addGhostPeriods(result, allPeriods, filledPeriods, periodType, today);
+
+        log.info(result.stream().map(ChartPeriodDataPointDTO::toString).toList().toString());
+        return result;
+    }
+
+    private Set<String> generateAllPeriods(int firstYear, int lastYear, PeriodType periodType) {
         Set<String> allPeriods = new LinkedHashSet<>();
-        for (int year = globalFirstYear; year <= globalLastYear; year++) {
+        for (int year = firstYear; year <= lastYear; year++) {
             switch (periodType) {
                 case MONTH -> {
                     for (int m = 1; m <= 12; m++) {
@@ -82,98 +116,37 @@ public class ChartService {
                         cursor = cursor.plusWeeks(1);
                     }
                 }
-                case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée");
+                default -> throw new UnsupportedOperationException("Période non supportée");
             }
         }
+        return allPeriods;
+    }
 
-        Set<String> filledPeriods = new HashSet<>();
+    private Double getMaxForPeriod(int exerciseId, String periodLabel, PeriodType periodType) {
+        if (periodType == PeriodType.MONTH) {
+            String[] parts = periodLabel.split("-");
+            int year = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            return exerciseSetRepository.findMaxWeightByExerciseIdAndMonth(exerciseId, year, month);
+        } else if (periodType == PeriodType.WEEK) {
+            String[] parts = periodLabel.split("-W");
+            int isoYear = Integer.parseInt(parts[0]);
+            int isoWeek = Integer.parseInt(parts[1]);
+            Double max = exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, isoYear, isoWeek);
 
-        for (Integer exerciseId : exerciseIds) {
-            String exerciseName = exerciseRepository.findById(exerciseId)
-                    .map(Exercise::getName)
-                    .orElse("Exercice " + exerciseId);
-
-            Integer firstYear = exerciseSetRepository.findFirstYearWithData(exerciseId);
-            Integer lastYear = exerciseSetRepository.findLastYearWithData(exerciseId);
-            if (firstYear == null || lastYear == null) continue;
-
-            double allTimeMax = 0.0;
-
-            for (int year = firstYear; year <= lastYear; year++) {
-                double yearMax = 0.0;
-
-                if (periodType == PeriodType.WEEK) {
-                    WeekFields wf = WeekFields.ISO;
-                    LocalDate cursor = LocalDate.of(year, 1, 4).with(wf.dayOfWeek(), 1);
-                    LocalDate endDate = LocalDate.of(year, 12, 31);
-
-                    while (!cursor.isAfter(endDate)) {
-                        int isoYear = cursor.get(wf.weekBasedYear());
-                        int isoWeek = cursor.get(wf.weekOfWeekBasedYear());
-                        String periodLabelW = String.format("%d-W%02d", isoYear, isoWeek);
-
-                        Double max = exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, isoYear, isoWeek);
-
-                        // Court-circuit S53 → semaine 1 de l'année suivante
-                        if ((isoWeek == 53 || isoWeek == 52) && (max == null || max == 0)) {
-                            max = exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, isoYear + 1, 1);
-                        }
-
-                        if (max != null && max > 0) {
-                            RecordType recordType = RecordType.NONE;
-                            if (max > allTimeMax) {
-                                allTimeMax = max;
-                                recordType = RecordType.PR;
-                            } else if (max > yearMax) {
-                                recordType = RecordType.SB;
-                            }
-                            yearMax = Math.max(yearMax, max);
-
-                            result.add(new ChartPeriodDataPointDTO(
-                                    periodLabelW,
-                                    exerciseName,
-                                    max,
-                                    recordType
-                            ));
-
-                            filledPeriods.add(periodLabelW);
-                        }
-
-                        cursor = cursor.plusWeeks(1);
-                    }
-
-                } else if (periodType == PeriodType.MONTH) {
-                    for (int m = 1; m <= 12; m++) {
-                        String periodLabel = String.format("%d-%02d", year, m);
-                        Double max = exerciseSetRepository.findMaxWeightByExerciseIdAndMonth(exerciseId, year, m);
-
-                        if (max != null && max > 0) {
-                            RecordType recordType = RecordType.NONE;
-                            if (max > allTimeMax) {
-                                allTimeMax = max;
-                                recordType = RecordType.PR;
-                            } else if (max > yearMax) {
-                                recordType = RecordType.SB;
-                            }
-                            yearMax = Math.max(yearMax, max);
-
-                            result.add(new ChartPeriodDataPointDTO(
-                                    periodLabel,
-                                    exerciseName,
-                                    max,
-                                    recordType
-                            ));
-
-                            filledPeriods.add(periodLabel);
-                        }
-                    }
-                } else {
-                    throw new UnsupportedOperationException("Période non supportée");
-                }
+            // Court-circuit S53
+            if ((isoWeek == 53 || isoWeek == 52) && (max == null || max == 0)) {
+                max = exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, isoYear + 1, 1);
             }
+            return max;
+        } else {
+            throw new UnsupportedOperationException("Période non supportée");
         }
+    }
 
-        // Ajout des _GHOST_ pour les périodes sans données
+    private void addGhostPeriods(List<ChartPeriodDataPointDTO> result, Set<String> allPeriods,
+                                 Set<String> filledPeriods, PeriodType periodType, LocalDate today) {
+
         int currentMonth = today.getMonthValue();
         WeekFields wf = WeekFields.ISO;
         int currentWeek = today.get(wf.weekOfWeekBasedYear());
@@ -187,7 +160,7 @@ public class ChartService {
                 String[] parts = period.split("-");
                 int year = Integer.parseInt(parts[0]);
                 int month = Integer.parseInt(parts[1]);
-                isFuture = (year > currentYear) || (year == currentYear && month > currentMonth);
+                isFuture = (year > today.getYear()) || (year == today.getYear() && month > currentMonth);
             } else if (periodType == PeriodType.WEEK) {
                 String[] parts = period.split("-W");
                 int year = Integer.parseInt(parts[0]);
@@ -204,11 +177,7 @@ public class ChartService {
                 ));
             }
         }
-
-        log.info(result.stream().map(ChartPeriodDataPointDTO::toString).toList().toString());
-        return result;
     }
-
 
     public List<ChartPeriodDataPointDTO> getMainLiftsChartDataMonthly() {
         List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP", "DCM", "DCX");

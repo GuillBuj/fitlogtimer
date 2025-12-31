@@ -1720,3 +1720,8 @@ body.calendar-page { /* Ajoutez une classe au body */
 .table-sets-by-ex td:nth-child(2){
     min-width: 515px;
 }
+
+.small-text{
+    font-size: 0.9em;
+    font-style: italic;
+}

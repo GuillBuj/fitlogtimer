@@ -52,7 +52,7 @@ public class ChartService {
             globalFirstYear = Math.min(globalFirstYear, firstYear);
             globalLastYear = Math.max(globalLastYear, lastYear);
         }
-        if (globalFirstYear == Integer.MAX_VALUE) return result; // Aucune donnée
+        if (globalFirstYear == Integer.MAX_VALUE) return result; // aucune donnée
 
         LocalDate today = LocalDate.now();
         int currentYear = today.getYear();
@@ -66,17 +66,50 @@ public class ChartService {
                     .orElse("Exercice " + exerciseId);
 
             double allTimeMax = 0.0;
+            double yearMax = 0.0;
+            int currentYearContext = -1;
 
             for (String period : allPeriods) {
+
+                int periodYear = (periodType == PeriodType.MONTH)
+                        ? Integer.parseInt(period.substring(0, 4))
+                        : Integer.parseInt(period.split("-W")[0]);
+
+                if (periodYear != currentYearContext) {
+                    currentYearContext = periodYear;
+                    yearMax = 0.0; // 🔥 Reset essentiel pour que SB réapparaisse
+                }
+
                 Double max = getMaxForPeriod(exerciseId, period, periodType);
 
                 if (max != null && max > 0) {
                     RecordType recordType = RecordType.NONE;
+
                     if (max > allTimeMax) {
                         allTimeMax = max;
                         recordType = RecordType.PR;
-                    } else {
+                    }
+                    else if (max > yearMax) {
                         recordType = RecordType.SB;
+                    }
+
+                    yearMax = Math.max(yearMax, max);
+
+                    if (periodType == PeriodType.WEEK) {
+                        String[] pp = period.split("-W");
+                        int isoYear = Integer.parseInt(pp[0]);
+                        int isoWeek = Integer.parseInt(pp[1]);
+
+                        if (isoWeek == 1) {
+                            LocalDate firstDayOfWeek = LocalDate
+                                    .of(isoYear, 1, 4)
+                                    .with(WeekFields.ISO.dayOfWeek(), 1);
+
+                            if (firstDayOfWeek.getYear() < isoYear && recordType == RecordType.SB) {
+                                recordType = RecordType.NONE;
+                            }
+                            yearMax = 0.0;
+                        }
                     }
 
                     result.add(new ChartPeriodDataPointDTO(
@@ -95,6 +128,7 @@ public class ChartService {
         log.info(result.stream().map(ChartPeriodDataPointDTO::toString).toList().toString());
         return result;
     }
+
 
     private Set<String> generateAllPeriods(int firstYear, int lastYear, PeriodType periodType) {
         Set<String> allPeriods = new LinkedHashSet<>();

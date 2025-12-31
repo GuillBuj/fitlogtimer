@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.*;
 
@@ -38,34 +39,53 @@ public class ChartService {
     private List<ChartPeriodDataPointDTO> getExercisesChartData(List<String> exerciseShortNames, PeriodType periodType) {
 
         List<Integer> exerciseIds = exerciseSetRepository.findIdsByShortNames(exerciseShortNames);
-
         List<ChartPeriodDataPointDTO> result = new ArrayList<>();
 
-        // construire la liste des périodes globales
-        Set<String> allPeriods = new LinkedHashSet<>();
+        int globalFirstYear = Integer.MAX_VALUE;
+        int globalLastYear = Integer.MIN_VALUE;
+
         for (Integer exerciseId : exerciseIds) {
             Integer firstYear = exerciseSetRepository.findFirstYearWithData(exerciseId);
             Integer lastYear = exerciseSetRepository.findLastYearWithData(exerciseId);
             if (firstYear == null || lastYear == null) continue;
 
-            for (int year = firstYear; year <= lastYear; year++) {
-                int maxPeriods = switch (periodType) {
-                    case MONTH -> 12;
-                    case WEEK -> Year.of(year).length() == 366 ? 53 : 52;
-                    case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
-                };
-                for (int p = 1; p <= maxPeriods; p++) {
-                    String periodLabel = switch (periodType) {
-                        case MONTH -> String.format("%d-%02d", year, p);
-                        case WEEK -> String.format("%d-W%02d", year, p);
-                        case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
-                    };
-                    allPeriods.add(periodLabel);
+            globalFirstYear = Math.min(globalFirstYear, firstYear);
+            globalLastYear = Math.max(globalLastYear, lastYear);
+        }
+
+        if (globalFirstYear == Integer.MAX_VALUE) {
+            return result; // Aucune donnée
+        }
+
+        // Ajoute aussi l'année en cours si plus récente
+        LocalDate today = LocalDate.now();
+        int currentYear = today.getYear();
+        globalLastYear = Math.max(globalLastYear, currentYear);
+
+        // Construit la liste des périodes globales
+        Set<String> allPeriods = new LinkedHashSet<>();
+        for (int year = globalFirstYear; year <= globalLastYear; year++) {
+            switch (periodType) {
+                case MONTH -> {
+                    for (int m = 1; m <= 12; m++) {
+                        allPeriods.add(String.format("%d-%02d", year, m));
+                    }
                 }
+                case WEEK -> {
+                    WeekFields wf = WeekFields.ISO;
+                    LocalDate cursor = LocalDate.of(year, 1, 4).with(wf.dayOfWeek(), 1);
+                    LocalDate endDate = LocalDate.of(year, 12, 31);
+                    while (!cursor.isAfter(endDate)) {
+                        int isoYear = cursor.get(wf.weekBasedYear());
+                        int isoWeek = cursor.get(wf.weekOfWeekBasedYear());
+                        allPeriods.add(String.format("%d-W%02d", isoYear, isoWeek));
+                        cursor = cursor.plusWeeks(1);
+                    }
+                }
+                case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée");
             }
         }
 
-        // map pour savoir si une période a déjà eu des vraies données
         Set<String> filledPeriods = new HashSet<>();
 
         for (Integer exerciseId : exerciseIds) {
@@ -81,73 +101,99 @@ public class ChartService {
 
             for (int year = firstYear; year <= lastYear; year++) {
                 double yearMax = 0.0;
-                int maxPeriods = switch (periodType) {
-                    case MONTH -> 12;
-                    case WEEK -> Year.of(year).length() == 366 ? 53 : 52;
-                    case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
-                };
 
-                for (int p = 1; p <= maxPeriods; p++) {
-                    String periodLabel = switch (periodType) {
-                        case MONTH -> String.format("%d-%02d", year, p);
-                        case WEEK -> String.format("%d-W%02d", year, p);
-                        case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
-                    };
+                if (periodType == PeriodType.WEEK) {
+                    WeekFields wf = WeekFields.ISO;
+                    LocalDate cursor = LocalDate.of(year, 1, 4).with(wf.dayOfWeek(), 1);
+                    LocalDate endDate = LocalDate.of(year, 12, 31);
 
-                    Double max = switch (periodType) {
-                        case MONTH -> exerciseSetRepository.findMaxWeightByExerciseIdAndMonth(exerciseId, year, p);
-                        case WEEK -> exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, year, p);
-                        case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
-                    };
+                    while (!cursor.isAfter(endDate)) {
+                        int isoYear = cursor.get(wf.weekBasedYear());
+                        int isoWeek = cursor.get(wf.weekOfWeekBasedYear());
+                        String periodLabelW = String.format("%d-W%02d", isoYear, isoWeek);
 
-                    if (max != null && max > 0) {
-                        RecordType recordType = RecordType.NONE;
-                        if (max > allTimeMax) {
-                            allTimeMax = max;
-                            recordType = RecordType.PR;
-                        } else if (max > yearMax) {
-                            recordType = RecordType.SB;
+                        Double max = exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, isoYear, isoWeek);
+
+                        // Court-circuit S53 → semaine 1 de l'année suivante
+                        if ((isoWeek == 53 || isoWeek == 52) && (max == null || max == 0)) {
+                            max = exerciseSetRepository.findMaxWeightByExerciseIdAndWeek(exerciseId, isoYear + 1, 1);
                         }
-                        yearMax = Math.max(yearMax, max);
 
-                        result.add(new ChartPeriodDataPointDTO(
-                                periodLabel,
-                                exerciseName,
-                                max,
-                                recordType
-                        ));
+                        if (max != null && max > 0) {
+                            RecordType recordType = RecordType.NONE;
+                            if (max > allTimeMax) {
+                                allTimeMax = max;
+                                recordType = RecordType.PR;
+                            } else if (max > yearMax) {
+                                recordType = RecordType.SB;
+                            }
+                            yearMax = Math.max(yearMax, max);
 
-                        filledPeriods.add(periodLabel);
+                            result.add(new ChartPeriodDataPointDTO(
+                                    periodLabelW,
+                                    exerciseName,
+                                    max,
+                                    recordType
+                            ));
+
+                            filledPeriods.add(periodLabelW);
+                        }
+
+                        cursor = cursor.plusWeeks(1);
                     }
+
+                } else if (periodType == PeriodType.MONTH) {
+                    for (int m = 1; m <= 12; m++) {
+                        String periodLabel = String.format("%d-%02d", year, m);
+                        Double max = exerciseSetRepository.findMaxWeightByExerciseIdAndMonth(exerciseId, year, m);
+
+                        if (max != null && max > 0) {
+                            RecordType recordType = RecordType.NONE;
+                            if (max > allTimeMax) {
+                                allTimeMax = max;
+                                recordType = RecordType.PR;
+                            } else if (max > yearMax) {
+                                recordType = RecordType.SB;
+                            }
+                            yearMax = Math.max(yearMax, max);
+
+                            result.add(new ChartPeriodDataPointDTO(
+                                    periodLabel,
+                                    exerciseName,
+                                    max,
+                                    recordType
+                            ));
+
+                            filledPeriods.add(periodLabel);
+                        }
+                    }
+                } else {
+                    throw new UnsupportedOperationException("Période non supportée");
                 }
             }
         }
 
-        LocalDate today = LocalDate.now();
-        int currentYear = today.getYear();
+        // Ajout des _GHOST_ pour les périodes sans données
         int currentMonth = today.getMonthValue();
-
         WeekFields wf = WeekFields.ISO;
         int currentWeek = today.get(wf.weekOfWeekBasedYear());
+        int currentWeekYear = today.get(wf.weekBasedYear());
 
         for (String period : allPeriods) {
             if (filledPeriods.contains(period)) continue;
 
-            boolean isFuture = switch (periodType) {
-                case MONTH -> {
-                    String[] parts = period.split("-");
-                    int year = Integer.parseInt(parts[0]);
-                    int month = Integer.parseInt(parts[1]);
-                    yield (year > currentYear) || (year == currentYear && month > currentMonth);
-                }
-                case WEEK -> {
-                    String[] parts = period.split("-W");
-                    int year = Integer.parseInt(parts[0]);
-                    int week = Integer.parseInt(parts[1]);
-                    yield (year > currentYear) || (year == currentYear && week > currentWeek);
-                }
-                case YEAR, SEMESTER, QUARTER -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
-            };
+            boolean isFuture = false;
+            if (periodType == PeriodType.MONTH) {
+                String[] parts = period.split("-");
+                int year = Integer.parseInt(parts[0]);
+                int month = Integer.parseInt(parts[1]);
+                isFuture = (year > currentYear) || (year == currentYear && month > currentMonth);
+            } else if (periodType == PeriodType.WEEK) {
+                String[] parts = period.split("-W");
+                int year = Integer.parseInt(parts[0]);
+                int week = Integer.parseInt(parts[1]);
+                isFuture = (year > currentWeekYear) || (year == currentWeekYear && week > currentWeek);
+            }
 
             if (!isFuture) {
                 result.add(new ChartPeriodDataPointDTO(

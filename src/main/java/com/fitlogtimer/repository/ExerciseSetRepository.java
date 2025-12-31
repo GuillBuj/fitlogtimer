@@ -105,8 +105,8 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "FROM FreeWeightSet fws " +
             "WHERE fws.exercise.id = :exerciseId " +
             "AND fws.repNumber >= 1 " +
-            "AND FUNCTION('YEAR', fws.workout.date) = :year " +
-            "AND FUNCTION('WEEK', fws.workout.date) = :week")
+            "AND ISO_YEAR(fws.workout.date) = :year " +
+            "AND ISO_WEEK(fws.workout.date) = :week")
     Double findMaxWeightByExerciseIdAndWeek(
             @Param("exerciseId") int exerciseId,
             @Param("year") int year,

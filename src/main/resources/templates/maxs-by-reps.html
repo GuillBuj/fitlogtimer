@@ -138,24 +138,24 @@
 
         <td class="column-sticky">Max</td>
         <td class="ratio-global-value">
-            <div th:if="${currentYearData.bestRatio() != null}">
-                <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
+            <div th:if="${currentYearData != null and currentYearData.bestRatio() != null}">
+                <a th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
                 <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearData.bestRatio().ratio(), 1, 3)}"></div>
                 <div class="small-text" th:text="${currentYearData.bestRatio().repNumber() + 'x' + #numbers.formatDecimal(currentYearData.bestRatio().weight(), 1, 2) + 'kg'}"></div>
                 <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearData.bestRatio().bodyWeight(), 1, 1) + 'kg'}"></div>
                 </a>
             </div>
-            <div th:unless="${currentYearData.bestRatio() != null}">*</div>
+            <div th:unless="${currentYearData != null and currentYearData.bestRatio() != null}">-</div>
         </td>
         <td class="ratio-global-value">
-            <div th:if="${currentYearData.bestRatio().workoutDate() != null}">
+            <div th:if="${currentYearData != null and currentYearData.bestRatio().workoutDate() != null}">
                 <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
                 [[${#temporals.format(currentYearData.bestRatio().workoutDate(), 'dd/MM/yyyy')}]]
                 </a>
             </div>
-            <div th:unless="${currentYearData.bestRatio().workoutDate() != null}">/</div>
+            <div th:unless="${currentYearData != null and currentYearData.bestRatio().workoutDate() != null}">-</div>
         </td>
-        <td th:unless="${maxRatioSet != null}" colspan="3">-</td>
+        <td th:unless="${maxRatioSet != null}" colspan="3"></td>
 
         <td class="empty-separator"></td>
 
@@ -200,7 +200,7 @@
         </td>
         <td th:unless="${maxRatio1RMSet != null}">-</td>
         <td class="ratio-global-value" th:if="${maxRatio1RMSet != null}">
-            <a th:if="${maxRatio1RMSet != null}" th:href="@{/workouts/{id}(id=${maxRatio1RMSet.idWorkout})}" class="soft-link">
+            <a th:href="@{/workouts/{id}(id=${maxRatio1RMSet.idWorkout})}" class="soft-link">
             [[${#temporals.format(maxRatio1RMSet.workoutDate, 'dd/MM/yyyy')}]]
             </a>
         </td>
@@ -210,23 +210,23 @@
 
         <td class="column-sticky">Est</td>
         <td class="ratio-global-value">
-            <div th:if="${currentYearData.bestRatio() != null}">
-                <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
+            <div th:if="${currentYearData != null and currentYearData.bestRatio() != null}">
+                <a th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
                 <div class="bold-text" th:text="${#numbers.formatDecimal(currentYearData.bestRatio().ratio(), 1, 3)}"></div>
                 <div class="small-text" th:text="${currentYearData.bestRatio().repNumber() + 'x' + #numbers.formatDecimal(currentYearData.bestRatio().weight(), 1, 2) + 'kg'}"></div>
                 <div class="small-text" th:text="${'(' + #numbers.formatDecimal(currentYearData.bestRatio().est1RM(), 1, 2) + 'kg)'}"></div>
                 <div class="small-text" th:text="${'@ ' + #numbers.formatDecimal(currentYearData.bestRatio().bodyWeight(), 1, 1) + 'kg'}"></div>
                 </a>
             </div>
-            <div th:unless="${currentYearData.bestRatio() != null}">-</div>
+            <div th:unless="${currentYearData != null and currentYearData.bestRatio() != null}">-</div>
         </td>
         <td class="ratio-global-value">
-            <div th:if="${currentYearData.bestRatio() != null}">
-                <a th:if="${currentYearData.bestRatio() != null}" th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
+            <div th:if="${currentYearData != null and currentYearData.bestRatio() != null}">
+                <a th:href="@{/workouts/{id}(id=${currentYearData.bestRatio().idWorkout})}" class="soft-link">
                 [[${#temporals.format(currentYearData.bestRatio().workoutDate(), 'dd/MM/yyyy')}]]
                 </a>
             </div>
-            <div th:unless="${currentYearData.bestRatio() != null}">-</div>
+            <div th:unless="${currentYearData != null and currentYearData.bestRatio() != null}">-</div>
         </td>
 
         <td class="empty-separator"></td>

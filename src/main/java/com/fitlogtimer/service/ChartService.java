@@ -77,7 +77,7 @@ public class ChartService {
 
                 if (periodYear != currentYearContext) {
                     currentYearContext = periodYear;
-                    yearMax = 0.0; // 🔥 Reset essentiel pour que SB réapparaisse
+                    yearMax = 0.0;
                 }
 
                 Double max = getMaxForPeriod(exerciseId, period, periodType);

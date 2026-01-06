@@ -52,12 +52,28 @@ public class CountController {
     @GetMapping("/yearly")
     public String showWeightExercisesStats(Model model) throws IOException {
         List<ExerciseStatCountWeightYearlyDTO> stats = statsService.getYearlyBasicCountsForWeightExercises();
+        log.info("*** stats: {}", stats);
 
         List<String> years = stats.stream()
-                .filter(dto -> !dto.statsByYear().isEmpty())
-                .findFirst()
-                .map(dto -> new ArrayList<>(dto.statsByYear().keySet()))
-                .orElse(new ArrayList<>());
+                .flatMap(dto -> dto.statsByYear().keySet().stream())
+                .distinct()
+                .sorted((a, b) -> {
+                    if ("TOTAL".equals(a)) return -1;
+                    if ("TOTAL".equals(b)) return 1;
+
+                    try {
+                        return Integer.compare(
+                                Integer.parseInt(b),
+                                Integer.parseInt(a)
+                        );
+                    } catch (NumberFormatException e) {
+                        return a.compareTo(b);
+                    }
+                })
+                .toList();
+
+
+        log.info("*** years: {}", years);
 
         model.addAttribute("stats", stats);
         model.addAttribute("years", years);

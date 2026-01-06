@@ -199,7 +199,7 @@
             </a>
         </td>
         <td th:unless="${maxRatio1RMSet != null}">-</td>
-        <td class="ratio-global-value" th:if="${maxRatio1RMSet != null}">
+        <td th:if="${maxRatio1RMSet != null}" class="ratio-global-value">
             <a th:href="@{/workouts/{id}(id=${maxRatio1RMSet.idWorkout})}" class="soft-link">
             [[${#temporals.format(maxRatio1RMSet.workoutDate, 'dd/MM/yyyy')}]]
             </a>

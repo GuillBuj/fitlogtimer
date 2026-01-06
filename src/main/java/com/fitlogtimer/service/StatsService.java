@@ -1162,8 +1162,16 @@ public class StatsService {
     }
 
     public List<ExerciseStatCountWeightYearlyDTO> getYearlyBasicCountsForWeightExercises() throws IOException {
-        List<ExerciseStatCountWeightDTO> yearlyStats = exerciseSetRepository.getYearlyBasicCountsForWeightExercises();
-        List<ExerciseStatCountWeightDTO> globalStats = exerciseSetRepository.getBasicCountsForWeightExercises();
+
+        int currentYear = Year.now().getValue();
+        String currentYearKey = String.valueOf(currentYear);
+        String previousYearKey = String.valueOf(currentYear - 1);
+
+        List<ExerciseStatCountWeightDTO> yearlyStats =
+                exerciseSetRepository.getYearlyBasicCountsForWeightExercises();
+
+        List<ExerciseStatCountWeightDTO> globalStats =
+                exerciseSetRepository.getBasicCountsForWeightExercises();
 
         Map<Integer, String> exerciseNames = new HashMap<>();
         Map<Integer, Map<String, YearlyStatCount>> exerciseYearlyMap = new HashMap<>();
@@ -1171,7 +1179,9 @@ public class StatsService {
         for (ExerciseStatCountWeightDTO dto : yearlyStats) {
             exerciseNames.put(dto.exerciseId(), dto.exerciseName());
 
-            String yearKey = dto.year() != null ? String.valueOf(dto.year()) : "null";
+            String yearKey = dto.year() == null
+                    ? "null"
+                    : String.valueOf(dto.year());
 
             exerciseYearlyMap
                     .computeIfAbsent(dto.exerciseId(), k -> new HashMap<>())
@@ -1182,51 +1192,44 @@ public class StatsService {
                     ));
         }
 
-        for (ExerciseStatCountWeightDTO globalDto : globalStats) {
-            exerciseNames.putIfAbsent(globalDto.exerciseId(), globalDto.exerciseName());
+        for (ExerciseStatCountWeightDTO dto : globalStats) {
+            exerciseNames.putIfAbsent(dto.exerciseId(), dto.exerciseName());
 
             exerciseYearlyMap
-                    .computeIfAbsent(globalDto.exerciseId(), k -> new HashMap<>())
+                    .computeIfAbsent(dto.exerciseId(), k -> new HashMap<>())
                     .put("TOTAL", new YearlyStatCount(
-                            globalDto.setsCount(),
-                            globalDto.repsCount(),
-                            globalDto.weightTotal()
+                            dto.setsCount(),
+                            dto.repsCount(),
+                            dto.weightTotal()
                     ));
         }
 
-        List<ExercisePreferenceDTO> preferences = exercisePreferenceService.getDefaultPreferenceDTOs();
-        Map<Integer, Integer> exerciseOrder = preferences.stream()
-                .collect(Collectors.toMap(
-                        ExercisePreferenceDTO::exerciseId,
-                        ExercisePreferenceDTO::order
-                ));
+        Comparator<ExerciseStatCountWeightYearlyDTO> comparator =
+                Comparator
+                        .comparingLong(
+                                (ExerciseStatCountWeightYearlyDTO dto) ->
+                                        getSets(dto.statsByYear(), currentYearKey)
+                        )
+                        .thenComparingLong(
+                                (ExerciseStatCountWeightYearlyDTO dto) ->
+                                        getSets(dto.statsByYear(), previousYearKey)
+                        )
+                        .thenComparingLong(
+                                (ExerciseStatCountWeightYearlyDTO dto) ->
+                                        getSets(dto.statsByYear(), "TOTAL")
+                        )
+                        .thenComparing(ExerciseStatCountWeightYearlyDTO::exerciseName)
+                        .reversed();
 
-        return preferences.stream()
-                .filter(pref -> exerciseYearlyMap.containsKey(pref.exerciseId()))
-                .sorted(Comparator.comparingInt(ExercisePreferenceDTO::order))
+        return exercisePreferenceService.getDefaultPreferenceDTOs().stream()
                 .map(pref -> {
-                    Map<String, YearlyStatCount> yearMap = exerciseYearlyMap.get(pref.exerciseId());
+                    Map<String, YearlyStatCount> yearMap =
+                            exerciseYearlyMap.get(pref.exerciseId());
 
-                    // Réorganiser pour mettre "TOTAL" en premier, puis années en ordre décroissant
-                    Map<String, YearlyStatCount> sortedYearMap = yearMap.entrySet().stream()
-                            .sorted((e1, e2) -> {
-                                if ("TOTAL".equals(e1.getKey())) return -1;
-                                if ("TOTAL".equals(e2.getKey())) return 1;
+                    if (yearMap == null) return null;
 
-                                try {
-                                    int year1 = Integer.parseInt(e1.getKey());
-                                    int year2 = Integer.parseInt(e2.getKey());
-                                    return Integer.compare(year2, year1);
-                                } catch (NumberFormatException e) {
-                                    return e1.getKey().compareTo(e2.getKey());
-                                }
-                            })
-                            .collect(Collectors.toMap(
-                                    Map.Entry::getKey,
-                                    Map.Entry::getValue,
-                                    (e1, e2) -> e1,
-                                    LinkedHashMap::new
-                            ));
+                    Map<String, YearlyStatCount> sortedYearMap =
+                            sortYearMap(yearMap);
 
                     return new ExerciseStatCountWeightYearlyDTO(
                             pref.exerciseId(),
@@ -1234,6 +1237,43 @@ public class StatsService {
                             sortedYearMap
                     );
                 })
-                .collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .sorted(comparator)
+                .toList();
+    }
+
+    private static Map<String, YearlyStatCount> sortYearMap(
+            Map<String, YearlyStatCount> yearMap
+    ) {
+        return yearMap.entrySet().stream()
+                .sorted((a, b) -> {
+                    if ("TOTAL".equals(a.getKey())) return -1;
+                    if ("TOTAL".equals(b.getKey())) return 1;
+
+                    try {
+                        return Integer.compare(
+                                Integer.parseInt(b.getKey()),
+                                Integer.parseInt(a.getKey())
+                        );
+                    } catch (NumberFormatException e) {
+                        return a.getKey().compareTo(b.getKey());
+                    }
+                })
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
+    }
+
+    private static long getSets(
+            Map<String, YearlyStatCount> map,
+            String key
+    ) {
+        YearlyStatCount stat = map.get(key);
+        return stat == null || stat.setsCount() == null
+                ? 0L
+                : stat.setsCount();
     }
 }

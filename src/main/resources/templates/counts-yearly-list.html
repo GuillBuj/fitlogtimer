@@ -17,35 +17,54 @@
     <thead>
     <tr>
         <th>Exercice</th>
+
         <th th:each="year : ${years}"
             th:text="${year}"
-            class="text-center"
-            style="min-width: 120px;">
+            class="text-center sortable-year"
+            th:attr="data-year=${year}"
+            style="min-width:120px; cursor:pointer;">
         </th>
     </tr>
     </thead>
     <tbody>
-        <tr th:each="stat : ${stats}">
-            <td th:text="${stat.exerciseName}"
-                style="min-width: 200px;"></td>
+    <tr th:each="stat : ${stats}">
+        <td th:text="${stat.exerciseName}"
+            style="min-width:200px;"></td>
 
-            <td th:each="year : ${years}"
-                th:classappend="${year == 'TOTAL'} ? 'important-column' : ''">
-                <div th:if="${stat.statsByYear.containsKey(year)}"
-                     th:with="yearStat=${stat.statsByYear.get(year)}">
-                    <div class="bold-text"><span th:text="${#strings.substring(yearStat.formattedWeight, 0, #strings.indexOf(yearStat.formattedWeight, ' '))+ ' kg'}">                            </span>
-                    </div>
-                    <div class="small-text"><span th:text="${yearStat.formattedAvgRepsPerSet}+'@'+${yearStat.formattedAvgWeightPerRep}"></span>
-                    </div>
-                    <div class="bold-text"><span th:text="${yearStat.setsCount} + ' sets'"></span>                    </div>
+        <td th:each="year : ${years}"
+            th:classappend="${year == 'TOTAL'} ? 'important-column' : ''"
+            th:attr="data-year=${year},
+                 data-sets=${stat.statsByYear.containsKey(year)
+                     ? stat.statsByYear.get(year).setsCount
+                     : 0}">
+
+            <div th:if="${stat.statsByYear.containsKey(year)}"
+                 th:with="yearStat=${stat.statsByYear.get(year)}">
+
+                <div class="bold-text">
+                <span th:text="${#strings.substring(
+                        yearStat.formattedWeight,
+                        0,
+                        #strings.indexOf(yearStat.formattedWeight, ' ')
+                    ) + ' kg'}"></span>
                 </div>
 
-                <div th:unless="${stat.statsByYear.containsKey(year)}">-</div>
-            </td>
-        </tr>
+                <div class="small-text">
+                    <span th:text="${yearStat.formattedAvgRepsPerSet} + '@' + ${yearStat.formattedAvgWeightPerRep}"></span>
+                </div>
+
+                <div class="bold-text">
+                    <span th:text="${yearStat.setsCount} + ' sets'"></span>
+                </div>
+            </div>
+
+            <div th:unless="${stat.statsByYear.containsKey(year)}">-</div>
+        </td>
+    </tr>
     </tbody>
 </table>
 
 <script src="/js/timer.js"></script>
+<script src="/js/counts.js"></script>
 </body>
 </html>

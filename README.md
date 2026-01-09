@@ -84,7 +84,7 @@
 
 ## 📸 Captures d'écran
 
-👉 [Voir la galerie](https://GuillBuj.github.io/fitlogtimer/screenshots/)
+👉 [Voir la galerie](https://GuillBuj.github.io/fitlogtimer/screenshots/) (Screenshots au 09/01/2026)
 
 
 ## 👤 Auteur

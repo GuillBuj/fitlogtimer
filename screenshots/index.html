@@ -3,53 +3,99 @@
 <head>
     <title>Captures d'écran</title>
     <style>
-        body { font-family: Arial; max-width: 1200px; margin: auto; }
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        img { width: 100%; border: 1px solid #ddd; border-radius: 4px; }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 2rem;
+        }
+        .gallery div {
+            text-align: center;
+        }
+        .gallery a {
+            display: block;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+        .gallery a:hover {
+            transform: scale(1.02);
+        }
+        .gallery a:hover img {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .gallery img {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: contain;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: box-shadow 0.2s ease;
+        }
+        .gallery p {
+            margin: 10px 0 0 0;
+            font-size: 0.9rem;
+            color: #555;
+        }
     </style>
 </head>
 <body>
 <h1>📸 Captures d'écran</h1>
 <div class="gallery">
     <div>
-        <img src="liste_exs.png" alt="Page d'accueil listant les exercices">
+        <a href="liste_exs.png" target="_blank" title="Cliquez pour agrandir">
+            <img src="liste_exs.png" alt="Page d'accueil listant les exercices">
+        </a>
         <p>Page d'accueil listant les exercices</p>
     </div>
     <div>
-        <img src="calendar.png" alt="Calendrier">
+        <a href="calendar.png" target="_blank" title="Cliquez pour agrandir">
+            <img src="calendar.png" alt="Calendrier">
+        </a>
         <p>Calendrier</p>
     </div>
     <div>
-        <img src="liste_exs.png" alt="Page d'accueil listant les exercices">
-        <p>Page d'accueil listant les exercices</p>
-    </div>
-    <div>
-        <img src="exercice_details.png" alt="Page récapitulative d'un exercice">
+        <a href="exercice_details.png" target="_blank" title="Cliquez pour agrandir">
+            <img src="exercice_details.png" alt="Page récapitulative d'un exercice">
+        </a>
         <p>Page récapitulative d'un exercice</p>
     </div>
     <div>
-        <img src="graphs.png" alt="Graphique récapitulatif des exercices principaux">
+        <a href="graphs.png" target="_blank" title="Cliquez pour agrandir">
+            <img src="graphs.png" alt="Graphique récapitulatif des exercices principaux">
+        </a>
         <p>Graphique récapitulatif des exercices principaux</p>
     </div>
     <div>
-        <img src="recap.png" alt="Tableau récapitulatif des exercices principaux">
-        <p>Tableau d'accueil listant les exercices</p>
+        <a href="recap.png" target="_blank" title="Cliquez pour agrandir">
+            <img src="recap.png" alt="Tableau récapitulatif des exercices principaux">
+        </a>
+        <p>Tableau récapitulatif des exercices principaux</p>
     </div>
     <div>
-        <img src="records.png" alt="Records par répétitions, estimation et ratio d'un exercice">
+        <a href="records.png" target="_blank" title="Cliquez pour agrandir">
+            <img src="records.png" alt="Records par répétitions, estimation et ratio d'un exercice">
+        </a>
         <p>Records par répétitions, estimation et ratio d'un exercice</p>
     </div>
     <div>
-        <img src="histo_records.png" alt="Historique des records d'un exercice">
+        <a href="histo_records.png" target="_blank" title="Cliquez pour agrandir">
+            <img src="histo_records.png" alt="Historique des records d'un exercice">
+        </a>
         <p>Historique des records d'un exercice</p>
     </div>
     <div>
-        <img src="volume.png" alt="Tableau des volumes pour chaque exercice">
+        <a href="volume.png" target="_blank" title="Cliquez pour agrandir">
+            <img src="volume.png" alt="Tableau des volumes pour chaque exercice">
+        </a>
         <p>Tableau des volumes pour chaque exercice</p>
     </div>
     <div>
-        <img src="liste_exs.png" alt="Drag and drop pour les préférences d'affichage (ordre et visibilité)">
-        <p>Drag and drop pour les préférences d'affichage (ordre et visibilité)</p>
+        <a href="ordre.png" target="_blank" title="Cliquez pour agrandir">
+            <img src="ordre.png" alt="Drag and drop pour les préférences d'affichage">
+        </a>
+        <p>Drag and drop pour les préférences d'affichage</p>
     </div>
 </div>
 </body>

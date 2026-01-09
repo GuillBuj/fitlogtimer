@@ -82,6 +82,10 @@
 - **Chart.js** pour les graphiques
 - **FullCalendar.js** pour les calendriers
 
+## 📸 Captures d'écran
+
+👉 [Voir la galerie](https://GuillBuj.github.io/fitlogtimer/)
+
 
 ## 👤 Auteur
 

@@ -28,6 +28,7 @@ public class ChartController {
         model.addAttribute("chartData", data);
         model.addAttribute("chartType", "main");
         model.addAttribute("chartPeriod", "MONTHLY");
+        model.addAttribute("dataType", "MAX");
         return "period-chart";
     }
 
@@ -39,6 +40,7 @@ public class ChartController {
         model.addAttribute("chartData", data);
         model.addAttribute("chartType", "main");
         model.addAttribute("chartPeriod", "WEEKLY");
+        model.addAttribute("dataType", "MAX");
         return "period-chart";
     }
 
@@ -50,6 +52,7 @@ public class ChartController {
         model.addAttribute("chartData", data);
         model.addAttribute("chartType", "bench");
         model.addAttribute("chartPeriod", "MONTHLY");
+        model.addAttribute("dataType", "MAX");
         return "period-chart";
     }
 
@@ -61,6 +64,31 @@ public class ChartController {
         model.addAttribute("chartData", data);
         model.addAttribute("chartType", "bench");
         model.addAttribute("chartPeriod", "WEEKLY");
+        model.addAttribute("dataType", "MAX");
+        return "period-chart";
+    }
+
+    @GetMapping("/monthly-main-exercises-1rmest")
+    public String showMonthlyMainExercises1RMEstChart(Model model) {
+
+        List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataMonthly1RMEst();
+
+        model.addAttribute("chartData", data);
+        model.addAttribute("chartType", "main");
+        model.addAttribute("chartPeriod", "MONTHLY");
+        model.addAttribute("dataType", "EST");
+        return "period-chart";
+    }
+
+    @GetMapping("/weekly-main-exercises-1rmest")
+    public String showWeeklyMainExercises1RMEstChart(Model model) {
+
+        List<ChartPeriodDataPointDTO> data = chartService.getMainLiftsChartDataWeekly1RMEst();
+
+        model.addAttribute("chartData", data);
+        model.addAttribute("chartType", "main");
+        model.addAttribute("chartPeriod", "WEEKLY");
+        model.addAttribute("dataType", "EST");
         return "period-chart";
     }
 }

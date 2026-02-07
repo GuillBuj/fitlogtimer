@@ -10,15 +10,15 @@
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
 <div class="header-container">
-    <h1>Maxs <span th:text="${chartPeriod == 'MONTHLY'} ? 'mensuels' : 'hebdomadaires'"></span></h1>
-    <a th:href="@{${chartPeriod == 'MONTHLY'} ?
-               '/charts/weekly-' + ${chartType} + '-exercises' :
-               '/charts/monthly-' + ${chartType} + '-exercises'}"
+    <h1><span th:text="${dataType == 'EST'} ? '1RM estimés' : 'Maxs'"></span><span th:text="${chartPeriod == 'MONTHLY'} ? 'mensuels' : 'hebdomadaires'"></span></h1>
+    <a th:href="${chartPeriod == 'MONTHLY'
+        ? '/charts/weekly-' + chartType + '-exercises' + (dataType == 'EST' ? '-1rmest' : '')
+        : '/charts/monthly-' + chartType + '-exercises' + (dataType == 'EST' ? '-1rmest' : '')
+    }"
        class="btn-edit">
-        <span th:text="${chartPeriod == 'MONTHLY'} ? 'Maxs hebdomadaires' : 'Maxs mensuels'"></span>
+        <span th:text="${chartPeriod == 'MONTHLY'} ? 'Hebdomadaires' : 'Mensuels'"></span>
     </a>
 </div>
-
 <div id="periodChartContainer">
     <canvas id="periodChart"></canvas>
 </div>

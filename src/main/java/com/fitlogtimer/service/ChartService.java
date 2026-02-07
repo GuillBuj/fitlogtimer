@@ -1,5 +1,6 @@
 package com.fitlogtimer.service;
 
+import com.fitlogtimer.dto.ExerciseSetFor1RMCalcDTO;
 import com.fitlogtimer.dto.chart.ChartDataPointDTO;
 import com.fitlogtimer.dto.chart.ChartPeriodDataPointDTO;
 import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
@@ -15,9 +16,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.time.YearMonth;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.*;
+
+import static com.fitlogtimer.service.StatsService.calculateOneRepMax;
 
 @Service
 @RequiredArgsConstructor
@@ -177,6 +181,154 @@ public class ChartService {
             throw new UnsupportedOperationException("Période non supportée");
         }
     }
+
+    /* ******/
+    /* pour 1RMest*/
+    /* ******/
+    public List<ChartPeriodDataPointDTO> getExercisesChartData1RMEst(
+            List<String> exerciseShortNames,
+            PeriodType periodType
+    ) {
+        return getExercisesChartData1RMEstInternal(exerciseShortNames, periodType);
+    }
+
+    private List<ChartPeriodDataPointDTO> getExercisesChartData1RMEstInternal(
+            List<String> exerciseShortNames,
+            PeriodType periodType
+    ) {
+        List<Integer> exerciseIds = exerciseSetRepository.findIdsByShortNames(exerciseShortNames);
+        List<ChartPeriodDataPointDTO> result = new ArrayList<>();
+        Set<String> filledPeriods = new HashSet<>();
+
+        int globalFirstYear = Integer.MAX_VALUE;
+        int globalLastYear = Integer.MIN_VALUE;
+
+        for (Integer exerciseId : exerciseIds) {
+            Integer firstYear = exerciseSetRepository.findFirstYearWithData(exerciseId);
+            Integer lastYear = exerciseSetRepository.findLastYearWithData(exerciseId);
+            if (firstYear == null || lastYear == null) continue;
+
+            globalFirstYear = Math.min(globalFirstYear, firstYear);
+            globalLastYear = Math.max(globalLastYear, lastYear);
+        }
+
+        if (globalFirstYear == Integer.MAX_VALUE) return result;
+
+        LocalDate today = LocalDate.now();
+        globalLastYear = Math.max(globalLastYear, today.getYear());
+
+        Set<String> allPeriods = generateAllPeriods(globalFirstYear, globalLastYear, periodType);
+
+        for (Integer exerciseId : exerciseIds) {
+
+            String exerciseName = exerciseRepository.findById(exerciseId)
+                    .map(Exercise::getName)
+                    .orElse("Exercice " + exerciseId);
+
+            double allTimeMax = 0.0;
+            double yearMax = 0.0;
+            int currentYearContext = -1;
+
+            for (String period : allPeriods) {
+
+                int periodYear = (periodType == PeriodType.MONTH)
+                        ? Integer.parseInt(period.substring(0, 4))
+                        : Integer.parseInt(period.split("-W")[0]);
+
+                if (periodYear != currentYearContext) {
+                    currentYearContext = periodYear;
+                    yearMax = 0.0;
+                }
+
+                LocalDate start;
+                LocalDate end;
+
+                if (periodType == PeriodType.MONTH) {
+                    int year = Integer.parseInt(period.substring(0, 4));
+                    int month = Integer.parseInt(period.substring(5, 7));
+                    YearMonth ym = YearMonth.of(year, month);
+                    start = ym.atDay(1);
+                    end = ym.atEndOfMonth();
+                } else {
+                    String[] pp = period.split("-W");
+                    int isoYear = Integer.parseInt(pp[0]);
+                    int isoWeek = Integer.parseInt(pp[1]);
+
+                    start = LocalDate.of(isoYear, 1, 4)
+                            .with(WeekFields.ISO.weekOfWeekBasedYear(), isoWeek)
+                            .with(WeekFields.ISO.dayOfWeek(), 1);
+                    end = start.plusDays(6);
+                }
+
+                List<ExerciseSetFor1RMCalcDTO> sets =
+                        exerciseSetRepository.findAllSetsByExBetweenDates(exerciseId, start, end);
+
+                Double max1RM = sets.stream()
+                        .mapToDouble(s -> calculateOneRepMax(s.reps(), s.weight()))
+                        .max()
+                        .orElse(Double.NaN);
+
+                if (!Double.isNaN(max1RM) && max1RM > 0) {
+
+                    RecordType recordType = RecordType.NONE;
+
+                    if (max1RM > allTimeMax) {
+                        allTimeMax = max1RM;
+                        recordType = RecordType.PR;
+                    } else if (max1RM > yearMax) {
+                        recordType = RecordType.SB;
+                    }
+
+                    yearMax = Math.max(yearMax, max1RM);
+
+                    // Cas ISO week 1 qui chevauche l’année précédente
+                    if (periodType == PeriodType.WEEK) {
+                        String[] pp = period.split("-W");
+                        int isoYear = Integer.parseInt(pp[0]);
+                        int isoWeek = Integer.parseInt(pp[1]);
+
+                        if (isoWeek == 1) {
+                            LocalDate firstDayOfWeek = LocalDate
+                                    .of(isoYear, 1, 4)
+                                    .with(WeekFields.ISO.dayOfWeek(), 1);
+
+                            if (firstDayOfWeek.getYear() < isoYear && recordType == RecordType.SB) {
+                                recordType = RecordType.NONE;
+                            }
+                            yearMax = 0.0;
+                        }
+                    }
+
+                    result.add(new ChartPeriodDataPointDTO(
+                            period,
+                            exerciseName,
+                            Math.round(max1RM * 1000) / 1000.0,
+                            recordType
+                    ));
+
+                    filledPeriods.add(period);
+                }
+            }
+        }
+
+        addGhostPeriods(result, allPeriods, filledPeriods, periodType, today);
+        return result;
+    }
+
+    public List<ChartPeriodDataPointDTO> getMainLiftsChartDataMonthly1RMEst() {
+        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP", "DCM", "DCX");
+        List<ChartPeriodDataPointDTO> data =
+                getExercisesChartData1RMEst(mainShortNames, PeriodType.MONTH);
+        return mergeBenchPressVariants(data);
+    }
+
+    public List<ChartPeriodDataPointDTO> getMainLiftsChartDataWeekly1RMEst() {
+        List<String> mainShortNames = List.of("DC", "DC30", "DCS", "DL", "HSQ", "DM", "DCP", "DCM", "DCX");
+        List<ChartPeriodDataPointDTO> data =
+                getExercisesChartData1RMEst(mainShortNames, PeriodType.WEEK);
+        return mergeBenchPressVariants(data);
+    }
+
 
     private void addGhostPeriods(List<ChartPeriodDataPointDTO> result, Set<String> allPeriods,
                                  Set<String> filledPeriods, PeriodType periodType, LocalDate today) {

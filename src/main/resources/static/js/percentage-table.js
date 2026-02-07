@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Ajouter les écouteurs d'événements aux nouveaux boutons
         attachEventListeners();
     }
 
@@ -36,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const value = this.getAttribute('data-value');
                 if (weightInput) {
                     weightInput.value = value;
-                    // Déclencher l'événement input pour mettre à jour les calculs
                     weightInput.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             });
@@ -48,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const value = this.getAttribute('data-value');
                 if (estimatedOneRMInput) {
                     estimatedOneRMInput.value = value;
-                    // Déclencher l'événement input pour mettre à jour les calculs
                     estimatedOneRMInput.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             });

@@ -1,5 +1,6 @@
 package com.fitlogtimer.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -378,6 +379,27 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     List<ExerciseSetWithBodyWeightAndDateFor1RMDTO> findAllSetsFor1RM(@Param("exerciseId") int exerciseId);
 
     @Query("""
+    SELECT new com.fitlogtimer.dto.ExerciseSetFor1RMCalcDTO(
+            fws.weight,
+            fws.repNumber,
+            w.bodyWeight,
+            w.id,
+            w.date
+        )
+        FROM FreeWeightSet fws
+        JOIN fws.workout w
+        WHERE fws.exercise.id = :exerciseId
+          AND fws.repNumber >= 1
+          AND w.bodyWeight > 0
+          AND w.date BETWEEN :start AND :end
+    """)
+    List<ExerciseSetFor1RMCalcDTO> findAllSetsByExBetweenDates(
+            @Param("exerciseId") int exerciseId,
+            @Param("start") LocalDate start,
+            @Param("end") LocalDate end
+    );
+
+    @Query("""
        SELECT es FROM ExerciseSet es
        WHERE es.exercise.id IN :ids
          AND es.id IN (
@@ -390,7 +412,11 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     @Query("SELECT e.id FROM Exercise e WHERE e.shortName IN :shortNames")
     List<Integer> findIdsByShortNames(@Param("shortNames") List<String> shortNames);
 
+
+    /* ***************/
     /* STATS VOLUME */
+    /* ***************/
+
     @Query("SELECT new com.fitlogtimer.dto.stats.ExerciseStatCountBasicDTO(" +
             "es.exercise.id, " +
             "es.exercise.name, " +

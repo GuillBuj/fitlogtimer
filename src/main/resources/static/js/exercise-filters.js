@@ -36,5 +36,3 @@ function setUpFamilyFilter(){
 }
 
 document.addEventListener('DOMContentLoaded', setUpFamilyFilter)
-//à decom si ajax
-//document.body.addEventListener('htmx:afterSwap', setUpFamilyFilter)

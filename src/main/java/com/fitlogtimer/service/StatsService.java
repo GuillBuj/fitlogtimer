@@ -24,6 +24,7 @@ import com.fitlogtimer.model.sets.BodyweightSet;
 import com.fitlogtimer.model.sets.IsometricSet;
 import com.fitlogtimer.repository.ExerciseRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.model.ExerciseSet;
@@ -407,15 +408,15 @@ public class StatsService {
                 .orElse(0.0);
     }
 
-    public List<RecordHistoryItem> getMinimalRecordHistory(List<RecordHistoryItem> list) {
+    public List<RecordHistoryItemDTO> getMinimalRecordHistory(List<RecordHistoryItemDTO> list) {
         if (list.isEmpty()) return Collections.emptyList();
 
-        List<RecordHistoryItem> minimalRecordHistory = new ArrayList<>();
+        List<RecordHistoryItemDTO> minimalRecordHistory = new ArrayList<>();
         Set<Double> seenWeights = new HashSet<>();
 
-        RecordHistoryItem lastAdded = null;
+        RecordHistoryItemDTO lastAdded = null;
 
-        for (RecordHistoryItem current : list) {
+        for (RecordHistoryItemDTO current : list) {
             // garde la date la plus ancienne si meme poids
             if (seenWeights.contains(current.weight())) {
                 continue;
@@ -438,15 +439,15 @@ public class StatsService {
         return minimalRecordHistory;
     }
 
-    public List<RecordHistoryItem> getRecordHistory(int exerciseId) {
+    public List<RecordHistoryItemDTO> getRecordHistory(int exerciseId) {
 
         return getRecordHistory(exerciseId, 1);
     }
 
     // minRepsOrWeight selon le sous-type d'ExerciseSet
-    public List<RecordHistoryItem> getRecordHistory(int exerciseId, int minRepsOrWeight) {
+    public List<RecordHistoryItemDTO> getRecordHistory(int exerciseId, int minRepsOrWeight) {
         List<ExerciseSet> sets = exerciseSetRepository.findAllSetsByDateAndMinReps(exerciseId, minRepsOrWeight);
-        List<RecordHistoryItem> recordHistory = new ArrayList<>();
+        List<RecordHistoryItemDTO> recordHistory = new ArrayList<>();
 
         double currentBestWeight = 0;
         double currentBestNbReps = 0;
@@ -461,7 +462,7 @@ public class StatsService {
                     currentBestWeight = weight;
                     bestWeightBodyweight = set.getWorkout().getBodyWeight();
 
-                    recordHistory.add(new RecordHistoryItem(
+                    recordHistory.add(new RecordHistoryItemDTO(
                             weight,
                             set.getRepNumber(),
                             0,
@@ -477,7 +478,7 @@ public class StatsService {
                 if (nbReps > currentBestNbReps) {
                     currentBestNbReps = nbReps;
 
-                    recordHistory.add(new RecordHistoryItem(
+                    recordHistory.add(new RecordHistoryItemDTO(
                             0.0,
                             nbReps,
                             0,
@@ -495,7 +496,7 @@ public class StatsService {
                     currentBestDurationS = durationS;
                     log.info("currentBestDurationS: {}", currentBestDurationS);
 
-                    recordHistory.add(new RecordHistoryItem(
+                    recordHistory.add(new RecordHistoryItemDTO(
                             0.0,
                             0,
                             durationS,
@@ -1275,5 +1276,18 @@ public class StatsService {
         return stat == null || stat.setsCount() == null
                 ? 0L
                 : stat.setsCount();
+    }
+
+
+    public List<TopFreeWeightSetsItemDTO> getTopFreeWeightRecords(
+            int exerciseId,
+            int limit
+    ) {
+        List<TopFreeWeightSetsItemDTO> topFreeWeightSetsItem = exerciseSetRepository.findTopFreeWeightRecords(
+                exerciseId,
+                PageRequest.of(0, limit)
+        );
+        log.info("TOP FWS: {}", topFreeWeightSetsItem);
+        return topFreeWeightSetsItem;
     }
 }

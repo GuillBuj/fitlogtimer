@@ -79,10 +79,12 @@ public class StatsController {
         String exerciseName = exerciseService.getById(exerciseId).get().getName();
         String exerciseType = exerciseService.getById(exerciseId).get().getType();
 
-        List<RecordHistoryItem> recordHistory = statsService.getMinimalRecordHistory(statsService.getRecordHistory(exerciseId));
+        List<RecordHistoryItemDTO> recordHistory = statsService.getMinimalRecordHistory(statsService.getRecordHistory(exerciseId));
+        List<TopFreeWeightSetsItemDTO> topFreeWeightSets = statsService.getTopFreeWeightRecords(exerciseId,10);
 
         model.addAttribute("exerciseName", exerciseName);
         model.addAttribute("recordHistory", recordHistory);
+        model.addAttribute("topFreeWeightSets", topFreeWeightSets);
         model.addAttribute("exercise_id", exerciseId);
         model.addAttribute("exercise_type", exerciseType);
         model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
@@ -99,7 +101,7 @@ public class StatsController {
         String exerciseName = exerciseService.getById(exerciseId).get().getName();
         String exerciseType = exerciseService.getById(exerciseId).get().getType();
 
-        List<RecordHistoryItem> recordHistory = statsService.getRecordHistory(exerciseId);
+        List<RecordHistoryItemDTO> recordHistory = statsService.getRecordHistory(exerciseId);
 
         model.addAttribute("exerciseName", exerciseName);
         model.addAttribute("recordHistory", recordHistory);

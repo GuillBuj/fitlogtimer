@@ -8,6 +8,7 @@ import com.fitlogtimer.dto.ExerciseSetFor1RMCalcDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO;
 import com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateFor1RMDTO;
 import com.fitlogtimer.dto.stats.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -449,5 +450,27 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "WHERE fws.repNumber >= 1 " +
             "GROUP BY fws.exercise.id, fws.exercise.name, YEAR(fws.workout.date)")
     List<ExerciseStatCountWeightDTO> getYearlyBasicCountsForWeightExercises();
+
+
+    @Query("""
+    SELECT new com.fitlogtimer.dto.stats.TopFreeWeightSetsItemDTO(
+        fws.weight,
+        fws.repNumber,
+        w.date,
+        w.bodyWeight,
+        w.id
+    )
+    FROM FreeWeightSet fws
+    JOIN fws.workout w
+    WHERE fws.exercise.id = :exerciseId
+      AND fws.weight IS NOT NULL
+    ORDER BY fws.weight DESC,
+             w.bodyWeight ASC,
+             w.date ASC
+""")
+    List<TopFreeWeightSetsItemDTO> findTopFreeWeightRecords(
+            @Param("exerciseId") int exerciseId,
+            Pageable pageable
+    );
 
 }

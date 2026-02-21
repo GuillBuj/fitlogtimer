@@ -1,6 +1,8 @@
 package com.fitlogtimer.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -80,7 +83,7 @@ public class StatsController {
         String exerciseType = exerciseService.getById(exerciseId).get().getType();
 
         List<RecordHistoryItemDTO> recordHistory = statsService.getMinimalRecordHistory(statsService.getRecordHistory(exerciseId));
-        List<TopFreeWeightSetsItemDTO> topFreeWeightSets = statsService.getTopFreeWeightRecords(exerciseId,10);
+        List<TopFreeWeightSetsItemDTO> topFreeWeightSets = statsService.getTopFreeWeightRecords(exerciseId,20);
 
         model.addAttribute("exerciseName", exerciseName);
         model.addAttribute("recordHistory", recordHistory);

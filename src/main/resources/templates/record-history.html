@@ -16,46 +16,47 @@
     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise_id})}" class="link-back">📜</a>
     <a th:href="@{/stats/recordHistoryPlus/{id}(id=${exercise_id})}" class="link-back">🔎</a>
 </div>
-
+<div class="history-page">
 <table class="auto-width-table centered centered-text">
     <thead>
-    <tr>
-        <th>Date</th>
-        <th th:if="${exercise_type==FREE_WEIGHT_TYPE}">Poids</th>
-        <th th:if="${exercise_type==BODYWEIGHT_TYPE}">Nombre</th>
-        <th th:if="${exercise_type==ISOMETRIC_TYPE}">Durée</th>
-        <th>PDC</th>
-        <th th:if="${exercise_type==FREE_WEIGHT_TYPE}">Ratio</th>
-    </tr>
+        <tr>
+            <th>Date</th>
+            <th th:if="${exercise_type==FREE_WEIGHT_TYPE}">Poids</th>
+            <th th:if="${exercise_type==BODYWEIGHT_TYPE}">Nombre</th>
+            <th th:if="${exercise_type==ISOMETRIC_TYPE}">Durée</th>
+            <th>PDC</th>
+            <th th:if="${exercise_type==FREE_WEIGHT_TYPE}">Ratio</th>
+        </tr>
     </thead>
     <tbody>
-    <tr th:each="record : ${recordHistory}">
-        <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}"></td>
+        <tr th:each="record : ${recordHistory}">
+            <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}" th:class="column-sticky"></td>
 
-        <!-- Freeweight -->
-        <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.weight()} + 'kg'"  class="important-column bold-text"></td>
+            <!-- Freeweight -->
+            <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.weight()} + 'kg'"  class="important-column bold-text"></td>
 
-        <!-- Bodyweight -->
-        <td th:if="${exercise_type==BODYWEIGHT_TYPE}" th:text="${record.nbReps}"></td>
+            <!-- Bodyweight -->
+            <td th:if="${exercise_type==BODYWEIGHT_TYPE}" th:text="${record.nbReps}"></td>
 
-        <!-- Isometric -->
-        <td th:if="${exercise_type==ISOMETRIC_TYPE}">
-            <span th:text="${#numbers.formatInteger(record.durationS / 60, 1)}"></span>'
-            <span th:text="${#numbers.formatInteger(record.durationS % 60, 2)}"></span>"
-        </td>
+            <!-- Isometric -->
+            <td th:if="${exercise_type==ISOMETRIC_TYPE}">
+                <span th:text="${#numbers.formatInteger(record.durationS / 60, 1)}"></span>'
+                <span th:text="${#numbers.formatInteger(record.durationS % 60, 2)}"></span>"
+            </td>
 
-        <td th:text="${record.bodyWeight > 0 ? '@'+ record.bodyWeight + ' kg' : '-'}"></td>
+            <td th:text="${record.bodyWeight > 0 ? '@'+ record.bodyWeight + ' kg' : '-'}"></td>
 
-        <!-- Ratio seulement pour freeweight -->
-        <td th:if="${exercise_type==FREE_WEIGHT_TYPE}"
-            th:text="${record.bodyWeight > 0 ? #numbers.formatDecimal(record.weight / record.bodyWeight, 1, 3) : '-'}"></td>
-    </tr>
+            <!-- Ratio seulement pour freeweight -->
+            <td th:if="${exercise_type==FREE_WEIGHT_TYPE}"
+                th:text="${record.bodyWeight > 0 ? #numbers.formatDecimal(record.weight / record.bodyWeight, 1, 3) : '-'}"></td>
+        </tr>
     </tbody>
 </table>
 
 <table class="auto-width-table centered centered-text">
     <thead>
     <tr>
+        <th>#</th>
         <th>Date</th>
         <th>Poids</th>
         <th>PDC</th>
@@ -63,15 +64,18 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="record : ${topFreeWeightSets}">
-        <td th:text="${#temporals.format(record.date(), 'dd/MM/yyyy')}"></td>
-        <td th:text="${record.weight()} + ' kg'" class="important-column bold-text"></td>
-        <td th:text="${record.bodyWeight() > 0 ? '@' + record.bodyWeight() + ' kg' : '-'}"></td>
-        <td th:text="${record.bodyWeight() > 0 ? #numbers.formatDecimal(record.weight() / record.bodyWeight(), 1, 3) : '-'}"></td>
+    <tr th:each="topSet, iterNumber : ${topFreeWeightSets}">
+        <td th:text="${iterNumber.count}" class="bold-text column-sticky"></td>
+        <td th:text="${#temporals.format(topSet.date(), 'dd/MM/yyyy')}"></td>
+        <td th:text="${topSet.weight()} + ' kg' + ${topSet.nbReps() > 1 ? ' (' + topSet.nbReps() + ')' : ''}"
+            class="bold-text"
+            th:classappend="${topSet.getColorClass}"></td>
+        <td th:text="${topSet.bodyWeight() > 0 ? '@' + topSet.bodyWeight() + ' kg' : '-'}"></td>
+        <td th:text="${topSet.bodyWeight() > 0 ? #numbers.formatDecimal(topSet.weight() / topSet.bodyWeight(), 1, 3) : '-'}"></td>
     </tr>
     </tbody>
 </table>
-
+</div>
 <p th:if="${#lists.isEmpty(recordHistory)}">Aucun record trouvé pour cet exercice.</p>
 
 <script src="/js/timer.js"></script>

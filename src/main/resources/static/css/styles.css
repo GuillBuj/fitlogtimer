@@ -1725,3 +1725,45 @@ body.calendar-page { /* Ajoutez une classe au body */
     font-size: 0.9em;
     font-style: italic;
 }
+
+.history-page {
+    display: inline-flex;
+    gap: 50px;
+    align-items: center;
+}
+
+.color-fresh {
+    background: linear-gradient(90deg, rgba(0, 160, 70, 0.8), rgba(0, 130, 50, 0.4) 40%, transparent 80%);
+    border-left: 6px solid #00aa55;  /* Vert franc */
+    color: #4a0000;
+}
+
+.color-recent {
+    background: linear-gradient(90deg, rgba(80, 170, 60, 0.7), rgba(60, 140, 40, 0.3) 40%, transparent 80%);
+    border-left: 6px solid #6bb84b;  /* Vert qui commence à jaunir */
+    color: #4a0000;
+}
+
+.color-moderate {
+    background: linear-gradient(90deg, rgba(160, 170, 50, 0.7), rgba(130, 140, 30, 0.3) 40%, transparent 80%);
+    border-left: 6px solid #b8c43c;  /* Jaune-vert */
+    color: #4a0000;
+}
+
+.color-aged {
+    background: linear-gradient(90deg, rgba(204, 153, 68, 0.7), rgba(136, 85, 34, 0.3) 40%, transparent 80%);
+    border-left: 6px solid #eeaa66;
+    color: #4a0000;
+}
+
+.color-old {
+    background: linear-gradient(90deg, rgba(204, 102, 68, 0.7), rgba(136, 34, 34, 0.3) 40%, transparent 80%);
+    border-left: 6px solid #ee8866;
+    color: #4a0000;
+}
+
+.color-ancient {
+    background: linear-gradient(90deg, rgba(170, 68, 68, 0.8), rgba(136, 34, 34, 0.4) 40%, transparent 80%);
+    border-left: 6px solid #ee6666;
+    color: #4a0000;
+}

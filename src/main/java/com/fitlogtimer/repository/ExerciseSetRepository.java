@@ -465,6 +465,7 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     WHERE fws.exercise.id = :exerciseId
       AND fws.weight IS NOT NULL
     ORDER BY fws.weight DESC,
+             fws.repNumber DESC,
              w.bodyWeight ASC,
              w.date ASC
 """)

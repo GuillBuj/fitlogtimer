@@ -974,7 +974,7 @@ public class StatsService {
         }
 
         if (trendRatio == 1.0) {
-            return "hsl(60, 50%, 85%)"; // jaune doux
+            return "hsl(60, 55%, 80%)"; // jaune doux
         }
 
         boolean isPositive = trendRatio >= 1;
@@ -996,34 +996,35 @@ public class StatsService {
         double lightness;
 
         if (isPositive) {
-            double minSaturation = 70;
-            double maxLightness = 80;
-
             if (diff <= 0.03) {
-                hue = 110; //vert jaune
-                saturation = Math.max(minSaturation, 65 + intensity * 20);
-                lightness = Math.min(maxLightness, 85 - intensity * 10);
+                hue = 65 + diff * 1200; // vert jaune
+                saturation = Math.max(72, 50 + intensity * 80);
+                lightness = Math.min(80, 88 - intensity * 10);
             }
             else if (diff <= 0.1) {
-                hue = 130; //vert
-                saturation = Math.max(35, Math.min(45 + intensity * 30, 85));
-                lightness = Math.max(55, Math.min(95 - intensity * 40, 96));
+                hue = 118 + (diff - 0.03) * 170; // vert
+                saturation = Math.max(35,
+                        Math.min(45 + intensity * 30, 85));
+                lightness = Math.max(55,
+                        Math.min(95 - intensity * 40, 96));
             }
             else {
-                hue = 125 - Math.min((diff - 0.1) * 50, 5); //vert sapin
-                saturation = Math.max(25, Math.min(60 - Math.min((diff - 0.1) * 50, 10), 85));
-                lightness = Math.max(45, Math.min(55 - Math.min((diff - 0.1) * 30, 10), 96));
+                hue = 125 - Math.min((diff - 0.1) * 50, 5); // vert sapin
+                saturation = Math.max(25,
+                        Math.min(60 - Math.min((diff - 0.1) * 50, 10), 85));
+                lightness = Math.max(45,
+                        Math.min(55 - Math.min((diff - 0.1) * 30, 10), 96));
             }
         } else {
             if (diff <= 0.03) {
-                hue = 34; // jaune orange
+                hue = 58 - diff * 800; // jaune orange
                 saturation = Math.max(78,
                         68 + intensity * 16);
                 lightness = Math.min(84,
                         86 - intensity * 8);
             }
             else if (diff <= 0.1) {
-                hue = 22 - (diff - 0.03) * 100;
+                hue = 30 - (diff - 0.03) * 250;
                 saturation = Math.max(60,
                         Math.min(58 + intensity * 20, 82));
                 lightness = Math.max(56,
@@ -1067,7 +1068,7 @@ public class StatsService {
                 hue, lighterSaturation, lighterLightness);
 
         return String.format(
-                "background: linear-gradient(135deg, %s 0%%, %s 35%%, %s 100%%);",
+                "background: linear-gradient(125deg, %s 0%%, %s 35%%, %s 100%%);",
                 baseColor, baseColor, lighterColor);
     }
 

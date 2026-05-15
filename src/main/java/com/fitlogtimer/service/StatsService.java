@@ -986,7 +986,7 @@ public class StatsService {
         if (diff < 0.01) {
             intensity = diff * 20;            // 0 → 0.2
         } else if (diff < 0.1) {
-            intensity = 0.2 + (diff - 0.01) * (0.8 / 0.09); // ≈ 0.2 → 1.0
+            intensity = 0.25 + (diff - 0.01) * (0.8 / 0.09); // ≈ 0.2 → 1.0
         } else {
             intensity = 1.0 + (diff - 0.1) * 0.2; // monte légèrement au-dessus
         }
@@ -999,7 +999,7 @@ public class StatsService {
             double minSaturation = 70;
             double maxLightness = 80;
 
-            if (diff <= 0.02) {
+            if (diff <= 0.03) {
                 hue = 110; //vert jaune
                 saturation = Math.max(minSaturation, 65 + intensity * 20);
                 lightness = Math.min(maxLightness, 85 - intensity * 10);
@@ -1015,14 +1015,26 @@ public class StatsService {
                 lightness = Math.max(45, Math.min(55 - Math.min((diff - 0.1) * 30, 10), 96));
             }
         } else {
-            if (diff <= 0.1) {
-                hue = 15; //orange rouge
-                saturation = Math.max(50, Math.min(50 + intensity * 30, 85));
-                lightness = Math.max(60, Math.min(85 - intensity * 25, 96));
-            } else {
-                hue = Math.max(0, 0 - (diff * 5)); //rouge
-                saturation = Math.max(35, Math.min(35 + intensity * 30, 85));
-                lightness = Math.max(45, Math.min(95 - intensity * 35, 96));
+            if (diff <= 0.03) {
+                hue = 34; // jaune orange
+                saturation = Math.max(78,
+                        68 + intensity * 16);
+                lightness = Math.min(84,
+                        86 - intensity * 8);
+            }
+            else if (diff <= 0.1) {
+                hue = 22 - (diff - 0.03) * 100;
+                saturation = Math.max(60,
+                        Math.min(58 + intensity * 20, 82));
+                lightness = Math.max(56,
+                        Math.min(92 - intensity * 36, 94));
+            }
+            else {
+                hue = 8; // rouge
+                saturation = Math.max(42,
+                        Math.min(50 + intensity * 12, 65));
+                lightness = Math.max(50,
+                        Math.min(68 - intensity * 14, 82));
             }
         }
 
@@ -1054,8 +1066,9 @@ public class StatsService {
         String lighterColor = String.format("hsl(%.0f, %.0f%%, %.0f%%)",
                 hue, lighterSaturation, lighterLightness);
 
-        return String.format("background: linear-gradient(to bottom, %s 0%%, %s 100%%);",
-                baseColor, lighterColor);
+        return String.format(
+                "background: linear-gradient(135deg, %s 0%%, %s 35%%, %s 100%%);",
+                baseColor, baseColor, lighterColor);
     }
 
     private <T> Double calculateTrendRatioGeneric(List<T> data, int currentIndex, Function<T, Double> valueExtractor) {

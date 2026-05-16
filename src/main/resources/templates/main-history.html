@@ -9,20 +9,20 @@
 <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
 <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 
-<div th:if="${period=='YEAR'}">
-    <h1>Max Annuels</h1>
-</div>
+<h1 th:if="${period == 'YEAR'}">Max Annuels</h1>
+<h1 th:if="${period == 'SEMESTER'}">Max Semestriels</h1>
+<h1 th:if="${period == 'QUARTER'}">Max Trimestriels</h1>
 
 <div th:if="${table.isEmpty()}">
     <p>Aucune donnée disponible.</p>
 </div>
 
-<div th:unless="${table.isEmpty()}">
+<div th:if="${!table.isEmpty() && period != 'MONTH'}">
     <table class="table-recap auto-width-table centered centered-text">
         <thead>
         <tr>
             <th>MAX REEL</th>
-            <th th:each="year : ${allYears}">[[${year}]]</th>
+            <th th:each="year : ${allPeriods}">[[${year}]]</th>
         </tr>
         </thead>
 
@@ -35,7 +35,7 @@
                 </a>
             </td>
 
-            <td th:each="year : ${allYears}"
+            <td th:each="year : ${allPeriods}"
                 th:with="data=${exerciseData.periodData.get(year)}"
                 th:style="${data != null ? data.color : ''}">
                 <th:block th:if="${data}">
@@ -58,6 +58,70 @@
     </table>
 </div>
 
+<div th:if="${period == 'MONTH'}">
+
+    <h1>Max Mensuels</h1>
+
+    <div th:if="${table.isEmpty()}">
+        <p>Aucune donnée disponible.</p>
+    </div>
+
+    <div th:unless="${table.isEmpty()}">
+
+        <table
+                class="table-recap table-recap-vertical auto-width-table centered centered-text"
+        >
+            <thead>
+            <tr>
+                <th>PÉRIODE</th>
+
+                <!-- Exercices en colonnes -->
+                <th th:each="exerciseData : ${table}">
+                    <a th:href="@{/stats/maxsByReps/{id}(id=${exerciseData.exerciseId})}"
+                       class="soft-link">
+                        [[${exerciseData.exerciseName}]]
+                    </a>
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <!-- Périodes en lignes -->
+            <tr th:each="periodKey : ${allPeriods}">
+                <td class="bold-text">
+                    [[${periodKey}]]
+                </td>
+
+                <!-- Une cellule par exercice -->
+                <td th:each="exerciseData : ${table}"
+                    th:with="data=${exerciseData.periodData.get(periodKey)}"
+                    th:style="${data != null ? data.color : ''}">
+
+                    <th:block th:if="${data}">
+
+                        <div class="bold-text">
+                            <a th:href="@{/workouts/{id}(id=${data.workoutId()})}"
+                               class="soft-link">
+                                [[${data.maxValue}]] kg
+                            </a>
+                        </div>
+
+                    </th:block>
+
+                    <th:block th:unless="${data}">
+                        <span class="no-data">-</span>
+                    </th:block>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:if="${period == 'YEAR'}">
+
 <div th:if="${period=='YEAR'}">
     <h1>Ratios Max Annuels</h1>
 </div>
@@ -71,7 +135,7 @@
         <thead>
         <tr>
             <th>RATIO MAX/PDC</th>
-            <th th:each="year : ${allYears}">[[${year}]]</th>
+            <th th:each="year : ${allPeriods}">[[${year}]]</th>
         </tr>
         </thead>
 
@@ -84,7 +148,7 @@
                 </a>
             </td>
 
-            <td th:each="year : ${allYears}"
+            <td th:each="year : ${allPeriods}"
                 th:with="data=${exerciseData.periodData.get(year)}"
                 th:style="${data != null ? data.color : ''}">
                 <th:block th:if="${data}">
@@ -120,7 +184,7 @@
         <thead>
         <tr>
             <th>MAX 1RMEST</th>
-            <th th:each="year : ${allYears}">[[${year}]]</th>
+            <th th:each="year : ${allPeriods}">[[${year}]]</th>
         </tr>
         </thead>
 
@@ -133,7 +197,7 @@
                 </a>
             </td>
 
-            <td th:each="year : ${allYears}"
+            <td th:each="year : ${allPeriods}"
                 th:with="data=${exerciseData.periodData.get(year)}"
                 th:style="${data != null ? data.color : ''}">
                 <th:block th:if="${data}">
@@ -154,6 +218,8 @@
         </tr>
         </tbody>
     </table>
+</div>
+
 </div>
 
 <script src="/js/timer.js"></script>

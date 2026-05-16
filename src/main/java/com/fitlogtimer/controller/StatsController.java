@@ -133,8 +133,8 @@ public class StatsController {
         model.addAttribute("table", table);
         model.addAttribute("ratioTable", ratioTable);
         model.addAttribute("est1RMTable", est1RMTable);
-        model.addAttribute("allYears", allYears);
-        model.addAttribute("period", PeriodType.YEAR);
+        model.addAttribute("allPeriods", allYears);
+        model.addAttribute("period", "YEAR");
 
         return "main-history";
     }
@@ -143,13 +143,14 @@ public class StatsController {
     public String getMainHistoryPeriod(@PathVariable String period, Model model) throws IOException {
         List<ExercisePeriodMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible(PeriodType.valueOf(period.toUpperCase()));
 
-        Set<String> allYears = table.stream()
+        Set<String> allPeriods = table.stream()
                 .flatMap(dto -> dto.periodData().keySet().stream())
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         model.addAttribute("table", table);
-        model.addAttribute("allYears", allYears);
+        model.addAttribute("allPeriods", allPeriods);
+        model.addAttribute("period", period.toUpperCase());
 
         return "main-history";
     }

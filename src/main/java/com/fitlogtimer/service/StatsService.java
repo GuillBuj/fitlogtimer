@@ -2,7 +2,9 @@ package com.fitlogtimer.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Year;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -782,7 +784,8 @@ public class StatsService {
             case YEAR -> exerciseSetRepository.findYearlyMaxList(exerciseId);
             case SEMESTER -> exerciseSetRepository.findSemesterMaxList(exerciseId);
             case QUARTER -> exerciseSetRepository.findQuarterMaxList(exerciseId);
-            case WEEK, MONTH -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
+            case MONTH -> exerciseSetRepository.findMonthlyMaxList(exerciseId);
+            case WEEK -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
         };
     }
 
@@ -791,7 +794,8 @@ public class StatsService {
             case YEAR -> String.valueOf(dto.year());
             case SEMESTER -> dto.year() + "-S" + dto.semester();
             case QUARTER -> dto.year() + "-Q" + dto.quarter();
-            case WEEK, MONTH -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
+            case MONTH -> "%d-M%02d".formatted(dto.year(), dto.month());
+            case WEEK -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
         };
     }
 
@@ -802,7 +806,9 @@ public class StatsService {
                     .thenComparing(PeriodMaxDTO::semester);
             case QUARTER -> Comparator.comparing(PeriodMaxDTO::year)
                     .thenComparing(PeriodMaxDTO::quarter);
-            case WEEK, MONTH -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
+            case MONTH -> Comparator.comparing(PeriodMaxDTO::year)
+                    .thenComparing(PeriodMaxDTO::month);
+            case WEEK -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
         };
     }
 

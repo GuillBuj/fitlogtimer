@@ -1713,6 +1713,10 @@ body.calendar-page { /* Ajoutez une classe au body */
     width: 85px;
 }
 
+.table-recap-vertical td{
+    width:100px
+}
+
 .table-recap td:nth-child(1) {
     width: auto;
 }

@@ -196,6 +196,7 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
         CAST(w.id AS int),
         CAST(FUNCTION('YEAR', fws.workout.date) AS int),
         null,
+        null,
         null
     )
     FROM FreeWeightSet fws
@@ -228,6 +229,7 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             WHEN FUNCTION('MONTH', fws.workout.date) <= 6 THEN 1\s
             ELSE 2\s
         END AS int),
+        null,
         null
         )
     FROM FreeWeightSet fws
@@ -272,7 +274,8 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
         CAST(w.id AS int),
         CAST(FUNCTION('YEAR', fws.workout.date) AS int),
         null,
-        CAST(FUNCTION('QUARTER', fws.workout.date) AS int)
+        CAST(FUNCTION('QUARTER', fws.workout.date) AS int),
+        null
     )
     FROM FreeWeightSet fws
     JOIN fws.workout w
@@ -296,6 +299,39 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
              FUNCTION('QUARTER', fws.workout.date) DESC
     """)
     List<PeriodMaxDTO> findQuarterMaxList(@Param("exerciseId") int exerciseId);
+
+    @Query("""
+    SELECT NEW com.fitlogtimer.dto.stats.PeriodMaxDTO(
+        fws.weight,
+        w.bodyWeight,
+        CAST(w.id AS int),
+        CAST(FUNCTION('YEAR', fws.workout.date) AS int),
+        null,
+        null,
+        CAST(FUNCTION('MONTH', fws.workout.date) AS int)
+    )
+    FROM FreeWeightSet fws
+    JOIN fws.workout w
+    WHERE fws.exercise.id = :exerciseId
+      AND fws.weight = (
+          SELECT MAX(fws2.weight)
+          FROM FreeWeightSet fws2
+          WHERE fws2.exercise.id = :exerciseId
+            AND FUNCTION('YEAR', fws2.workout.date) = FUNCTION('YEAR', fws.workout.date)
+            AND FUNCTION('MONTH', fws2.workout.date) = FUNCTION('MONTH', fws.workout.date)
+      )
+      AND fws.workout.date = (
+          SELECT MIN(fws3.workout.date)
+          FROM FreeWeightSet fws3
+          WHERE fws3.exercise.id = :exerciseId
+            AND FUNCTION('YEAR', fws3.workout.date) = FUNCTION('YEAR', fws.workout.date)
+            AND FUNCTION('MONTH', fws3.workout.date) = FUNCTION('MONTH', fws.workout.date)
+            AND fws3.weight = fws.weight
+      )
+    ORDER BY FUNCTION('YEAR', fws.workout.date) DESC,
+             FUNCTION('MONTH', fws.workout.date) DESC
+    """)
+        List<PeriodMaxDTO> findMonthlyMaxList(@Param("exerciseId") int exerciseId);
 
     @Query("""
     SELECT NEW com.fitlogtimer.dto.stats.PeriodMaxRatioDTO(

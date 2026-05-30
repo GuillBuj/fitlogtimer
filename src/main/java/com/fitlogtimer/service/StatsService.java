@@ -980,7 +980,7 @@ public class StatsService {
         }
 
         if (trendRatio == 1.0) {
-            return "hsl(60, 55%, 80%)"; // jaune doux
+            return "hsl(60, 70%, 80%)"; // jaune doux
         }
 
         boolean isPositive = trendRatio >= 1;
@@ -1003,7 +1003,7 @@ public class StatsService {
 
         if (isPositive) {
             if (diff <= 0.03) {
-                hue = 65 + diff * 1200; // vert jaune
+                hue = 66 + diff * 1200; // vert jaune
                 saturation = Math.max(72, 50 + intensity * 80);
                 lightness = Math.min(80, 88 - intensity * 10);
             }
@@ -1023,21 +1023,21 @@ public class StatsService {
             }
         } else {
             if (diff <= 0.03) {
-                hue = 58 - diff * 800; // jaune orange
+                hue = 54 - diff * 800; // jaune orange
                 saturation = Math.max(78,
                         68 + intensity * 16);
                 lightness = Math.min(84,
                         86 - intensity * 8);
             }
             else if (diff <= 0.1) {
-                hue = 30 - (diff - 0.03) * 250;
+                hue = 30 - (diff - 0.03) * 300;
                 saturation = Math.max(60,
                         Math.min(58 + intensity * 20, 82));
                 lightness = Math.max(56,
                         Math.min(92 - intensity * 36, 94));
             }
             else {
-                hue = 8; // rouge
+                hue = 8 - (diff-0.1)*40; // rouge
                 saturation = Math.max(42,
                         Math.min(50 + intensity * 12, 65));
                 lightness = Math.max(50,

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.fitlogtimer.dto.update.ExerciseUpdateDTO;
 import com.fitlogtimer.model.preference.ExerciseListPreference;
 import com.fitlogtimer.model.preference.ExercisePreference;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.constants.ExerciseSetType;
@@ -55,7 +56,7 @@ public class ExerciseService {
     }
 
     public List<Exercise> getAllExercises(){
-        return exerciseRepository.findAll();
+        return exerciseRepository.findAll(Sort.by(Sort.Direction.DESC, "family"));
     };
 
     public Optional<Exercise> getById(int id){

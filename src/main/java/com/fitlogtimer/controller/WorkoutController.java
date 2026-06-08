@@ -121,7 +121,6 @@ public class WorkoutController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", workoutPage.getTotalPages());
         model.addAttribute("workoutList", workoutPage.getContent());
-        //model.addAttribute("exerciseColors", exerciseService.getAllExerciseColors());
 
         return "workout-list";
     }

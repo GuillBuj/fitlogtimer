@@ -1000,7 +1000,7 @@ public class StatsService {
 
         if (isPositive) {
             if (diff <= 0.03) {
-                hue = 66 + diff * 1200; // vert jaune
+                hue = 75 + diff * 1200; // vert jaune
                 saturation = 78 + intensity * 8;
                 lightness = 80 - intensity * 10;
             }

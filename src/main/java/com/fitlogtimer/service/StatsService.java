@@ -969,8 +969,6 @@ public class StatsService {
         return sortByPeriodDesc(result);
     }
 
-
-
     private String computeTrendColor(Double trendRatio) {
         if (trendRatio == null) return "";
 
@@ -985,6 +983,8 @@ public class StatsService {
 
         boolean isPositive = trendRatio >= 1;
         double hue = isPositive ? 130 : 0; // vert clair / rouge
+        double saturation;
+        double lightness;
         double diff = Math.abs(trendRatio - 1);
 
         // ---- Calcul de l’intensité (0 → 1.2 environ) ----
@@ -998,54 +998,48 @@ public class StatsService {
         }
         intensity = Math.min(intensity, 1.2);
 
-        double saturation;
-        double lightness;
-
         if (isPositive) {
             if (diff <= 0.03) {
                 hue = 66 + diff * 1200; // vert jaune
-                saturation = Math.max(72, 50 + intensity * 80);
-                lightness = Math.min(80, 88 - intensity * 10);
+                saturation = 78 + intensity * 8;
+                lightness = 80 - intensity * 10;
             }
             else if (diff <= 0.1) {
                 hue = 118 + (diff - 0.03) * 170; // vert
-                saturation = Math.max(35,
-                        Math.min(45 + intensity * 30, 85));
-                lightness = Math.max(55,
-                        Math.min(95 - intensity * 40, 96));
+                saturation = 55 + intensity * 18;
+                lightness = 90 - intensity * 28;
             }
             else {
-                hue = 125 - Math.min((diff - 0.1) * 50, 5); // vert sapin
-                saturation = Math.max(25,
-                        Math.min(60 - Math.min((diff - 0.1) * 50, 10), 85));
-                lightness = Math.max(45,
-                        Math.min(55 - Math.min((diff - 0.1) * 30, 10), 96));
+                hue = 135 - Math.min((diff - 0.1) * 50, 5); // vert sapin
+                saturation = 60 - (diff - 0.1) * 50;
+                lightness = 55 - (diff - 0.1) * 30;
             }
         } else {
             if (diff <= 0.03) {
-                hue = 54 - diff * 800; // jaune orange
-                saturation = Math.max(78,
-                        68 + intensity * 16);
-                lightness = Math.min(84,
-                        86 - intensity * 8);
+                hue = 51 - diff * 660; // jaune orange
+                saturation = 82 + intensity * 6;
+                lightness = 80 - intensity * 10;
             }
             else if (diff <= 0.1) {
-                hue = 30 - (diff - 0.03) * 300;
-                saturation = Math.max(60,
-                        Math.min(58 + intensity * 20, 82));
-                lightness = Math.max(56,
-                        Math.min(92 - intensity * 36, 94));
+                hue = 29 - (diff - 0.03) * 290;
+                saturation = 62 + intensity * 16;
+                lightness = 86 - intensity * 30;
             }
             else {
-                hue = 8 - (diff-0.1)*40; // rouge
-                saturation = Math.max(42,
-                        Math.min(50 + intensity * 12, 65));
-                lightness = Math.max(50,
-                        Math.min(68 - intensity * 14, 82));
+                hue = 7 - (diff-0.1)*30; // rouge
+                saturation = 50 + intensity * 12;
+                lightness = 68 - intensity * 14;
             }
         }
 
+        saturation = clampValue(saturation, 50,85);
+        lightness = clampValue(lightness, 45, 85);
+
         return String.format("hsl(%.0f, %.0f%%, %.0f%%)", hue, saturation, lightness);
+    }
+
+    private double clampValue(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     private String generateTrendStyle(String baseColor, boolean withGradient) {

@@ -593,6 +593,10 @@
       "exerciseId" : 375,
       "order" : 59,
       "visible" : true
+    }, {
+      "exerciseId" : 376,
+      "order" : 60,
+      "visible" : true
     } ]
   },
   "main" : {

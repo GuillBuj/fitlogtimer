@@ -11,13 +11,12 @@
 
 <h1 th:if="${period == 'YEAR'}">Max Annuels</h1>
 <h1 th:if="${period == 'SEMESTER'}">Max Semestriels</h1>
-<h1 th:if="${period == 'QUARTER'}">Max Trimestriels</h1>
 
 <div th:if="${table.isEmpty()}">
     <p>Aucune donnée disponible.</p>
 </div>
 
-<div th:if="${!table.isEmpty() && period != 'MONTH'}">
+<div th:if="${!table.isEmpty() && period != 'MONTH' && period != 'QUARTER'}">
     <table class="table-recap auto-width-table centered centered-text">
         <thead>
         <tr>
@@ -58,10 +57,10 @@
     </table>
 </div>
 
-<div th:if="${period == 'MONTH'}">
+<div th:if="${period == 'MONTH' || period == 'QUARTER'}">
 
-    <h1>Max Mensuels</h1>
-
+    <h1 th:if="${period == 'MONTH'}">Max Mensuels</h1>
+    <h1 th:if="${period == 'QUARTER'}">Max Trimestriels</h1>
     <div th:if="${table.isEmpty()}">
         <p>Aucune donnée disponible.</p>
     </div>
@@ -106,6 +105,11 @@
                                 [[${data.maxValue}]] kg
                             </a>
                         </div>
+                        <th:block th:if="${period == 'QUARTER'}">
+                            <small th:if="${data.bodyweight() != null && data.bodyweight() > 0.0}">
+                                @[[${#numbers.formatDecimal(data.bodyweight, 1, 1)}]]kg
+                            </small>
+                        </th:block>
 
                     </th:block>
 

@@ -276,6 +276,11 @@ form {
     border-color: #116633;
 }
 
+.btn-small {
+    padding: 4px 8px;
+    font-size: 0.8em;
+}
+
 .alert {
     text-align: center;
     border-radius: 0.25rem;
@@ -954,7 +959,7 @@ th.exercises-list-column{
 }
 
 .send-to-weight,
-.send-to-1rm {
+.send-to-1rm{
     padding: 4px 8px;
     font-size: 0.8em;
     border: none;

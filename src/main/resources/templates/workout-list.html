@@ -10,7 +10,8 @@
     <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 
     <div class="header-container">
-        <h1>Liste des séances </h1>
+        <h1>Séances </h1>
+        <a href="/workouts/create" class="btn-new btn-small">+</a>
     </div>
     <br>
     <table class="auto-width-table centered centered-text">
@@ -57,11 +58,6 @@
             th:href="@{/workouts(page=${workoutPage.number + 1}, size=${workoutPage.size})}"
             class="page-btn">&gt;</a>
     </div>
-    <br>
-    <div class="centered-text">
-        <a href="/workouts/create" class="btn-new">Nouvelle séance</a>
-    </div>
-
 
     <script src="/js/timer.js"></script>
 </body>

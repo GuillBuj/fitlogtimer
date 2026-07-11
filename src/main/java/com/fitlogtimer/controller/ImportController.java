@@ -20,18 +20,32 @@ public class ImportController {
     private XlsxService xlsxService;
     private ImportService importService;
 
-    @GetMapping("/run-import-script")
-    public String runScript(Model model) {
-        ScriptExecutor.runPowerShellScript("scripts\\downloadFromDrive.ps1");
-
-        model.addAttribute("message", "Le script d'import xls a été exécuté.");
-        return "import";
-    }
+//    @GetMapping("/run-import-script")
+//    public String runScript(Model model) {
+//        ScriptExecutor.runPowerShellScript("scripts\\downloadFromDrive.ps1");
+//
+//        model.addAttribute("message", "L'import xls a été exécuté.");
+//        return "redirect:/drive-xls";
+//    }
+//
+//    @GetMapping("/drive-xls")
+//    public String showImportPage(Model model) throws IOException {
+//        model.addAttribute("sheets", xlsxService.listImportableSheetNames());
+//        return "import";
+//    }
 
     @GetMapping("/drive-xls")
     public String showImportPage(Model model) throws IOException {
         model.addAttribute("sheets", xlsxService.listImportableSheetNames());
         return "import";
+    }
+
+    @PostMapping("/run-import-script")
+    public String downloadDrive(RedirectAttributes ra) {
+        ScriptExecutor.runPowerShellScript("scripts\\downloadFromDrive.ps1");
+
+        ra.addFlashAttribute("message", "Téléchargement terminé.");
+        return "redirect:/drive-xls";
     }
 
     @PostMapping("/run-import")

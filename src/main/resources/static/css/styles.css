@@ -1784,3 +1784,32 @@ body.calendar-page { /* Ajoutez une classe au body */
     border-left: 6px solid #ee6666;
     color: #4a0000;
 }
+
+/*PASTILLE AFFICHAGE DERNIER TELECHARGEMENT*/
+
+.status-pill {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.status-green {
+    background-color: #eaf8ee;
+    color: #2e7d32;
+    border-color: #b7e1c0;
+}
+
+.status-yellow {
+    background-color: #fff8e1;
+    color: #8d6e00;
+    border-color: #f2d675;
+}
+
+.status-red {
+    background-color: #fdecec;
+    color: #b3261e;
+    border-color: #f3b5b1;
+}

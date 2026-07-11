@@ -1,5 +1,6 @@
 package com.fitlogtimer.controller;
 
+import com.fitlogtimer.dto.time.RelativeTimeDTO;
 import com.fitlogtimer.service.ImportService;
 import com.fitlogtimer.service.XlsxService;
 import com.fitlogtimer.util.RelativeTimeFormatter;
@@ -25,11 +26,11 @@ public class ImportController {
     @GetMapping("/drive-xls")
     public String showImportPage(Model model) throws IOException {
         LocalDateTime lastDownload = xlsxService.getLastDownloadTime();
+        RelativeTimeDTO relativeTimeDTO = RelativeTimeFormatter.format(lastDownload);
 
         model.addAttribute("sheets", xlsxService.listImportableSheetNames());
-        model.addAttribute("lastDownload",
-                lastDownload == null ? "Aucun téléchargement"
-                : RelativeTimeFormatter.format(lastDownload));
+        model.addAttribute("lastDownloadText", relativeTimeDTO.text());
+        model.addAttribute("lastDownloadStatus", relativeTimeDTO.status());
         return "import";
     }
 

@@ -8,6 +8,11 @@
 <div th:insert="~{fragments/navbar :: navbar}"></div>
 <h1>Import de fichier Excel</h1>
 
+<p th:if="${lastDownload != null}">
+    Dernier téléchargement :
+    <span th:text="${lastDownload}"></span>
+</p>
+
 <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
 <form th:action="@{/run-import-script}" method="post" class="btn-form">

@@ -2,6 +2,11 @@ package com.fitlogtimer.service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +48,21 @@ public class XlsxService {
         return allSheets.stream()
                 .filter(name -> name.startsWith("."))
                 .toList();
+    }
+
+    public LocalDateTime getLastDownloadTime() throws IOException {
+        Path xlsPath = Path.of(FileConstants.EXCEL_FILE);
+
+        if (!Files.exists(xlsPath)) {
+            return null;
+        }
+
+        FileTime lastModifiedTime = Files.getLastModifiedTime(xlsPath);
+
+        return LocalDateTime.ofInstant(
+                lastModifiedTime.toInstant(),
+                ZoneId.systemDefault()
+        );
     }
 
     public List<FromXlsxDCHeavyDTO> extractDTOsHeavySheetRegular(){

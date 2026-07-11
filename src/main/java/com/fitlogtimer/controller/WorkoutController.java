@@ -142,10 +142,12 @@ public class WorkoutController {
         if (bindingResult.hasErrors()) {
             return "workout-create";
         }
-        workoutService.createWorkout(workoutCreateDTO);
+
+        int workoutId = workoutService.createWorkout(workoutCreateDTO).id();
 
         redirectAttributes.addFlashAttribute("successMessage", "Séance créée avec succès");
-        return "redirect:/workouts";
+        redirectAttributes.addAttribute("workoutId",workoutId);
+        return "redirect:/workouts/{workoutId}";
     }
 
 }

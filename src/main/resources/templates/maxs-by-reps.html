@@ -48,8 +48,10 @@
         <td>
             <a th:if="${combinedMax.personalBest != null}" th:href="@{/workouts/{id}(id=${combinedMax.personalBest.workoutId})}" class="soft-link">
             <div th:if="${combinedMax.personalBest != null}">
-                <div class="bold-text">
-                        [[${combinedMax.personalBest.maxWeight}]] kg
+                <div class="bold-text"
+                     th:text="${combinedMax.personalBest.maxWeight % 1 == 0 ?
+                     #numbers.formatDecimal(combinedMax.personalBest.maxWeight, 1, 0) + ' kg' :
+                     #numbers.formatDecimal(combinedMax.personalBest.maxWeight, 1, 1) + ' kg'}">
                 </div>
                 <div class="small-text" th:text="${combinedMax.personalBest.RMest + ' kg'}"></div>
             </div>
@@ -74,7 +76,11 @@
                  yearlyBest=${combinedMax.getYearlyBest(#dates.format(#dates.createNow(), 'yyyy'))}">
                 <a th:if="${yearlyBest != null}" th:href="@{/workouts/{id}(id=${yearlyBest.workoutId})}" class="soft-link">
                 <div th:if="${yearlyBest != null}">
-                    <div class="bold-text" th:text="${yearlyBest.maxWeight + ' kg'}"></div>
+                    <div class="bold-text"
+                         th:text="${yearlyBest.maxWeight % 1 == 0 ?
+                            #numbers.formatDecimal(yearlyBest.maxWeight, 1, 0) + ' kg' :
+                            #numbers.formatDecimal(yearlyBest.maxWeight, 1, 1) + ' kg'}">
+                    </div>
                     <div class="small-text" th:text="${yearlyBest.RMest + ' kg'}"></div>
                 </div>
                 <div th:unless="${yearlyBest != null}">-</div>
@@ -100,7 +106,11 @@
                 <a th:if="${combinedMax.getYearlyBest(year) != null}" th:href="@{/workouts/{id}(id=${combinedMax.getYearlyBest(year).workoutId})}" class="soft-link">
                 <div class="max-weight-container">
                     <div class="values-container">
-                        <div class="bold-text" th:text="${combinedMax.getYearlyBest(year).maxWeight() + ' kg'}"></div>
+                        <div class="bold-text"
+                             th:text="${combinedMax.getYearlyBest(year).maxWeight() % 1 == 0 ?
+                            #numbers.formatDecimal(combinedMax.getYearlyBest(year).maxWeight(), 1, 0) + ' kg' :
+                            #numbers.formatDecimal(combinedMax.getYearlyBest(year).maxWeight(), 1, 1) + ' kg'}">
+                        </div>
                         <div class="small-text" th:text="${combinedMax.getYearlyBest(year).RMest() + ' kg'}"></div>
                     </div>
                     <div th:if="${combinedMax.getYearlyBest(year) != null and combinedMax.bestsByYear().get(year).trend() != null}"

@@ -805,9 +805,14 @@ select option {
 
 
 
-.shortName{
+.exercise-edit-shortName{
     max-width: 5ch;
     width: auto;
+}
+
+.exercise-edit-auto{
+    width: 100%;
+    box-sizing: border-box;
 }
 
 

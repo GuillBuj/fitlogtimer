@@ -5,7 +5,7 @@
 </head>
 <body>
 <tr th:fragment="editRow" th:object="${exercise}">
-    <td><input class="shortName" type="text" th:field="*{shortName}" maxlength="5" required/></td>
+    <td><input class="exercise-edit-shortName" type="text" th:field="*{shortName}" maxlength="5" required/></td>
     <td>
         <!-- Color picker natif standard -->
         <input type="color" name="color"
@@ -24,7 +24,9 @@
             </div>
         </div>
     </td>
-    <td><input type="text" th:field="*{name}" required/></td>
+    <td>
+        <input  class="exercise-edit-auto" type="text" th:field="*{name}" required/>
+    </td>
     <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"
         th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
     <td th:unless="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}">-</td>
@@ -52,15 +54,16 @@
         </select>
     </td>
     <td>
-        <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
-        <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
-           th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">
-            Records
-        </a>
-        <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
-           th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link">
-            Histo maxs
-        </a>
+        <input class="exercise-edit-auto" type="text" th:field="*{details}" />
+<!--        <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>-->
+<!--        <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"-->
+<!--           th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">-->
+<!--            Records-->
+<!--        </a>-->
+<!--        <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"-->
+<!--           th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link">-->
+<!--            Histo maxs-->
+<!--        </a>-->
     </td>
     <td>
         <input type="hidden" th:field="*{id}"/>

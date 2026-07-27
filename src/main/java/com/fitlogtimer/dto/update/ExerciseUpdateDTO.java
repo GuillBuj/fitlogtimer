@@ -9,6 +9,7 @@ public record ExerciseUpdateDTO(
         String shortName,
         Muscle muscle,
         Family family,
-        String type) {
+        String type,
+        String details) {
 
 }

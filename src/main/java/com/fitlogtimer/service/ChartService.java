@@ -378,12 +378,12 @@ public class ChartService {
     }
 
     public List<ChartPeriodDataPointDTO> getBenchLiftsChartDataMonthly() {
-        List<String> exerciseShortNames = List.of("DC", "DC30", "DCS", "DCP", "DCM", "DCX");
+        List<String> exerciseShortNames = List.of("DC", "DC30", "DCS", "DCP", "DCM");
         return getExercisesChartData(exerciseShortNames, PeriodType.MONTH);
     }
 
     public List<ChartPeriodDataPointDTO> getBenchLiftsChartDataWeekly() {
-        List<String> exerciseShortNames = List.of("DC", "DC30", "DCS", "DCP", "DCM", "DCX");
+        List<String> exerciseShortNames = List.of("DC", "DC30", "DCS", "DCP", "DCM");
         return getExercisesChartData(exerciseShortNames, PeriodType.WEEK);
     }
 

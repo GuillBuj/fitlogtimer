@@ -9,6 +9,7 @@ public record ExerciseCreateDTO(
     Muscle muscle,
     Family family,
     String type,
-    String color) {
+    String color,
+    String details) {
 
 }

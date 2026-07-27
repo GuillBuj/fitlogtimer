@@ -18,17 +18,6 @@
             <label for="shortName">Short :</label>
             <input type="text" id="shortName" th:field="*{shortName}" maxlength="5" oninput="this.value = this.value.toUpperCase()" required>
         </div>
-<!--        <div class="suggested-colors-scroll-container">-->
-<!--            <div class="suggested-colors">Couleur:-->
-<!--            <span th:each="col : ${@suggestedExerciseColors.getColors()}"-->
-<!--                  th:attr="data-color=${col}"-->
-<!--                  th:style="'background-color:' + ${col}"-->
-<!--                  class="suggestedColor"-->
-<!--                  onclick="this.closest('td').querySelector('input[type=color]').value=this.getAttribute('data-color')"-->
-<!--                  title="Cliquer pour sélectionner">-->
-<!--            </span>-->
-<!--            </div>-->
-<!--        </div>-->
         <div class="form-group">
             <label for="muscle">Muscle :</label>
             <select id="muscle" th:field="*{muscle}" required>
@@ -53,6 +42,10 @@
                         th:text="${entry.value}">
                 </option>
             </select>
+        </div>
+        <div class="form-group">
+            <label for="shortName">Détails :</label>
+            <input type="text" id="details" th:field="*{details}">
         </div>
         <div>
             <button type="submit" class="btn-valid">Ajouter l'exercice</button>

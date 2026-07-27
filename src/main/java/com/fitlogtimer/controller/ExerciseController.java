@@ -30,7 +30,7 @@ public class ExerciseController {
     public String showExercisesList(Model model) throws IOException {
         
         model.addAttribute("exercises", exerciseService.getAllExercisePreferenceListItems());
-        model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL, ExerciseSetType.FREE_WEIGHT, ""));
+        model.addAttribute("exercise", new ExerciseCreateDTO("", "", Muscle.ALL, Family.ALL, ExerciseSetType.FREE_WEIGHT, "",""));
         model.addAttribute("muscles", Muscle.values());
         model.addAttribute("families", Family.values());
         model.addAttribute("setTypes", ExerciseSetType.DISPLAY_NAMES);

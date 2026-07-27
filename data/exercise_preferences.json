@@ -605,6 +605,18 @@
       "exerciseId" : 378,
       "order" : 62,
       "visible" : true
+    }, {
+      "exerciseId" : 379,
+      "order" : 63,
+      "visible" : true
+    }, {
+      "exerciseId" : 380,
+      "order" : 64,
+      "visible" : true
+    }, {
+      "exerciseId" : 381,
+      "order" : 65,
+      "visible" : true
     } ]
   },
   "main" : {

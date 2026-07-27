@@ -9,8 +9,8 @@
 <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
 <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 
-<h1 th:if="${period == 'YEAR'}">Max Annuels</h1>
-<h1 th:if="${period == 'SEMESTER'}">Max Semestriels</h1>
+<!--<h1 th:if="${period == 'YEAR'}">Max Annuels</h1>-->
+<!--<h1 th:if="${period == 'SEMESTER'}">Max Semestriels</h1>-->
 
 <div th:if="${table.isEmpty()}">
     <p>Aucune donnée disponible.</p>
@@ -131,9 +131,9 @@
 
 <div th:if="${period == 'YEAR'}">
 
-<div th:if="${period=='YEAR'}">
-    <h1>Ratios Max Annuels</h1>
-</div>
+<!--<div th:if="${period=='YEAR'}">-->
+<!--    <h1>Ratios Max Annuels</h1>-->
+<!--</div>-->
 
 <div th:if="${ratioTable.isEmpty()}">
     <p>Aucune donnée disponible.</p>
@@ -182,9 +182,9 @@
     </table>
 </div>
 
-<div th:if="${period=='YEAR'}">
-    <h1>1RM estimés Max Annuels</h1>
-</div>
+<!--<div th:if="${period=='YEAR'}">-->
+<!--    <h1>1RM estimés Max Annuels</h1>-->
+<!--</div>-->
 
 <div th:if="${est1RMTable.isEmpty()}">
     <p>Aucune donnée disponible.</p>

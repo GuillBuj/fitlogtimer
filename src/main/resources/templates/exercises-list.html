@@ -51,7 +51,9 @@
                          th:style="|background-color: ${@exerciseColorUtil.getDisplayColor(exercise.color, exercise.shortName)}|">
                     </div>
                 </td>
-                <td th:text="${exercise.name}" class="bold-text"></td>
+                <td th:text="${exercise.name}"
+                    th:attr="title=${#strings.isEmpty(exercise.details) ? null : exercise.details}"
+                    class="bold-text"></td>
                 <td th:if="${exercise.personalBest != null and exercise.type != ELASTIC_TYPE and exercise.type != MOVEMENT_TYPE}"
                     th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|"
                     class="personalBest important-column"></td>

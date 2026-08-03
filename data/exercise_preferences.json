@@ -648,7 +648,7 @@
     }, {
       "exerciseId" : 329,
       "order" : 6,
-      "visible" : false
+      "visible" : true
     }, {
       "exerciseId" : 266,
       "order" : 7,
@@ -856,6 +856,18 @@
     }, {
       "exerciseId" : 375,
       "order" : 58,
+      "visible" : false
+    }, {
+      "exerciseId" : 376,
+      "order" : 59,
+      "visible" : false
+    }, {
+      "exerciseId" : 377,
+      "order" : 60,
+      "visible" : false
+    }, {
+      "exerciseId" : 378,
+      "order" : 61,
       "visible" : false
     } ]
   }

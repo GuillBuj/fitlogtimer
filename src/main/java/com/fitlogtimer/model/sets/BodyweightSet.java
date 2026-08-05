@@ -28,6 +28,8 @@ public class BodyweightSet extends ExerciseSet{
     @Enumerated(EnumType.STRING)
     private SetMode setMode;
 
+    private Integer durationS;
+
     @Override
     public String toString() {
         return super.toString() + ", bandes: " + bands + ", poids: " + weight + ", mode: " + setMode ;

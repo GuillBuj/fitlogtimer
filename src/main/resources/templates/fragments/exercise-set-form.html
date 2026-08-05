@@ -16,6 +16,7 @@
                     </option>
                 </select>
             </div>
+
             <input type="hidden" name="type" id="setTypeInput" />
 
             <div class="form-group" id="durationField">
@@ -36,6 +37,14 @@
             <div class="form-group" id="distanceField" style="display: none;">
                 <label for="distance">Distance :</label>
                 <input type="text" class="distanceInput" id="distance" th:field="*{distance}" name="distance"/>
+            </div>
+
+            <div class="form-group" id="setModeField">
+                <label for="setMode">Mode :</label>
+                <select id="setMode" th:field="*{setMode}">
+                    <option value="STANDARD">Std</option>
+                    <option value="TIME_TRIAL">CLM</option>
+                </select>
             </div>
 
             <div class="form-group">

@@ -8,6 +8,7 @@ import com.fitlogtimer.constants.ExerciseSetType;
 import com.fitlogtimer.constants.FileConstants;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.fromxlsx.*;
+import com.fitlogtimer.enums.SetMode;
 import com.fitlogtimer.model.Exercise;
 import com.fitlogtimer.repository.ExerciseRepository;
 import lombok.AllArgsConstructor;
@@ -123,6 +124,7 @@ public class XlsxMapper {
                                 "",
                                 "",
                                 "",
+                                SetMode.STANDARD,
                                 workoutId,
                                 currentExercise.getType()
                         );

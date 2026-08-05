@@ -1,5 +1,6 @@
 package com.fitlogtimer.mapper;
 
+import com.fitlogtimer.enums.SetMode;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -96,6 +97,13 @@ public abstract class ExerciseSetMapper {
             return ((MovementSet)exerciseSet).getDistance();
         }
         return "";
+    }
+
+    protected SetMode getSetMode(ExerciseSet exerciseSet) {
+        if (exerciseSet instanceof BodyweightSet) {
+            return ((BodyweightSet) exerciseSet).getSetMode();
+        }
+        return SetMode.STANDARD; // Pour les autres types
     }
     
     @Named("resolveExercise")

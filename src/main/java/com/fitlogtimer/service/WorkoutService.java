@@ -12,6 +12,7 @@ import com.fitlogtimer.dto.display.ExerciseDisplayDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericWorkoutDTO;
 import com.fitlogtimer.dto.update.WorkoutUpdateDTO;
+import com.fitlogtimer.enums.SetMode;
 import com.fitlogtimer.mapper.ExerciseMapper;
 import com.fitlogtimer.mapper.ExerciseSetFacadeMapper;
 import com.fitlogtimer.model.WorkoutType;
@@ -301,23 +302,24 @@ public class WorkoutService {
         String defaultTag = "";
         String defaultType = ExerciseSetType.FREE_WEIGHT;
         String defaultComment = "";
+        SetMode defaultSetMode = SetMode.STANDARD;
     
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
-            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultDistance, defaultTag,defaultComment, id, defaultType);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultDistance, defaultTag,defaultComment, defaultSetMode, id, defaultType);
         }
     
         Workout workout = optionalWorkout.get();
     
         List<ExerciseSet> sets = workout.getSetRecords();
         if (sets == null || sets.isEmpty()) {
-            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultDistance, defaultTag,defaultComment, id, defaultType);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultDistance, defaultTag, defaultComment, defaultSetMode, id, defaultType);
         }
     
         ExerciseSet lastSet = sets.get(sets.size() - 1);
     
         if (lastSet == null || lastSet.getExercise() == null) {
-            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultDistance, defaultTag,defaultComment, id, defaultType);
+            return new ExerciseSetCreateDTO(defaultExerciseId, defaultWeight, defaultRepNumber, defaultBands, defaultDuration, defaultDistance, defaultTag,defaultComment, defaultSetMode, id, defaultType);
         }
     
         if (lastSet instanceof FreeWeightSet freeWeightSet) {
@@ -348,6 +350,7 @@ public class WorkoutService {
             defaultDistance,
             defaultTag,
             defaultComment,
+            defaultSetMode,
             id,
             defaultType
         );

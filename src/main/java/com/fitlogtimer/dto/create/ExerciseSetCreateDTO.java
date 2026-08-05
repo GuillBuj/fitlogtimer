@@ -1,5 +1,6 @@
 package com.fitlogtimer.dto.create;
 
+import com.fitlogtimer.enums.SetMode;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -13,6 +14,7 @@ public record ExerciseSetCreateDTO(
         @Size(max=100) String distance,
         String tag,
         @Size(max=100) String comment,
+        SetMode setMode,
         @Positive int workout_id,
         String type) {
 
@@ -26,6 +28,7 @@ public record ExerciseSetCreateDTO(
                 distance,
                 tag,
                 comment,
+                setMode,
                 newWorkoutId,
                 type
         );

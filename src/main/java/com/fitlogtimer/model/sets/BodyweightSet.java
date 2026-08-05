@@ -1,10 +1,13 @@
 package com.fitlogtimer.model.sets;
 
 import com.fitlogtimer.constants.ExerciseSetType;
+import com.fitlogtimer.enums.SetMode;
 import com.fitlogtimer.model.ExerciseSet;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +25,11 @@ public class BodyweightSet extends ExerciseSet{
 
     private String bands;
 
+    @Enumerated(EnumType.STRING)
+    private SetMode setMode;
+
     @Override
     public String toString() {
-        return super.toString() + ", bandes: " + bands + ", poids: " + weight;
+        return super.toString() + ", bandes: " + bands + ", poids: " + weight + ", mode: " + setMode ;
     }
 }

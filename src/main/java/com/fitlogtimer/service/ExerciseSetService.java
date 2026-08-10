@@ -4,15 +4,11 @@ package com.fitlogtimer.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.fitlogtimer.dto.base.*;
+import com.fitlogtimer.enums.SetMode;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
-import com.fitlogtimer.dto.base.SetBasicDTO;
-import com.fitlogtimer.dto.base.SetBasicElasticDTO;
-import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
-import com.fitlogtimer.dto.base.SetBasicIsometricDTO;
-import com.fitlogtimer.dto.base.SetBasicMovementDTO;
-import com.fitlogtimer.dto.base.SetBasicWith1RMDTO;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.details.ExerciseDetailsGroupedDTO;
 import com.fitlogtimer.dto.listitem.SetGroupCleanExerciseListItemDTO;
@@ -96,15 +92,24 @@ public class ExerciseSetService {
         }
     
         int currentWorkoutId = exerciseSets.get(0).getWorkout().getId();
+        SetMode currentMode = exerciseSets.get(0) instanceof BodyweightSet bw
+                ? bw.getSetMode()
+                : null;
     
         for (ExerciseSet currentSet : exerciseSets) {
+
             int workoutId = currentSet.getWorkout().getId();
+            SetMode mode = currentSet instanceof BodyweightSet bw
+                    ? bw.getSetMode()
+                    : null;
     
             if (workoutId != currentWorkoutId) {
-                groupedSets.add(new SetsGroupedForExDTO(currentWorkoutId, new ArrayList<>(currentGroup)));
+                groupedSets.add(new SetsGroupedForExDTO(currentWorkoutId, currentMode, new ArrayList<>(currentGroup)));
                 currentGroup.clear();
                 currentWorkoutId = workoutId;
+                currentMode = mode;
             }
+
             if (currentSet instanceof FreeWeightSet freeWeightSet) {
                 int repNumber = freeWeightSet.getRepNumber();
                 double weight = freeWeightSet.getWeight();
@@ -123,8 +128,17 @@ public class ExerciseSetService {
             }
             if (currentSet instanceof BodyweightSet bodyweightSet) {
                 int repNumber = bodyweightSet.getRepNumber();
+                Integer durationS = bodyweightSet.getDurationS();
                 double weight = bodyweightSet.getWeight();
-                currentGroup.add(new SetBasicDTO(repNumber, weight));
+
+                currentGroup.add(
+                        new SetBasicBodyweightDTO(
+                                repNumber,
+                                durationS,
+                                weight,
+                                mode
+                        )
+                );
             }
             if (currentSet instanceof MovementSet movementSet) {
                 int repNumber = movementSet.getRepNumber();
@@ -136,9 +150,10 @@ public class ExerciseSetService {
         }
     
         if (!currentGroup.isEmpty()) {
-            groupedSets.add(new SetsGroupedForExDTO(currentWorkoutId, currentGroup));
+            groupedSets.add(new SetsGroupedForExDTO(currentWorkoutId, currentMode, currentGroup));
         }
-    
+
+        log.info("groupedSets: {}",groupedSets);
         return groupedSets;
     }
     
@@ -162,7 +177,8 @@ public class ExerciseSetService {
     
                 SetsGroupedWithNameDTO setsGrouped = new SetsGroupedWithNameDTO(
                     exercise.getShortName(),
-                    new ArrayList<>(group.setGroup())
+                    new ArrayList<>(group.setGroup()),
+                        group.setMode()
                 );
     
                 return setsGroupCleanerPlusService.cleanWithMeta(

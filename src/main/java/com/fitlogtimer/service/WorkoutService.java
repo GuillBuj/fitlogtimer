@@ -250,7 +250,8 @@ public class WorkoutService {
                     .toList();
         }
 
-        return new SetsGroupedWithNameDTO(shortName, sets);        
+        //STANDARD provisoire
+        return new SetsGroupedWithNameDTO(shortName, sets, SetMode.STANDARD);
     }
 
     public List<SetInWorkoutDTO> getSetsDTO(Workout workout){

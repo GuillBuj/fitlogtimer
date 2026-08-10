@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fitlogtimer.enums.SetMode;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.dto.base.SetBasicDTO;
@@ -48,6 +49,12 @@ public class SetsGroupCleanerPlusService {
         Double max = 0.0;
         Double volume = 0.0;
 
+        log.info("type: {}", type);
+        log.info("setsGrouped: {}", setsGrouped);
+        log.info("selectedTypes: {}", selectedTypes);
+
+
+
         // si 'types' vide, tout inclure
         List<SetBasicInterfaceDTO> filteredSets;
         if (selectedTypes == null || selectedTypes.isEmpty()) {
@@ -60,7 +67,8 @@ public class SetsGroupCleanerPlusService {
 
         SetsGroupedWithNameDTO filteredSetsGrouped = new SetsGroupedWithNameDTO(
                 setsGrouped.exerciseNameShort(),
-                filteredSets
+                filteredSets,
+                setsGrouped.setMode()
         );
 
         if (!filteredSetsGrouped.sets().isEmpty() && filteredSetsGrouped.sets().get(0) instanceof SetBasicWith1RMDTO) {
@@ -95,7 +103,7 @@ public class SetsGroupCleanerPlusService {
     List<SetBasicWith1RMDTO> sets1RM = sets.sets().stream()
             .map(s -> (SetBasicWith1RMDTO) s)
             .toList();
-
+        SetMode setMode = SetMode.STANDARD;
     if (hasSameWeight(sets1RM)) {
         if (hasSameReps(sets1RM)) {
             return new SetGroupCleanWorkoutListItemDTO(
@@ -104,25 +112,30 @@ public class SetsGroupCleanerPlusService {
                     sets1RM.size(),
                     sets1RM.get(0).repNumber(),
                     sets1RM.get(0).weight()
-                )
+                ),
+                setMode
+
             );
         } else {
             List<Integer> reps = sets1RM.stream().map(SetBasicWith1RMDTO::repNumber).toList();
             return new SetGroupCleanWorkoutListItemDTO(
                 sets.exerciseNameShort(),
-                new SetsSameWeightDTO(sets1RM.get(0).weight(), reps)
+                new SetsSameWeightDTO(sets1RM.get(0).weight(), reps),
+                setMode
             );
         }
     } else if (hasSameReps(sets1RM)) {
         List<Double> weights = sets1RM.stream().map(SetBasicWith1RMDTO::weight).toList();
         return new SetGroupCleanWorkoutListItemDTO(
             sets.exerciseNameShort(),
-            new SetsSameRepsDTO(sets1RM.get(0).repNumber(), weights)
+            new SetsSameRepsDTO(sets1RM.get(0).repNumber(), weights),
+            setMode
         );
     } else {
         return new SetGroupCleanWorkoutListItemDTO(
                 sets.exerciseNameShort(),
-                buildSetsAllDifferent(sets1RM)
+                buildSetsAllDifferent(sets1RM),
+                setMode
         );
     }
 }

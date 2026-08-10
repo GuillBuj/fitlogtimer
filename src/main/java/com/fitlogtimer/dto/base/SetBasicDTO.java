@@ -13,6 +13,8 @@ public record SetBasicDTO(
 
     @Override
     public final String toString() {
-        return (repNumber + " @ " + weight + "kg");
+        return weight > 0
+                ? repNumber + " @ " + weight + "kg"
+                : String.valueOf(repNumber);
     }
 }

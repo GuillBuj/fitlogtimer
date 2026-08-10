@@ -32,6 +32,7 @@ public abstract class ExerciseSetMapper {
     @Mapping(target = "durationS", expression = "java(getDurationS(exerciseSet))")
     @Mapping(target = "distance", expression = "java(getDistance(exerciseSet))")
     @Mapping(target = "type", expression = "java(setTypeToString(exerciseSet))")
+    @Mapping(target = "setMode", expression = "java(getSetMode(exerciseSet))")
     public abstract SetInWorkoutDTO toSetInWorkoutDTO(ExerciseSet exerciseSet);
 
     @Mapping(target = "exerciseNameShort", source = "exercise.shortName")
@@ -88,6 +89,9 @@ public abstract class ExerciseSetMapper {
     protected int getDurationS(ExerciseSet exerciseSet){
         if (exerciseSet instanceof IsometricSet){
             return ((IsometricSet) exerciseSet).getDurationS();
+        }
+        if (exerciseSet instanceof BodyweightSet){
+            return ((BodyweightSet) exerciseSet).getDurationS();
         }
         return 0;
     }

@@ -1,5 +1,7 @@
 package com.fitlogtimer.dto.transition;
 
+import com.fitlogtimer.enums.SetMode;
+
 public record SetInWorkoutDTO(
         int id,
         int exercise_id,
@@ -9,5 +11,6 @@ public record SetInWorkoutDTO(
         int durationS,
         String distance,
         String comment,
-        String type) {
+        String type,
+        SetMode setMode) {
 }

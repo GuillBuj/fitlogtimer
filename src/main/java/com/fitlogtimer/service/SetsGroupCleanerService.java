@@ -27,8 +27,6 @@ import com.fitlogtimer.dto.transition.SetsGroupedWithNameDTO;
 @Slf4j
 public class SetsGroupCleanerService {
 
-    SetMode defaultSetMode = SetMode.STANDARD;
-
     public SetGroupCleanWorkoutListItemDTO cleanSetsGroup(SetsGroupedWithNameDTO sets) {
 
         if(sets.setMode()==SetMode.TIME_TRIAL){
@@ -38,7 +36,7 @@ public class SetsGroupCleanerService {
         SetBasicInterfaceDTO firstSet = sets.sets().get(0);
 
         if (firstSet instanceof SetBasicDTO) {
-            log.info("*-*-* : SetBasicDTO");
+            //log.info("*-*-* : SetBasicDTO");
             return cleanSetsGroupForSetBasic(sets);
         } else if (firstSet instanceof SetBasicElasticDTO) {
             //log.info("*-*-* : SetBasicElasticDTO");
@@ -50,7 +48,7 @@ public class SetsGroupCleanerService {
             //log.info("*-*-* : SetBasicMovementDTO");
             return cleanSetsGroupForSetBasicMovement(sets);
         } else if (firstSet instanceof SetBasicBodyweightDTO) {
-            log.info("*-*-* : SetBasicBodyweightDTO");
+            //log.info("*-*-* : SetBasicBodyweightDTO");
             return cleanSetsGroupForSetBasicBodyweight(sets);
         }
 
@@ -78,7 +76,7 @@ public class SetsGroupCleanerService {
                         classicSets.get(0).repNumber(),
                         classicSets.get(0).weight()
                     ),
-                    defaultSetMode
+                    sets.setMode()
                 );}       
             } 
         }  
@@ -86,7 +84,7 @@ public class SetsGroupCleanerService {
         return new SetGroupCleanWorkoutListItemDTO(
                 sets.exerciseNameShort(),
                 new SetsAllDifferentIsometricDTO(classicSets),
-                defaultSetMode
+                sets.setMode()
             );
         
     }
@@ -108,14 +106,14 @@ public class SetsGroupCleanerService {
                     classicSets.get(0).bands(),
                     classicSets.get(0).weight()
                 ),
-                    defaultSetMode);
+                    sets.setMode());
             }  
    
         
         return new SetGroupCleanWorkoutListItemDTO(
                 sets.exerciseNameShort(),
                 new SetsAllDifferentMovementDTO(classicSets),
-                defaultSetMode
+                sets.setMode()
             );
         
     }
@@ -136,7 +134,7 @@ public class SetsGroupCleanerService {
                         classicSets.get(0).repNumber(),
                         classicSets.get(0).bands()
                     ),
-                        defaultSetMode
+                        sets.setMode()
                 );
             } else {
                 List<Integer> repsSet = classicSets.stream()
@@ -149,7 +147,7 @@ public class SetsGroupCleanerService {
                         classicSets.get(0).bands(),
                         repsSet
                     ),
-                        defaultSetMode
+                        sets.setMode()
                 );
             }
         } else if (hasSameReps(sets)) {
@@ -163,13 +161,13 @@ public class SetsGroupCleanerService {
                     classicSets.get(0).repNumber(),
                     bandsList
                 ),
-                    defaultSetMode
+                    sets.setMode()
             );
         } else {
             return new SetGroupCleanWorkoutListItemDTO(
                 sets.exerciseNameShort(),
                 new SetsAllDifferentElasticDTO(classicSets),
-                    defaultSetMode
+                    sets.setMode()
             );
         }
     }
@@ -199,7 +197,7 @@ public class SetsGroupCleanerService {
             return new SetGroupCleanWorkoutListItemDTO(
                     sets.exerciseNameShort(),
                     bodyweightSets.get(0),
-                    defaultSetMode
+                    sets.setMode()
             );
         }
 
@@ -233,7 +231,7 @@ public class SetsGroupCleanerService {
                         classicSets.get(0).repNumber(),
                         classicSets.get(0).weight()
                     ),
-                        defaultSetMode
+                        sets.setMode()
                 );
             } else {
                 List<Integer> repsSet = classicSets.stream()
@@ -246,7 +244,7 @@ public class SetsGroupCleanerService {
                         classicSets.get(0).weight(),
                         repsSet
                     ),
-                        defaultSetMode
+                        sets.setMode()
                 );
             }
         } else if (hasSameReps(sets)) {
@@ -260,13 +258,13 @@ public class SetsGroupCleanerService {
                     classicSets.get(0).repNumber(),
                     weights
                 ),
-                    defaultSetMode
+                    sets.setMode()
             );
         } else {
             return new SetGroupCleanWorkoutListItemDTO(
                     sets.exerciseNameShort(),
                     buildSetsAllDifferent(classicSets),
-                    defaultSetMode
+                    sets.setMode()
             );
         }
     }

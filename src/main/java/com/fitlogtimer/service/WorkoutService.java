@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.fitlogtimer.dto.base.*;
 import com.fitlogtimer.dto.display.ExerciseDisplayDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericDTO;
 import com.fitlogtimer.dto.fromxlsx.FromXlsxGenericWorkoutDTO;
@@ -23,11 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fitlogtimer.constants.ExerciseSetType;
-import com.fitlogtimer.dto.base.SetBasicDTO;
-import com.fitlogtimer.dto.base.SetBasicElasticDTO;
-import com.fitlogtimer.dto.base.SetBasicInterfaceDTO;
-import com.fitlogtimer.dto.base.SetBasicIsometricDTO;
-import com.fitlogtimer.dto.base.SetBasicMovementDTO;
 import com.fitlogtimer.dto.create.ExerciseSetCreateDTO;
 import com.fitlogtimer.dto.create.WorkoutCreateDTO;
 import com.fitlogtimer.dto.details.LastSetDTO;
@@ -225,13 +221,27 @@ public class WorkoutService {
         log.info("*-* Exercise: {}", exercise);
         String shortName = exercise.getShortName();
         String exerciseType = exercise.getType();
+        SetMode setMode = entrySet.setGroup().get(0).setMode();
 
         List<SetBasicInterfaceDTO> sets = List.of();
-        
-        if(exerciseType.equals(ExerciseSetType.FREE_WEIGHT) || exerciseType.equals(ExerciseSetType.BODYWEIGHT)){
+
+        if (exerciseType.equals(ExerciseSetType.FREE_WEIGHT)) {
             //log.info("*-*-* Creating SetBasic");
             sets = entrySet.setGroup().stream()
-                    .map(set -> (SetBasicInterfaceDTO) new SetBasicDTO(set.repNumber(), set.weight()))
+                    .map(set -> (SetBasicInterfaceDTO)
+                            new SetBasicDTO(
+                                    set.repNumber(),
+                                    set.weight()))
+                    .toList();
+        } else if (exerciseType.equals(ExerciseSetType.BODYWEIGHT)) {
+            //log.info("*-*-* Creating SetBasicBodyweight");
+            sets = entrySet.setGroup().stream()
+                    .map(set -> (SetBasicInterfaceDTO)
+                            new SetBasicBodyweightDTO(
+                                    set.repNumber(),
+                                    set.durationS(),
+                                    set.weight(),
+                                    set.setMode()))
                     .toList();
         } else if (exerciseType.equals(ExerciseSetType.ELASTIC)){
             //log.info("*-*-* Creating SetBasicElastic");
@@ -250,8 +260,7 @@ public class WorkoutService {
                     .toList();
         }
 
-        //STANDARD provisoire
-        return new SetsGroupedWithNameDTO(shortName, sets, SetMode.STANDARD);
+        return new SetsGroupedWithNameDTO(shortName, sets, setMode);
     }
 
     public List<SetInWorkoutDTO> getSetsDTO(Workout workout){

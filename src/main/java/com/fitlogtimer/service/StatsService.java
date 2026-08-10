@@ -476,7 +476,6 @@ public class StatsService {
             } else if (set instanceof BodyweightSet bodyweightSet) {
                 int nbReps = bodyweightSet.getRepNumber();
 
-                // CORRECTION : Comparer avec le record actuel
                 if (nbReps > currentBestNbReps) {
                     currentBestNbReps = nbReps;
 

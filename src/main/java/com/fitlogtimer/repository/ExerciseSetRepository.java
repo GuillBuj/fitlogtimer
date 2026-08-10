@@ -56,7 +56,9 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
 
     @Query("SELECT MAX(es.repNumber) " +
             "FROM ExerciseSet es " +
-            "WHERE es.exercise.id = :exerciseId")
+            "WHERE es.exercise.id = :exerciseId " +
+            "AND (es.setMode != com.fitlogtimer.enums.SetMode.TIME_TRIAL " +
+            "OR es.setMode IS NULL)")
     Integer findMaxRepsByExerciseId(@Param("exerciseId") int exerciseId);
 
     @Query("SELECT NEW com.fitlogtimer.dto.stats.MaxWithDateDTO(es.repNumber, es.workout.date) " +
@@ -70,6 +72,8 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
     @Query("SELECT MAX(es.repNumber) " +
             "FROM ExerciseSet es " +
             "WHERE es.exercise.id = :exerciseId " +
+            "AND (es.setMode != com.fitlogtimer.enums.SetMode.TIME_TRIAL " +
+            "OR es.setMode IS NULL)" +
             "AND FUNCTION('YEAR', es.workout.date) = :year")
     Integer findMaxRepsByExerciseIdAndYear(@Param("exerciseId") int exerciseId, @Param("year") int year);
 

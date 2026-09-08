@@ -13,6 +13,8 @@ public enum Muscle {
     ISCHIOS,
     FESSIERS,
     ABDOS,
+    ADDUCTEURS,
+    ABDUCTEURS,
     GLOBAL,
     HAUT,
     BAS

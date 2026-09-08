@@ -85,9 +85,7 @@ public class XlsxService {
                     workouts.add(xlsxMapper.mapToFromXlsxDCHeavyDTO(column));  
                 }
             }
-            //System.out.println("***1*** " + xlsxMapper.mapToFromXlsxDCHeavyDTO(transposedData[1]));
-            //workouts.forEach(workout -> log.info("Workout: {}", workout));
-            //log.info("{} DTOs", workouts.size());
+
         } catch (IOException e) {
             System.err.println("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
         }

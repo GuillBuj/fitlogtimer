@@ -83,6 +83,7 @@ public class XlsxMapper {
         double barWeight = 0.0;
         double weight = 0.0;
         String bands = "";
+        int durationS = 0;
 
         for (int row = 2; row < dataColumn.length; row++) {
             // Décalage ici : shortNameColumn index commence à 0 pour dataColumn[2]
@@ -101,12 +102,16 @@ public class XlsxMapper {
                     log.info("currentExercise: {}", currentExercise.toString());
                     barWeight = parseDouble(barWeightColumn[row-2]);
 
-                    weight = currentExerciseType.equalsIgnoreCase("ELASTIC")
+                    weight = (currentExerciseType.equalsIgnoreCase(ExerciseSetType.ELASTIC) ||
+                            currentExerciseType.equalsIgnoreCase(ExerciseSetType.ISOMETRIC))
                             ? 0.0
                             : parseDouble(cell) + barWeight;
                     bands = currentExerciseType.equalsIgnoreCase(ExerciseSetType.ELASTIC)
                             ? cell
                             :"";
+                    durationS = currentExerciseType.equalsIgnoreCase(ExerciseSetType.ISOMETRIC)
+                            ? (int) Double.parseDouble(cell)
+                            :0;
                     log.debug("cell: {}, short name : {} currentExercise: {} barWeight: {} bands: {}", cell, shortName, currentExercise.getName(), barWeight, bands);
                 } else if (currentExercise != null && !cell.isBlank()) {
                         currentExerciseType = currentExercise.getType();
@@ -120,7 +125,7 @@ public class XlsxMapper {
                                 weight,
                                 nbReps,
                                 bands,
-                                0,
+                                durationS,
                                 "",
                                 "",
                                 "",

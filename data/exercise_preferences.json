@@ -617,6 +617,42 @@
       "exerciseId" : 381,
       "order" : 65,
       "visible" : true
+    }, {
+      "exerciseId" : 382,
+      "order" : 66,
+      "visible" : true
+    }, {
+      "exerciseId" : 383,
+      "order" : 67,
+      "visible" : true
+    }, {
+      "exerciseId" : 384,
+      "order" : 68,
+      "visible" : true
+    }, {
+      "exerciseId" : 385,
+      "order" : 69,
+      "visible" : true
+    }, {
+      "exerciseId" : 388,
+      "order" : 70,
+      "visible" : true
+    }, {
+      "exerciseId" : 389,
+      "order" : 71,
+      "visible" : true
+    }, {
+      "exerciseId" : 390,
+      "order" : 72,
+      "visible" : true
+    }, {
+      "exerciseId" : 391,
+      "order" : 73,
+      "visible" : true
+    }, {
+      "exerciseId" : 392,
+      "order" : 74,
+      "visible" : true
     } ]
   },
   "main" : {

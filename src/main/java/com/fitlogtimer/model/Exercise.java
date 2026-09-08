@@ -5,12 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fitlogtimer.enums.Family;
 import com.fitlogtimer.enums.Muscle;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,9 +26,11 @@ public class Exercise {
     private String shortName;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(50)")
     private Muscle muscle;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(50)")
     private Family family;
 
     private String imageUrl;

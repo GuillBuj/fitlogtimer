@@ -15,6 +15,7 @@ public enum Muscle {
     ABDOS,
     ADDUCTEURS,
     ABDUCTEURS,
+    TIBIAL,
     GLOBAL,
     HAUT,
     BAS

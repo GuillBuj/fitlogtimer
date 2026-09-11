@@ -84,6 +84,7 @@ public class XlsxMapper {
         double weight = 0.0;
         String bands = "";
         int durationS = 0;
+        String distance = "";
 
         for (int row = 2; row < dataColumn.length; row++) {
             // Décalage ici : shortNameColumn index commence à 0 pour dataColumn[2]
@@ -103,7 +104,8 @@ public class XlsxMapper {
                     barWeight = parseDouble(barWeightColumn[row-2]);
 
                     weight = (currentExerciseType.equalsIgnoreCase(ExerciseSetType.ELASTIC) ||
-                            currentExerciseType.equalsIgnoreCase(ExerciseSetType.ISOMETRIC))
+                            currentExerciseType.equalsIgnoreCase(ExerciseSetType.ISOMETRIC) ||
+                            currentExerciseType.equalsIgnoreCase(ExerciseSetType.MOVEMENT))
                             ? 0.0
                             : parseDouble(cell) + barWeight;
                     bands = currentExerciseType.equalsIgnoreCase(ExerciseSetType.ELASTIC)
@@ -112,6 +114,9 @@ public class XlsxMapper {
                     durationS = currentExerciseType.equalsIgnoreCase(ExerciseSetType.ISOMETRIC)
                             ? (int) Double.parseDouble(cell)
                             :0;
+                    distance = currentExerciseType.equalsIgnoreCase(ExerciseSetType.MOVEMENT)
+                            ? cell
+                            :"";
                     log.debug("cell: {}, short name : {} currentExercise: {} barWeight: {} bands: {}", cell, shortName, currentExercise.getName(), barWeight, bands);
                 } else if (currentExercise != null && !cell.isBlank()) {
                         currentExerciseType = currentExercise.getType();
@@ -126,7 +131,7 @@ public class XlsxMapper {
                                 nbReps,
                                 bands,
                                 durationS,
-                                "",
+                                distance,
                                 "",
                                 "",
                                 SetMode.STANDARD,

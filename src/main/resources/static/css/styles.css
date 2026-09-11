@@ -1818,3 +1818,26 @@ body.calendar-page { /* Ajoutez une classe au body */
     color: #b3261e;
     border-color: #f3b5b1;
 }
+
+.absolute-color-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.max-cell {
+    position: relative;
+    padding-right: 10px;
+}
+
+.trend-indicator {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 6px;
+    height: 20px
+}

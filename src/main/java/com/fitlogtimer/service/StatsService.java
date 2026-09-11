@@ -754,12 +754,22 @@ public class StatsService {
                 .sorted(getComparatorForPeriod(periodType))
                 .collect(Collectors.toList());
 
+        Double absoluteBest = filteredMax.stream()
+                .map(PeriodMaxDTO::maxValue)
+                .filter(Objects::nonNull)
+                .max(Double::compareTo)
+                .orElse(0.0);
+
         Map<String, PeriodMaxWithTrendDTO> result = new LinkedHashMap<>();
 
         for (int i = 0; i < filteredMax.size(); i++) {
             PeriodMaxDTO current = filteredMax.get(i);
             Double trendRatio = calculateTrendRatioGeneric(filteredMax, i, PeriodMaxDTO::maxValue);
-            String color = generateTrendStyle(computeTrendColor(trendRatio), true);
+            String trendColor = generateStyle(computeTrendColor(trendRatio), true);
+            Double absoluteRatio = absoluteBest > 0
+                    ? current.maxValue() / absoluteBest
+                    : 0.0;
+            String absoluteColor = generateStyle(computeAbsoluteColor(absoluteRatio),true);
 
             String periodKey = getPeriodKey(current, periodType);
 
@@ -771,7 +781,9 @@ public class StatsService {
                     current.semester(),
                     current.quarter(),
                     trendRatio,
-                    color
+                    trendColor,
+                    absoluteRatio,
+                    absoluteColor
             ));
         }
 
@@ -882,12 +894,24 @@ public class StatsService {
                 .sorted(Comparator.comparing(PeriodMaxRatioDTO::year))
                 .collect(Collectors.toList());
 
+        Double absoluteBest = filteredMaxRatios.stream()
+                .map(PeriodMaxRatioDTO::ratio)
+                .filter(Objects::nonNull)
+                .max(Double::compareTo)
+                .orElse(0.0);
+
         Map<String, PeriodMaxRatioWithTrendDTO> result = new LinkedHashMap<>();
 
         for (int i = 0; i < filteredMaxRatios.size(); i++) {
             PeriodMaxRatioDTO current = filteredMaxRatios.get(i);
+
             Double trendRatio = calculateTrendRatioGeneric(filteredMaxRatios, i, PeriodMaxRatioDTO::ratio);
-            String color = generateTrendStyle(computeTrendColor(trendRatio), true);
+            String trendColor = generateStyle(computeTrendColor(trendRatio), true);
+
+            Double absoluteRatio = absoluteBest > 0
+                    ? current.ratio() / absoluteBest
+                    : 0.0;
+            String absoluteColor = generateStyle(computeAbsoluteColor(absoluteRatio),true);
 
             result.put(String.valueOf(current.year()), new PeriodMaxRatioWithTrendDTO(
                     current.maxValue(),
@@ -896,7 +920,9 @@ public class StatsService {
                     current.workoutId(),
                     current.year(),
                     trendRatio,
-                    color
+                    trendColor,
+                    absoluteRatio,
+                    absoluteColor
             ));
         }
 
@@ -947,11 +973,23 @@ public class StatsService {
                 .sorted(Comparator.comparing(PeriodMax1RMEstDTO::year))
                 .collect(Collectors.toList());
 
+        Double absoluteBest = yearlyMax.stream()
+                .map(PeriodMax1RMEstDTO::estimated1RM)
+                .filter(Objects::nonNull)
+                .max(Double::compareTo)
+                .orElse(0.0);
+
         Map<String, PeriodMax1RMEstWithTrendDTO> result = new LinkedHashMap<>();
         for (int i = 0; i < yearlyMax.size(); i++) {
             PeriodMax1RMEstDTO current = yearlyMax.get(i);
+
             Double trendRatio = calculateTrendRatioGeneric(yearlyMax, i, PeriodMax1RMEstDTO::estimated1RM);
-            String color = generateTrendStyle(computeTrendColor(trendRatio),true);
+            String color = generateStyle(computeTrendColor(trendRatio),true);
+
+            Double absoluteRatio = absoluteBest > 0
+                    ? current.estimated1RM() / absoluteBest
+                    : 0.0;
+            String absoluteColor = generateStyle(computeAbsoluteColor(absoluteRatio),true);
 
             result.put(String.valueOf(current.year()), new PeriodMax1RMEstWithTrendDTO(
                     current.maxValue(),
@@ -961,7 +999,9 @@ public class StatsService {
                     current.workoutId(),
                     current.year(),
                     trendRatio,
-                    color
+                    color,
+                    absoluteRatio,
+                    absoluteColor
             ));
         }
 
@@ -1037,12 +1077,101 @@ public class StatsService {
         return String.format("hsl(%.0f, %.0f%%, %.0f%%)", hue, saturation, lightness);
     }
 
+    private String computeAbsoluteColor(Double absoluteRatio) {
+        if (absoluteRatio == null) return "";
+
+       //  RP : doré
+        if (absoluteRatio >= 1.0) {
+            return "hsl(43, 90%, 58%)";
+        }
+
+        double hue;
+        double saturation;
+        double lightness;
+
+        if (absoluteRatio >= 0.95) {
+            // 95 → 100 % : vert → vert sapin
+            double intensity = (absoluteRatio - 0.95) / 0.05;
+
+            hue = 125 + intensity * 8;
+            saturation = 62 + intensity * 10;
+            lightness = 64 - intensity * 11;
+
+        } else if (absoluteRatio >= 0.90) {
+            // 90 → 95 % : vert-jaune → vert
+            double intensity = (absoluteRatio - 0.90) / 0.05;
+
+            hue = 85 + intensity * 40;
+            saturation = 60 + intensity * 2;
+            lightness = 72 - intensity * 8;
+
+        } else if (absoluteRatio >= 0.80) {
+            // 80 → 90 % : jaune → vert-jaune
+            double intensity = (absoluteRatio - 0.80) / 0.10;
+
+            hue = 55 + intensity * 30;
+            saturation = 64 + intensity * 2;
+            lightness = 76 - intensity * 4;
+
+        } else if (absoluteRatio >= 0.70) {
+            // 70 → 80 % : orange → jaune
+            double intensity = (absoluteRatio - 0.70) / 0.10;
+
+            hue = 25 + intensity * 30;
+            saturation = 68 + intensity * 3;
+            lightness = 66 + intensity * 9;
+
+        } else if (absoluteRatio >= 0.60) {
+            // 60 → 70 % : rouge
+            double intensity = (absoluteRatio - 0.60) / 0.10;
+
+            hue = 5;
+            saturation = 66 + intensity * 6;
+            lightness = 55 + intensity * 8;
+
+        } else if (absoluteRatio >= 0.50) {
+            // 50 → 60 % : grenat → rouge
+            double intensity = (absoluteRatio - 0.50) / 0.10;
+
+            hue = 340 + intensity * 25;
+            saturation = 62 + intensity * 4;
+            lightness = 54 + intensity * 5;
+
+        } else {
+            // < 50 % : prune → grenat
+            double intensity = Math.min(absoluteRatio / 0.50, 1.0);
+
+            hue = 315 + intensity * 25;
+            saturation = 62 + intensity * 4;
+            lightness = 51 + intensity * 5;
+        }
+
+        saturation = clampValue(saturation, 50, 80);
+        lightness = clampValue(lightness, 48, 85);
+
+        return String.format(
+                "hsl(%.0f, %.0f%%, %.0f%%)",
+                hue,
+                saturation,
+                lightness
+        );
+    }
+
     private double clampValue(double value, double min, double max) {
         return Math.max(min, Math.min(max, value));
     }
 
-    private String generateTrendStyle(String baseColor, boolean withGradient) {
+    private String generateStyle(String baseColor, boolean withGradient) {
         if (baseColor == null || baseColor.isEmpty()) return "";
+
+        if (baseColor.equals("hsl(43, 90%, 58%)")) {
+            return "background: linear-gradient(" +
+                    "125deg, " +
+                    "hsl(43, 90%, 58%) 0%, " +
+                    "hsl(43, 90%, 58%) 35%, " +
+                    "hsl(30, 45%, 25%) 100%" +
+                    ");";
+        }
 
         if (!withGradient) {
             return String.format("background-color: %s;", baseColor);

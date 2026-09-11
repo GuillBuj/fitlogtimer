@@ -143,6 +143,8 @@ public class StatsController {
     public String getMainHistoryPeriod(@PathVariable String period, Model model) throws IOException {
         List<ExercisePeriodMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible(PeriodType.valueOf(period.toUpperCase()));
 
+        //log.info("* * * Table: {}", table);
+
         Set<String> allPeriods = table.stream()
                 .flatMap(dto -> dto.periodData().keySet().stream())
                 .sorted(Comparator.reverseOrder())

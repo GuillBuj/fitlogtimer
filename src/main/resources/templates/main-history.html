@@ -36,8 +36,13 @@
 
             <td th:each="year : ${allPeriods}"
                 th:with="data=${exerciseData.periodData.get(year)}"
-                th:style="${data != null ? data.color : ''}">
+                th:style="${data != null ? data.absoluteColor : ''}"
+                class="max-cell">
                 <th:block th:if="${data}">
+                    <div class="trend-indicator"
+                         th:if="${data.trendColor != null && !data.trendColor.isEmpty()}"
+                         th:style="${data.trendColor}">
+                    </div>
                     <div  class="bold-text">
                         <a th:href="@{/workouts/{id}(id=${data.workoutId()})}" class="soft-link">
                             <span th:text="${data.maxValue % 1 == 0 ?
@@ -98,10 +103,14 @@
                 <!-- Une cellule par exercice -->
                 <td th:each="exerciseData : ${table}"
                     th:with="data=${exerciseData.periodData.get(periodKey)}"
-                    th:style="${data != null ? data.color : ''}">
+                    th:style="${data != null ? data.absoluteColor : ''}"
+                    class="max-cell">
 
                     <th:block th:if="${data}">
-
+                        <div class="trend-indicator"
+                             th:if="${data.trendColor != null && !data.trendColor.isEmpty()}"
+                             th:style="${data.trendColor}">
+                        </div>
                         <div class="bold-text">
                             <a th:href="@{/workouts/{id}(id=${data.workoutId()})}"
                                class="soft-link">
@@ -159,8 +168,13 @@
 
             <td th:each="year : ${allPeriods}"
                 th:with="data=${exerciseData.periodData.get(year)}"
-                th:style="${data != null ? data.color : ''}">
+                th:style="${data != null ? data.absoluteColor : ''}"
+                class="max-cell">
                 <th:block th:if="${data}">
+                    <div class="trend-indicator"
+                         th:if="${data.trendColor != null && !data.trendColor.isEmpty()}"
+                         th:style="${data.trendColor}">
+                    </div>
                     <div class="bold-text">
                         <a th:href="@{/workouts/{id}(id=${data.workoutId()})}" class="soft-link">
                             [[${#numbers.formatDecimal(data.ratio, 1, 3)}]]
@@ -210,8 +224,13 @@
 
             <td th:each="year : ${allPeriods}"
                 th:with="data=${exerciseData.periodData.get(year)}"
-                th:style="${data != null ? data.color : ''}">
+                th:style="${data != null ? data.absoluteColor : ''}"
+                class="max-cell">
                 <th:block th:if="${data}">
+                    <div class="trend-indicator"
+                         th:if="${data.trendColor != null && !data.trendColor.isEmpty()}"
+                         th:style="${data.trendColor}">
+                    </div>
                     <div class="bold-text">
                         <a th:href="@{/workouts/{id}(id=${data.workoutId()})}" class="soft-link">
                             [[${data.estimated1RM % 1 == 0 ?
@@ -227,6 +246,7 @@
                         #numbers.formatDecimal(data.maxValue, 1, 1)}]]kg<br>@[[${#numbers.formatDecimal(data.bodyweight, 1, 1)}]]kg
                     </small>
                 </th:block>
+
 
                 <th:block th:unless="${data}">
                     <span class="no-data">-</span>

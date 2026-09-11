@@ -7,5 +7,7 @@ public record PeriodMaxRatioWithTrendDTO(
         int workoutId,
         int year,
         Double trendRatio,
-        String color
+        String trendColor,
+        Double absoluteRatio,
+        String absoluteColor
 ) {}

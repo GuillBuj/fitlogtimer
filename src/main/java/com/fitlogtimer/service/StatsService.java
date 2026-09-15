@@ -1122,28 +1122,28 @@ public class StatsService {
             lightness = 66 + intensity * 9;
 
         } else if (absoluteRatio >= 0.60) {
-            // 60 → 70 % : rouge
-            double intensity = (absoluteRatio - 0.60) / 0.10;
+        // 60 → 70 % : rouge
+        double intensity = (absoluteRatio - 0.60) / 0.10;
 
-            hue = 5;
-            saturation = 66 + intensity * 6;
-            lightness = 55 + intensity * 8;
+        hue = 5;
+        saturation = 52 + intensity * 6;
+        lightness = 68 + intensity * 6;
 
-        } else if (absoluteRatio >= 0.50) {
+        }  else if (absoluteRatio >= 0.50) {
             // 50 → 60 % : grenat → rouge
             double intensity = (absoluteRatio - 0.50) / 0.10;
 
-            hue = 340 + intensity * 25;
-            saturation = 62 + intensity * 4;
-            lightness = 54 + intensity * 5;
+            hue = 340 + intensity * 25;       // 340 → 5°
+            saturation = 58 + intensity * 6;
+            lightness = 58 + intensity * 8;
 
         } else {
             // < 50 % : prune → grenat
             double intensity = Math.min(absoluteRatio / 0.50, 1.0);
 
-            hue = 315 + intensity * 25;
-            saturation = 62 + intensity * 4;
-            lightness = 51 + intensity * 5;
+            hue = 315 + intensity * 25;       // 315 → 340°
+            saturation = 58 + intensity * 6;
+            lightness = 55 + intensity * 7;
         }
 
         saturation = clampValue(saturation, 50, 80);

@@ -724,12 +724,37 @@ public class StatsService {
     }
 
     //Pour tableau récap des gros exs
-    public List<ExercisePeriodMaxTableDTO> getPeriodMaxTableForAllVisible(PeriodType periodType) throws IOException {
-        List<Exercise> visibleExercises = exercisePreferenceService.getVisibleExercises("main");
+    public PeriodMaxTableResultDTO getPeriodMaxTableForAllVisible(
+            PeriodType periodType
+    ) throws IOException {
 
-        return visibleExercises.stream()
+        List<Exercise> visibleExercises =
+                exercisePreferenceService.getVisibleExercises("main");
+
+        Set<Integer> big4Ids = exercisePreferenceService
+                .getVisibleExercises("big4")
+                .stream()
+                .map(Exercise::getId)
+                .collect(Collectors.toSet());
+
+        Map<String, List<Double>> big4Ratios = new HashMap<>();
+
+        List<ExercisePeriodMaxTableDTO> table = visibleExercises.stream()
                 .map(exercise -> {
-                    Map<String, PeriodMaxWithTrendDTO> periodData = getPeriodMaxWithTrend(exercise.getId(), periodType);
+
+                    Map<String, PeriodMaxWithTrendDTO> periodData =
+                            getPeriodMaxWithTrend(exercise.getId(), periodType);
+
+                    if (big4Ids.contains(exercise.getId())) {
+                        periodData.forEach((period, data) -> {
+                            if (data.absoluteRatio() != null) {
+                                big4Ratios
+                                        .computeIfAbsent(period, k -> new ArrayList<>())
+                                        .add(data.absoluteRatio());
+                            }
+                        });
+                    }
+
                     return new ExercisePeriodMaxTableDTO(
                             exercise.getName(),
                             exercise.getId(),
@@ -737,6 +762,40 @@ public class StatsService {
                     );
                 })
                 .collect(Collectors.toList());
+
+        Map<String, PeriodBig4DTO> big4Data = new LinkedHashMap<>();
+
+        for (Map.Entry<String, List<Double>> entry : big4Ratios.entrySet()) {
+
+            List<Double> ratios = entry.getValue();
+
+            double average = ratios.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .average()
+                    .orElse(0);
+
+            if (ratios.size() < 4 && average > 0.7) {
+                average = (average * ratios.size()
+                        + 0.7 * (4 - ratios.size())) / 4;
+            }
+
+            String color = generateStyle(
+                    computeAbsoluteColor(average),
+                    true
+            );
+
+            big4Data.put(
+                    entry.getKey(),
+                    new PeriodBig4DTO(average, color)
+            );
+        }
+
+        big4Data = sortByPeriodDesc(big4Data, periodType);
+
+        return new PeriodMaxTableResultDTO(
+                table,
+                big4Data
+        );
     }
 
     public Map<String, PeriodMaxWithTrendDTO> getPeriodMaxWithTrend(int exerciseId, PeriodType periodType) {
@@ -823,8 +882,9 @@ public class StatsService {
         };
     }
 
-    private Map<String, PeriodMaxWithTrendDTO> sortByPeriodDesc(
-            Map<String, PeriodMaxWithTrendDTO> map, PeriodType periodType) {
+    private <T> Map<String, T> sortByPeriodDesc(
+            Map<String, T> map,
+            PeriodType periodType) {
 
         return map.entrySet().stream()
                 .sorted((e1, e2) -> {

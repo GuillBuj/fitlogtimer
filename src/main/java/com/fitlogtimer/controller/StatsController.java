@@ -120,10 +120,16 @@ public class StatsController {
 
     @GetMapping("/mainHistory")
     public String getMainHistory(Model model) throws IOException {
-        List<ExercisePeriodMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible(PeriodType.YEAR);
+        PeriodMaxTableResultDTO result = statsService.getPeriodMaxTableForAllVisible(PeriodType.YEAR);
+        List<ExercisePeriodMaxTableDTO> table = result.table();
+        Map<String, PeriodBig4DTO> big4Data = result.big4Data();
+
         List<ExerciseYearlyMaxRatioTableDTO> ratioTable = statsService.getPeriodMaxRatioTableForAllVisible();
         List<ExerciseYearlyMax1RMEstTableDTO> est1RMTable = statsService.getPeriodMax1RMEstTableForAllVisible();
+
+        log.info("*** table: {}", table);
         log.info("*** est1RMtable: {}", est1RMTable);
+        log.info("*** big4Data: {}", big4Data);
 
         Set<String> allYears = table.stream()
                 .flatMap(dto -> dto.periodData().keySet().stream())
@@ -131,6 +137,7 @@ public class StatsController {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         model.addAttribute("table", table);
+        model.addAttribute("big4Data", big4Data);
         model.addAttribute("ratioTable", ratioTable);
         model.addAttribute("est1RMTable", est1RMTable);
         model.addAttribute("allPeriods", allYears);
@@ -141,9 +148,15 @@ public class StatsController {
 
     @GetMapping("/mainHistory/{period}")
     public String getMainHistoryPeriod(@PathVariable String period, Model model) throws IOException {
-        List<ExercisePeriodMaxTableDTO> table = statsService.getPeriodMaxTableForAllVisible(PeriodType.valueOf(period.toUpperCase()));
+        PeriodMaxTableResultDTO result = statsService.getPeriodMaxTableForAllVisible(
+                    PeriodType.valueOf(period.toUpperCase())
+            );
+
+        List<ExercisePeriodMaxTableDTO> table = result.table();
+        Map<String, PeriodBig4DTO> big4Data = result.big4Data();
 
         //log.info("* * * Table: {}", table);
+        log.info("*** big4Data: {}", big4Data);
 
         Set<String> allPeriods = table.stream()
                 .flatMap(dto -> dto.periodData().keySet().stream())
@@ -151,6 +164,7 @@ public class StatsController {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         model.addAttribute("table", table);
+        model.addAttribute("big4Data", big4Data);
         model.addAttribute("allPeriods", allPeriods);
         model.addAttribute("period", period.toUpperCase());
 

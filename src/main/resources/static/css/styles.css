@@ -1840,3 +1840,7 @@ body.calendar-page { /* Ajoutez une classe au body */
     left: 4px;
     width: 4px;
 }
+
+.gradient-header {
+    color: #222;
+}

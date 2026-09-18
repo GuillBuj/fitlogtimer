@@ -12,11 +12,11 @@
 <!--<h1 th:if="${period == 'YEAR'}">Max Annuels</h1>-->
 <!--<h1 th:if="${period == 'SEMESTER'}">Max Semestriels</h1>-->
 
-<div th:if="${table.isEmpty()}">
+<div th:if="${table != null and !table.isEmpty()}">
     <p>Aucune donnée disponible.</p>
 </div>
 
-<div th:if="${!table.isEmpty() && period != 'MONTH' && period != 'QUARTER'}">
+<div th:if="${table != null and !table.isEmpty() && period != 'MONTH' && period != 'QUARTER'}">
     <table class="table-recap auto-width-table centered centered-text">
         <thead>
         <tr>
@@ -75,11 +75,11 @@
 
     <h1 th:if="${period == 'MONTH'}">Max Mensuels</h1>
     <h1 th:if="${period == 'QUARTER'}">Max Trimestriels</h1>
-    <div th:if="${table.isEmpty()}">
+    <div th:if="${table == null or table.isEmpty()}">
         <p>Aucune donnée disponible.</p>
     </div>
 
-    <div th:unless="${table.isEmpty()}">
+    <div th:if="${table != null and !table.isEmpty()}">
 
         <table
                 class="table-recap table-recap-vertical auto-width-table centered centered-text"
@@ -147,11 +147,7 @@
     </div>
 </div>
 
-<div th:if="${period == 'YEAR'}">
-
-<!--<div th:if="${period=='YEAR'}">-->
-<!--    <h1>Ratios Max Annuels</h1>-->
-<!--</div>-->
+<!--<div th:if="${!table.isEmpty() && period != 'MONTH' && period != 'QUARTER'}">-->
 
 <div th:if="${ratioTable.isEmpty()}">
     <p>Aucune donnée disponible.</p>
@@ -266,7 +262,7 @@
     </table>
 </div>
 
-</div>
+<!--</div>-->
 
 <script src="/js/timer.js"></script>
 </body>

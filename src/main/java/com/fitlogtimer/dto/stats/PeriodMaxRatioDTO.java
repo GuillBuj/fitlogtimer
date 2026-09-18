@@ -5,13 +5,19 @@ public record PeriodMaxRatioDTO(
         Double bodyweight,
         Double ratio,
         int workoutId,
-        int year
+        int year,
+        Integer semester,
+        Integer quarter,
+        Integer month
 ) {
-    public PeriodMaxRatioDTO(Double maxValue, Double bodyweight, Double ratio, int workoutId, int year) {
+    public PeriodMaxRatioDTO(Double maxValue, Double bodyweight, Double ratio, int workoutId, int year, Integer semester, Integer quarter, Integer month) {
         this.maxValue = maxValue;
         this.bodyweight = bodyweight;
         this.ratio = ratio;
         this.workoutId = workoutId;
         this.year = year;
+        this.semester = semester;
+        this.quarter = quarter;
+        this.month = month;
     }
 }

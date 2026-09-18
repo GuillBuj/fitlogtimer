@@ -1,8 +1,6 @@
 package com.fitlogtimer.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -124,7 +121,7 @@ public class StatsController {
         List<ExercisePeriodMaxTableDTO> table = result.table();
         Map<String, PeriodBig4DTO> big4Data = result.big4Data();
 
-        List<ExerciseYearlyMaxRatioTableDTO> ratioTable = statsService.getPeriodMaxRatioTableForAllVisible();
+        List<ExercisePeriodMaxRatioTableDTO> ratioTable = statsService.getPeriodMaxRatioTableForAllVisible(PeriodType.YEAR);
         List<ExerciseYearlyMax1RMEstTableDTO> est1RMTable = statsService.getPeriodMax1RMEstTableForAllVisible();
 
         log.info("*** table: {}", table);
@@ -148,15 +145,11 @@ public class StatsController {
 
     @GetMapping("/mainHistory/{period}")
     public String getMainHistoryPeriod(@PathVariable String period, Model model) throws IOException {
-        PeriodMaxTableResultDTO result = statsService.getPeriodMaxTableForAllVisible(
-                    PeriodType.valueOf(period.toUpperCase())
-            );
+        PeriodType periodType = PeriodType.valueOf(period.toUpperCase());
+
+        PeriodMaxTableResultDTO result = statsService.getPeriodMaxTableForAllVisible(periodType);
 
         List<ExercisePeriodMaxTableDTO> table = result.table();
-        Map<String, PeriodBig4DTO> big4Data = result.big4Data();
-
-        //log.info("* * * Table: {}", table);
-        log.info("*** big4Data: {}", big4Data);
 
         Set<String> allPeriods = table.stream()
                 .flatMap(dto -> dto.periodData().keySet().stream())
@@ -164,7 +157,37 @@ public class StatsController {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         model.addAttribute("table", table);
-        model.addAttribute("big4Data", big4Data);
+        model.addAttribute("big4Data", result.big4Data());
+        model.addAttribute("allPeriods", allPeriods);
+        model.addAttribute("period", period.toUpperCase());
+
+        // Ratios uniquement pour annuel et semestriel
+        if (periodType == PeriodType.YEAR ||
+                periodType == PeriodType.SEMESTER) {
+
+            List<ExercisePeriodMaxRatioTableDTO> ratioTable =
+                    statsService.getPeriodMaxRatioTableForAllVisible(periodType);
+
+            model.addAttribute("ratioTable", ratioTable);
+        }
+
+        return "main-history";
+    }
+
+    @GetMapping("/mainHistory/{period}/ratios")
+    public String getMainHistoryRatios(@PathVariable String period,Model model) throws IOException {
+
+        PeriodType periodType = PeriodType.valueOf(period.toUpperCase());
+
+        List<ExercisePeriodMaxRatioTableDTO> ratioTable =
+                statsService.getPeriodMaxRatioTableForAllVisible(periodType);
+
+        Set<String> allPeriods = ratioTable.stream()
+                .flatMap(dto -> dto.periodData().keySet().stream())
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        model.addAttribute("ratioTable", ratioTable);
         model.addAttribute("allPeriods", allPeriods);
         model.addAttribute("period", period.toUpperCase());
 

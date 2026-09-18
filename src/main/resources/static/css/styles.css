@@ -1844,3 +1844,17 @@ body.calendar-page { /* Ajoutez une classe au body */
 .gradient-header {
     color: #222;
 }
+
+.ratio-cell-content-month {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 4px;
+     white-space: nowrap;
+ }
+
+ .ratio-cell-content-month .bold-text {
+     width: 42px;
+     margin-left: 6px;
+     text-align: left;
+ }

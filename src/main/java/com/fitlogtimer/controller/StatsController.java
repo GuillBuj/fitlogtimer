@@ -161,13 +161,9 @@ public class StatsController {
         model.addAttribute("allPeriods", allPeriods);
         model.addAttribute("period", period.toUpperCase());
 
-        // Ratios uniquement pour annuel et semestriel
-        if (periodType == PeriodType.YEAR ||
-                periodType == PeriodType.SEMESTER) {
-
+        if (periodType != PeriodType.MONTH) {
             List<ExercisePeriodMaxRatioTableDTO> ratioTable =
                     statsService.getPeriodMaxRatioTableForAllVisible(periodType);
-
             model.addAttribute("ratioTable", ratioTable);
         }
 

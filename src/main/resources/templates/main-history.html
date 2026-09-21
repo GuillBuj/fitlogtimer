@@ -130,12 +130,18 @@
     </div>
 </div>
 
-<div th:if="${!ratioTable.isEmpty() && period != 'MONTH'}">
+<div th:if="${ratioTable != null && !ratioTable.isEmpty() && period != 'MONTH'}">
     <table class="table-recap auto-width-table centered centered-text">
         <thead>
         <tr>
             <th>RATIO MAX/PDC</th>
-            <th th:each="year : ${allPeriods}">[[${year}]]</th>
+            <th th:each="periodKey : ${allPeriods}"
+                th:with="big4=${ratioBig4Data != null ? ratioBig4Data.get(periodKey) : null}"
+                th:style="${big4 != null ? big4.color : ''}"
+                th:classappend="${big4 != null ? 'gradient-header' : ''}"
+                th:title="${big4 != null ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '%' : ''}">
+                [[${periodKey}]]
+            </th>
         </tr>
         </thead>
 
@@ -195,7 +201,10 @@
             </thead>
             <tbody>
             <tr th:each="periodKey : ${allPeriods}">
-                <td class="bold-text">
+                <td class="bold-text"
+                    th:with="big4=${ratioBig4Data != null ? ratioBig4Data.get(periodKey) : null}"
+                    th:style="${big4 != null ? big4.color : ''}"
+                    th:title="${big4 != null ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '%' : ''}">
                     [[${periodKey}]]
                 </td>
 

@@ -121,7 +121,10 @@ public class StatsController {
         List<ExercisePeriodMaxTableDTO> table = result.table();
         Map<String, PeriodBig4DTO> big4Data = result.big4Data();
 
-        List<ExercisePeriodMaxRatioTableDTO> ratioTable = statsService.getPeriodMaxRatioTableForAllVisible(PeriodType.YEAR);
+        PeriodMaxRatioTableResultDTO ratioResult = statsService.getPeriodMaxRatioTableForAllVisible(PeriodType.YEAR);
+        List<ExercisePeriodMaxRatioTableDTO> ratioTable = ratioResult.table();
+        Map<String, PeriodBig4DTO> ratioBig4Data = ratioResult.big4Data();
+
         List<ExerciseYearlyMax1RMEstTableDTO> est1RMTable = statsService.getPeriodMax1RMEstTableForAllVisible();
 
         log.info("*** table: {}", table);
@@ -136,6 +139,7 @@ public class StatsController {
         model.addAttribute("table", table);
         model.addAttribute("big4Data", big4Data);
         model.addAttribute("ratioTable", ratioTable);
+        model.addAttribute("ratioBig4Data", ratioBig4Data);
         model.addAttribute("est1RMTable", est1RMTable);
         model.addAttribute("allPeriods", allYears);
         model.addAttribute("period", "YEAR");
@@ -162,9 +166,11 @@ public class StatsController {
         model.addAttribute("period", period.toUpperCase());
 
         if (periodType != PeriodType.MONTH) {
-            List<ExercisePeriodMaxRatioTableDTO> ratioTable =
-                    statsService.getPeriodMaxRatioTableForAllVisible(periodType);
+            PeriodMaxRatioTableResultDTO ratioResult = statsService.getPeriodMaxRatioTableForAllVisible(periodType);
+            List<ExercisePeriodMaxRatioTableDTO> ratioTable = ratioResult.table();
+            Map<String, PeriodBig4DTO> ratioBig4Data = ratioResult.big4Data();
             model.addAttribute("ratioTable", ratioTable);
+            model.addAttribute("ratioBig4Data", ratioBig4Data);
         }
 
         return "main-history";
@@ -175,8 +181,9 @@ public class StatsController {
 
         PeriodType periodType = PeriodType.valueOf(period.toUpperCase());
 
-        List<ExercisePeriodMaxRatioTableDTO> ratioTable =
-                statsService.getPeriodMaxRatioTableForAllVisible(periodType);
+        PeriodMaxRatioTableResultDTO ratioResult = statsService.getPeriodMaxRatioTableForAllVisible(periodType);
+        List<ExercisePeriodMaxRatioTableDTO> ratioTable = ratioResult.table();
+        Map<String, PeriodBig4DTO> ratioBig4Data = ratioResult.big4Data();
 
         Set<String> allPeriods = ratioTable.stream()
                 .flatMap(dto -> dto.periodData().keySet().stream())
@@ -184,6 +191,7 @@ public class StatsController {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         model.addAttribute("ratioTable", ratioTable);
+        model.addAttribute("ratioBig4Data", ratioBig4Data);
         model.addAttribute("allPeriods", allPeriods);
         model.addAttribute("period", period.toUpperCase());
 

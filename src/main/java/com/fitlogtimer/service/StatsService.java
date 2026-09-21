@@ -952,29 +952,87 @@ public class StatsService {
         return Integer.parseInt(periodStr);
     }
 
-    public List<ExercisePeriodMaxRatioTableDTO> getPeriodMaxRatioTableForAllVisible(
+    public PeriodMaxRatioTableResultDTO getPeriodMaxRatioTableForAllVisible(
             PeriodType periodType
     ) throws IOException {
 
         List<Exercise> visibleExercises =
                 exercisePreferenceService.getVisibleExercises("main");
 
-        return visibleExercises.stream()
-                .map(exercise -> {
+        Set<Integer> big4Ids = exercisePreferenceService
+                .getVisibleExercises("big4")
+                .stream()
+                .map(Exercise::getId)
+                .collect(Collectors.toSet());
 
-                    Map<String, PeriodMaxRatioWithTrendDTO> periodData =
-                            getPeriodMaxRatioWithTrend(
+        Map<String, List<Double>> big4Ratios = new HashMap<>();
+
+        List<ExercisePeriodMaxRatioTableDTO> table =
+                visibleExercises.stream()
+                        .map(exercise -> {
+
+                            Map<String, PeriodMaxRatioWithTrendDTO> periodData =
+                                    getPeriodMaxRatioWithTrend(
+                                            exercise.getId(),
+                                            periodType
+                                    );
+
+                            if (big4Ids.contains(exercise.getId())) {
+                                periodData.forEach((period, data) -> {
+                                    if (data.absoluteRatio() != null) {
+                                        big4Ratios
+                                                .computeIfAbsent(
+                                                        period,
+                                                        k -> new ArrayList<>()
+                                                )
+                                                .add(data.absoluteRatio());
+                                    }
+                                });
+                            }
+
+                            return new ExercisePeriodMaxRatioTableDTO(
+                                    exercise.getName(),
                                     exercise.getId(),
-                                    periodType
+                                    periodData
                             );
+                        })
+                        .collect(Collectors.toList());
 
-                    return new ExercisePeriodMaxRatioTableDTO(
-                            exercise.getName(),
-                            exercise.getId(),
-                            periodData
-                    );
-                })
-                .collect(Collectors.toList());
+        Map<String, PeriodBig4DTO> big4Data = new LinkedHashMap<>();
+
+        for (Map.Entry<String, List<Double>> entry : big4Ratios.entrySet()) {
+
+            List<Double> ratios = entry.getValue();
+
+            double average = ratios.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .average()
+                    .orElse(0);
+
+            int missing = 4 - ratios.size();
+
+            if (ratios.size() < 4 && average > 0.7) {
+                average = (average * ratios.size()
+                        + 0.7 * missing) / 4;
+            }
+
+            String color = generateStyle(
+                    computeAbsoluteColor(average),
+                    true
+            );
+
+            big4Data.put(
+                    entry.getKey(),
+                    new PeriodBig4DTO(average, color)
+            );
+        }
+
+        big4Data = sortByPeriodDesc(big4Data, periodType);
+
+        return new PeriodMaxRatioTableResultDTO(
+                table,
+                big4Data
+        );
     }
 
     public Map<String, PeriodMaxRatioWithTrendDTO> getPeriodMaxRatioWithTrend(

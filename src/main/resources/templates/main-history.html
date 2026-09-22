@@ -17,10 +17,14 @@
             <th>MAX REEL</th>
             <th th:each="year : ${allPeriods}"
                 th:with="big4=${big4Data.get(year)}"
-                th:style="${big4 != null ? big4.color : ''}"
-                th:classappend="${big4 != null ? 'gradient-header' : ''}"
-                th:title="${big4 != null ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '%' : ''}">
+                th:title="${big4 != null
+                            ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '%'
+                            : ''}">
                 [[${year}]]
+                <div th:if="${big4 != null}"
+                     class="big4-indicator"
+                     th:style="${big4.color}">
+                </div>
             </th>
         </tr>
         </thead>

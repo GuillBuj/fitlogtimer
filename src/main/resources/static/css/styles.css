@@ -1858,3 +1858,10 @@ body.calendar-page { /* Ajoutez une classe au body */
      margin-left: 6px;
      text-align: left;
  }
+
+ .big4-indicator {
+     width: 90%;
+     height: 4px;
+     margin: 4px auto 0;
+     border-radius: 2px;
+ }

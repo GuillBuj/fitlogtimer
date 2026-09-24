@@ -1865,3 +1865,25 @@ body.calendar-page { /* Ajoutez une classe au body */
      margin: 4px auto 0;
      border-radius: 2px;
  }
+
+.table-recap-month td{
+    padding: 4px 8px
+}
+
+.table-recap-month td:first-child{
+    background: linear-gradient(171deg, #222222 0% 50%, #8a5555 100%);
+    color: papayawhip;
+    font-weight: bold;
+}
+
+.big4-period-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3px;
+}
+
+.big4-indicator-month {
+    width: 40px;
+    height: 15px;
+}

@@ -73,7 +73,7 @@
 
     <div th:if="${table != null and !table.isEmpty()}">
 
-        <table class="table-recap table-recap-vertical auto-width-table centered centered-text">
+        <table class="table-recap table-recap-vertical table-recap-month auto-width-table centered centered-text">
             <thead>
             <tr>
                 <th>PÉRIODE</th>
@@ -89,11 +89,24 @@
             <tbody>
 
             <tr th:each="periodKey : ${allPeriods}">
-                <td class="bold-text"
-                    th:with="big4=${big4Data.get(periodKey)}"
-                    th:style="${big4 != null ? big4.color : ''}"
-                    th:title="${big4 != null ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '%' : ''}">
-                    [[${periodKey}]]
+<!--                <td class="bold-text"-->
+<!--                    th:with="big4=${big4Data.get(periodKey)}"-->
+<!--                    th:style="${big4 != null ? big4.color : ''}"-->
+<!--                    th:title="${big4 != null ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '%' : ''}">-->
+<!--                    [[${periodKey}]]-->
+<!--                </td>-->
+                <td class=""
+                    th:with="big4=${big4Data != null ? big4Data.get(periodKey) : null}"
+                    th:title="${big4 != null
+                        ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '%'
+                        : ''}">
+                    <div class="big4-period-content">
+                        <span th:if="${big4 != null}"
+                              class="big4-indicator-month"
+                              th:style="${big4.color}">
+                        </span>
+                        <span>[[${periodKey}]]</span>
+                    </div>
                 </td>
 
                 <!-- Une cellule par exercice -->

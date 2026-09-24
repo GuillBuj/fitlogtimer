@@ -1871,6 +1871,7 @@ body.calendar-page { /* Ajoutez une classe au body */
 }
 
 .table-recap-month td:first-child{
+    width: 137px;
     background: linear-gradient(171deg, #222222 0% 50%, #8a5555 100%);
     color: papayawhip;
     font-weight: bold;

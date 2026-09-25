@@ -128,6 +128,7 @@ public class StatsController {
         List<ExerciseYearlyMax1RMEstTableDTO> est1RMTable = statsService.getPeriodMax1RMEstTableForAllVisible();
 
         log.info("*** table: {}", table);
+        log.info("*** ratioTable: {}", ratioTable);
         log.info("*** est1RMtable: {}", est1RMTable);
         log.info("*** big4Data: {}", big4Data);
 

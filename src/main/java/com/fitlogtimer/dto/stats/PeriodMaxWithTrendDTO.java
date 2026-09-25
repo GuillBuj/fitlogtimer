@@ -10,7 +10,8 @@ public record PeriodMaxWithTrendDTO(
         Double trendRatio,
         String trendColor,
         Double absoluteRatio,
-        String absoluteColor
+        String absoluteColor,
+        Integer absoluteRanking
 ) {
     public PeriodMaxWithTrendDTO(
             Double maxValue,
@@ -20,7 +21,8 @@ public record PeriodMaxWithTrendDTO(
             Double trendRatio,
             String trendCcolor,
             Double absoluteRatio,
-            String absoluteColor) {
-        this(maxValue, bodyweight, workoutId, year, null, null, trendRatio, trendCcolor, absoluteRatio, absoluteColor);
+            String absoluteColor,
+            Integer absoluteRanking) {
+        this(maxValue, bodyweight, workoutId, year, null, null, trendRatio, trendCcolor, absoluteRatio, absoluteColor, absoluteRanking);
     }
 }

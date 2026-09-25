@@ -799,7 +799,6 @@ public class StatsService {
     public Map<String, PeriodMaxWithTrendDTO> getPeriodMaxWithTrend(int exerciseId, PeriodType periodType) {
         List<PeriodMaxDTO> periodMaxList = getPeriodMaxList(exerciseId, periodType);
 
-        // Filtrage des doublons avec clé adaptée
         List<PeriodMaxDTO> filteredMax = periodMaxList.stream()
                 .collect(Collectors.toMap(
                         dto -> getPeriodKey(dto, periodType),
@@ -817,31 +816,51 @@ public class StatsService {
                 .max(Double::compareTo)
                 .orElse(0.0);
 
+        List<Double> sortedAbsoluteRatios = filteredMax.stream()
+                .map(dto -> absoluteBest > 0
+                        ? dto.maxValue() / absoluteBest
+                        : 0.0)
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
         Map<String, PeriodMaxWithTrendDTO> result = new LinkedHashMap<>();
 
         for (int i = 0; i < filteredMax.size(); i++) {
             PeriodMaxDTO current = filteredMax.get(i);
-            Double trendRatio = calculateTrendRatioGeneric(filteredMax, i, PeriodMaxDTO::maxValue);
+
+            Double trendRatio = calculateTrendRatioGeneric(
+                    filteredMax,
+                    i,
+                    PeriodMaxDTO::maxValue
+            );
             String trendColor = generateStyle(computeTrendColor(trendRatio), true);
+
             Double absoluteRatio = absoluteBest > 0
                     ? current.maxValue() / absoluteBest
                     : 0.0;
             String absoluteColor = generateStyle(computeAbsoluteColor(absoluteRatio),true);
+            int absoluteRanking = (int) sortedAbsoluteRatios.stream()
+                    .filter(ratio -> ratio > absoluteRatio)
+                    .count() + 1;
 
             String periodKey = getPeriodKey(current, periodType);
 
-            result.put(periodKey, new PeriodMaxWithTrendDTO(
-                    current.maxValue(),
-                    current.bodyweight(),
-                    current.workoutId(),
-                    current.year(),
-                    current.semester(),
-                    current.quarter(),
-                    trendRatio,
-                    trendColor,
-                    absoluteRatio,
-                    absoluteColor
-            ));
+            result.put(
+                    periodKey,
+                    new PeriodMaxWithTrendDTO(
+                            current.maxValue(),
+                            current.bodyweight(),
+                            current.workoutId(),
+                            current.year(),
+                            current.semester(),
+                            current.quarter(),
+                            trendRatio,
+                            trendColor,
+                            absoluteRatio,
+                            absoluteColor,
+                            absoluteRanking
+                    )
+            );
         }
 
         return sortByPeriodDesc(result, periodType);
@@ -1039,7 +1058,6 @@ public class StatsService {
             int exerciseId,
             PeriodType periodType
     ) {
-
         List<PeriodMaxRatioDTO> periodRatios =
                 getPeriodMaxRatioList(exerciseId, periodType);
 
@@ -1060,6 +1078,13 @@ public class StatsService {
                 .max(Double::compareTo)
                 .orElse(0.0);
 
+        List<Double> sortedAbsoluteRatios = filteredRatios.stream()
+                .map(dto -> absoluteBest > 0
+                        ? dto.ratio() / absoluteBest
+                        : 0.0)
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
         Map<String, PeriodMaxRatioWithTrendDTO> result = new LinkedHashMap<>();
 
         for (int i = 0; i < filteredRatios.size(); i++) {
@@ -1071,16 +1096,16 @@ public class StatsService {
                     i,
                     PeriodMaxRatioDTO::ratio
             );
-
             String trendColor =
                     generateStyle(computeTrendColor(trendRatio), true);
 
             Double absoluteRatio = absoluteBest > 0
                     ? current.ratio() / absoluteBest
                     : 0.0;
-
-            String absoluteColor =
-                    generateStyle(computeAbsoluteColor(absoluteRatio), true);
+            String absoluteColor = generateStyle(computeAbsoluteColor(absoluteRatio),true);
+            int absoluteRanking = (int) sortedAbsoluteRatios.stream()
+                    .filter(ratio -> ratio > absoluteRatio)
+                    .count() + 1;
 
             String periodKey = getPeriodKey(current, periodType);
 
@@ -1098,7 +1123,8 @@ public class StatsService {
                             trendRatio,
                             trendColor,
                             absoluteRatio,
-                            absoluteColor
+                            absoluteColor,
+                            absoluteRanking
                     )
             );
         }
@@ -1166,6 +1192,13 @@ public class StatsService {
                 .max(Double::compareTo)
                 .orElse(0.0);
 
+        List<Double> sortedAbsoluteRatios = yearlyMax.stream()
+                .map(dto -> absoluteBest > 0
+                        ? dto.estimated1RM() / absoluteBest
+                        : 0.0)
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
         Map<String, PeriodMax1RMEstWithTrendDTO> result = new LinkedHashMap<>();
         for (int i = 0; i < yearlyMax.size(); i++) {
             PeriodMax1RMEstDTO current = yearlyMax.get(i);
@@ -1177,6 +1210,9 @@ public class StatsService {
                     ? current.estimated1RM() / absoluteBest
                     : 0.0;
             String absoluteColor = generateStyle(computeAbsoluteColor(absoluteRatio),true);
+            int absoluteRanking = (int) sortedAbsoluteRatios.stream()
+                    .filter(ratio -> ratio > absoluteRatio)
+                    .count() + 1;
 
             result.put(String.valueOf(current.year()), new PeriodMax1RMEstWithTrendDTO(
                     current.maxValue(),
@@ -1188,7 +1224,8 @@ public class StatsService {
                     trendRatio,
                     color,
                     absoluteRatio,
-                    absoluteColor
+                    absoluteColor,
+                    absoluteRanking
             ));
         }
 

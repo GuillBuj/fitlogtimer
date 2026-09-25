@@ -10,5 +10,6 @@ public record PeriodMax1RMEstWithTrendDTO(
         Double trendRatio,
         String trendColor,
         Double absoluteRatio,
-        String absoluteColor
+        String absoluteColor,
+        Integer absoluteRanking
 ) {}

@@ -41,6 +41,9 @@
             <td th:each="period : ${allPeriods}"
                 th:with="data=${exerciseData.periodData.get(period)}"
                 th:style="${data != null ? data.absoluteColor : ''}"
+                th:title="${data != null && data.absoluteRatio != null
+                                ? #numbers.formatDecimal(data.absoluteRatio * 100, 1, 1) + '%RP'
+                                : ''}"
                 class="max-cell">
                 <th:block th:if="${data}">
                     <div class="trend-indicator-recap"
@@ -89,14 +92,7 @@
             <tbody>
 
             <tr th:each="periodKey : ${allPeriods}">
-<!--                <td class="bold-text"-->
-<!--                    th:with="big4=${big4Data.get(periodKey)}"-->
-<!--                    th:style="${big4 != null ? big4.color : ''}"-->
-<!--                    th:title="${big4 != null ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '%' : ''}">-->
-<!--                    [[${periodKey}]]-->
-<!--                </td>-->
-                <td class=""
-                    th:with="big4=${big4Data != null ? big4Data.get(periodKey) : null}"
+                <td th:with="big4=${big4Data != null ? big4Data.get(periodKey) : null}"
                     th:title="${big4 != null
                         ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '%'
                         : ''}">
@@ -113,6 +109,9 @@
                 <td th:each="exerciseData : ${table}"
                     th:with="data=${exerciseData.periodData.get(periodKey)}"
                     th:style="${data != null ? data.absoluteColor : ''}"
+                    th:title="${data != null && data.absoluteRatio != null
+                                ? #numbers.formatDecimal(data.absoluteRatio * 100, 1, 1) + '%RP'
+                                : ''}"
                     class="max-cell">
 
                     <th:block th:if="${data}">
@@ -178,6 +177,9 @@
             <td th:each="year : ${allPeriods}"
                 th:with="data=${exerciseData.periodData.get(year)}"
                 th:style="${data != null ? data.absoluteColor : ''}"
+                th:title="${data != null && data.absoluteRatio != null
+                                ? #numbers.formatDecimal(data.absoluteRatio * 100, 1, 1) + '%MAX'
+                                : ''}"
                 class="max-cell">
                 <th:block th:if="${data}">
                     <div class="trend-indicator-recap"
@@ -239,6 +241,9 @@
                 <td th:each="exerciseData : ${ratioTable}"
                     th:with="data=${exerciseData.periodData.get(periodKey)}"
                     th:style="${data != null ? data.absoluteColor : ''}"
+                    th:title="${data != null && data.absoluteRatio != null
+                                ? #numbers.formatDecimal(data.absoluteRatio * 100, 1, 1) + '%MAX'
+                                : ''}"
                     class="max-cell">
                     <th:block th:if="${data}">
                         <div class="ratio-cell-content-month">
@@ -283,6 +288,9 @@
             <td th:each="year : ${allPeriods}"
                 th:with="data=${exerciseData.periodData.get(year)}"
                 th:style="${data != null ? data.absoluteColor : ''}"
+                th:title="${data != null && data.absoluteRatio != null
+                                ? #numbers.formatDecimal(data.absoluteRatio * 100, 1, 1) + '%MAX'
+                                : ''}"
                 class="max-cell">
                 <th:block th:if="${data}">
                     <div class="trend-indicator-recap"

@@ -784,9 +784,34 @@ public class StatsService {
 
             big4Data.put(
                     entry.getKey(),
-                    new PeriodBig4DTO(average, color)
+                    new PeriodBig4DTO(average, color, null)
             );
         }
+
+        List<Double> sortedBig4Ratios = big4Data.values().stream()
+                .map(PeriodBig4DTO::ratio)
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
+        big4Data = big4Data.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            PeriodBig4DTO data = entry.getValue();
+
+                            int absoluteRanking = (int) sortedBig4Ratios.stream()
+                                    .filter(ratio -> ratio > data.ratio())
+                                    .count() + 1;
+
+                            return new PeriodBig4DTO(
+                                    data.ratio(),
+                                    data.color(),
+                                    absoluteRanking
+                            );
+                        },
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
 
         big4Data = sortByPeriodDesc(big4Data, periodType);
 
@@ -1042,9 +1067,34 @@ public class StatsService {
 
             big4Data.put(
                     entry.getKey(),
-                    new PeriodBig4DTO(average, color)
+                    new PeriodBig4DTO(average, color, null)
             );
         }
+
+        List<Double> sortedBig4Ratios = big4Data.values().stream()
+                .map(PeriodBig4DTO::ratio)
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
+        big4Data = big4Data.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            PeriodBig4DTO data = entry.getValue();
+
+                            int absoluteRanking = (int) sortedBig4Ratios.stream()
+                                    .filter(ratio -> ratio > data.ratio())
+                                    .count() + 1;
+
+                            return new PeriodBig4DTO(
+                                    data.ratio(),
+                                    data.color(),
+                                    absoluteRanking
+                            );
+                        },
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
 
         big4Data = sortByPeriodDesc(big4Data, periodType);
 

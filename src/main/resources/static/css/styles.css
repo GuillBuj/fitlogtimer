@@ -1849,6 +1849,7 @@ body.calendar-page { /* Ajoutez une classe au body */
      display: flex;
      align-items: center;
      justify-content: space-between;
+     margin-right:10px;
      gap: 4px;
      white-space: nowrap;
  }
@@ -1878,13 +1879,76 @@ body.calendar-page { /* Ajoutez une classe au body */
 }
 
 .big4-period-content {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-right: 10px;
     padding: 0 3px;
+    white-space: nowrap;
 }
+
 
 .big4-indicator-month {
     width: 40px;
     height: 15px;
+}
+
+.max-cell {
+    position: relative;
+}
+
+.ranking-medal {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1;
+
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+
+    z-index: 2;
+}
+
+.big4-period-content .ranking-medal {
+    position: absolute;
+    top: -1px;
+    right: 85px;
+}
+
+.ranking-1 {
+    background: linear-gradient(135deg, #fff1a8, #d4a017);
+    color: #5c4300;
+}
+
+.ranking-2 {
+    background: linear-gradient(135deg, #ffffff, #a8adb3);
+    color: #30343a;
+}
+
+.ranking-3 {
+    background: linear-gradient(135deg, #e8b08a, #a85d2a);
+    color: #542b15;
+}
+
+.ranking-4,
+.ranking-5,
+.ranking-6,
+.ranking-7,
+.ranking-8,
+.ranking-9,
+.ranking-10 {
+    background: #CBB;
+    color: #855;
 }

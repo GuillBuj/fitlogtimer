@@ -1883,9 +1883,9 @@ body.calendar-page { /* Ajoutez une classe au body */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-right: 10px;
     padding: 0 3px;
     white-space: nowrap;
+    width: 125px;
 }
 
 

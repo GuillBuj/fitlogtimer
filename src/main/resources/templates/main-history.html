@@ -102,6 +102,13 @@
                               th:style="${big4.color}">
                         </span>
                         <span>[[${periodKey}]]</span>
+                        <span th:if="${big4 != null
+                          && big4.absoluteRanking != null
+                          && big4.absoluteRanking <= 10}"
+                              class="ranking-medal"
+                              th:classappend="${'ranking-' + big4.absoluteRanking}">
+                            [[${big4.absoluteRanking}]]
+                        </span>
                     </div>
                 </td>
 
@@ -115,6 +122,11 @@
                     class="max-cell">
 
                     <th:block th:if="${data}">
+                        <span th:if="${data.absoluteRanking != null && data.absoluteRanking <= 10}"
+                              class="ranking-medal"
+                              th:classappend="${'ranking-' + data.absoluteRanking}">
+                            [[${data.absoluteRanking}]]
+                        </span>
                         <div class="trend-indicator-recap"
                              th:if="${data.trendColor != null && !data.trendColor.isEmpty()}"
                              th:style="${data.trendColor}">

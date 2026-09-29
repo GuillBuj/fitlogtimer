@@ -1354,22 +1354,25 @@ public class StatsService {
     private String computeAbsoluteColor(Double absoluteRatio) {
         if (absoluteRatio == null) return "";
 
-       //  RP : doré
-        if (absoluteRatio >= 1.0) {
-            return "hsl(43, 90%, 58%)";
-        }
-
         double hue;
         double saturation;
         double lightness;
 
-        if (absoluteRatio >= 0.95) {
-            // 95 → 100 % : vert → vert sapin
-            double intensity = (absoluteRatio - 0.95) / 0.05;
+        if (absoluteRatio >= 0.98) {
+            // 98 → 100 % : vert sapin sobre
+            double intensity = (absoluteRatio - 0.98) / 0.02;
 
-            hue = 125 + intensity * 8;
+            hue = 140 + intensity * 5;
+            saturation = 35 + intensity * 10;
+            lightness = 32 - intensity * 7;
+
+        } else if (absoluteRatio >= 0.95) {
+            // 95 → 98 % : vert → vert sapin
+            double intensity = (absoluteRatio - 0.95) / 0.03;
+
+            hue = 125 + intensity * 15;
             saturation = 62 + intensity * 10;
-            lightness = 64 - intensity * 11;
+            lightness = 64 - intensity * 25;
 
         } else if (absoluteRatio >= 0.90) {
             // 90 → 95 % : vert-jaune → vert
@@ -1396,27 +1399,27 @@ public class StatsService {
             lightness = 66 + intensity * 9;
 
         } else if (absoluteRatio >= 0.60) {
-        // 60 → 70 % : rouge
-        double intensity = (absoluteRatio - 0.60) / 0.10;
+            // 60 → 70 % : rouge discret
+            double intensity = (absoluteRatio - 0.60) / 0.10;
 
-        hue = 5;
-        saturation = 52 + intensity * 6;
-        lightness = 68 + intensity * 6;
+            hue = 5;
+            saturation = 35 + intensity * 5;
+            lightness = 68 + intensity * 6;
 
-        }  else if (absoluteRatio >= 0.50) {
-            // 50 → 60 % : grenat → rouge
+        } else if (absoluteRatio >= 0.50) {
+            // 50 → 60 % : grenat → rouge discret
             double intensity = (absoluteRatio - 0.50) / 0.10;
 
-            hue = 340 + intensity * 25;       // 340 → 5°
-            saturation = 58 + intensity * 6;
+            hue = 340 + intensity * 25;
+            saturation = 38 + intensity * 5;
             lightness = 58 + intensity * 8;
 
         } else {
-            // < 50 % : prune → grenat
+            // < 50 % : prune → grenat discret
             double intensity = Math.min(absoluteRatio / 0.50, 1.0);
 
-            hue = 315 + intensity * 25;       // 315 → 340°
-            saturation = 58 + intensity * 6;
+            hue = 315 + intensity * 25;
+            saturation = 38 + intensity * 5;
             lightness = 55 + intensity * 7;
         }
 
@@ -1457,14 +1460,10 @@ public class StatsService {
         double lightness = Double.parseDouble(parts[2].replace("%", "").trim());
 
         double lighterLightness;
-        if (lightness < 40) {
-            lighterLightness = Math.min(lightness + 40, 90); // +40% pour les sombres
-        } else if (lightness < 70) {
-            lighterLightness = Math.min(lightness + 35, 95); // +35% pour les moyens
-        } else {
-            lighterLightness = Math.min(lightness + 25, 98); // +25% pour les clairs
-        }
-        double lighterSaturation = Math.max(saturation * 0.8, 20);
+        double lighterSaturation;
+
+        lighterLightness = Math.min(lightness + 35, 90);
+        lighterSaturation = Math.max(saturation * 0.45, 12);
 
         String lighterColor = String.format("hsl(%.0f, %.0f%%, %.0f%%)",
                 hue, lighterSaturation, lighterLightness);

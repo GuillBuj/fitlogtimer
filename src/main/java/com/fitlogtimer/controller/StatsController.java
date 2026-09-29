@@ -143,7 +143,7 @@ public class StatsController {
         model.addAttribute("ratioBig4Data", ratioBig4Data);
         model.addAttribute("est1RMTable", est1RMTable);
         model.addAttribute("allPeriods", allYears);
-        model.addAttribute("period", "YEAR");
+        model.addAttribute("periodType", "YEAR");
 
         return "main-history";
     }
@@ -164,7 +164,7 @@ public class StatsController {
         model.addAttribute("table", table);
         model.addAttribute("big4Data", result.big4Data());
         model.addAttribute("allPeriods", allPeriods);
-        model.addAttribute("period", period.toUpperCase());
+        model.addAttribute("periodType", period.toUpperCase());
 
         if (periodType != PeriodType.MONTH) {
             PeriodMaxRatioTableResultDTO ratioResult = statsService.getPeriodMaxRatioTableForAllVisible(periodType);
@@ -194,7 +194,7 @@ public class StatsController {
         model.addAttribute("ratioTable", ratioTable);
         model.addAttribute("ratioBig4Data", ratioBig4Data);
         model.addAttribute("allPeriods", allPeriods);
-        model.addAttribute("period", period.toUpperCase());
+        model.addAttribute("periodType", period.toUpperCase());
 
         return "main-history";
     }

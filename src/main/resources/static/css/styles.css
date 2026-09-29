@@ -1888,6 +1888,11 @@ body.calendar-page { /* Ajoutez une classe au body */
     width: 125px;
 }
 
+.big4-header-content {
+    position: relative;
+    white-space: nowrap;
+    overflow: visible;
+}
 
 .big4-indicator-month {
     width: 40px;
@@ -1925,6 +1930,13 @@ body.calendar-page { /* Ajoutez une classe au body */
     position: absolute;
     top: -1px;
     right: 85px;
+}
+
+.big4-header-content .ranking-medal {
+    position: absolute;
+    top: -6px;
+    right: -5px;
+    z-index: 10;
 }
 
 .ranking-1 {

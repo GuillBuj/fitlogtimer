@@ -4,7 +4,8 @@
 
 body {
     text-align: center;
-    margin: 0;
+    max-width: 95%;
+    margin: 0 auto;
     padding-top: 80px;
     padding-bottom: 50px;
     overflow-x: hidden; /*desactive scroll x navigateur*/
@@ -1737,6 +1738,7 @@ body.calendar-page { /* Ajoutez une classe au body */
 
 .table-recap td:nth-child(1) {
     width: auto;
+    min-width: 100px;
 }
 
 .table-sets-by-ex td:nth-child(2){

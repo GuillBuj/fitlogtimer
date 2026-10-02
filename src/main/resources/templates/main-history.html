@@ -9,7 +9,6 @@
 <p th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></p>
 <p th:if="${successRedMessage}" th:text="${successRedMessage}" class="alert alert-red"></p>
 
-
 <div th:if="${table != null and !table.isEmpty() && periodType != 'MONTH'}">
     <table class="table-recap auto-width-table centered centered-text">
         <thead>
@@ -407,8 +406,6 @@
         </tbody>
     </table>
 </div>
-
-<!--</div>-->
 
 <script src="/js/timer.js"></script>
 </body>

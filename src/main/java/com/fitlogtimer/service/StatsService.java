@@ -38,6 +38,11 @@ import lombok.AllArgsConstructor;
 @Slf4j
 public class StatsService {
 
+    private static final double PCT_SUB = 0.70;
+    private static final double PCT_BONUS_1 = 0.003;
+    private static final double PCT_BONUS_2 = 0.005;
+    private static final double PCT_BONUS_3 = 0.006;
+
     private final ExerciseSetRepository exerciseSetRepository;
     private final ExerciseRepository exerciseRepository;
     private final ExercisePreferenceService exercisePreferenceService;
@@ -736,6 +741,7 @@ public class StatsService {
                 .collect(Collectors.toSet());
 
         Map<String, List<Double>> big4Ratios = new HashMap<>();
+        Map<String, List<Double>> peripheralRatios = new HashMap<>();
 
         List<ExercisePeriodMaxTableDTO> table = visibleExercises.stream()
                 .map(exercise -> {
@@ -747,6 +753,14 @@ public class StatsService {
                         periodData.forEach((period, data) -> {
                             if (data.absoluteRatio() != null) {
                                 big4Ratios
+                                        .computeIfAbsent(period, k -> new ArrayList<>())
+                                        .add(data.absoluteRatio());
+                            }
+                        });
+                    } else {
+                        periodData.forEach((period, data) -> {
+                            if (data.absoluteRatio() != null) {
+                                peripheralRatios
                                         .computeIfAbsent(period, k -> new ArrayList<>())
                                         .add(data.absoluteRatio());
                             }
@@ -772,10 +786,25 @@ public class StatsService {
                     .average()
                     .orElse(0);
 
-            if (ratios.size() < 4 && average > 0.7) {
+            if (ratios.size() < 4 && average > PCT_SUB) {
                 average = (average * ratios.size()
-                        + 0.7 * (4 - ratios.size())) / 4;
+                        + PCT_SUB * (4 - ratios.size())) / 4;
             }
+
+            double baseAverage = average;
+
+            long exceedingCount = peripheralRatios
+                    .getOrDefault(entry.getKey(), List.of())
+                    .stream()
+                    .filter(ratio -> ratio > baseAverage)
+                    .count();
+
+            average += switch ((int) exceedingCount) {
+                case 1 -> PCT_BONUS_1;
+                case 2 -> PCT_BONUS_2;
+                case 3 -> PCT_BONUS_3;
+                default -> 0.0;
+            };
 
             String color = generateStyle(
                     computeAbsoluteColor(average),
@@ -1010,6 +1039,7 @@ public class StatsService {
                 .collect(Collectors.toSet());
 
         Map<String, List<Double>> big4Ratios = new HashMap<>();
+        Map<String, List<Double>> peripheralRatios = new HashMap<>();
 
         List<ExercisePeriodMaxRatioTableDTO> table =
                 visibleExercises.stream()
@@ -1025,10 +1055,15 @@ public class StatsService {
                                 periodData.forEach((period, data) -> {
                                     if (data.absoluteRatio() != null) {
                                         big4Ratios
-                                                .computeIfAbsent(
-                                                        period,
-                                                        k -> new ArrayList<>()
-                                                )
+                                                .computeIfAbsent(period, k -> new ArrayList<>())
+                                                .add(data.absoluteRatio());
+                                    }
+                                });
+                            } else {
+                                periodData.forEach((period, data) -> {
+                                    if (data.absoluteRatio() != null) {
+                                        peripheralRatios
+                                                .computeIfAbsent(period, k -> new ArrayList<>())
                                                 .add(data.absoluteRatio());
                                     }
                                 });
@@ -1055,10 +1090,25 @@ public class StatsService {
 
             int missing = 4 - ratios.size();
 
-            if (ratios.size() < 4 && average > 0.7) {
+            if (ratios.size() < 4 && average > PCT_SUB) {
                 average = (average * ratios.size()
-                        + 0.7 * missing) / 4;
+                        + PCT_SUB * missing) / 4;
             }
+
+            double baseAverage = average;
+
+            long exceedingCount = peripheralRatios
+                    .getOrDefault(entry.getKey(), List.of())
+                    .stream()
+                    .filter(ratio -> ratio > baseAverage)
+                    .count();
+
+            average += switch ((int) exceedingCount) {
+                case 1 -> PCT_BONUS_1;
+                case 2 -> PCT_BONUS_2;
+                case 3 -> PCT_BONUS_3;
+                default -> 0.0;
+            };
 
             String color = generateStyle(
                     computeAbsoluteColor(average),

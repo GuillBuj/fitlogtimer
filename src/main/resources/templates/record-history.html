@@ -66,10 +66,10 @@
     <tbody>
     <tr th:each="topSet, iterNumber : ${topFreeWeightSets}">
         <td th:text="${iterNumber.count}" class="bold-text column-sticky"></td>
-        <td th:text="${#temporals.format(topSet.date(), 'dd/MM/yyyy')}"></td>
+        <td th:text="${#temporals.format(topSet.date(), 'dd/MM/yyyy')}"
+            th:class="${topSet.getColorClass}"></td>
         <td th:text="${topSet.weight()} + ' kg' + ${topSet.nbReps() > 1 ? ' (' + topSet.nbReps() + ')' : ''}"
-            class="bold-text"
-            th:classappend="${topSet.getColorClass}"></td>
+            class="important-column bold-text"></td>
         <td th:text="${topSet.bodyWeight() > 0 ? '@' + topSet.bodyWeight() + ' kg' : '-'}"></td>
         <td th:text="${topSet.bodyWeight() > 0 ? #numbers.formatDecimal(topSet.weight() / topSet.bodyWeight(), 1, 3) : '-'}"></td>
     </tr>

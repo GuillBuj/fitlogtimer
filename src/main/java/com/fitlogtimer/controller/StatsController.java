@@ -117,20 +117,21 @@ public class StatsController {
 
     @GetMapping("/mainHistory")
     public String getMainHistory(Model model) throws IOException {
-        PeriodMaxTableResultDTO result = statsService.getPeriodMaxTableForAllVisible(PeriodType.YEAR);
+
+        PeriodMaxTableResultDTO result =
+                statsService.getPeriodMaxTableForAllVisible(PeriodType.YEAR);
         List<ExercisePeriodMaxTableDTO> table = result.table();
         Map<String, PeriodBig4DTO> big4Data = result.big4Data();
 
-        PeriodMaxRatioTableResultDTO ratioResult = statsService.getPeriodMaxRatioTableForAllVisible(PeriodType.YEAR);
+        PeriodMaxRatioTableResultDTO ratioResult =
+                statsService.getPeriodMaxRatioTableForAllVisible(PeriodType.YEAR);
         List<ExercisePeriodMaxRatioTableDTO> ratioTable = ratioResult.table();
         Map<String, PeriodBig4DTO> ratioBig4Data = ratioResult.big4Data();
 
-        List<ExerciseYearlyMax1RMEstTableDTO> est1RMTable = statsService.getPeriodMax1RMEstTableForAllVisible();
-
-        log.info("*** table: {}", table);
-        log.info("*** ratioTable: {}", ratioTable);
-        log.info("*** est1RMtable: {}", est1RMTable);
-        log.info("*** big4Data: {}", big4Data);
+        PeriodMax1RMEstTableResultDTO est1RMResult =
+                statsService.getPeriodMax1RMEstTableForAllVisible();
+        List<ExerciseYearlyMax1RMEstTableDTO> est1RMTable = est1RMResult.table();
+        Map<String, PeriodBig4DTO> est1RMBig4Data = est1RMResult.big4Data();
 
         Set<String> allYears = table.stream()
                 .flatMap(dto -> dto.periodData().keySet().stream())
@@ -142,6 +143,7 @@ public class StatsController {
         model.addAttribute("ratioTable", ratioTable);
         model.addAttribute("ratioBig4Data", ratioBig4Data);
         model.addAttribute("est1RMTable", est1RMTable);
+        model.addAttribute("est1RMBig4Data", est1RMBig4Data);
         model.addAttribute("allPeriods", allYears);
         model.addAttribute("periodType", "YEAR");
 

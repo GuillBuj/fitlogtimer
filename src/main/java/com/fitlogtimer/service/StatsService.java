@@ -1272,19 +1272,142 @@ public class StatsService {
         };
     }
 
-    public List<ExerciseYearlyMax1RMEstTableDTO> getPeriodMax1RMEstTableForAllVisible() throws IOException {
-        List<Exercise> visibleExercises = exercisePreferenceService.getVisibleExercises("main");
+    public PeriodMax1RMEstTableResultDTO getPeriodMax1RMEstTableForAllVisible()
+            throws IOException {
 
-        return visibleExercises.stream()
-                .map(exercise -> {
-                    Map<String, PeriodMax1RMEstWithTrendDTO> yearlyData = getPeriodMax1RMEstWithTrend(exercise.getId());
-                    return new ExerciseYearlyMax1RMEstTableDTO(
-                            exercise.getName(),
-                            exercise.getId(),
-                            yearlyData
-                    );
-                })
-                .collect(Collectors.toList());
+        List<Exercise> visibleExercises =
+                exercisePreferenceService.getVisibleExercises("main");
+
+        Set<Integer> big4Ids = exercisePreferenceService
+                .getVisibleExercises("big4")
+                .stream()
+                .map(Exercise::getId)
+                .collect(Collectors.toSet());
+
+        Map<String, List<Double>> big4Ratios = new HashMap<>();
+        Map<String, List<Double>> peripheralRatios = new HashMap<>();
+
+        List<ExerciseYearlyMax1RMEstTableDTO> table =
+                visibleExercises.stream()
+                        .map(exercise -> {
+
+                            Map<String, PeriodMax1RMEstWithTrendDTO> yearlyData =
+                                    getPeriodMax1RMEstWithTrend(exercise.getId());
+
+                            if (big4Ids.contains(exercise.getId())) {
+                                yearlyData.forEach((period, data) -> {
+                                    if (data.absoluteRatio() != null) {
+                                        big4Ratios
+                                                .computeIfAbsent(period, k -> new ArrayList<>())
+                                                .add(data.absoluteRatio());
+                                    }
+                                });
+                            } else {
+                                yearlyData.forEach((period, data) -> {
+                                    if (data.absoluteRatio() != null) {
+                                        peripheralRatios
+                                                .computeIfAbsent(period, k -> new ArrayList<>())
+                                                .add(data.absoluteRatio());
+                                    }
+                                });
+                            }
+
+                            return new ExerciseYearlyMax1RMEstTableDTO(
+                                    exercise.getName(),
+                                    exercise.getId(),
+                                    yearlyData
+                            );
+                        })
+                        .collect(Collectors.toList());
+
+        Map<String, PeriodBig4DTO> big4Data = new LinkedHashMap<>();
+
+        for (Map.Entry<String, List<Double>> entry : big4Ratios.entrySet()) {
+
+            List<Double> ratios = entry.getValue();
+            List<Double> weightedRatios = new ArrayList<>(ratios);
+
+            if (ratios.size() < 4) {
+                double rawAverage = ratios.stream()
+                        .mapToDouble(Double::doubleValue)
+                        .average()
+                        .orElse(0);
+
+                if (rawAverage > PCT_SUB) {
+                    while (weightedRatios.size() < 4) {
+                        weightedRatios.add(PCT_SUB);
+                    }
+                }
+            }
+
+            weightedRatios.sort(Comparator.reverseOrder());
+
+            double weightedSum = 0;
+            int totalWeight = 0;
+
+            for (int i = 0; i < weightedRatios.size(); i++) {
+                weightedSum += weightedRatios.get(i) * BIG4_PCT_WEIGHTS[i];
+                totalWeight += BIG4_PCT_WEIGHTS[i];
+            }
+
+            double average = weightedSum / totalWeight;
+            double baseAverage = average;
+
+            long exceedingCount = peripheralRatios
+                    .getOrDefault(entry.getKey(), List.of())
+                    .stream()
+                    .filter(ratio -> ratio > baseAverage)
+                    .count();
+
+            average += switch ((int) exceedingCount) {
+                case 1 -> PCT_BONUS_1;
+                case 2 -> PCT_BONUS_2;
+                case 3 -> PCT_BONUS_3;
+                default -> 0.0;
+            };
+
+            String color = generateStyle(
+                    computeAbsoluteColor(average),
+                    true
+            );
+
+            big4Data.put(
+                    entry.getKey(),
+                    new PeriodBig4DTO(average, color, null)
+            );
+        }
+
+        List<Double> sortedBig4Ratios = big4Data.values().stream()
+                .map(PeriodBig4DTO::ratio)
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
+        big4Data = big4Data.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            PeriodBig4DTO data = entry.getValue();
+
+                            int absoluteRanking = (int) sortedBig4Ratios.stream()
+                                    .filter(ratio -> ratio > data.ratio())
+                                    .count() + 1;
+
+                            return new PeriodBig4DTO(
+                                    data.ratio(),
+                                    data.color(),
+                                    absoluteRanking
+                            );
+                        },
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+
+        big4Data = sortByPeriodDesc(big4Data);
+
+        return new PeriodMax1RMEstTableResultDTO(
+                table,
+                big4Data
+        );
     }
 
     public Map<String, PeriodMax1RMEstWithTrendDTO> getPeriodMax1RMEstWithTrend(int exerciseId) {

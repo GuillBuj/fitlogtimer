@@ -38,6 +38,7 @@ import lombok.AllArgsConstructor;
 @Slf4j
 public class StatsService {
 
+    private static final int[] BIG4_PCT_WEIGHTS = {5, 4, 3, 2};
     private static final double PCT_SUB = 0.70;
     private static final double PCT_BONUS_1 = 0.003;
     private static final double PCT_BONUS_2 = 0.005;
@@ -780,17 +781,32 @@ public class StatsService {
         for (Map.Entry<String, List<Double>> entry : big4Ratios.entrySet()) {
 
             List<Double> ratios = entry.getValue();
+            List<Double> weightedRatios = new ArrayList<>(ratios);
 
-            double average = ratios.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .average()
-                    .orElse(0);
+            if (ratios.size() < 4) {
+                double rawAverage = ratios.stream()
+                        .mapToDouble(Double::doubleValue)
+                        .average()
+                        .orElse(0);
 
-            if (ratios.size() < 4 && average > PCT_SUB) {
-                average = (average * ratios.size()
-                        + PCT_SUB * (4 - ratios.size())) / 4;
+                if (rawAverage > PCT_SUB) {
+                    while (weightedRatios.size() < 4) {
+                        weightedRatios.add(PCT_SUB);
+                    }
+                }
             }
 
+            weightedRatios.sort(Comparator.reverseOrder());
+
+            double weightedSum = 0;
+            int totalWeight = 0;
+
+            for (int i = 0; i < weightedRatios.size(); i++) {
+                weightedSum += weightedRatios.get(i) * BIG4_PCT_WEIGHTS[i];
+                totalWeight += BIG4_PCT_WEIGHTS[i];
+            }
+
+            double average = weightedSum / totalWeight;
             double baseAverage = average;
 
             long exceedingCount = peripheralRatios
@@ -1083,18 +1099,32 @@ public class StatsService {
 
             List<Double> ratios = entry.getValue();
 
-            double average = ratios.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .average()
-                    .orElse(0);
+            List<Double> weightedRatios = new ArrayList<>(ratios);
 
-            int missing = 4 - ratios.size();
+            if (ratios.size() < 4) {
+                double rawAverage = ratios.stream()
+                        .mapToDouble(Double::doubleValue)
+                        .average()
+                        .orElse(0);
 
-            if (ratios.size() < 4 && average > PCT_SUB) {
-                average = (average * ratios.size()
-                        + PCT_SUB * missing) / 4;
+                if (rawAverage > PCT_SUB) {
+                    while (weightedRatios.size() < 4) {
+                        weightedRatios.add(PCT_SUB);
+                    }
+                }
             }
 
+            weightedRatios.sort(Comparator.reverseOrder());
+
+            double weightedSum = 0;
+            int totalWeight = 0;
+
+            for (int i = 0; i < weightedRatios.size(); i++) {
+                weightedSum += weightedRatios.get(i) * BIG4_PCT_WEIGHTS[i];
+                totalWeight += BIG4_PCT_WEIGHTS[i];
+            }
+
+            double average = weightedSum / totalWeight;
             double baseAverage = average;
 
             long exceedingCount = peripheralRatios

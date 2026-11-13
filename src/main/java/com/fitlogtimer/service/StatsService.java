@@ -784,12 +784,15 @@ public class StatsService {
             List<Double> weightedRatios = new ArrayList<>(ratios);
 
             if (ratios.size() < 4) {
-                double rawAverage = ratios.stream()
-                        .mapToDouble(Double::doubleValue)
-                        .average()
-                        .orElse(0);
+                boolean hasRatioAboveSub = ratios.stream()
+                        .anyMatch(r -> r >= PCT_SUB);
 
-                if (rawAverage > PCT_SUB) {
+                if (hasRatioAboveSub) {
+                    for (int i = 0; i < weightedRatios.size(); i++) {
+                        if (weightedRatios.get(i) < PCT_SUB) {
+                            weightedRatios.set(i, PCT_SUB);
+                        }
+                    }
                     while (weightedRatios.size() < 4) {
                         weightedRatios.add(PCT_SUB);
                     }
@@ -1102,12 +1105,15 @@ public class StatsService {
             List<Double> weightedRatios = new ArrayList<>(ratios);
 
             if (ratios.size() < 4) {
-                double rawAverage = ratios.stream()
-                        .mapToDouble(Double::doubleValue)
-                        .average()
-                        .orElse(0);
+                boolean hasRatioAboveSub = ratios.stream()
+                        .anyMatch(r -> r >= PCT_SUB);
 
-                if (rawAverage > PCT_SUB) {
+                if (hasRatioAboveSub) {
+                    for (int i = 0; i < weightedRatios.size(); i++) {
+                        if (weightedRatios.get(i) < PCT_SUB) {
+                            weightedRatios.set(i, PCT_SUB);
+                        }
+                    }
                     while (weightedRatios.size() < 4) {
                         weightedRatios.add(PCT_SUB);
                     }
@@ -1328,12 +1334,15 @@ public class StatsService {
             List<Double> weightedRatios = new ArrayList<>(ratios);
 
             if (ratios.size() < 4) {
-                double rawAverage = ratios.stream()
-                        .mapToDouble(Double::doubleValue)
-                        .average()
-                        .orElse(0);
+                boolean hasRatioAboveSub = ratios.stream()
+                        .anyMatch(r -> r >= PCT_SUB);
 
-                if (rawAverage > PCT_SUB) {
+                if (hasRatioAboveSub) {
+                    for (int i = 0; i < weightedRatios.size(); i++) {
+                        if (weightedRatios.get(i) < PCT_SUB) {
+                            weightedRatios.set(i, PCT_SUB);
+                        }
+                    }
                     while (weightedRatios.size() < 4) {
                         weightedRatios.add(PCT_SUB);
                     }

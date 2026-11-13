@@ -366,11 +366,11 @@
       "order" : 2,
       "visible" : true
     }, {
-      "exerciseId" : 2,
+      "exerciseId" : 3,
       "order" : 3,
       "visible" : true
     }, {
-      "exerciseId" : 3,
+      "exerciseId" : 2,
       "order" : 4,
       "visible" : true
     }, {
@@ -582,76 +582,60 @@
       "order" : 56,
       "visible" : true
     }, {
-      "exerciseId" : 373,
+      "exerciseId" : 374,
       "order" : 57,
       "visible" : true
     }, {
-      "exerciseId" : 374,
+      "exerciseId" : 375,
       "order" : 58,
       "visible" : true
     }, {
-      "exerciseId" : 375,
+      "exerciseId" : 376,
       "order" : 59,
       "visible" : true
     }, {
-      "exerciseId" : 376,
+      "exerciseId" : 377,
       "order" : 60,
       "visible" : true
     }, {
-      "exerciseId" : 377,
+      "exerciseId" : 378,
       "order" : 61,
       "visible" : true
     }, {
-      "exerciseId" : 378,
+      "exerciseId" : 382,
       "order" : 62,
       "visible" : true
     }, {
-      "exerciseId" : 379,
+      "exerciseId" : 383,
       "order" : 63,
       "visible" : true
     }, {
-      "exerciseId" : 380,
+      "exerciseId" : 384,
       "order" : 64,
       "visible" : true
     }, {
-      "exerciseId" : 381,
+      "exerciseId" : 385,
       "order" : 65,
       "visible" : true
     }, {
-      "exerciseId" : 382,
+      "exerciseId" : 388,
       "order" : 66,
       "visible" : true
     }, {
-      "exerciseId" : 383,
+      "exerciseId" : 389,
       "order" : 67,
       "visible" : true
     }, {
-      "exerciseId" : 384,
+      "exerciseId" : 390,
       "order" : 68,
       "visible" : true
     }, {
-      "exerciseId" : 385,
+      "exerciseId" : 391,
       "order" : 69,
       "visible" : true
     }, {
-      "exerciseId" : 388,
-      "order" : 70,
-      "visible" : true
-    }, {
-      "exerciseId" : 389,
-      "order" : 71,
-      "visible" : true
-    }, {
-      "exerciseId" : 390,
-      "order" : 72,
-      "visible" : true
-    }, {
-      "exerciseId" : 391,
-      "order" : 73,
-      "visible" : true
-    }, {
       "exerciseId" : 392,
-      "order" : 74,
+      "order" : 70,
       "visible" : true
     } ]
   },

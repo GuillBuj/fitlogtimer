@@ -30,7 +30,8 @@
     </thead>
     <tbody>
         <tr th:each="record : ${recordHistory}">
-            <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}" th:class="column-sticky"></td>
+            <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}"
+                th:class="${record.getColorClass}"></td>
 
             <!-- Freeweight -->
             <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.weight()} + 'kg'"  class="important-column bold-text"></td>
@@ -88,7 +89,8 @@
         </thead>
         <tbody>
         <tr th:each="record : ${ratioRecordHistory}">
-            <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}" th:class="column-sticky"></td>
+            <td th:text="${#temporals.format(record.date, 'dd/MM/yyyy')}"
+                th:class="${record.getColorClass}"></td>
 
             <!-- Freeweight -->
             <td th:if="${exercise_type==FREE_WEIGHT_TYPE}" th:text="${record.bodyWeight > 0 ? #numbers.formatDecimal(record.weight / record.bodyWeight, 1, 3) : '-'}"  class="important-column bold-text"></td>

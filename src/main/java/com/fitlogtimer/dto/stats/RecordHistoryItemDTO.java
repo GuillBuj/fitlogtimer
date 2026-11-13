@@ -8,6 +8,7 @@ public record RecordHistoryItemDTO(
         int durationS,
         LocalDate date,
         double bodyWeight,
+        double ratio,
         int workoutId
 ) {
 }

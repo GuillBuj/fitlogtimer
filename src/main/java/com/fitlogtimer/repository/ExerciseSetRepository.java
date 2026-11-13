@@ -193,6 +193,20 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             "LIMIT 1")
     Optional<ExerciseSetWithBodyWeightAndDateDTO> findTopMaxRatioSet(@Param("exerciseId") int exerciseId);
 
+    @Query("SELECT new com.fitlogtimer.dto.ExerciseSetWithBodyWeightAndDateDTO(" +
+            "fws.id, fws.exercise, fws.repNumber, fws.weight, " +
+            "w.bodyWeight, w.id, w.date, " +
+            "fws.weight / w.bodyWeight) " +
+            "FROM FreeWeightSet fws " +
+            "JOIN fws.workout w " +
+            "WHERE fws.repNumber >= :minRepsOrWeight " +
+            "AND fws.exercise.id = :exerciseId " +
+            "AND w.bodyWeight > 0 " +
+            "ORDER BY w.date ASC")
+    List<ExerciseSetWithBodyWeightAndDateDTO> findAllRatioSetsByDateAndMinReps(
+            @Param("exerciseId") int exerciseId,
+            @Param("minRepsOrWeight") int minRepsOrWeight);
+
     @Query("""
     SELECT NEW com.fitlogtimer.dto.stats.PeriodMaxDTO(
         fws.weight,

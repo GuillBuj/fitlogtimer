@@ -414,7 +414,9 @@ public class StatsService {
                 .orElse(0.0);
     }
 
-    public List<RecordHistoryItemDTO> getMinimalRecordHistory(List<RecordHistoryItemDTO> list) {
+    public List<RecordHistoryItemDTO> getMinimalRecordHistory(int exerciseId) {
+
+        List<RecordHistoryItemDTO> list = getRecordHistory(exerciseId);
         if (list.isEmpty()) return Collections.emptyList();
 
         List<RecordHistoryItemDTO> minimalRecordHistory = new ArrayList<>();
@@ -474,6 +476,7 @@ public class StatsService {
                             0,
                             set.getWorkout().getDate(),
                             bestWeightBodyweight,
+                            weight/bestWeightBodyweight,
                             set.getWorkout().getId()
                     ));
                 }
@@ -489,6 +492,7 @@ public class StatsService {
                             0,
                             set.getWorkout().getDate(),
                             set.getWorkout().getBodyWeight(),
+                            0.0,
                             set.getWorkout().getId()
                     ));
                 }
@@ -507,6 +511,7 @@ public class StatsService {
                             durationS,
                             set.getWorkout().getDate(),
                             set.getWorkout().getBodyWeight(),
+                            0.0,
                             set.getWorkout().getId()
                     ));
                 }
@@ -568,6 +573,78 @@ public class StatsService {
         }
 
         return result;
+    }
+
+    public List<RecordHistoryItemDTO> getMinimalRatioRecordHistory(int exerciseId) {
+
+        List<RecordHistoryItemDTO> list = getRatioRecordHistory(exerciseId);
+        if (list.isEmpty()) return Collections.emptyList();
+
+        List<RecordHistoryItemDTO> minimalRecordHistory = new ArrayList<>();
+        Set<Double> seenRatios = new HashSet<>();
+
+        RecordHistoryItemDTO lastAdded = null;
+
+        for (RecordHistoryItemDTO current : list) {
+
+            // Garde la date la plus ancienne si même ratio
+            if (seenRatios.contains(current.ratio())) {
+                continue;
+            }
+
+            // Garde le meilleur ratio si même date
+            if (lastAdded != null && current.date().equals(lastAdded.date())) {
+                if (current.ratio() > lastAdded.ratio()) {
+                    minimalRecordHistory.set(minimalRecordHistory.size() - 1, current);
+                    lastAdded = current;
+                    seenRatios.add(current.ratio());
+                }
+                continue;
+            }
+
+            minimalRecordHistory.add(current);
+            seenRatios.add(current.ratio());
+            lastAdded = current;
+        }
+
+        return minimalRecordHistory;
+    }
+
+    public List<RecordHistoryItemDTO> getRatioRecordHistory(int exerciseId) {
+        return getRatioRecordHistory(exerciseId, 1);
+    }
+
+    public List<RecordHistoryItemDTO> getRatioRecordHistory(int exerciseId, int minRepsOrWeight) {
+
+        List<ExerciseSetWithBodyWeightAndDateDTO> sets =
+                exerciseSetRepository.findAllRatioSetsByDateAndMinReps(exerciseId, minRepsOrWeight);
+
+        List<RecordHistoryItemDTO> recordHistory = new ArrayList<>();
+
+        double currentBestRatio = 0;
+
+        for (ExerciseSetWithBodyWeightAndDateDTO set : sets) {
+
+            double ratio = set.ratio();
+
+            if (ratio > currentBestRatio) {
+                currentBestRatio = ratio;
+
+                recordHistory.add(new RecordHistoryItemDTO(
+                        set.weight(),
+                        set.repNumber(),
+                        0,
+                        set.workoutDate(),
+                        set.bodyWeight(),
+                        currentBestRatio,
+                        set.idWorkout()
+                ));
+            }
+        }
+
+        Collections.reverse(recordHistory);
+
+        return recordHistory;
     }
 
     public ExerciseSetWithBodyWeightAndDateFor1RMDTO getTop1RMRatioSet(int exerciseId) {

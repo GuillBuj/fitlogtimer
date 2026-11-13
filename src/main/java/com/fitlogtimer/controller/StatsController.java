@@ -79,11 +79,14 @@ public class StatsController {
         String exerciseName = exerciseService.getById(exerciseId).get().getName();
         String exerciseType = exerciseService.getById(exerciseId).get().getType();
 
-        List<RecordHistoryItemDTO> recordHistory = statsService.getMinimalRecordHistory(statsService.getRecordHistory(exerciseId));
+        List<RecordHistoryItemDTO> recordHistory = statsService.getMinimalRecordHistory(exerciseId);
         List<TopFreeWeightSetsItemDTO> topFreeWeightSets = statsService.getTopFreeWeightRecords(exerciseId,20);
+
+        List<RecordHistoryItemDTO> ratioRecordHistory = statsService.getMinimalRatioRecordHistory(exerciseId);
 
         model.addAttribute("exerciseName", exerciseName);
         model.addAttribute("recordHistory", recordHistory);
+        model.addAttribute("ratioRecordHistory", ratioRecordHistory);
         model.addAttribute("topFreeWeightSets", topFreeWeightSets);
         model.addAttribute("exercise_id", exerciseId);
         model.addAttribute("exercise_type", exerciseType);
@@ -102,16 +105,19 @@ public class StatsController {
         String exerciseType = exerciseService.getById(exerciseId).get().getType();
 
         List<RecordHistoryItemDTO> recordHistory = statsService.getRecordHistory(exerciseId);
+        List<RecordHistoryItemDTO> ratioRecordHistory = statsService.getRatioRecordHistory(exerciseId);
+
+        log.info("******* ratio record history: {}", ratioRecordHistory);
 
         model.addAttribute("exerciseName", exerciseName);
         model.addAttribute("recordHistory", recordHistory);
+        model.addAttribute("ratioRecordHistory", ratioRecordHistory);
         model.addAttribute("exercise_id", exerciseId);
         model.addAttribute("exercise_type", exerciseType);
         model.addAttribute("FREE_WEIGHT_TYPE", ExerciseSetType.FREE_WEIGHT);
         model.addAttribute("ISOMETRIC_TYPE", ExerciseSetType.ISOMETRIC);
         model.addAttribute("BODYWEIGHT_TYPE", ExerciseSetType.BODYWEIGHT);
 
-        log.info(model.toString());
         return "record-history";
     }
 

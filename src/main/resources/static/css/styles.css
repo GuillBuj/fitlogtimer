@@ -1733,7 +1733,7 @@ body.calendar-page { /* Ajoutez une classe au body */
 }
 
 .table-recap-vertical td{
-    width:100px
+    width:142px
 }
 
 .table-recap td:nth-child(1) {
@@ -1851,6 +1851,21 @@ body.calendar-page { /* Ajoutez une classe au body */
  }
 
  .ratio-cell-content-month .bold-text {
+     width: 42px;
+     margin-left: 6px;
+     text-align: left;
+ }
+
+.est1rm-cell-content-month {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     margin-right:10px;
+     gap: 4px;
+     white-space: nowrap;
+ }
+
+ .est1rm-cell-content-month .bold-text {
      width: 42px;
      margin-left: 6px;
      text-align: left;

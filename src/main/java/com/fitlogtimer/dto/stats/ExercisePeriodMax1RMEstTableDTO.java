@@ -2,7 +2,7 @@ package com.fitlogtimer.dto.stats;
 
 import java.util.Map;
 
-public record ExerciseYearlyMax1RMEstTableDTO(
+public record ExercisePeriodMax1RMEstTableDTO(
         String exerciseName,
         int exerciseId,
         Map<String, PeriodMax1RMEstWithTrendDTO> periodData

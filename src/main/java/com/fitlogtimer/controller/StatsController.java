@@ -135,8 +135,8 @@ public class StatsController {
         Map<String, PeriodBig4DTO> ratioBig4Data = ratioResult.big4Data();
 
         PeriodMax1RMEstTableResultDTO est1RMResult =
-                statsService.getPeriodMax1RMEstTableForAllVisible();
-        List<ExerciseYearlyMax1RMEstTableDTO> est1RMTable = est1RMResult.table();
+                statsService.getPeriodMax1RMEstTableForAllVisible(PeriodType.YEAR);
+        List<ExercisePeriodMax1RMEstTableDTO> est1RMTable = est1RMResult.table();
         Map<String, PeriodBig4DTO> est1RMBig4Data = est1RMResult.big4Data();
 
         Set<String> allYears = table.stream()
@@ -180,6 +180,12 @@ public class StatsController {
             Map<String, PeriodBig4DTO> ratioBig4Data = ratioResult.big4Data();
             model.addAttribute("ratioTable", ratioTable);
             model.addAttribute("ratioBig4Data", ratioBig4Data);
+
+            PeriodMax1RMEstTableResultDTO est1RMResult = statsService.getPeriodMax1RMEstTableForAllVisible(periodType);
+            List<ExercisePeriodMax1RMEstTableDTO> est1RMTable = est1RMResult.table();
+            Map<String, PeriodBig4DTO> est1RMBig4Data = est1RMResult.big4Data();
+            model.addAttribute("est1RMTable", est1RMTable);
+            model.addAttribute("est1RMBig4Data", est1RMBig4Data);
         }
 
         return "main-history";
@@ -201,6 +207,28 @@ public class StatsController {
 
         model.addAttribute("ratioTable", ratioTable);
         model.addAttribute("ratioBig4Data", ratioBig4Data);
+        model.addAttribute("allPeriods", allPeriods);
+        model.addAttribute("periodType", period.toUpperCase());
+
+        return "main-history";
+    }
+
+    @GetMapping("/mainHistory/{period}/est1RMs")
+    public String getMainHistory1RMEsts(@PathVariable String period,Model model) throws IOException {
+
+        PeriodType periodType = PeriodType.valueOf(period.toUpperCase());
+
+        PeriodMax1RMEstTableResultDTO est1RMResult = statsService.getPeriodMax1RMEstTableForAllVisible(periodType);
+        List<ExercisePeriodMax1RMEstTableDTO> est1RMTable = est1RMResult.table();
+        Map<String, PeriodBig4DTO> est1RMBig4Data = est1RMResult.big4Data();
+
+        Set<String> allPeriods = est1RMTable.stream()
+                .flatMap(dto -> dto.periodData().keySet().stream())
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        model.addAttribute("est1RMTable", est1RMTable);
+        model.addAttribute("est1RMBig4Data", est1RMBig4Data);
         model.addAttribute("allPeriods", allPeriods);
         model.addAttribute("periodType", period.toUpperCase());
 

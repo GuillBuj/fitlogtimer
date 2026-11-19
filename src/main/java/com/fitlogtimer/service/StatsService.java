@@ -804,7 +804,7 @@ public class StatsService {
         }
     }
 
-    //Pour tableau récap des gros exs
+    //TABLEAU RECAP DES GROS EXS - MAX
     public PeriodMaxTableResultDTO getPeriodMaxTableForAllVisible(
             PeriodType periodType
     ) throws IOException {
@@ -1036,36 +1036,6 @@ public class StatsService {
         };
     }
 
-    private String getPeriodKey(PeriodMaxRatioDTO dto, PeriodType periodType) {
-        return switch (periodType) {
-            case YEAR -> String.valueOf(dto.year());
-            case SEMESTER -> dto.year() + "-S" + dto.semester();
-            case QUARTER -> dto.year() + "-Q" + dto.quarter();
-            case MONTH -> "%d-M%02d".formatted(dto.year(), dto.month());
-            case WEEK -> throw new UnsupportedOperationException(
-                    "Période non supportée pour cette fonctionnalité"
-            );
-        };
-    }
-
-    private Comparator<PeriodMaxRatioDTO> getComparatorForRatioPeriod(PeriodType periodType) {
-        return switch (periodType) {
-            case YEAR -> Comparator.comparing(PeriodMaxRatioDTO::year);
-            case SEMESTER -> Comparator.comparing(PeriodMaxRatioDTO::year)
-                                .thenComparing(PeriodMaxRatioDTO::semester);
-            case QUARTER -> Comparator.comparing(PeriodMaxRatioDTO::year)
-                                .thenComparing(PeriodMaxRatioDTO::quarter);
-            case MONTH -> {
-                yield Comparator.comparing(PeriodMaxRatioDTO::year)
-                        .thenComparing(PeriodMaxRatioDTO::month);
-            }
-            case WEEK ->
-                    throw new UnsupportedOperationException(
-                            "Période non supportée pour cette fonctionnalité"
-                    );
-        };
-    }
-
     private Comparator<PeriodMaxDTO> getComparatorForPeriod(PeriodType periodType) {
         return switch (periodType) {
             case YEAR -> Comparator.comparing(PeriodMaxDTO::year);
@@ -1079,48 +1049,7 @@ public class StatsService {
         };
     }
 
-    private <T> Map<String, T> sortByPeriodDesc(
-            Map<String, T> map,
-            PeriodType periodType) {
-
-        return map.entrySet().stream()
-                .sorted((e1, e2) -> {
-                    String[] parts1 = e1.getKey().split("-");
-                    String[] parts2 = e2.getKey().split("-");
-
-                    int yearCompare = Integer.compare(
-                            Integer.parseInt(parts2[0]),
-                            Integer.parseInt(parts1[0])
-                    );
-
-                    if (yearCompare != 0) return yearCompare;
-
-                    // Si même année, comparer la sous-période
-                    if (parts1.length > 1 && parts2.length > 1) {
-                        return Integer.compare(
-                                getPeriodValue(parts2[1]),
-                                getPeriodValue(parts1[1])
-                        );
-                    }
-
-                    return 0;
-                })
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                ));
-    }
-
-    private int getPeriodValue(String periodStr) {
-        if (periodStr.startsWith("S")) return Integer.parseInt(periodStr.substring(1));
-        if (periodStr.startsWith("Q")) return Integer.parseInt(periodStr.substring(1));
-        if (periodStr.startsWith("M")) return Integer.parseInt(periodStr.substring(1));
-        if (periodStr.startsWith("W")) return Integer.parseInt(periodStr.substring(1));
-        return Integer.parseInt(periodStr);
-    }
-
+    //TABLEAU RECAP DES GROS EXS - RATIO
     public PeriodMaxRatioTableResultDTO getPeriodMaxRatioTableForAllVisible(
             PeriodType periodType
     ) throws IOException {
@@ -1355,8 +1284,40 @@ public class StatsService {
         };
     }
 
-    public PeriodMax1RMEstTableResultDTO getPeriodMax1RMEstTableForAllVisible()
-            throws IOException {
+    private String getPeriodKey(PeriodMaxRatioDTO dto, PeriodType periodType) {
+        return switch (periodType) {
+            case YEAR -> String.valueOf(dto.year());
+            case SEMESTER -> dto.year() + "-S" + dto.semester();
+            case QUARTER -> dto.year() + "-Q" + dto.quarter();
+            case MONTH -> "%d-M%02d".formatted(dto.year(), dto.month());
+            case WEEK -> throw new UnsupportedOperationException(
+                    "Période non supportée pour cette fonctionnalité"
+            );
+        };
+    }
+
+    private Comparator<PeriodMaxRatioDTO> getComparatorForRatioPeriod(PeriodType periodType) {
+        return switch (periodType) {
+            case YEAR -> Comparator.comparing(PeriodMaxRatioDTO::year);
+            case SEMESTER -> Comparator.comparing(PeriodMaxRatioDTO::year)
+                                .thenComparing(PeriodMaxRatioDTO::semester);
+            case QUARTER -> Comparator.comparing(PeriodMaxRatioDTO::year)
+                                .thenComparing(PeriodMaxRatioDTO::quarter);
+            case MONTH -> {
+                yield Comparator.comparing(PeriodMaxRatioDTO::year)
+                        .thenComparing(PeriodMaxRatioDTO::month);
+            }
+            case WEEK ->
+                    throw new UnsupportedOperationException(
+                            "Période non supportée pour cette fonctionnalité"
+                    );
+        };
+    }
+
+    //TABLEAU RECAP DES GROS EXS - 1RMest
+    public PeriodMax1RMEstTableResultDTO getPeriodMax1RMEstTableForAllVisible(
+            PeriodType periodType
+    ) throws IOException {
 
         List<Exercise> visibleExercises =
                 exercisePreferenceService.getVisibleExercises("main");
@@ -1370,15 +1331,18 @@ public class StatsService {
         Map<String, List<Double>> big4Ratios = new HashMap<>();
         Map<String, List<Double>> peripheralRatios = new HashMap<>();
 
-        List<ExerciseYearlyMax1RMEstTableDTO> table =
+        List<ExercisePeriodMax1RMEstTableDTO> table =
                 visibleExercises.stream()
                         .map(exercise -> {
 
-                            Map<String, PeriodMax1RMEstWithTrendDTO> yearlyData =
-                                    getPeriodMax1RMEstWithTrend(exercise.getId());
+                            Map<String, PeriodMax1RMEstWithTrendDTO> periodData =
+                                    getPeriodMax1RMEstWithTrend(
+                                            exercise.getId(),
+                                            periodType
+                                    );
 
                             if (big4Ids.contains(exercise.getId())) {
-                                yearlyData.forEach((period, data) -> {
+                                periodData.forEach((period, data) -> {
                                     if (data.absoluteRatio() != null) {
                                         big4Ratios
                                                 .computeIfAbsent(period, k -> new ArrayList<>())
@@ -1386,7 +1350,7 @@ public class StatsService {
                                     }
                                 });
                             } else {
-                                yearlyData.forEach((period, data) -> {
+                                periodData.forEach((period, data) -> {
                                     if (data.absoluteRatio() != null) {
                                         peripheralRatios
                                                 .computeIfAbsent(period, k -> new ArrayList<>())
@@ -1395,10 +1359,10 @@ public class StatsService {
                                 });
                             }
 
-                            return new ExerciseYearlyMax1RMEstTableDTO(
+                            return new ExercisePeriodMax1RMEstTableDTO(
                                     exercise.getName(),
                                     exercise.getId(),
-                                    yearlyData
+                                    periodData
                             );
                         })
                         .collect(Collectors.toList());
@@ -1420,6 +1384,7 @@ public class StatsService {
                             weightedRatios.set(i, PCT_SUB);
                         }
                     }
+
                     while (weightedRatios.size() < 4) {
                         weightedRatios.add(PCT_SUB);
                     }
@@ -1488,7 +1453,7 @@ public class StatsService {
                         LinkedHashMap::new
                 ));
 
-        big4Data = sortByPeriodDesc(big4Data);
+        big4Data = sortByPeriodDesc(big4Data, periodType);
 
         return new PeriodMax1RMEstTableResultDTO(
                 table,
@@ -1496,42 +1461,32 @@ public class StatsService {
         );
     }
 
-    public Map<String, PeriodMax1RMEstWithTrendDTO> getPeriodMax1RMEstWithTrend(int exerciseId) {
-        List<ExerciseSetFor1RMCalcDTO> allSets = exerciseSetRepository.findAllSetsFor1RMCalc(exerciseId);
+    public Map<String, PeriodMax1RMEstWithTrendDTO> getPeriodMax1RMEstWithTrend(
+            int exerciseId,
+            PeriodType periodType
+    ) {
 
-        // Regrouper par année et trouver le max du 1RM estimé
-        Map<Integer, ExerciseSetFor1RMCalcDTO> bestPerYear = allSets.stream()
-                .collect(Collectors.groupingBy(
-                        set -> set.date().getYear(),
-                        Collectors.collectingAndThen(
-                                Collectors.maxBy(Comparator.comparingDouble(s -> calculateOneRepMax(s.reps(),s.weight()))),
-                                Optional::get
-                        )
-                ));
+        List<PeriodMax1RMEstDTO> periodMaxs =
+                getPeriodMax1RMEstList(exerciseId, periodType);
 
-        List<PeriodMax1RMEstDTO> yearlyMax = bestPerYear.entrySet().stream()
-                .map(entry -> {
-                    ExerciseSetFor1RMCalcDTO set = entry.getValue();
-                    double est1RM = calculateOneRepMax(set.reps(), set.weight());
-                    return new PeriodMax1RMEstDTO(
-                            set.weight(),
-                            set.reps(),
-                            set.bodyWeight(),
-                            est1RM,
-                            set.workoutId(),
-                            entry.getKey()
-                    );
-                })
-                .sorted(Comparator.comparing(PeriodMax1RMEstDTO::year))
+        List<PeriodMax1RMEstDTO> filteredMaxs = periodMaxs.stream()
+                .collect(Collectors.toMap(
+                        dto -> getPeriodKey(dto, periodType),
+                        dto -> dto,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .sorted(getComparatorFor1RMEstPeriod(periodType))
                 .collect(Collectors.toList());
 
-        Double absoluteBest = yearlyMax.stream()
+        Double absoluteBest = filteredMaxs.stream()
                 .map(PeriodMax1RMEstDTO::estimated1RM)
                 .filter(Objects::nonNull)
                 .max(Double::compareTo)
                 .orElse(0.0);
 
-        List<Double> sortedAbsoluteRatios = yearlyMax.stream()
+        List<Double> sortedAbsoluteRatios = filteredMaxs.stream()
                 .map(dto -> absoluteBest > 0
                         ? dto.estimated1RM() / absoluteBest
                         : 0.0)
@@ -1539,36 +1494,208 @@ public class StatsService {
                 .toList();
 
         Map<String, PeriodMax1RMEstWithTrendDTO> result = new LinkedHashMap<>();
-        for (int i = 0; i < yearlyMax.size(); i++) {
-            PeriodMax1RMEstDTO current = yearlyMax.get(i);
 
-            Double trendRatio = calculateTrendRatioGeneric(yearlyMax, i, PeriodMax1RMEstDTO::estimated1RM);
-            String color = generateStyle(computeTrendColor(trendRatio),true);
+        for (int i = 0; i < filteredMaxs.size(); i++) {
+
+            PeriodMax1RMEstDTO current = filteredMaxs.get(i);
+
+            Double trendRatio = calculateTrendRatioGeneric(
+                    filteredMaxs,
+                    i,
+                    PeriodMax1RMEstDTO::estimated1RM
+            );
+
+            String trendColor =
+                    generateStyle(computeTrendColor(trendRatio), true);
 
             Double absoluteRatio = absoluteBest > 0
                     ? current.estimated1RM() / absoluteBest
                     : 0.0;
-            String absoluteColor = generateStyle(computeAbsoluteColor(absoluteRatio),true);
+
+            String absoluteColor =
+                    generateStyle(computeAbsoluteColor(absoluteRatio), true);
+
             int absoluteRanking = (int) sortedAbsoluteRatios.stream()
                     .filter(ratio -> ratio > absoluteRatio)
                     .count() + 1;
 
-            result.put(String.valueOf(current.year()), new PeriodMax1RMEstWithTrendDTO(
-                    current.maxValue(),
-                    current.nbReps(),
-                    current.bodyweight(),
-                    Math.round(current.estimated1RM() * 1000) / 1000.0,
-                    current.workoutId(),
-                    current.year(),
-                    trendRatio,
-                    color,
-                    absoluteRatio,
-                    absoluteColor,
-                    absoluteRanking
-            ));
+            String periodKey = getPeriodKey(current, periodType);
+
+            result.put(
+                    periodKey,
+                    new PeriodMax1RMEstWithTrendDTO(
+                            current.maxValue(),
+                            current.nbReps(),
+                            current.bodyweight(),
+                            Math.round(current.estimated1RM() * 1000) / 1000.0,
+                            current.workoutId(),
+                            current.year(),
+                            current.semester(),
+                            current.quarter(),
+                            current.month(),
+                            trendRatio,
+                            trendColor,
+                            absoluteRatio,
+                            absoluteColor,
+                            absoluteRanking
+                    )
+            );
         }
 
-        return sortByPeriodDesc(result);
+        return sortByPeriodDesc(result, periodType);
+    }
+
+    private List<PeriodMax1RMEstDTO> getPeriodMax1RMEstList(
+            int exerciseId,
+            PeriodType periodType
+    ) {
+
+        List<ExerciseSetFor1RMCalcDTO> allSets =
+                exerciseSetRepository.findAllSetsFor1RMCalc(exerciseId);
+
+        Map<String, ExerciseSetFor1RMCalcDTO> bestPerPeriod =
+                allSets.stream()
+                        .collect(Collectors.groupingBy(
+                                set -> getPeriodKey(set, periodType),
+                                Collectors.collectingAndThen(
+                                        Collectors.maxBy(
+                                                Comparator.comparingDouble(
+                                                        s -> calculateOneRepMax(
+                                                                s.reps(),
+                                                                s.weight()
+                                                        )
+                                                )
+                                        ),
+                                        Optional::get
+                                )
+                        ));
+
+        return bestPerPeriod.entrySet().stream()
+                .map(entry -> {
+
+                    ExerciseSetFor1RMCalcDTO set = entry.getValue();
+
+                    int year = set.date().getYear();
+                    int month = set.date().getMonthValue();
+
+                    int semester = (month - 1) / 6 + 1;
+                    int quarter = (month - 1) / 3 + 1;
+
+                    double est1RM = calculateOneRepMax(
+                            set.reps(),
+                            set.weight()
+                    );
+
+                    return new PeriodMax1RMEstDTO(
+                            set.weight(),
+                            set.reps(),
+                            set.bodyWeight(),
+                            est1RM,
+                            set.workoutId(),
+                            year,
+                            semester,
+                            quarter,
+                            month
+                    );
+                })
+                .sorted(getComparatorFor1RMEstPeriod(periodType))
+                .collect(Collectors.toList());
+    }
+
+    private String getPeriodKey(
+            PeriodMax1RMEstDTO dto,
+            PeriodType periodType
+    ) {
+        return switch (periodType) {
+            case YEAR -> String.valueOf(dto.year());
+            case SEMESTER -> dto.year() + "-S" + dto.semester();
+            case QUARTER -> dto.year() + "-Q" + dto.quarter();
+            case MONTH -> "%d-M%02d".formatted(dto.year(), dto.month());
+            case WEEK -> throw new UnsupportedOperationException(
+                    "Période non supportée pour cette fonctionnalité"
+            );
+        };
+    }
+
+    private String getPeriodKey(
+            ExerciseSetFor1RMCalcDTO set,
+            PeriodType periodType
+    ) {
+        int year = set.date().getYear();
+        int month = set.date().getMonthValue();
+
+        return switch (periodType) {
+            case YEAR -> String.valueOf(year);
+            case SEMESTER -> year + "-S" + ((month - 1) / 6 + 1);
+            case QUARTER -> year + "-Q" + ((month - 1) / 3 + 1);
+            case MONTH -> "%d-M%02d".formatted(year, month);
+            case WEEK -> throw new UnsupportedOperationException(
+                    "Période non supportée pour cette fonctionnalité"
+            );
+        };
+    }
+
+    private Comparator<PeriodMax1RMEstDTO> getComparatorFor1RMEstPeriod(
+            PeriodType periodType
+    ) {
+        return switch (periodType) {
+            case YEAR -> Comparator.comparing(PeriodMax1RMEstDTO::year);
+
+            case SEMESTER -> Comparator.comparing(PeriodMax1RMEstDTO::year)
+                    .thenComparing(PeriodMax1RMEstDTO::semester);
+
+            case QUARTER -> Comparator.comparing(PeriodMax1RMEstDTO::year)
+                    .thenComparing(PeriodMax1RMEstDTO::quarter);
+
+            case MONTH -> Comparator.comparing(PeriodMax1RMEstDTO::year)
+                    .thenComparing(PeriodMax1RMEstDTO::month);
+
+            case WEEK -> throw new UnsupportedOperationException(
+                    "Période non supportée pour cette fonctionnalité"
+            );
+        };
+    }
+
+    private <T> Map<String, T> sortByPeriodDesc(
+            Map<String, T> map,
+            PeriodType periodType) {
+
+        return map.entrySet().stream()
+                .sorted((e1, e2) -> {
+                    String[] parts1 = e1.getKey().split("-");
+                    String[] parts2 = e2.getKey().split("-");
+
+                    int yearCompare = Integer.compare(
+                            Integer.parseInt(parts2[0]),
+                            Integer.parseInt(parts1[0])
+                    );
+
+                    if (yearCompare != 0) return yearCompare;
+
+                    // Si même année, comparer la sous-période
+                    if (parts1.length > 1 && parts2.length > 1) {
+                        return Integer.compare(
+                                getPeriodValue(parts2[1]),
+                                getPeriodValue(parts1[1])
+                        );
+                    }
+
+                    return 0;
+                })
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+    }
+
+    private int getPeriodValue(String periodStr) {
+        if (periodStr.startsWith("S")) return Integer.parseInt(periodStr.substring(1));
+        if (periodStr.startsWith("Q")) return Integer.parseInt(periodStr.substring(1));
+        if (periodStr.startsWith("M")) return Integer.parseInt(periodStr.substring(1));
+        if (periodStr.startsWith("W")) return Integer.parseInt(periodStr.substring(1));
+        return Integer.parseInt(periodStr);
     }
 
     private String computeTrendColor(Double trendRatio) {

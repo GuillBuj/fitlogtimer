@@ -326,13 +326,14 @@
     </div>
 </div>
 
+<div th:if="${periodType != 'MONTH'}">
 <div th:if="${est1RMTable!=null && !est1RMTable.isEmpty()}">
     <table class="table-recap auto-width-table centered centered-text">
         <thead>
         <tr>
             <th>MAX 1RMEST</th>
             <th th:each="periodText : ${allPeriods}"
-                th:with="big4=${ratioBig4Data.get(periodText)}"
+                th:with="big4=${est1RMBig4Data.get(periodText)}"
                 th:title="${big4 != null
                                 ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '% (' + big4.absoluteRanking + ')'
                                 : ''}">
@@ -405,6 +406,86 @@
         </tr>
         </tbody>
     </table>
+</div>
+</div>
+
+<div th:if="${periodType == 'MONTH'}">
+    <div th:if="${est1RMTable != null and !est1RMTable.isEmpty()}">
+        <table class="table-recap table-recap-vertical table-recap-month auto-width-table centered centered-text">
+            <thead>
+            <tr>
+                <th>EST 1RM MAX</th>
+                <th th:each="exerciseData : ${est1RMTable}">
+                    <a th:href="@{/stats/maxsByReps/{id}(id=${exerciseData.exerciseId})}"
+                       class="soft-link">
+                        [[${exerciseData.exerciseName}]]
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="periodKey : ${allPeriods}">
+                <td class=""
+                    th:with="big4=${est1RMBig4Data != null ? est1RMBig4Data.get(periodKey) : null}"
+                    th:title="${big4 != null
+                        ? 'Big4 : ' + #numbers.formatDecimal(big4.ratio * 100, 1, 1) + '% (' + big4.absoluteRanking + ')'
+                        : ''}">
+                    <div class="big4-period-content">
+                        <span th:if="${big4 != null}"
+                              class="big4-indicator-month"
+                              th:style="${big4.color}">
+                        </span>
+                        <span>[[${periodKey}]]</span>
+                        <span th:if="${big4 != null
+                          && big4.absoluteRanking != null
+                          && big4.absoluteRanking <= 10}"
+                              class="ranking-medal"
+                              th:classappend="${'ranking-' + big4.absoluteRanking}">
+                            [[${big4.absoluteRanking}]]
+                        </span>
+                    </div>
+                </td>
+
+                <td th:each="exerciseData : ${est1RMTable}"
+                    th:with="data=${exerciseData.periodData.get(periodKey)}"
+                    th:style="${data != null ? data.absoluteColor : ''}"
+                    th:title="${data != null && data.absoluteRatio != null
+                                ? #numbers.formatDecimal(data.absoluteRatio * 100, 1, 1) + '%MAX (' + data.absoluteRanking + ')'
+                                : ''}"
+                    class="max-cell">
+                    <th:block th:if="${data}">
+                        <span th:if="${data.absoluteRanking != null && data.absoluteRanking <= 10}"
+                              class="ranking-medal"
+                              th:classappend="${'ranking-' + data.absoluteRanking}">
+                            [[${data.absoluteRanking}]]
+                        </span>
+                        <div class="est1rm-cell-content-month">
+                            <div class="trend-indicator-recap" th:if="${data.trendColor != null && !data.trendColor.isEmpty()}" th:style="${data.trendColor}"> </div>
+                            <span class="bold-text">
+                                <a th:href="@{/workouts/{id}(id=${data.workoutId()})}" class="soft-link">
+                                    [[${data.estimated1RM % 1 == 0 ?
+                                    #numbers.formatDecimal(data.estimated1RM, 1, 0) :
+                                    data.estimated1RM % 1 == 0.5 ?
+                                    #numbers.formatDecimal(data.estimated1RM, 1, 1) :
+                                    #numbers.formatDecimal(data.estimated1RM, 1, 2)}]] kg
+                                </a>
+                                </span>
+                                <small th:if="${data.nbReps() != null && data.maxValue() != null && data.bodyweight() != null && data.bodyweight() > 0.0}">
+                                    [[${data.nbReps}]]*[[${data.maxValue % 1 == 0 ?
+                                    #numbers.formatDecimal(data.maxValue, 1, 0) :
+                                    #numbers.formatDecimal(data.maxValue, 1, 1)}]]kg
+                                </small>
+                        </div>
+                    </th:block>
+                    <th:block th:unless="${data}">
+                        <span class="no-data">-</span>
+                    </th:block>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
 </div>
 
 <script src="/js/timer.js"></script>

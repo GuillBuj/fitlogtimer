@@ -82,27 +82,28 @@
                 <td th:text="${exercise.family}"></td>
                 <td th:text="${@exerciseUtil.getDisplayName(exercise.type)}"></td>
                 <td>
-                    <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
+                    <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link" title="Historique">📜</a>
                     <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
-                       th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">
-                        Records
+                       th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link" title="Records">
+                        🏆
                     </a>
                     <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
-                       th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link">
-                        Histo maxs
+                       th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link" title="Historique des records">
+                        📈
                     </a>
                 </td>
                 <td>
                     <button class="btn-edit"
+                            title="Modifier"
                             th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}&sb=${exercise.seasonBest}&sorm=${exercise.seasonOneRepMaxEst}|}"
                             hx-target="closest tr"
                             hx-swap="outerHTML">
-                        Modifier
+                            &#128393;
                     </button>
                     <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post"
                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
                         <input type="hidden" name="_method" value="delete" />
-                        <button type="submit" class="btn-delete">Supprimer</button>
+                        <button type="submit" class="btn-delete" title="Supprimer">&#10006;</button>
                     </form>
                 </td>
             </tr>

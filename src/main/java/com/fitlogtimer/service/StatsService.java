@@ -1016,14 +1016,33 @@ public class StatsService {
         return sortByPeriodDesc(result, periodType);
     }
 
-    private List<PeriodMaxDTO> getPeriodMaxList(int exerciseId, PeriodType periodType) {
-        return switch (periodType) {
-            case YEAR -> exerciseSetRepository.findYearlyMaxList(exerciseId);
-            case SEMESTER -> exerciseSetRepository.findSemesterMaxList(exerciseId);
-            case QUARTER -> exerciseSetRepository.findQuarterMaxList(exerciseId);
-            case MONTH -> exerciseSetRepository.findMonthlyMaxList(exerciseId);
-            case WEEK -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
-        };
+//    private List<PeriodMaxDTO> getPeriodMaxList(int exerciseId, PeriodType periodType) {
+//        return switch (periodType) {
+//            case YEAR -> exerciseSetRepository.findYearlyMaxList(exerciseId);
+//            case SEMESTER -> exerciseSetRepository.findSemesterMaxList(exerciseId);
+//            case QUARTER -> exerciseSetRepository.findQuarterMaxList(exerciseId);
+//            case MONTH -> exerciseSetRepository.findMonthlyMaxList(exerciseId);
+//            case WEEK -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
+//        };
+//    }
+
+    private List<PeriodMaxDTO> getPeriodMaxList(
+            int exerciseId,
+            PeriodType periodType
+    ) {
+        return exerciseSetRepository
+                .findPeriodMaxList(exerciseId, periodType.name())
+                .stream()
+                .map(p -> new PeriodMaxDTO(
+                        p.getWeight(),
+                        p.getBodyWeight(),
+                        p.getWorkoutId(),
+                        p.getYear(),
+                        p.getSemester(),
+                        p.getQuarter(),
+                        p.getMonthNum()
+                ))
+                .toList();
     }
 
     private String getPeriodKey(PeriodMaxDTO dto, PeriodType periodType) {

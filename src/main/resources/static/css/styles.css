@@ -1732,8 +1732,16 @@ body.calendar-page { /* Ajoutez une classe au body */
     width: 85px;
 }
 
-.table-recap-vertical td{
+.table-recap-vertical-max td{
+    width:100px
+}
+
+.table-recap-vertical-ratio td{
     width:130px
+}
+
+.table-recap-vertical-1rmest td{
+    width:135px
 }
 
 .table-recap td:nth-child(1) {

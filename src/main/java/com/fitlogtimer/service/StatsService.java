@@ -1016,16 +1016,6 @@ public class StatsService {
         return sortByPeriodDesc(result, periodType);
     }
 
-//    private List<PeriodMaxDTO> getPeriodMaxList(int exerciseId, PeriodType periodType) {
-//        return switch (periodType) {
-//            case YEAR -> exerciseSetRepository.findYearlyMaxList(exerciseId);
-//            case SEMESTER -> exerciseSetRepository.findSemesterMaxList(exerciseId);
-//            case QUARTER -> exerciseSetRepository.findQuarterMaxList(exerciseId);
-//            case MONTH -> exerciseSetRepository.findMonthlyMaxList(exerciseId);
-//            case WEEK -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
-//        };
-//    }
-
     private List<PeriodMaxDTO> getPeriodMaxList(
             int exerciseId,
             PeriodType periodType
@@ -1293,14 +1283,30 @@ public class StatsService {
         return sortByPeriodDesc(result, periodType);
     }
 
-    private List<PeriodMaxRatioDTO> getPeriodMaxRatioList (int exerciseId, PeriodType periodType) {
-        return switch (periodType) {
-            case YEAR -> exerciseSetRepository.findYearlyMaxRatioList(exerciseId);
-            case SEMESTER -> exerciseSetRepository.findSemesterMaxRatioList(exerciseId);
-            case QUARTER -> exerciseSetRepository.findQuarterMaxRatioList(exerciseId);
-            case MONTH -> exerciseSetRepository.findMonthlyMaxRatioList(exerciseId);
-            case WEEK -> throw new UnsupportedOperationException("Période non supportée pour cette fonctionnalité");
-        };
+    private List<PeriodMaxRatioDTO> getPeriodMaxRatioList(
+            int exerciseId,
+            PeriodType periodType
+    ) {
+        if (periodType == PeriodType.WEEK) {
+            throw new UnsupportedOperationException(
+                    "Période non supportée pour cette fonctionnalité"
+            );
+        }
+
+        return exerciseSetRepository
+                .findPeriodMaxRatioList(exerciseId, periodType.name())
+                .stream()
+                .map(p -> new PeriodMaxRatioDTO(
+                        p.getMaxValue(),
+                        p.getBodyWeight(),
+                        p.getRatio(),
+                        p.getWorkoutId(),
+                        p.getYear(),
+                        p.getSemester(),
+                        p.getQuarter(),
+                        p.getMonthNum()
+                ))
+                .toList();
     }
 
     private String getPeriodKey(PeriodMaxRatioDTO dto, PeriodType periodType) {

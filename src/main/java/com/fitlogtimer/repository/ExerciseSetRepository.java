@@ -270,173 +270,77 @@ public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Intege
             @Param("periodType") String periodType
     );
 
-    @Query("""
-    SELECT NEW com.fitlogtimer.dto.stats.PeriodMaxRatioDTO(
-        fws.weight,
-        w.bodyWeight,
-        fws.weight / w.bodyWeight,
-        CAST(w.id AS int),
-        CAST(FUNCTION('YEAR', fws.workout.date) AS int),
-        null,
-        null,
-        null
-    )
-    FROM FreeWeightSet fws
-    JOIN fws.workout w
-    WHERE fws.exercise.id = :exerciseId
-      AND w.bodyWeight > 0
-      AND (fws.weight / w.bodyWeight) = (
-          SELECT MAX(fws2.weight / w2.bodyWeight)
-          FROM FreeWeightSet fws2
-          JOIN fws2.workout w2
-          WHERE fws2.exercise.id = :exerciseId
-            AND FUNCTION('YEAR', fws2.workout.date) = FUNCTION('YEAR', fws.workout.date)
-            AND w2.bodyWeight > 0
-      )
-      AND fws.workout.date = (
-          SELECT MIN(fws3.workout.date)
-          FROM FreeWeightSet fws3
-          JOIN fws3.workout w3
-          WHERE fws3.exercise.id = :exerciseId
-            AND FUNCTION('YEAR', fws3.workout.date) = FUNCTION('YEAR', fws.workout.date)
-            AND (fws3.weight / w3.bodyWeight) = (fws.weight / w.bodyWeight)
-            AND w3.bodyWeight > 0
-      )
-    ORDER BY FUNCTION('YEAR', fws.workout.date) DESC
-    """)
-    List<PeriodMaxRatioDTO> findYearlyMaxRatioList(@Param("exerciseId") int exerciseId);
+    @Query(value = """
+    WITH ranked AS (
+        SELECT
+            fs.weight AS "maxValue",
+            w.body_weight AS "bodyWeight",
+            fs.weight / w.body_weight AS ratio,
+            w.id AS "workoutId",
+            YEAR(w.date) AS "year",
 
-    @Query("""
-    SELECT NEW com.fitlogtimer.dto.stats.PeriodMaxRatioDTO(
-        fws.weight,
-        w.bodyWeight,
-        fws.weight / w.bodyWeight,
-        CAST(w.id AS int),
-        CAST(FUNCTION('YEAR', fws.workout.date) AS int),
-        CAST(CASE
-            WHEN FUNCTION('MONTH', fws.workout.date) <= 6 THEN 1
-            ELSE 2
-        END AS int),
-        null,
-        null
-    )
-    FROM FreeWeightSet fws
-    JOIN fws.workout w
-    WHERE fws.exercise.id = :exerciseId
-      AND w.bodyWeight > 0
-      AND (fws.weight / w.bodyWeight) = (
-          SELECT MAX(fws2.weight / w2.bodyWeight)
-          FROM FreeWeightSet fws2
-          JOIN fws2.workout w2
-          WHERE fws2.exercise.id = :exerciseId
-            AND w2.bodyWeight > 0
-            AND FUNCTION('YEAR', fws2.workout.date) = FUNCTION('YEAR', fws.workout.date)
-            AND CASE
-                WHEN FUNCTION('MONTH', fws2.workout.date) <= 6 THEN 1
+            CASE
+                WHEN MONTH(w.date) <= 6 THEN 1
                 ELSE 2
-            END = CASE
-                WHEN FUNCTION('MONTH', fws.workout.date) <= 6 THEN 1
-                ELSE 2
-            END
-      )
-      AND fws.workout.date = (
-          SELECT MIN(fws3.workout.date)
-          FROM FreeWeightSet fws3
-          JOIN fws3.workout w3
-          WHERE fws3.exercise.id = :exerciseId
-            AND w3.bodyWeight > 0
-            AND FUNCTION('YEAR', fws3.workout.date) = FUNCTION('YEAR', fws.workout.date)
-            AND CASE
-                WHEN FUNCTION('MONTH', fws3.workout.date) <= 6 THEN 1
-                ELSE 2
-            END = CASE
-                WHEN FUNCTION('MONTH', fws.workout.date) <= 6 THEN 1
-                ELSE 2
-            END
-            AND (fws3.weight / w3.bodyWeight) = (fws.weight / w.bodyWeight)
-      )
-    ORDER BY FUNCTION('YEAR', fws.workout.date) DESC,
-             CASE WHEN FUNCTION('MONTH', fws.workout.date) <= 6 THEN 1 ELSE 2 END DESC
-    """)
-    List<PeriodMaxRatioDTO> findSemesterMaxRatioList(@Param("exerciseId") int exerciseId);
+            END AS semester,
 
-    @Query("""
-    SELECT NEW com.fitlogtimer.dto.stats.PeriodMaxRatioDTO(
-        fws.weight,
-        w.bodyWeight,
-        fws.weight / w.bodyWeight,
-        CAST(w.id AS int),
-        CAST(FUNCTION('YEAR', fws.workout.date) AS int),
-        null,
-        CAST(FUNCTION('QUARTER', fws.workout.date) AS int),
-        null
-    )
-    FROM FreeWeightSet fws
-    JOIN fws.workout w
-    WHERE fws.exercise.id = :exerciseId
-      AND w.bodyWeight > 0
-      AND (fws.weight / w.bodyWeight) = (
-          SELECT MAX(fws2.weight / w2.bodyWeight)
-          FROM FreeWeightSet fws2
-          JOIN fws2.workout w2
-          WHERE fws2.exercise.id = :exerciseId
-            AND w2.bodyWeight > 0
-            AND FUNCTION('YEAR', fws2.workout.date) = FUNCTION('YEAR', fws.workout.date)
-            AND FUNCTION('QUARTER', fws2.workout.date) = FUNCTION('QUARTER', fws.workout.date)
-      )
-      AND fws.workout.date = (
-          SELECT MIN(fws3.workout.date)
-          FROM FreeWeightSet fws3
-          JOIN fws3.workout w3
-          WHERE fws3.exercise.id = :exerciseId
-            AND w3.bodyWeight > 0
-            AND FUNCTION('YEAR', fws3.workout.date) = FUNCTION('YEAR', fws.workout.date)
-            AND FUNCTION('QUARTER', fws3.workout.date) = FUNCTION('QUARTER', fws.workout.date)
-            AND (fws3.weight / w3.bodyWeight) = (fws.weight / w.bodyWeight)
-      )
-    ORDER BY FUNCTION('YEAR', fws.workout.date) DESC,
-             FUNCTION('QUARTER', fws.workout.date) DESC
-    """)
-    List<PeriodMaxRatioDTO> findQuarterMaxRatioList(@Param("exerciseId") int exerciseId);
+            QUARTER(w.date) AS quarter,
+            MONTH(w.date) AS month_num,
 
-    @Query("""
-    SELECT NEW com.fitlogtimer.dto.stats.PeriodMaxRatioDTO(
-        fws.weight,
-        w.bodyWeight,
-        fws.weight / w.bodyWeight,
-        CAST(w.id AS int),
-        CAST(FUNCTION('YEAR', fws.workout.date) AS int),
-        null,
-        null,
-        CAST(FUNCTION('MONTH', fws.workout.date) AS int)
+            ROW_NUMBER() OVER (
+                PARTITION BY
+                    YEAR(w.date),
+                    CASE
+                        WHEN :periodType = 'SEMESTER'
+                        THEN CASE WHEN MONTH(w.date) <= 6 THEN 1 ELSE 2 END
+                    END,
+                    CASE
+                        WHEN :periodType = 'QUARTER'
+                        THEN QUARTER(w.date)
+                    END,
+                    CASE
+                        WHEN :periodType = 'MONTH'
+                        THEN MONTH(w.date)
+                    END
+                ORDER BY
+                    fs.weight / w.body_weight DESC,
+                    w.date ASC,
+                    w.id ASC,
+                    fs.id ASC
+            ) AS rn
+
+        FROM EXERCISE_SET fs
+        JOIN WORKOUT w ON w.id = fs.workout_id
+
+        WHERE fs.exercise_id = :exerciseId
+          AND fs.type = 'FREE_WEIGHT'
+          AND fs.weight IS NOT NULL
+          AND w.body_weight > 0
     )
-    FROM FreeWeightSet fws
-    JOIN fws.workout w
-    WHERE fws.exercise.id = :exerciseId
-      AND w.bodyWeight > 0
-      AND (fws.weight / w.bodyWeight) = (
-          SELECT MAX(fws2.weight / w2.bodyWeight)
-          FROM FreeWeightSet fws2
-          JOIN fws2.workout w2
-          WHERE fws2.exercise.id = :exerciseId
-            AND w2.bodyWeight > 0
-            AND FUNCTION('YEAR', fws2.workout.date) = FUNCTION('YEAR', fws.workout.date)
-            AND FUNCTION('MONTH', fws2.workout.date) = FUNCTION('MONTH', fws.workout.date)
-      )
-      AND fws.workout.date = (
-          SELECT MIN(fws3.workout.date)
-          FROM FreeWeightSet fws3
-          JOIN fws3.workout w3
-          WHERE fws3.exercise.id = :exerciseId
-            AND w3.bodyWeight > 0
-            AND FUNCTION('YEAR', fws3.workout.date) = FUNCTION('YEAR', fws.workout.date)
-            AND FUNCTION('MONTH', fws3.workout.date) = FUNCTION('MONTH', fws.workout.date)
-            AND (fws3.weight / w3.bodyWeight) = (fws.weight / w.bodyWeight)
-      )
-    ORDER BY FUNCTION('YEAR', fws.workout.date) DESC,
-             FUNCTION('MONTH', fws.workout.date) DESC
-    """)
-    List<PeriodMaxRatioDTO> findMonthlyMaxRatioList(@Param("exerciseId") int exerciseId);
+
+    SELECT
+        "maxValue",
+        "bodyWeight",
+        ratio,
+        "workoutId",
+        "year",
+        CASE WHEN :periodType = 'SEMESTER' THEN semester END AS "semester",
+        CASE WHEN :periodType = 'QUARTER' THEN quarter END AS "quarter",
+        CASE WHEN :periodType = 'MONTH' THEN month_num END AS "monthNum"
+
+    FROM ranked
+    WHERE rn = 1
+
+    ORDER BY
+        "year" DESC,
+        "semester" DESC,
+        "quarter" DESC,
+        "monthNum" DESC
+    """, nativeQuery = true)
+    List<PeriodMaxRatioNativeProjection> findPeriodMaxRatioList(
+            @Param("exerciseId") int exerciseId,
+            @Param("periodType") String periodType
+    );
 
     //liste des meilleurs ratio sur poids max groupés par année
     //!peut retourner des doublons

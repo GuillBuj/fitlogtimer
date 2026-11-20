@@ -452,18 +452,10 @@
                             <div class="trend-indicator-recap" th:if="${data.trendColor != null && !data.trendColor.isEmpty()}" th:style="${data.trendColor}"> </div>
                             <span class="bold-text">
                                 <a th:href="@{/workouts/{id}(id=${data.workoutId()})}" class="soft-link">
-<!--                                    [[${data.estimated1RM % 1 == 0 ?-->
-<!--                                    #numbers.formatDecimal(data.estimated1RM, 1, 0) :-->
-<!--                                    data.estimated1RM % 1 == 0.5 ?-->
-<!--                                    #numbers.formatDecimal(data.estimated1RM, 1, 1) :-->
-<!--                                    #numbers.formatDecimal(data.estimated1RM, 1, 2)}]] kg-->
                                     [[${#numbers.formatDecimal(data.estimated1RM, 1, 2)}]]kg
                                 </a>
                                 </span>
                                 <small th:if="${data.nbReps() != null && data.maxValue() != null && data.bodyweight() != null && data.bodyweight() > 0.0}">
-<!--                                    [[${data.nbReps}]]*[[${data.maxValue % 1 == 0 ?-->
-<!--                                    #numbers.formatDecimal(data.maxValue, 1, 0) :-->
-<!--                                    #numbers.formatDecimal(data.maxValue, 1, 1)}]]kg-->
                                     [[${data.nbReps}]]*[[${#numbers.formatDecimal(data.maxValue, 1, 1)}]]&nbsp
                                 </small>
                         </div>

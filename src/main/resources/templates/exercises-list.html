@@ -14,9 +14,19 @@
     <table class="auto-width-table centered">
         <thead>
             <tr>
-                <th>Short</th>
+                <th>
+                    <input type="text" id="shortSearch"
+                           class="table-search"
+                           placeholder="Short"
+                           title="Rechercher par short">
+                </th>
                 <th></th>
-                <th>Nom</th>
+                <th>
+                    <input type="text" id="nameSearch"
+                           class="table-search"
+                           placeholder="Nom"
+                           title="Rechercher par nom">
+                </th>
                 <th>PB</th>
                 <th>SB<span th:text="${#dates.format(#dates.createNow(), 'yy')}"></span></th>
                 <th>1RMest</th>

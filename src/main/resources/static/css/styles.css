@@ -2021,3 +2021,25 @@ body.calendar-page { /* Ajoutez une classe au body */
     background: linear-gradient(135deg, #000000 0%, #661111 100%) !important;
     color: papayawhip !important;
 }
+
+.table-search {
+    width: 75px;
+    box-sizing: border-box;
+    background: transparent;
+    color: inherit;
+    border: none;
+    border-bottom: 1px solid #777;
+    font: inherit;
+    font-weight: bold;
+    text-align: center;
+    outline: none;
+}
+
+.table-search:focus {
+    border-bottom: 1px solid white;
+}
+
+.table-search::placeholder {
+    color: inherit;
+    opacity: 1;
+}

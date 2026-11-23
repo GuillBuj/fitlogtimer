@@ -1744,6 +1744,14 @@ body.calendar-page { /* Ajoutez une classe au body */
     width:135px
 }
 
+.table-recap th:first-child,
+.table-recap td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 12;
+    background: inherit;
+}
+
 .table-recap td:nth-child(1) {
     width: auto;
     min-width: 100px;
@@ -2042,4 +2050,15 @@ body.calendar-page { /* Ajoutez une classe au body */
 .table-search::placeholder {
     color: inherit;
     opacity: 1;
+}
+
+.tables-recap-wrapper {
+    width: 1732px;
+    margin: 0 auto;
+    overflow-x: auto;
+}
+
+.tables-recap-wrapper > div {
+    width: max-content;
+    margin: 0 auto 20px;
 }

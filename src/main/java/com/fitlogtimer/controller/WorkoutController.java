@@ -113,7 +113,7 @@ public class WorkoutController {
     @GetMapping
     public String getWorkoutsList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(defaultValue = "16") int size,
             Model model) {
         Page<WorkoutListDisplayDTO> workoutPage = workoutService.getPaginatedWorkoutsDisplayDTO(page, size);
 

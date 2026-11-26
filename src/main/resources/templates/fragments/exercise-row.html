@@ -6,16 +6,15 @@
 <body>
 
 <tr th:fragment="row">
-    <td th:text="${exercise.shortName}"></td>
     <td>
         <div class="color-swatch"
+             th:text="${exercise.shortName}"
              th:style="|background-color: ${@exerciseColorUtil.getDisplayColor(exercise.color, exercise.shortName)}|">
         </div>
     </td>
     <td th:text="${exercise.name}"
         th:attr="title=${#strings.isEmpty(exercise.details) ? null : exercise.details}"
-        class="bold-text">
-    </td>
+        class="bold-text"></td>
     <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"
         th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
     <td th:unless="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}">-</td>
@@ -29,29 +28,40 @@
         th:text="|${exercise.seasonOneRepMaxEst % 1 == 0? exercise.seasonOneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.seasonOneRepMaxEst, 1, 1)} kg|"></td>
     <td th:unless="${exercise.type == FREE_WEIGHT_TYPE and exercise.seasonOneRepMaxEst>0}">-</td>
     <td th:text="${exercise.muscle}"></td>
-    <td th:text="${exercise.family}"></td>
+    <td>
+        <img th:if="${exercise.family.hasIcon()}"
+                                          th:src="@{${exercise.family.iconPath}}"
+                                          th:alt="${exercise.family.label}"
+                                          class="family-icon" />
+        <span th:unless="${exercise.family.hasIcon()}"
+              th:text="${exercise.family.label}"></span>
+    </td>
     <td th:text="${@exerciseUtil.getDisplayName(exercise.type)}"></td>
     <td>
-        <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>
+        <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link" title="Historique">📜</a>
         <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
-           th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">
-            Records
+           th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link" title="Records">
+            🏆
         </a>
         <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"
-           th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link">
-            Histo maxs
+           th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link" title="Historique des records">
+            📈
         </a>
+    </td>
     <td>
         <button class="btn-edit"
-                th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}|}"
-                  hx-target="closest tr"
-                  hx-swap="outerHTML">
-        Modifier
+                title="Modifier"
+                th:attr="hx-get=@{|/exercises/editForm/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}&sb=${exercise.seasonBest}&sorm=${exercise.seasonOneRepMaxEst}|}"
+                hx-target="closest tr"
+                hx-swap="outerHTML">
+            &#128393;
         </button>
-        <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
+        <form th:action="@{/exercises/{id}(id=${exercise.id})}" class="deleteForm"  method="post"
+              onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
             <input type="hidden" name="_method" value="delete" />
-            <button type="submit" class="btn-delete">Supprimer</button>
-        </form> </td>
+            <button type="submit" class="btn-delete" title="Supprimer">&#10006;</button>
+        </form>
+    </td>
 </tr>
 </body>
 </html>

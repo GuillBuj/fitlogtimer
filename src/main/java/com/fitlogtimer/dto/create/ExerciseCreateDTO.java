@@ -7,7 +7,7 @@ public record ExerciseCreateDTO(
     String name,
     String shortName,
     Muscle muscle,
-    Family family,
+    String family,
     String type,
     String color,
     String details) {

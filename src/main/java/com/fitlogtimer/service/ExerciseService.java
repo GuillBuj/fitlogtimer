@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.fitlogtimer.dto.update.ExerciseUpdateDTO;
+import com.fitlogtimer.enums.Family;
 import com.fitlogtimer.model.preference.ExerciseListPreference;
 import com.fitlogtimer.model.preference.ExercisePreference;
 import org.springframework.data.domain.Sort;
@@ -149,5 +150,11 @@ public class ExerciseService {
                 .collect(Collectors.toMap(
                         Exercise::getShortName,
                         exercise -> exercise.getColor() != null ? exercise.getColor() : "#666666"));
+    }
+
+    public List<String> getFamilyCodes() {
+        return Arrays.stream(Family.values())
+                .map(Family::getCode)
+                .toList();
     }
 }

@@ -39,7 +39,10 @@
                 <th>
                     <select id="familyFilter" class="select-dark">
                         <option value="all">Famille</option>
-                        <option th:each="family : ${families}" th:value="${family}" th:text="${family}"></option>
+                        <option th:each="family : ${families}"
+                                th:value="${family}"
+                                th:text="${@exerciseUtil.getFamilyLabel(family)}">
+                        </option>
                     </select>
                 </th>
                 <th>
@@ -78,7 +81,14 @@
                     th:text="|${exercise.seasonOneRepMaxEst % 1 == 0? exercise.seasonOneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.seasonOneRepMaxEst, 1, 1)} kg|"></td>
                 <td th:unless="${exercise.type == FREE_WEIGHT_TYPE and exercise.seasonOneRepMaxEst>0}">-</td>
                 <td th:text="${exercise.muscle}"></td>
-                <td th:text="${exercise.family}"></td>
+                <td>
+                    <img th:if="${exercise.family.hasIcon()}"
+                         th:src="@{${exercise.family.iconPath}}"
+                         th:alt="${exercise.family.label}"
+                         class="family-icon" />
+                    <span th:unless="${exercise.family.hasIcon()}"
+                          th:text="${exercise.family.label}"></span>
+                </td>
                 <td th:text="${@exerciseUtil.getDisplayName(exercise.type)}"></td>
                 <td>
                     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link" title="Historique">📜</a>

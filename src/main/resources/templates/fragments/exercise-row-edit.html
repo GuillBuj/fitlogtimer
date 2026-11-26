@@ -6,39 +6,26 @@
 <body>
 <tr th:fragment="editRow" th:object="${exercise}">
     <td><input class="exercise-edit-shortName" type="text" th:field="*{shortName}" maxlength="5" required/></td>
+    <td><input  class="exercise-edit-auto" type="text" th:field="*{name}" required/></td>
     <td>
-        <!-- Color picker natif standard -->
         <input type="color" name="color"
                th:value="${@exerciseColorUtil.getDisplayColor(exercise.color, exercise.shortName)}"/>
-
-        <!-- Barre de couleurs scrollable -->
         <div class="suggested-colors-scroll-container">
             <div class="suggested-colors">
-            <span th:each="col : ${@suggestedColors.colors}"
-                  th:attr="data-color=${col}"
-                  th:style="'background-color:' + ${col}"
-                  class="suggestedColor"
-                  onclick="this.closest('td').querySelector('input[type=color]').value=this.getAttribute('data-color')"
-                  title="Cliquer pour sélectionner">
-            </span>
+                <span th:each="col : ${@suggestedColors.colors}"
+                      th:attr="data-color=${col}"
+                      th:style="'background-color:' + ${col}"
+                      class="suggestedColor"
+                      onclick="this.closest('td').querySelector('input[type=color]').value=this.getAttribute('data-color')"
+                      title="Cliquer pour sélectionner">
+                </span>
             </div>
         </div>
     </td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
     <td>
-        <input  class="exercise-edit-auto" type="text" th:field="*{name}" required/>
-    </td>
-    <td th:if="${exercise.personalBest != null and exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}"
-        th:text="|${exercise.personalBest % 1 == 0 ? exercise.personalBest.intValue() : #numbers.formatDecimal(exercise.personalBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
-    <td th:unless="${exercise.type != MOVEMENT_TYPE and exercise.type != ELASTIC_TYPE}">-</td>
-    <td th:if="${exercise.seasonBest != null and exercise.seasonBest>0 and exercise.type == FREE_WEIGHT_TYPE}"
-        th:text="|${exercise.seasonBest % 1 == 0 ? exercise.seasonBest.intValue() : #numbers.formatDecimal(exercise.seasonBest, 1, 1)} ${exercise.type == FREE_WEIGHT_TYPE ? 'kg' : (exercise.type == ISOMETRIC_TYPE ? '&#34;' : '')}|" class="personalBest"></td>
-    <td th:unless="${exercise.type == FREE_WEIGHT_TYPE and exercise.seasonBest>0}">-</td>
-    <td th:if="${exercise.type == FREE_WEIGHT_TYPE}"
-        th:text="|${exercise.oneRepMaxEst % 1 == 0? exercise.oneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.oneRepMaxEst, 1, 1)} kg|"></td>
-    <td th:unless="${exercise.type == FREE_WEIGHT_TYPE}">-</td>
-    <td th:if="${exercise.seasonOneRepMaxEst != null and exercise.seasonOneRepMaxEst>0 and exercise.type == FREE_WEIGHT_TYPE}"
-        th:text="|${exercise.seasonOneRepMaxEst % 1 == 0? exercise.seasonOneRepMaxEst.intValue() : #numbers.formatDecimal(exercise.seasonOneRepMaxEst, 1, 1)} kg|"></td>
-    <td th:unless="${exercise.type == FREE_WEIGHT_TYPE and exercise.seasonOneRepMaxEst>0}">-</td><td>
         <select th:field="*{muscle}">
             <option th:each="m : ${muscles}" th:value="${m}" th:text="${m}"></option>
         </select>
@@ -55,15 +42,6 @@
     </td>
     <td>
         <input class="exercise-edit-auto" type="text" th:field="*{details}" />
-<!--        <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link">Histo</a>-->
-<!--        <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"-->
-<!--           th:href="@{/stats/maxsByReps/{id}(id=${exercise.id})}" class="btn-link">-->
-<!--            Records-->
-<!--        </a>-->
-<!--        <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"-->
-<!--           th:href="@{/stats/recordHistory/{id}(id=${exercise.id})}" class="btn-link">-->
-<!--            Histo maxs-->
-<!--        </a>-->
     </td>
     <td>
         <input type="hidden" th:field="*{id}"/>
@@ -77,17 +55,16 @@
                 hx-target="closest tr"
                 hx-swap="outerHTML"
                 class="btn-valid">
-            Sauver
+            &#10003;
         </button>
         <button
                 type="button"
                 th:attr="hx-get=@{|/exercises/viewRow/${exercise.id}?pb=${exercise.personalBest}&orm=${exercise.oneRepMaxEst}&sb=${exercise.seasonBest}&sorm=${exercise.seasonOneRepMaxEst}|}"
                 hx-target="closest tr"
                 hx-swap="outerHTML"
-                class="btn-link">
-            Annuler
+                class="btn-delete">
+            &#10554;
         </button>
-
     </td>
 </tr>
 

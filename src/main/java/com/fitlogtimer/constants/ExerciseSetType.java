@@ -20,4 +20,12 @@ public final class ExerciseSetType {
         ELASTIC, "Bandes élastiques",
         MOVEMENT, "Renfo mouvement"
     );
+
+    public static final Map<String, String> ICON_PATHS = Map.of(
+            FREE_WEIGHT, "/icons/free-weight-1.svg",
+            BODYWEIGHT, "/icons/bodyweight.svg",
+            ISOMETRIC, "/icons/isometric.svg",
+            ELASTIC, "/icons/elastic.svg",
+            MOVEMENT, "/icons/movement.svg"
+    );
 }

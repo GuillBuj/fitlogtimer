@@ -85,11 +85,15 @@
                     <img th:if="${exercise.family.hasIcon()}"
                          th:src="@{${exercise.family.iconPath}}"
                          th:alt="${exercise.family.label}"
-                         class="family-icon" />
+                         th:class="family-icon" />
                     <span th:unless="${exercise.family.hasIcon()}"
                           th:text="${exercise.family.label}"></span>
                 </td>
-                <td th:text="${@exerciseUtil.getDisplayName(exercise.type)}"></td>
+                <td>
+                    <img th:src="${@exerciseUtil.getIconPath(exercise.type)}"
+                         th:alt="${@exerciseUtil.getDisplayName(exercise.type)}"
+                         th:class="family-icon"/>
+                </td>
                 <td>
                     <a th:href="@{/exerciseSets/byExercise/{id}/groupedByDateClean(id=${exercise.id})}" class="btn-link" title="Historique">📜</a>
                     <a th:classappend="${(exercise.type == FREE_WEIGHT_TYPE || exercise.type == BODYWEIGHT_TYPE || exercise.type == ISOMETRIC_TYPE) ? '' : ' invisible'}"

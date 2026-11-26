@@ -13,6 +13,9 @@ public class ExerciseUtil {
     public String getDisplayName(String type) {
         return ExerciseSetType.DISPLAY_NAMES.getOrDefault(type, type);
     }
+    public String getIconPath(String type) {
+        return ExerciseSetType.ICON_PATHS.get(type);
+    }
 
     // ---- Family ----
     public List<String> getFamilyOptions() {
